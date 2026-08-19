@@ -1,0 +1,14 @@
+# 一般的なビルド成果物・依存物（このプロジェクトでは使っていないが念のため）
+node_modules/
+bin/
+obj/
+publish_output/
+dist/
+
+# OS / エディタ
+Thumbs.db
+desktop.ini
+.DS_Store
+.vscode/
+.idea/
+*.swp

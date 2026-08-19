@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NAND ラボ</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+  <header id="topbar">
+    <div id="brand">NAND ラボ</div>
+    <div id="runbar">
+      <button id="btnRun"   class="tb" title="時間を流し続ける／止める">⏸ 止める</button>
+      <button id="btnStep"  class="tb" title="時間を1歩だけ進める（Space）">1歩</button>
+      <button id="btnReset" class="tb" title="全部を未定に戻す（R）">リセット</button>
+      <label id="clockWrap" title="クロック部品の反転する速さ">
+        クロック <input id="clockSpeed" type="range" min="1" max="60" value="12">
+      </label>
+    </div>
+    <div id="tools">
+      <button id="btnTruth" class="tb">真理値表</button>
+      <button id="btnExpr"  class="tb">論理式</button>
+      <button id="btnChip"  class="tb primary">チップにする</button>
+      <button id="btnNew"   class="tb">作業台を消す</button>
+      <button id="btnExport" class="tb">書き出し</button>
+      <button id="btnImport" class="tb">読み込み</button>
+    </div>
+  </header>
+
+  <main>
+    <aside id="palette">
+      <section>
+        <h2>基本部品</h2>
+        <div id="prims"></div>
+      </section>
+      <section id="libSection">
+        <h2>自分で作ったチップ</h2>
+        <div id="chips"></div>
+        <p class="note" id="libEmpty">まだ何もない。<br>回路を組んで「チップにする」。</p>
+      </section>
+    </aside>
+
+    <div id="stage">
+      <canvas id="board"></canvas>
+      <div id="peek" class="hidden">
+        <div id="peekBar">
+          <span id="peekName"></span>
+          <span class="grow"></span>
+          <button id="peekEdit" class="tb">作業台に取り出す</button>
+          <button id="peekClose" class="tb">閉じる</button>
+        </div>
+        <canvas id="peekBoard"></canvas>
+      </div>
+      <div id="status"><span id="statLeft"></span><span id="statRight"></span></div>
+    </div>
+
+    <aside id="quests">
+      <h2>課題</h2>
+      <ol id="questList"></ol>
+      <div id="questBody" class="hidden">
+        <h3 id="qName"></h3>
+        <p id="qDesc"></p>
+        <div id="qPorts"></div>
+        <details id="qHintWrap"><summary>ヒント</summary><p id="qHint"></p></details>
+        <details id="qSpecWrap"><summary>期待する動き</summary><div id="qSpec"></div></details>
+        <button id="btnGrade" class="tb primary wide">採点する</button>
+        <div id="qResult"></div>
+      </div>
+    </aside>
+  </main>
+</div>
+
+<div id="overlay" class="hidden"><div id="modal"></div></div>
+
+<script src="src/netlist.js"></script>
+<script src="src/lib.js"></script>
+<script src="src/sim.js"></script>
+<script src="src/truth.js"></script>
+<script src="src/quest.js"></script>
+<script src="src/expr.js"></script>
+<script src="src/store.js"></script>
+<script src="src/ui.js"></script>
+<script src="src/main.js"></script>
+</body>
+</html>
