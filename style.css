@@ -33,19 +33,26 @@ html, body {
 
 /* ---------------- 上のバー ---------------- */
 
+/* ボタンが増えて横幅に収まらなくなったら、段を増やして受ける。
+ * ボタンの中の字は折り返させない（「作業
+台を消す」のような割れ方をすると読めない）。
+ * バーの高さは flex: none のまま中身に従うので、段が増えたぶん盤面が下がるだけで崩れない。 */
 #topbar {
-  display: flex; align-items: center; gap: 18px;
+  display: flex; align-items: center; flex-wrap: wrap;
+  column-gap: 18px; row-gap: 8px;
   padding: 8px 14px; background: var(--panel);
   border-bottom: 1px solid var(--line); flex: none;
 }
-#brand { font-weight: 700; letter-spacing: .08em; color: var(--accent); }
-#runbar, #tools { display: flex; align-items: center; gap: 6px; }
-#tools { margin-left: auto; }
+#brand { font-weight: 700; letter-spacing: .08em; color: var(--accent); flex: none; }
+#runbar, #tools { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+/* 右へ寄せる。折り返して自分の段になったときも右端に揃う */
+#tools { margin-left: auto; justify-content: flex-end; }
 
 .tb {
   background: var(--panel2); color: var(--text);
   border: 1px solid var(--line); border-radius: 5px;
   padding: 5px 11px; font: inherit; cursor: pointer;
+  white-space: nowrap; flex: none;
 }
 .tb:hover { background: #2a3340; border-color: #40506a; }
 .tb:active { transform: translateY(1px); }
@@ -203,6 +210,11 @@ table.tt td.sig { color: var(--accent); font-weight: 600; width: 1%; white-space
 @media (max-width: 1080px) {
   #quests { width: 232px; }
   #palette { width: 150px; }
+}
+/* 本当に狭いときは、名札を落としてボタンのための幅にする */
+@media (max-width: 820px) {
+  #brand { display: none; }
+  #topbar { column-gap: 12px; }
 }
 
 /* ---------------- 道のり ---------------- */
