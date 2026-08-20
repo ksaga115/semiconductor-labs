@@ -9,7 +9,7 @@ const vm = require('vm');
 const ctx = vm.createContext({ console, Math, Date, JSON, Int8Array, Int32Array, Uint8Array, Array, Object, String, Number });
 ctx.window = ctx;
 ctx.globalThis = ctx;
-for (const f of ['netlist.js', 'lib.js', 'sim.js', 'truth.js', 'quest.js', 'expr.js']) {
+for (const f of ['netlist.js', 'lib.js', 'sim.js', 'truth.js', 'quest.js', 'expr.js', 'mos.js', 'slim.js']) {
   vm.runInContext(fs.readFileSync(path.join(__dirname, '..', 'src', f), 'utf8'), ctx, { filename: f });
 }
 const NL = ctx.NL;
@@ -271,6 +271,150 @@ group('truth ― 期待表との突き合わせ', () => {
   N.externalOutputs(c2)[0].name = 'Z';
   ok(!T.check(c2, {}, spec).ok, '出力名が違えば通らない');
 });
+
+group('NAND の中身（CMOS のトランジスタ4個）', () => {
+  const M = NL.mos;
+  /* いちばん大事なこと: 中身の絵と、シミュレータの NAND が食い違わないこと。
+   * 食い違ったら「見せている物理」が嘘になる */
+  [0, 1, X].forEach(a => [0, 1, X].forEach(b => {
+    const r = M.nand(a, b);
+    /* X の側はどこにも繋がない。繋いでいない入力が X になるのが本来の姿で、
+     * 入力スイッチは 0 から始まるので「X を入れる」ことはできない */
+    const c = circ();
+    const g = put(c, 'nand');
+    const y = put(c, 'out', { name: 'Y' });
+    N.connect(c, g.id, 0, y.id, 0);
+    if (a !== X) { const ia = put(c, 'in', { name: 'A' }); N.connect(c, ia.id, 0, g.id, 0); }
+    if (b !== X) { const ib = put(c, 'in', { name: 'B' }); N.connect(c, ib.id, 0, g.id, 1); }
+    const sim = new S.Sim(L.flatten(c, {}));
+    sim.reset();
+    if (a !== X) sim.setInput('A', a);
+    if (b !== X) sim.setInput('B', b);
+    sim.settle();
+    eq(r.y, sim.read('Y'), '中身の出力とシミュレータが一致する (A=' + M.name(a) + ', B=' + M.name(b) + ')');
+  }));
+
+  /* 物理として辻褄が合っていること */
+  [0, 1, X].forEach(a => [0, 1, X].forEach(b => {
+    const r = M.nand(a, b);
+    ok(!(r.up === M.ON && r.down === M.ON),
+      '電源と地面が同時に繋がらない (A=' + M.name(a) + ', B=' + M.name(b) + ')');
+  }));
+
+  const both1 = M.nand(1, 1);
+  eq([both1.n[0], both1.n[1]], [M.ON, M.ON], '両方 1 なら下の n は2つとも繋がる');
+  eq([both1.p[0], both1.p[1]], [M.OFF, M.OFF], 'そのとき上の p は2つとも切れている');
+  eq(both1.y, 0, 'Y は 0 に引き下げられる');
+
+  const a0 = M.nand(0, 1);
+  eq(a0.p[0], M.ON, 'A が 0 なら上の p（A）が繋がる');
+  eq(a0.n[0], M.OFF, '同じ A で下の n は切れる（p と n は必ず逆）');
+  eq(a0.y, 1, 'Y は 1 に引き上げられる');
+
+  /* 片方が 0 なら、もう片方が未定でも出力は決まる ― 3値の要 */
+  const half = M.nand(0, X);
+  eq(half.up, M.ON, '片方が 0 なら、もう片方が X でも上は繋がっている');
+  eq(half.y, 1, 'だから Y は 1 に決まる');
+  eq(M.nand(1, X).y, X, '1 と X なら決まらない');
+  ok(M.nand(1, X).story.join('').indexOf('決まらない') >= 0, '決まらない理由を言葉でも出す');
+});
+
+
+group('小さくする ― 減らす手がかり', () => {
+  const SL = NL.slim;
+
+  /* 同じ入力の NAND を2つ置いている */
+  {
+    const c = circ();
+    const a = put(c, 'in', { name: 'A' }), b = put(c, 'in', { name: 'B' });
+    const g1 = put(c, 'nand'), g2 = put(c, 'nand'), y = put(c, 'out', { name: 'Y' });
+    N.connect(c, a.id, 0, g1.id, 0); N.connect(c, b.id, 0, g1.id, 1);
+    N.connect(c, b.id, 0, g2.id, 0); N.connect(c, a.id, 0, g2.id, 1);   /* 左右を入れ替えただけ */
+    N.connect(c, g1.id, 0, y.id, 0);
+    const h = SL.hints(c, {});
+    const same = h.filter(x => x.kind === 'same')[0];
+    ok(same, '同じものを2つ作っていることに気づく');
+    eq(same.save, 1, '1個減らせる');
+    eq(same.parts.length, 2, '該当する2個を指せる');
+    ok(same.msg.indexOf('まとめて') >= 0, 'どうすればよいかまで言う');
+  }
+
+  /* 入力の並びが違えば別物（チップは端子ごとに意味が違う） */
+  {
+    const c = circ();
+    const a = put(c, 'in', { name: 'A' }), b = put(c, 'in', { name: 'B' });
+    const g1 = put(c, 'nand'), g2 = put(c, 'nand'), y = put(c, 'out', { name: 'Y' });
+    N.connect(c, a.id, 0, g1.id, 0); N.connect(c, a.id, 0, g1.id, 1);
+    N.connect(c, b.id, 0, g2.id, 0); N.connect(c, b.id, 0, g2.id, 1);
+    N.connect(c, g1.id, 0, y.id, 0);
+    eq(SL.hints(c, {}).filter(x => x.kind === 'same').length, 0, '入力が違えばまとめない');
+  }
+
+  /* どこにも届いていない素子 */
+  {
+    const c = circ();
+    const a = put(c, 'in', { name: 'A' }), y = put(c, 'out', { name: 'Y' });
+    const g = put(c, 'nand'), lost = put(c, 'nand');
+    N.connect(c, a.id, 0, g.id, 0); N.connect(c, a.id, 0, g.id, 1);
+    N.connect(c, g.id, 0, y.id, 0);
+    N.connect(c, a.id, 0, lost.id, 0); N.connect(c, a.id, 0, lost.id, 1);
+    const h = SL.hints(c, {}).filter(x => x.kind === 'dead')[0];
+    ok(h, '出力に届かない素子に気づく');
+    ok(h.parts.indexOf(lost.id) >= 0, '置き忘れたほうを指している');
+    ok(h.parts.indexOf(g.id) < 0, '使われている素子は巻き込まない');
+  }
+
+  /* NOT を2回かけて元に戻っている */
+  {
+    const c = circ();
+    const a = put(c, 'in', { name: 'A' }), y = put(c, 'out', { name: 'Y' });
+    const n1 = put(c, 'nand'), n2 = put(c, 'nand');
+    N.connect(c, a.id, 0, n1.id, 0); N.connect(c, a.id, 0, n1.id, 1);
+    N.connect(c, n1.id, 0, n2.id, 0); N.connect(c, n1.id, 0, n2.id, 1);
+    N.connect(c, n2.id, 0, y.id, 0);
+    const h = SL.hints(c, {}).filter(x => x.kind === 'twice')[0];
+    ok(h, '打ち消し合う NOT に気づく');
+    eq(h.save, 2, '2個減る');
+  }
+
+  /* 記憶を持つチップは、入力が同じでもまとめてはいけない */
+  {
+    const lib = {};
+    const sr = circ();
+    const s = put(sr, 'in', { name: 'S' }), r = put(sr, 'in', { name: 'R' });
+    const g1 = put(sr, 'nand'), g2 = put(sr, 'nand');
+    const q = put(sr, 'out', { name: 'Q' });
+    N.connect(sr, s.id, 0, g1.id, 0); N.connect(sr, g2.id, 0, g1.id, 1);
+    N.connect(sr, r.id, 0, g2.id, 0); N.connect(sr, g1.id, 0, g2.id, 1);
+    N.connect(sr, g1.id, 0, q.id, 0);
+    const made = L.makeChip('SR', sr, lib);
+    ok(!made.error, 'SR ラッチをチップにできた');
+    lib.SR = made.chip;
+
+    const c = circ();
+    const a = put(c, 'in', { name: 'A' }), b = put(c, 'in', { name: 'B' });
+    const c1 = N.addPart(c, 'chip', 0, 0, { chip: 'SR' });
+    const c2 = N.addPart(c, 'chip', 0, 0, { chip: 'SR' });
+    const y = put(c, 'out', { name: 'Y' });
+    /* 端子の並びは名前の自然順なので R, S */
+    N.connect(c, a.id, 0, c1.id, 0, lib); N.connect(c, b.id, 0, c1.id, 1, lib);
+    N.connect(c, a.id, 0, c2.id, 0, lib); N.connect(c, b.id, 0, c2.id, 1, lib);
+    N.connect(c, c1.id, 0, y.id, 0, lib);
+    eq(SL.hints(c, lib).filter(x => x.kind === 'same').length, 0,
+      '記憶を持つチップは、入力が同じでもまとめない');
+  }
+
+  /* 繋がっていない素子は、比べようがないので放っておく */
+  {
+    const c = circ();
+    const g1 = put(c, 'nand'), g2 = put(c, 'nand'), y = put(c, 'out', { name: 'Y' });
+    N.connect(c, g1.id, 0, y.id, 0);
+    eq(SL.hints(c, {}).filter(x => x.kind === 'same').length, 0, '入力が空の素子どうしは比べない');
+  }
+
+  ok(SL.ADVICE.length >= 3, '考え方のほうも用意してある');
+});
+
 
 console.log(`\n${fail ? 'NG' : 'OK'}  合格 ${pass} / 失敗 ${fail}`);
 process.exit(fail ? 1 : 0);

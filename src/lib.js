@@ -71,6 +71,24 @@
     return false;
   }
 
+  /** チップの深さ。NAND だけでできているチップが 1、それを使うチップが 2…。
+   * 「これは NOT から数えて何段の上に建っているか」を見せるための数。
+   * 素子の数と違って、こちらは積み上げた回数そのものを表す */
+  function depth(name, lib, path) {
+    var def = lib && lib[name];
+    if (!def) return 0;
+    path = path || {};
+    if (path[name]) return 0;            /* 循環は makeChip が止めているが、数えるほうでも止めておく */
+    path[name] = true;
+    var d = 0;
+    for (var id in def.circuit.parts) {
+      var p = def.circuit.parts[id];
+      if (p.kind === 'chip') d = Math.max(d, depth(p.chip, lib, path));
+    }
+    delete path[name];
+    return d + 1;
+  }
+
   /** name を使っているチップの名前を並べる（削除してよいかの判断用） */
   function dependents(lib, name) {
     var out = [];
@@ -202,7 +220,7 @@
 
   NL.lib = {
     MAX_GATES: MAX_GATES,
-    makeChip: makeChip, usesChip: usesChip, dependents: dependents,
+    makeChip: makeChip, usesChip: usesChip, dependents: dependents, depth: depth,
     flatten: flatten
   };
 })(typeof window !== 'undefined' ? window : globalThis);
