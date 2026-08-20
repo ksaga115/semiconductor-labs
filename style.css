@@ -204,3 +204,67 @@ table.tt td.sig { color: var(--accent); font-weight: 600; width: 1%; white-space
   #quests { width: 232px; }
   #palette { width: 150px; }
 }
+
+/* ---------------- 道のり ---------------- */
+
+/* パレットのチップに付く素子数。「これは NAND 何個ぶんか」を常に見せておく */
+.pitem .cnt {
+  margin-left: auto; font-size: 10px; color: var(--dim);
+  background: var(--bg); border-radius: 999px; padding: 0 6px; line-height: 15px;
+}
+
+#questList li.sec {
+  cursor: default; color: var(--dim); font-size: 10px; letter-spacing: .12em;
+  padding: 10px 2px 2px; border: 0;
+}
+#questList li.sec:hover { background: none; }
+
+.path-sum { color: #b9c4d2; font-size: 12px; margin: -4px 0 12px; }
+.path-sum b { color: var(--text); font-weight: 700; }
+
+.path-wrap { position: relative; margin: 0 auto; }
+.path-svg { position: absolute; left: 0; top: 0; overflow: visible; }
+.path-svg .e { fill: none; stroke: #2e3745; stroke-width: 1.5; }
+.path-svg .e.on { stroke: #2f6b47; }
+
+.path-stage {
+  position: absolute; left: 0; width: 112px; line-height: 1.35;
+}
+.path-stage b { display: block; font-size: 12px; color: #b9c4d2; }
+.path-stage span { font-size: 10px; color: var(--dim); }
+
+.path-node {
+  position: absolute; border-radius: 7px; cursor: pointer;
+  border: 1px solid var(--line); background: var(--panel2);
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  gap: 1px; padding: 0 6px; text-align: center;
+}
+.path-node:hover { border-color: var(--accent); }
+.path-node .nm  { font-size: 12px; font-weight: 600; }
+.path-node .sub { font-size: 10px; color: var(--dim); }
+/* 済み＝緑、今すぐ作れる＝青、まだ材料が無い＝沈める。信号の色と役割をずらさない */
+.path-node.done   { border-color: #3d6b4f; background: #17251d; }
+.path-node.done .nm { color: var(--ok); }
+.path-node.open   { border-color: #34618f; background: #16202e; }
+.path-node.locked { opacity: .45; }
+
+.why-line { color: #9fb6cf; font-size: 12px; border-left: 2px solid #34618f; padding-left: 8px; }
+.hidden-btn { display: none; }
+
+/* NAND の中身は小さい窓で出す。盤面のスイッチを触りながら見るため */
+#peek.small {
+  inset: auto; right: 20px; bottom: 20px; width: 560px; height: 520px;
+}
+
+/* 小さくする */
+.slim-list { display: flex; flex-direction: column; gap: 6px; margin: 10px 0; }
+.slim {
+  display: flex; gap: 10px; align-items: flex-start; cursor: pointer;
+  padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel2);
+}
+.slim:hover { border-color: var(--accent); }
+.slim .save { color: var(--ok); font-weight: 700; flex: none; font-variant-numeric: tabular-nums; }
+.slim .t { color: #cfe0f5; font-size: 12px; }
+.advice { margin: 8px 0; font-size: 12px; }
+.advice b { color: #b9c4d2; display: block; }
+.advice span { color: var(--dim); }

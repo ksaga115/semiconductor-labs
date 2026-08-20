@@ -3,7 +3,7 @@
 const { execFileSync } = require('child_process');
 const path = require('path');
 
-const files = ['run.js', 'expr.js', 'quest.js', 'ui.js'];
+const files = ['run.js', 'expr.js', 'quest.js', 'layout.js', 'ui.js'];
 let bad = 0;
 for (const f of files) {
   console.log('\n──────── ' + f);

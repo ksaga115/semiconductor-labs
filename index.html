@@ -20,9 +20,13 @@
       </label>
     </div>
     <div id="tools">
+      <button id="btnPath"  class="tb">道のり</button>
       <button id="btnTruth" class="tb">真理値表</button>
       <button id="btnExpr"  class="tb">論理式</button>
+      <button id="btnSlim"  class="tb">小さくする</button>
       <button id="btnChip"  class="tb primary">チップにする</button>
+      <button id="btnSaveChip" class="tb hidden">上書き保存</button>
+      <button id="btnTidy"  class="tb" title="信号が左から右へ流れるように並べ直す（L）">整える</button>
       <button id="btnNew"   class="tb">作業台を消す</button>
       <button id="btnExport" class="tb">書き出し</button>
       <button id="btnImport" class="tb">読み込み</button>
@@ -62,10 +66,12 @@
       <div id="questBody" class="hidden">
         <h3 id="qName"></h3>
         <p id="qDesc"></p>
+        <p id="qWhy" class="why-line"></p>
         <div id="qPorts"></div>
         <details id="qHintWrap"><summary>ヒント</summary><p id="qHint"></p></details>
         <details id="qSpecWrap"><summary>期待する動き</summary><div id="qSpec"></div></details>
         <button id="btnGrade" class="tb primary wide">採点する</button>
+        <button id="btnAnswer" class="tb wide">お手本を見る</button>
         <div id="qResult"></div>
       </div>
     </aside>
@@ -80,6 +86,10 @@
 <script src="src/truth.js"></script>
 <script src="src/quest.js"></script>
 <script src="src/expr.js"></script>
+<script src="src/mos.js"></script>
+<script src="src/slim.js"></script>
+<script src="src/answer.js"></script>
+<script src="src/layout.js"></script>
 <script src="src/store.js"></script>
 <script src="src/ui.js"></script>
 <script src="src/main.js"></script>

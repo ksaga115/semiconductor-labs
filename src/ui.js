@@ -15,6 +15,7 @@
   'use strict';
   var NL = global.NL;
   var N = NL.netlist, L = NL.lib, SIM = NL.sim, T = NL.truth, Q = NL.quest, ST = NL.store, EX = NL.expr;
+  var LAY = NL.layout;
   var X = SIM.X;
 
   /* ---------------- 見た目の寸法 ---------------- */
@@ -83,7 +84,7 @@
     act: null,            /* 進行中の操作 */
     peek: null,           /* { chip, prefix, view } */
     undo: [], redo: [],
-    msg: '', msgAt: 0,
+    msg: '', msgAt: 0, editing: null, showBus: true,   /* 作業台に取り出しているチップの名前 */
     saveTimer: null, nandCount: 0
   };
 
@@ -97,10 +98,10 @@
     S.cleared = state.cleared || {};
     S.questId = state.quest || null;
 
-    ['prims', 'chips', 'libEmpty', 'questList', 'questBody', 'qName', 'qDesc', 'qPorts', 'qHint',
+    ['prims', 'chips', 'libEmpty', 'questList', 'questBody', 'qName', 'qDesc', 'qWhy', 'qPorts', 'qHint',
       'qSpec', 'qResult', 'statLeft', 'statRight', 'overlay', 'modal', 'peek', 'peekName',
-      'peekBoard', 'btnRun', 'btnStep', 'btnReset', 'clockSpeed', 'btnTruth', 'btnExpr', 'btnChip',
-      'btnNew', 'btnExport', 'btnImport', 'btnGrade', 'peekEdit', 'peekClose'
+      'peekBoard', 'btnRun', 'btnStep', 'btnReset', 'clockSpeed', 'btnTruth', 'btnExpr', 'btnSlim', 'btnChip',
+      'btnTidy', 'btnPath', 'btnSaveChip', 'btnNew', 'btnExport', 'btnImport', 'btnGrade', 'btnAnswer', 'peekEdit', 'peekClose'
     ].forEach(function (id) { el[id] = document.getElementById(id); });
 
     cv = document.getElementById('board');
@@ -109,6 +110,7 @@
     pctx = pcv.getContext('2d');
 
     buildPalette();
+    setEditing(null);
     buildQuestList();
     selectQuest(S.questId);
     bindEvents();
@@ -219,13 +221,29 @@
     if (!a || !b) return null;
     var p1 = portXY(a, S.lib, 'out', w.from.port);
     var p2 = portXY(b, S.lib, 'in', w.to.port);
-    return routePath(p1, p2);
+    /* 「整える」が決めた通り道が、まだ端子とぴったり合っていればそれを使う。
+     * 部品を動かした瞬間に合わなくなるので、そのときは素直な折れ線に戻る。
+     * 覚えた道が古いかどうかを、別の印ではなく端の一致で判定するのがミソ
+     * （印を消し忘れると、部品と繋がっていない線が残る） */
+    var q = w.pts;
+    if (q && q.length >= 2 &&
+        q[0].x === p1.x && q[0].y === p1.y &&
+        q[q.length - 1].x === p2.x && q[q.length - 1].y === p2.y) return q;
+    return routePath(p1, p2, w.to.port);
   }
 
-  function routePath(p1, p2) {
+  /* 【曲がるのは行き先の直前】真ん中で曲がると、その縦棒が列の真ん中に立って
+   * 途中の部品を突き抜ける。出た高さのまま真横に走り、行き先の手前 ―
+   * 整列した盤面では列と列のすきま ― で初めて縦に折れる。
+   * その走路ぶんの隙間は layout.js の「通し道」が空けてくれる。
+   *
+   * 【入る端子ごとに折れる位置をずらす】同じ部品の入力2本が同じ x で縦に折れると、
+   * 線どうしが重なって1本に見える。端子の番号ぶん左へずらす（列のすきま 60 に収まる範囲で）。 */
+  function routePath(p1, p2, port) {
     if (p2.x > p1.x + 24) {
-      var mx = (p1.x + p2.x) / 2;
-      return [p1, { x: mx, y: p1.y }, { x: mx, y: p2.y }, p2];
+      if (p1.y === p2.y) return [p1, p2];
+      var bx = Math.max(p1.x + 12, p2.x - 20 - Math.min(port || 0, 3) * 10);
+      return [p1, { x: bx, y: p1.y }, { x: bx, y: p2.y }, p2];
     }
     /* 右から左へ戻る配線。まっすぐ引くと部品を突っ切るので、いったん上下に逃がす */
     var ax = p1.x + 18, bx = p2.x - 18, my = (p1.y + p2.y) / 2 + 34;
@@ -318,8 +336,92 @@
     drawOverlays(ctx);
     ctx.restore();
 
+    if (S.showBus) drawBuses(ctx, r);
     if (S.peek) renderPeek();
     updateStatus();
+  }
+
+  /* ---------------- 数として読む（束） ---------------- */
+
+  /* 名前が「同じ語幹＋数字」の入力・出力をひとまとめにして、数として読む。
+   * A0..A3 と B0..B3 を足して S0..S3 が出る回路を組んだとき、
+   * 光の並びを目で二進に直すのは慣れるまで本当にできない。
+   * 「7 + 5 = 12」と出て初めて、自分が足し算機を作ったことが分かる。
+   *
+   * 添字 0 が最下位。課題の端子の付け方（S0 が最下位）と同じにしてある。 */
+  function busesOf(circuit) {
+    var out = [];
+    ['in', 'out'].forEach(function (kind) {
+      var g = {}, stem;
+      N.partsOfKind(circuit, kind).forEach(function (p) {
+        var m = /^(.*?)(\d+)$/.exec(p.name || '');
+        if (!m || !m[1]) return;
+        (g[m[1]] || (g[m[1]] = [])).push({ p: p, i: +m[2] });
+      });
+      for (stem in g) {
+        if (g[stem].length < 2) continue;
+        g[stem].sort(function (a, b) { return a.i - b.i; });
+        out.push({ kind: kind, name: stem, bits: g[stem] });
+      }
+    });
+    return out;
+  }
+
+  /** 束の今の値。1ビットでも X なら数にできないので null を返す（0 で埋めない） */
+  function busValue(bus) {
+    var v = 0, i, b;
+    for (i = 0; i < bus.bits.length; i++) {
+      b = valueOf('', bus.bits[i].p, 0);
+      if (b === X) return null;
+      if (b === 1) v += Math.pow(2, i);
+    }
+    return v;
+  }
+
+  function busBits(bus) {
+    var s = '', i;
+    for (i = bus.bits.length - 1; i >= 0; i--) s += SIM.show(valueOf('', bus.bits[i].p, 0));
+    return s;
+  }
+
+  function drawBuses(c2, rect) {
+    var list = busesOf(S.circuit);
+    if (!list.length) return;
+
+    c2.save();
+    c2.font = '12px Consolas, "Courier New", monospace';
+    var rows = list.map(function (b) {
+      return { b: b, name: b.name, bits: busBits(b), val: busValue(b) };
+    });
+    var wName = 0, wBits = 0;
+    rows.forEach(function (r) {
+      wName = Math.max(wName, c2.measureText(r.name).width);
+      wBits = Math.max(wBits, c2.measureText(r.bits).width);
+    });
+    var pad = 10, lh = 18;
+    var w = pad * 2 + wName + 12 + wBits + 12 + c2.measureText('=  888').width;
+    var h = pad * 2 + rows.length * lh;
+    var x = rect.width - w - 12, y = 12;
+
+    c2.fillStyle = 'rgba(26,31,39,.92)';
+    c2.strokeStyle = '#2e3745';
+    c2.lineWidth = 1;
+    roundRect(c2, x, y, w, h, 7);
+    c2.fill(); c2.stroke();
+
+    c2.textBaseline = 'middle';
+    rows.forEach(function (r, i) {
+      var cy = y + pad + i * lh + lh / 2;
+      c2.textAlign = 'left';
+      c2.fillStyle = r.b.kind === 'out' ? '#d7dee8' : '#8492a6';
+      c2.fillText(r.name, x + pad, cy);
+      c2.fillStyle = /X/.test(r.bits) ? '#6b7688' : '#9fb6cf';
+      c2.fillText(r.bits, x + pad + wName + 12, cy);
+      c2.textAlign = 'right';
+      c2.fillStyle = r.val === null ? '#6b7688' : (r.b.kind === 'out' ? '#35e0c8' : '#b9c4d2');
+      c2.fillText(r.val === null ? '―' : String(r.val), x + w - pad, cy);
+    });
+    c2.restore();
   }
 
   function drawGrid(c2, view, r) {
@@ -351,6 +453,36 @@
       strokePath(c2, pts, sigColor(v, isHot), S.sel.wires[id] ? 3.4 : (v === 1 ? 2.4 : 1.8), v === X);
     }
     for (var pid in circuit.parts) drawPart(c2, circuit, circuit.parts[pid], prefix, hot, live);
+
+    /* 配線の名前は部品より上に。線に埋もれると読めない */
+    for (var wid in circuit.wires) {
+      var wr = circuit.wires[wid];
+      if (!wr.name) continue;
+      var q = wirePath(circuit, wr);
+      if (q) drawWireName(c2, q, wr.name, valueOf(prefix, circuit.parts[wr.from.part], wr.from.port));
+    }
+  }
+
+  /* 名前は、その線の一番長い横棒の真ん中に置く。斜めの所に置くと線と字が重なって読めない */
+  function drawWireName(c2, pts, name, v) {
+    var best = null, bestLen = 0, i;
+    for (i = 0; i + 1 < pts.length; i++) {
+      if (pts[i].y !== pts[i + 1].y) continue;
+      var len = Math.abs(pts[i + 1].x - pts[i].x);
+      if (len > bestLen) { bestLen = len; best = { x: (pts[i].x + pts[i + 1].x) / 2, y: pts[i].y }; }
+    }
+    if (!best || bestLen < 24) return;
+    c2.save();
+    c2.font = '11px "Yu Gothic UI", Meiryo, system-ui, sans-serif';
+    c2.textAlign = 'center';
+    c2.textBaseline = 'middle';
+    var w = c2.measureText(name).width + 10;
+    c2.fillStyle = '#12151a';
+    roundRect(c2, best.x - w / 2, best.y - 8, w, 16, 5);
+    c2.fill();
+    c2.fillStyle = sigColor(v, false);
+    c2.fillText(name, best.x, best.y);
+    c2.restore();
   }
 
   function valueOf(prefix, part, port) {
@@ -588,13 +720,18 @@
     el.libEmpty.classList.toggle('hidden', namesList.length > 0);
     namesList.forEach(function (nm) {
       var def = S.lib[nm];
+      /* 中身の素子数と深さ。パレットは中身が変わったときにしか作り直さないので、
+       * ここで展開しても毎フレームの負担にはならない */
+      var g = T.gateCount(def.circuit, S.lib), dep = L.depth(nm, S.lib);
       var d = document.createElement('div');
       d.className = 'pitem';
       d.dataset.chip = nm;
       d.title = nm + '（入力 ' + def.inNames.join(',') + ' → 出力 ' + def.outNames.join(',') + '）\n'
+              + 'ばらすと NAND ' + g.nand + '個・NOT から数えて ' + dep + ' 段目\n'
               + 'ダブルクリックで中身を作業台に取り出す';
-      d.innerHTML = '<span class="k"></span><span class="x" title="削除">×</span>';
+      d.innerHTML = '<span class="k"></span><span class="cnt"></span><span class="x" title="削除">×</span>';
       d.querySelector('.k').textContent = nm;
+      d.querySelector('.cnt').textContent = g.error ? '?' : g.nand;
       d.onclick = function (e) {
         if (e.target.className === 'x') { e.stopPropagation(); removeChip(nm); return; }
         setPlace({ kind: 'chip', chip: nm });
@@ -638,6 +775,61 @@
     say('消した');
   }
 
+  /* 盤面を整える。選んでいるものが2つ以上あればその中だけ、なければ全体。
+   *
+   * 位置は回路の意味に関わらないので rebuild() は呼ばない。呼ぶとシミュレータが
+   * 作り直されて、ラッチが覚えていた値まで消える（整えただけで記憶が飛ぶのは嘘）。 */
+  function doArrange() {
+    var ids = Object.keys(S.sel.parts).filter(function (i) { return S.circuit.parts[i]; });
+    var part = ids.length >= 2;
+    var r = LAY.arrange(S.circuit, S.lib, { sizeOf: sizeOf, portXY: portXY }, part ? { ids: ids } : null);
+    if (!r) {
+      return say(ids.length === 1 ? '1つだけ選んでいると整えようがない。選択を解くと盤面ぜんぶを整える'
+                                  : '盤面に部品が足りない');
+    }
+    snapshot();
+    var id;
+    for (id in r.parts) { S.circuit.parts[id].x = r.parts[id].x; S.circuit.parts[id].y = r.parts[id].y; }
+    /* 覚えていた古い通り道は捨ててから入れ直す（残しておくと、整え直したのに
+     * 前の道のままの線が混ざる） */
+    for (id in S.circuit.wires) {
+      var w = S.circuit.wires[id];
+      if (!r.parts[w.from.part] || !r.parts[w.to.part]) continue;
+      if (r.wires[id]) w.pts = r.wires[id]; else delete w.pts;
+    }
+    scheduleSave();
+    say((part ? '選んだ ' + ids.length + ' 個を整えた' : '盤面を整えた') + '（Ctrl+Z で元に戻せる）');
+  }
+
+  /* ---------------- チップの上書き保存 ---------------- */
+
+  /* 「作業台に取り出す」で開いたチップを覚えておき、そのまま上書きできるようにする。
+   * 毎回「チップにする」→名前を打ち直す、をやらせないため。
+   * 名前を打ち直させる方式だと、打ち間違えて別のチップが増えていることに気づかない */
+  function setEditing(name) {
+    S.editing = name || null;
+    if (!el.btnSaveChip) return;
+    el.btnSaveChip.classList.toggle('hidden', !S.editing);
+    el.btnSaveChip.textContent = S.editing ? '「' + S.editing + '」 を上書き保存' : '上書き保存';
+    el.btnSaveChip.title = S.editing
+      ? 'Ctrl+S。このチップを使っている回路すべてが、新しい中身に入れ替わる' : '';
+  }
+
+  function saveChip() {
+    if (!S.editing) return say('上書きするチップがない。「チップにする」で名前を付けて登録する');
+    var name = S.editing;
+    var made = L.makeChip(name, S.circuit, S.lib);
+    if (made.error) return say(made.error);
+    snapshot();
+    S.lib[name] = made.chip;
+    var users = L.dependents(S.lib, name);
+    buildPalette();
+    rebuild();
+    var g = T.gateCount(S.lib[name].circuit, S.lib);
+    say('「' + name + '」 を上書きした ― NAND ' + g.nand + '個'
+      + (users.length ? '。' + users.join('・') + ' も新しい中身に入れ替わった' : ''));
+  }
+
   function clearSel() { S.sel = { parts: {}, wires: {} }; }
 
   /* ---------------- マウス ---------------- */
@@ -664,13 +856,18 @@
 
     el.btnTruth.onclick = showTruth;
     el.btnExpr.onclick = showExpr;
+    el.btnSlim.onclick = showSlim;
     el.btnChip.onclick = askChipName;
+    el.btnTidy.onclick = doArrange;
+    el.btnPath.onclick = showPath;
+    el.btnSaveChip.onclick = saveChip;
     el.btnNew.onclick = askClear;
     el.btnExport.onclick = showExport;
     el.btnImport.onclick = showImport;
     el.btnGrade.onclick = doGrade;
-    el.peekClose.onclick = function () { S.peek = null; el.peek.classList.add('hidden'); };
-    el.peekEdit.onclick = function () { var nm = S.peek && S.peek.chip; S.peek = null; el.peek.classList.add('hidden'); if (nm) openChipForEdit(nm); };
+    el.btnAnswer.onclick = openAnswer;
+    el.peekClose.onclick = function () { closePeek(); };
+    el.peekEdit.onclick = function () { var nm = S.peek && S.peek.chip; closePeek(); if (nm) openChipForEdit(nm); };
     el.overlay.onclick = function (e) { if (e.target === el.overlay) closeModal(); };
     syncRunButton();
   }
@@ -811,12 +1008,48 @@
     }
   }
 
+  /* ダブルクリックで名前を変えるのはやめた。入力スイッチはクリックで 0/1 が
+   * 切り替わるので、かちゃかちゃ切り替えているだけで名前の窓が開いてしまう。
+   * 名前は F2（か Enter）。ここでは、その場で「どうすれば変えられるか」だけ言う。 */
   function onDbl(e) {
     var w = toWorld(e, S.view);
     var p = partAt(S.circuit, w.x, w.y);
     if (!p) return;
     if (p.kind === 'chip') { openPeek(p); return; }
-    if (p.kind === 'in' || p.kind === 'out') renamePart(p);
+    if (p.kind === 'nand') { openMos(p); return; }
+    if (p.kind === 'in' || p.kind === 'out') say('名前を変えるには、選んでから F2');
+  }
+
+  /** 選んでいるものの名前を変える（F2 / Enter）。入力・出力のほか、配線にも付けられる */
+  function renameSelected() {
+    var ids = Object.keys(S.sel.parts).filter(function (i) { return S.circuit.parts[i]; });
+    var wids = Object.keys(S.sel.wires).filter(function (i) { return S.circuit.wires[i]; });
+    if (!ids.length && wids.length === 1) return renameWire(S.circuit.wires[wids[0]]);
+    if (ids.length !== 1) return say('名前を変えたい入力・出力・配線を1つだけ選んで F2');
+    var p = S.circuit.parts[ids[0]];
+    if (p.kind !== 'in' && p.kind !== 'out') return say('名前が付けられるのは入力・出力・配線');
+    renamePart(p);
+  }
+
+  /* 配線の名前。回路の意味は何も変わらない ― 読む人（自分）のための札。
+   * 名前を付けたい線は、たいてい「あとで自分が探す線」（桁上がり、書き込み許可、クロック）。
+   * 端子と違って重複を禁じないのは、同じ信号から分かれた枝に同じ名前を付けたいから */
+  function renameWire(w) {
+    dialog({
+      title: '配線に名前を付ける',
+      hint: N.labelOf(S.circuit.parts[w.from.part]) + ' → ' + N.labelOf(S.circuit.parts[w.to.part])
+          + '\n空にすると名前を消す。回路の動きは変わらない。',
+      input: { value: w.name || '', placeholder: '例: 桁上がり / C / W' },
+      ok: '付ける',
+      onOk: function (name) {
+        snapshot();
+        name = String(name).trim();
+        if (name) w.name = name; else delete w.name;
+        scheduleSave();
+        say(name ? '配線に 「' + name + '」 と名前を付けた' : '配線の名前を消した');
+        return true;
+      }
+    });
   }
 
   function onContext(e) {
@@ -856,6 +1089,7 @@
     var ctrl = e.ctrlKey || e.metaKey;
     if (ctrl && e.key.toLowerCase() === 'z') { e.preventDefault(); e.shiftKey ? redo() : undo(); return; }
     if (ctrl && e.key.toLowerCase() === 'y') { e.preventDefault(); redo(); return; }
+    if (ctrl && e.key.toLowerCase() === 's') { e.preventDefault(); saveChip(); return; }
     if (ctrl && e.key.toLowerCase() === 'a') {
       e.preventDefault();
       for (var id in S.circuit.parts) S.sel.parts[id] = true;
@@ -864,7 +1098,7 @@
     switch (e.key) {
       case 'Delete': case 'Backspace': e.preventDefault(); deleteSelection(); break;
       case 'Escape':
-        if (S.peek) { S.peek = null; el.peek.classList.add('hidden'); }
+        if (S.peek) { closePeek(); }
         else if (S.place) { S.place = null; markPlace(); }
         else clearSel();
         break;
@@ -875,6 +1109,12 @@
       case 'o': case 'O': setPlace({ kind: 'out' }); break;
       case 'c': case 'C': setPlace({ kind: 'const' }); break;
       case 'k': case 'K': setPlace({ kind: 'clock' }); break;
+      case 'l': case 'L': doArrange(); break;
+      case 'v': case 'V':
+        S.showBus = !S.showBus;
+        say(S.showBus ? '束を数として表示する' : '数の表示を消した');
+        break;
+      case 'F2': case 'Enter': e.preventDefault(); renameSelected(); break;
     }
   }
 
@@ -883,17 +1123,19 @@
   function openPeek(part) {
     var def = S.lib[part.chip];
     if (!def) return say('チップ 「' + part.chip + '」 が見つからない');
-    S.peek = { chip: part.chip, def: def, prefix: part.id + '/', view: { ox: 0, oy: 0, s: 1 } };
+    S.peek = { kind: 'chip', chip: part.chip, def: def, prefix: part.id + '/', view: { ox: 0, oy: 0, s: 1 } };
     el.peekName.textContent = part.chip + '　― 中身（値は今そこに来ているもの）';
     el.peek.classList.remove('hidden');
+    el.peek.classList.remove('small');
+    el.peekEdit.classList.remove('hidden');
     fit(pcv, pctx);
     fitView(S.peek.view, def.circuit, pcv.getBoundingClientRect());
   }
 
-  function fitView(view, circuit, rect) {
+  function fitView(view, circuit, rect, lib) {
     var minX = 1e9, minY = 1e9, maxX = -1e9, maxY = -1e9, any = false;
     for (var id in circuit.parts) {
-      var p = circuit.parts[id], s = sizeOf(p, S.lib);
+      var p = circuit.parts[id], s = sizeOf(p, lib || S.lib);
       minX = Math.min(minX, p.x); minY = Math.min(minY, p.y);
       maxX = Math.max(maxX, p.x + s.w); maxY = Math.max(maxY, p.y + s.h);
       any = true;
@@ -907,15 +1149,225 @@
     view.oy = pad - minY * view.s + Math.max(0, (rect.height - pad * 2 - (maxY - minY) * view.s) / 2);
   }
 
+  /* ---------------- NAND の中身（物理層） ---------------- */
+
+  /* NAND をダブルクリックすると、その NAND の中身をトランジスタで見せる。
+   * 値は「今その素子に来ているもの」。盤面のスイッチを切り替えると、
+   * ここのトランジスタが開け閉めされる ― 説明を読むより速い。
+   * 窓を小さくしてあるのは、盤面のスイッチを触りながら見るため。 */
+  function openMos(part) {
+    S.peek = { kind: 'mos', part: part, prefix: '' };
+    el.peekName.textContent = 'NAND の中身　― トランジスタ4個でできている';
+    el.peek.classList.remove('hidden');
+    el.peek.classList.add('small');
+    el.peekEdit.classList.add('hidden');
+    fit(pcv, pctx);
+    say('盤面の入力を切り替えると、中のトランジスタが開け閉めされる');
+  }
+
+  /* 【この絵で伝えたいこと】
+   *   1. トランジスタは3本足のスイッチで、ゲート（横から来る棒）で開け閉めされる
+   *   2. どこが入力か  ― A と B は左右の端から入り、ゲートにだけ繋がる
+   *   3. どこが同じ電位か ― 繋がっている線は1本の太線として、その電位の色で描く
+   *
+   * 色の役割を2つに分けてある。混ぜると読めない:
+   *   線の色   = その節点の電位（1 は緑 / 0 は青 / 未定は灰）＝ 盤面と同じ約束
+   *   縦棒の色 = そのトランジスタが通っているか（黄＝通っている / 沈んだ色＝切れている）
+   */
+  var MOS_W = 560, MOS_H = 470;
+
+  /* 節点（同じ電位で繋がっている一続きの線）ごとの色。盤面の信号色と同じものを使う */
+  function netColor(v) { return v === 1 ? '#35e0c8' : v === 0 ? '#4a6b91' : '#6b7688'; }
+
+  function drawMos(c2, rect) {
+    var M = NL.mos;
+    var p = S.peek.part;
+    var a = inValueOf('', S.circuit, p, 0), b = inValueOf('', S.circuit, p, 1);
+    var m = M.nand(a, b);
+    var s = Math.min(rect.width / MOS_W, rect.height / MOS_H);
+
+    c2.save();
+    c2.translate((rect.width - MOS_W * s) / 2, (rect.height - MOS_H * s) / 2);
+    c2.scale(s, s);
+
+    function line(x1, y1, x2, y2, col, w) {
+      c2.strokeStyle = col; c2.lineWidth = w || 2; c2.lineCap = 'round';
+      c2.beginPath(); c2.moveTo(x1, y1); c2.lineTo(x2, y2); c2.stroke();
+    }
+    function text(t, x, y, col, size, align) {
+      c2.fillStyle = col; c2.textAlign = align || 'center'; c2.textBaseline = 'middle';
+      c2.font = (size || 12) + 'px "Yu Gothic UI", Meiryo, system-ui, sans-serif';
+      c2.fillText(t, x, y);
+    }
+    function chanColor(st) {
+      return st === M.ON ? '#ffcc5c' : st === M.OFF ? '#33445c' : '#6b7688';
+    }
+
+    /* トランジスタ1つ。
+     * 縦の太い棒が通り道（ドレイン―ソース）、その脇の細い棒がゲート。
+     * 間の隙間が「ゲートは通り道に直接くっついていない」ことを表している（それが MOS）。
+     * p 型はゲートに丸を付ける ― 0 で効く、の印。 */
+    function mosfet(x, cy, side, st, kind, label, lx, ly) {
+      var half = 19, gx = x + side * 10, bx = gx + side * 7;
+      line(x, cy - half, x, cy + half, chanColor(st), 6);          /* 通り道 */
+      line(gx, cy - half, gx, cy + half, '#c7d4e4', 2.5);          /* ゲートの板 */
+      if (kind === 'p') {
+        c2.beginPath();
+        c2.arc(bx, cy, 4.5, 0, Math.PI * 2);
+        c2.fillStyle = '#0f1218'; c2.fill();
+        c2.strokeStyle = '#c7d4e4'; c2.lineWidth = 2; c2.stroke();
+        bx += side * 4.5;                                          /* 丸の外側で線を止める */
+      }
+      /* 名札の場所は呼ぶ側が決める。近くに寄せると、どれの札か分かる代わりに線と重なる */
+      text(kind + '型（' + label + '）', lx, ly - 9, '#8492a6', 11);
+      text(st === M.ON ? '通じている' : st === M.OFF ? '切れている' : 'どちらとも言えない',
+        lx, ly + 9, chanColor(st), 11);
+      return bx;                                                   /* ゲートの線を繋ぐ端 */
+    }
+
+    /* 入力の札。盤面のスイッチと同じ見た目にして「これが入力」と分かるように */
+    function pill(cx, cy, name, v) {
+      var w = 74, h = 34;
+      c2.fillStyle = '#1a1f27';
+      c2.strokeStyle = v === 1 ? '#35e0c8' : '#3a4759';
+      c2.lineWidth = 2;
+      roundRect(c2, cx - w / 2, cy - h / 2, w, h, 8);
+      c2.fill(); c2.stroke();
+      text(name, cx - 14, cy, '#d7dee8', 14);
+      text(SIM.show(v), cx + 16, cy, sigColor(v, false), 17);
+    }
+
+    /* ---- 節点の電位 ---- */
+    var vdd = 1, gnd = 0;
+    var mid = m.n[1] === M.ON ? 0 : X;      /* n どうしの間。下が切れていれば宙に浮く */
+
+    text(M.FACTS[0], MOS_W / 2, 22, '#8492a6', 11);
+
+    /* ---- 電源と地面のレール ---- */
+    line(170, 70, 350, 70, netColor(vdd), 3);
+    text('電源', 160, 62, '#8492a6', 11, 'right');
+    text('1', 160, 79, netColor(vdd), 14, 'right');
+    line(170, 350, 350, 350, netColor(gnd), 3);
+    text('地面', 160, 342, '#8492a6', 11, 'right');
+    text('0', 160, 359, netColor(gnd), 14, 'right');
+
+    /* ---- 上段: p 型2つを並べる（並列）---- */
+    var pA = mosfet(200, 121, -1, m.p[0], 'p', 'A', 108, 90);
+    var pB = mosfet(320, 121, 1, m.p[1], 'p', 'B', 412, 90);
+    line(200, 70, 200, 102, netColor(vdd), 3);       /* 電源からの足 */
+    line(320, 70, 320, 102, netColor(vdd), 3);
+
+    /* ---- Y の節点（p の足元・合流点・n の頭・出口が全部ひと続き）---- */
+    var yc = netColor(m.y);
+    line(200, 140, 200, 172, yc, 3);
+    line(320, 140, 320, 172, yc, 3);
+    line(200, 172, 380, 172, yc, 3);                 /* 合流してそのまま出口へ */
+    line(260, 172, 260, 198, yc, 3);
+    c2.beginPath(); c2.arc(260, 172, 4, 0, Math.PI * 2); c2.fillStyle = yc; c2.fill();
+    c2.beginPath(); c2.arc(380, 172, 4, 0, Math.PI * 2); c2.fillStyle = yc; c2.fill();
+    text('Y = ' + SIM.show(m.y), 368, 151, yc, 14);
+
+    /* ---- 下段: n 型2つを縦に積む（直列）---- */
+    var nA = mosfet(260, 217, -1, m.n[0], 'n', 'A', 342, 217);
+    var nB = mosfet(260, 283, 1, m.n[1], 'n', 'B', 150, 283);
+    line(260, 236, 260, 264, netColor(mid), 3);      /* n どうしの間 */
+    text(mid === X ? '宙に浮いている' : '地面と同じ 0', 285, 250, netColor(mid), 11, 'left');
+    line(260, 302, 260, 350, netColor(gnd), 3);      /* 地面へ */
+
+    /* ---- 入力 A（左）と B（右）。ゲートにだけ繋がる ---- */
+    var ac = sigColor(a, false), bc = sigColor(b, false);
+    pill(70, 217, 'A', a);
+    line(107, 217, 140, 217, ac, 2.5);
+    line(140, 121, 140, 217, ac, 2.5);
+    line(140, 121, pA, 121, ac, 2.5);
+    line(140, 217, nA, 217, ac, 2.5);
+    c2.beginPath(); c2.arc(140, 217, 3.5, 0, Math.PI * 2); c2.fillStyle = ac; c2.fill();
+
+    pill(490, 217, 'B', b);
+    line(453, 217, 420, 217, bc, 2.5);
+    line(420, 121, 420, 283, bc, 2.5);
+    line(420, 121, pB, 121, bc, 2.5);
+    line(420, 283, nB, 283, bc, 2.5);
+    c2.beginPath(); c2.arc(420, 217, 3.5, 0, Math.PI * 2); c2.fillStyle = bc; c2.fill();
+
+    text('入力', 70, 190, '#8492a6', 11);
+    text('入力', 490, 190, '#8492a6', 11);
+    text('ゲートにだけ繋がる。通り道には触れていない', MOS_W / 2, 382, '#7f93ab', 11);
+
+    /* ---- いま起きていること ---- */
+    text(m.story[0], MOS_W / 2, 410, '#d7dee8', 12);
+    text(m.story[1], MOS_W / 2, 430, '#8492a6', 12);
+    text('太い線は繋がっていて同じ電位（緑=1 / 青=0 / 灰=未定）。黄色い縦棒は通じているトランジスタ。',
+      MOS_W / 2, 456, '#6b7688', 10.5);
+
+    c2.restore();
+  }
+
+  /* お手本を見る。見るだけで、作業台には触らない。
+   * お手本の実体は src/answer.js にあり、検査（tests/quest.js）が採点を通ることを
+   * 確かめているものと同じ。画面用に別に持つと、通っていないお手本を見せてしまう */
+  function openAnswer() {
+    var q = Q.BY_ID[S.questId];
+    if (!q) return;
+    confirmBox('「' + q.name + '」 のお手本を見る',
+      '先に自分で組んでみるほうが、身につく。それでも見る？\n'
+      + '（見るだけ。今の作業台はそのまま残る）',
+      function () {
+        var r = NL.answer.build(q.id);
+        if (!r) return say('この課題のお手本が見つからない');
+
+        /* お手本は組んだ順に置いてあるだけなので、見せる前に整える */
+        var got = LAY.arrange(r.circuit, r.lib, { sizeOf: sizeOf, portXY: portXY }, null);
+        if (got) {
+          var id;
+          for (id in got.parts) { r.circuit.parts[id].x = got.parts[id].x; r.circuit.parts[id].y = got.parts[id].y; }
+          for (id in got.wires) r.circuit.wires[id].pts = got.wires[id];
+        }
+        var sim = new SIM.Sim(L.flatten(r.circuit, r.lib));
+        sim.settle();
+
+        S.peek = { kind: 'answer', circuit: r.circuit, lib: r.lib, sim: sim, view: { ox: 0, oy: 0, s: 1 } };
+        el.peekName.textContent = q.name + ' のお手本　― NAND ' + q.goal + '個'
+          + (r.uses.length ? '（' + r.uses.join('・') + ' を使っている）' : '（NAND だけで組んである）');
+        el.peek.classList.remove('hidden');
+        el.peek.classList.remove('small');
+        el.peekEdit.classList.add('hidden');
+        fit(pcv, pctx);
+        fitView(S.peek.view, r.circuit, pcv.getBoundingClientRect(), r.lib);
+        say('お手本を出した。同じ形にする必要はない ― 通ればどう組んでもよい');
+      });
+  }
+
+  function closePeek() {
+    S.peek = null;
+    el.peek.classList.add('hidden');
+    el.peek.classList.remove('small');
+    el.peekEdit.classList.remove('hidden');
+  }
+
   function renderPeek() {
     var r = pcv.getBoundingClientRect();
     if (Math.abs(r.width - pcv.width / (global.devicePixelRatio || 1)) > 1) fit(pcv, pctx);
     pctx.save();
     pctx.fillStyle = '#0f1218';
     pctx.fillRect(0, 0, r.width, r.height);
-    pctx.translate(S.peek.view.ox, S.peek.view.oy);
-    pctx.scale(S.peek.view.s, S.peek.view.s);
-    drawCircuit(pctx, S.peek.def.circuit, S.peek.prefix, true);
+    if (S.peek.kind === 'mos') {
+      drawMos(pctx, r);
+    } else if (S.peek.kind === 'answer') {
+      /* お手本は、盤面とは別の回路・別のチップ束・別のシミュレータで動いている。
+       * 描く関数は「今の状態」を見に行くので、描くあいだだけ差し替える。
+       * 描画をもう一組作るより、ここで貸し借りするほうが嘘が入らない */
+      var keepSim = S.sim, keepLib = S.lib, keepSel = S.sel;
+      S.sim = S.peek.sim; S.lib = S.peek.lib; S.sel = { parts: {}, wires: {} };
+      pctx.translate(S.peek.view.ox, S.peek.view.oy);
+      pctx.scale(S.peek.view.s, S.peek.view.s);
+      drawCircuit(pctx, S.peek.circuit, '', true);
+      S.sim = keepSim; S.lib = keepLib; S.sel = keepSel;
+    } else {
+      pctx.translate(S.peek.view.ox, S.peek.view.oy);
+      pctx.scale(S.peek.view.s, S.peek.view.s);
+      drawCircuit(pctx, S.peek.def.circuit, S.peek.prefix, true);
+    }
     pctx.restore();
   }
 
@@ -940,7 +1392,11 @@
         S.lib[made.chip.name] = made.chip;
         buildPalette();
         rebuild();
-        say(exists ? '「' + made.chip.name + '」 を上書きした' : '「' + made.chip.name + '」 をチップにした');
+        /* 何の上に積み上がったのかを、登録した瞬間に見せる */
+        var nm = made.chip.name, g = T.gateCount(S.lib[nm].circuit, S.lib), dep = L.depth(nm, S.lib);
+        setEditing(nm);            /* 続けて直して Ctrl+S できるように */
+        say('「' + nm + '」 を' + (exists ? '上書きした' : 'チップにした') + '　― ばらすと NAND '
+          + g.nand + '個、NOT から数えて ' + dep + ' 段目');
         return true;
       }
     });
@@ -971,8 +1427,9 @@
         snapshot();
         S.circuit = N.clone(def.circuit);
         clearSel();
+        setEditing(name);
         rebuild();
-        say('「' + name + '」 の中身を作業台に出した');
+        say('「' + name + '」 の中身を作業台に出した。直したら 上書き保存（Ctrl+S）');
       });
   }
 
@@ -981,6 +1438,7 @@
       snapshot();
       S.circuit = N.create();
       clearSel();
+      setEditing(null);
       rebuild();
       say('作業台を空にした');
     });
@@ -1018,6 +1476,51 @@
     }
     html += '<div class="tt-scroll">' + tableHTML(t) + '</div>';
     dialog({ title: '真理値表　（NAND ' + T.gateCount(S.circuit, S.lib).nand + '個）', html: html, ok: null, cancel: '閉じる' });
+  }
+
+  /* ---------------- 小さくする ---------------- */
+
+  /* 「NAND を減らすには」に、一般論ではなく今の回路を指さして答える。
+   * 手がかりをクリックすると、その素子が盤面で選ばれる ―
+   * 読んで終わりにせず、直す所まで連れて行くため */
+  function showSlim() {
+    var list = NL.slim.hints(S.circuit, S.lib);
+    var q = Q.BY_ID[S.questId];
+    var now = T.gateCount(S.circuit, S.lib);
+    var can = list.reduce(function (a, h) { return a + h.save; }, 0);
+
+    var html = '<p class="hintline">いまの回路は <b>NAND ' + now.nand + '個</b>'
+      + (q ? '。この課題のお手本は ' + q.goal + '個' : '')
+      + (can ? '。下の手がかりを全部片づけると <b>' + can + '個</b> 減る。' : '。') + '</p>';
+
+    if (!list.length) {
+      html += '<p class="hintline">機械に分かる無駄は見つからなかった。'
+        + 'ここから先は下の考え方のほうで。</p>';
+    } else {
+      html += '<div class="slim-list">';
+      list.forEach(function (h, i) {
+        html += '<div class="slim" data-i="' + i + '">'
+          + '<span class="save">−' + h.save + '</span>'
+          + '<span class="t">' + esc(h.msg) + '</span></div>';
+      });
+      html += '</div><p class="hintline">手がかりをクリックすると、その素子を盤面で選ぶ。</p>';
+    }
+
+    html += '<h4>考え方</h4>';
+    NL.slim.ADVICE.forEach(function (a) {
+      html += '<div class="advice"><b>' + esc(a[0]) + '</b><span>' + esc(a[1]) + '</span></div>';
+    });
+
+    dialog({ title: '小さくする', html: html, ok: null, cancel: '閉じる' });
+    [].forEach.call(document.querySelectorAll('.slim'), function (d) {
+      d.onclick = function () {
+        var h = list[+d.dataset.i];
+        clearSel();
+        h.parts.forEach(function (id) { if (S.circuit.parts[id]) S.sel.parts[id] = true; });
+        closeModal();
+        say(h.parts.length + ' 個を選んだ。― ' + h.msg);
+      };
+    });
   }
 
   /* ---------------- 論理式 ---------------- */
@@ -1081,18 +1584,114 @@
 
   /* ---------------- 課題 ---------------- */
 
+  /* 課題は「章」の順に並べる。QUESTS の配列は後から足した課題が末尾に付くので、
+   * 並び順は配列ではなく stage で決める（同じ章の中では配列の順＝作るべき順） */
+  function questsInOrder() {
+    return Q.QUESTS.map(function (q, i) { return { q: q, i: i }; })
+      .sort(function (a, b) { return (a.q.stage - b.q.stage) || (a.i - b.i); })
+      .map(function (e) { return e.q; });
+  }
+
   function buildQuestList() {
     el.questList.innerHTML = '';
-    Q.QUESTS.forEach(function (q, i) {
+    var stage = 0, n = 0;
+    questsInOrder().forEach(function (q) {
+      if (q.stage !== stage) {
+        stage = q.stage;
+        var s = Q.STAGES.filter(function (x) { return x.n === stage; })[0];
+        var head = document.createElement('li');
+        head.className = 'sec';
+        head.textContent = stage + '. ' + (s ? s.name : '');
+        el.questList.appendChild(head);
+      }
       var li = document.createElement('li');
       li.dataset.id = q.id;
       li.innerHTML = '<span class="n"></span><span class="t"></span><span class="c"></span>';
-      li.querySelector('.n').textContent = (i + 1);
+      li.querySelector('.n').textContent = (++n);
       li.querySelector('.t').textContent = q.name;
       li.querySelector('.c').textContent = S.cleared[q.id] ? '✓' : '';
       li.classList.toggle('done', !!S.cleared[q.id]);
       li.onclick = function () { selectQuest(q.id); };
       el.questList.appendChild(li);
+    });
+  }
+
+  /* ---------------- 道のり ---------------- */
+
+  /* 積み上げた量。合計は「今あるチップを全部ばらしたら NAND 何個ぶんか」。
+   * 同じチップを何度も使っていればそのぶん重ねて数える（それが積み上げた量そのものなので） */
+  function pathStats() {
+    var names = Object.keys(S.lib), total = 0, deep = 0, deepest = '';
+    names.forEach(function (nm) {
+      var g = T.gateCount(S.lib[nm].circuit, S.lib);
+      total += g.nand;
+      var d = L.depth(nm, S.lib);
+      if (d > deep) { deep = d; deepest = nm; }
+    });
+    var done = Q.QUESTS.filter(function (q) { return S.cleared[q.id]; }).length;
+    return { chips: names.length, nand: total, depth: deep, deepest: deepest, done: done, all: Q.QUESTS.length };
+  }
+
+  function showPath() {
+    var st = pathStats();
+    var order = questsInOrder(), byStage = {}, i;
+    order.forEach(function (q) { (byStage[q.stage] || (byStage[q.stage] = [])).push(q); });
+
+    /* 箱の大きさ。1章6問が横に並んでも #modal（最大 860px）に収まる幅にしてある */
+    var BW = 100, BH = 46, GX = 12, GY = 84, LEFT = 110, TOP = 16;
+    var cols = 0;
+    Q.STAGES.forEach(function (s) { cols = Math.max(cols, (byStage[s.n] || []).length); });
+    var W = LEFT + cols * (BW + GX), H = TOP + Q.STAGES.length * GY;
+
+    var pos = {};
+    Q.STAGES.forEach(function (s, r) {
+      (byStage[s.n] || []).forEach(function (q, c) {
+        pos[q.id] = { x: LEFT + c * (BW + GX), y: TOP + r * GY };
+      });
+    });
+
+    /* 先に線。あとで箱を上に重ねる */
+    var svg = '<svg class="path-svg" width="' + W + '" height="' + H + '">';
+    order.forEach(function (q) {
+      (q.needs || []).forEach(function (nd) {
+        var a = pos[nd], b = pos[q.id];
+        if (!a || !b) return;
+        var x1 = a.x + BW / 2, y1 = a.y + BH, x2 = b.x + BW / 2, y2 = b.y;
+        var on = S.cleared[nd] && S.cleared[q.id];
+        svg += '<path d="M' + x1 + ' ' + y1 + ' C' + x1 + ' ' + (y1 + 26) + ' ' + x2 + ' ' + (y2 - 26) + ' ' + x2 + ' ' + y2 + '"'
+             + ' class="' + (on ? 'e on' : 'e') + '"/>';
+      });
+    });
+    svg += '</svg>';
+
+    var html = '<div class="path-sum">'
+      + '<b>' + st.done + ' / ' + st.all + '</b> 問クリア　・　作ったチップ <b>' + st.chips + '</b>個'
+      + (st.chips ? '　・　全部ばらすと NAND <b>' + st.nand + '</b>個ぶん　・　一番深いのは <b>'
+          + esc(st.deepest) + '</b>（NOT から数えて ' + st.depth + ' 段目）' : '')
+      + '</div>';
+    html += '<div class="path-wrap" style="width:' + W + 'px;height:' + H + 'px">' + svg;
+
+    Q.STAGES.forEach(function (s, r) {
+      html += '<div class="path-stage" style="top:' + (TOP + r * GY) + 'px">'
+            + '<b>' + esc(s.name) + '</b><span>' + esc(s.note) + '</span></div>';
+    });
+    order.forEach(function (q) {
+      var p = pos[q.id];
+      var open = (q.needs || []).every(function (nd) { return S.cleared[nd]; });
+      var cls = S.cleared[q.id] ? 'done' : (open ? 'open' : 'locked');
+      html += '<div class="path-node ' + cls + '" data-q="' + esc(q.id) + '"'
+           + ' style="left:' + p.x + 'px;top:' + p.y + 'px;width:' + BW + 'px;height:' + BH + 'px"'
+           + ' title="' + esc(q.desc.slice(0, 60)) + '">'
+           + '<span class="nm">' + esc(q.name) + '</span>'
+           + '<span class="sub">' + (S.cleared[q.id] ? '✓ ' : '') + 'NAND ' + q.goal + '</span></div>';
+    });
+    html += '</div>';
+    html += '<p class="hintline">箱をクリックするとその課題を選ぶ。線は「先に作っておくと楽な課題」。'
+          + 'NAND の数はお手本の実測値で、上の段ほど大きくなる ― それが積み上がっているということ。</p>';
+
+    dialog({ title: '道のり', html: html, ok: null, cancel: '閉じる' });
+    [].forEach.call(document.querySelectorAll('.path-node'), function (d) {
+      d.onclick = function () { selectQuest(d.dataset.q); closeModal(); };
     });
   }
 
@@ -1104,6 +1703,7 @@
     if (!q) return;
     el.qName.textContent = q.name;
     el.qDesc.textContent = q.desc;
+    el.qWhy.textContent = q.why ? 'これができると ― ' + q.why : '';
     el.qHint.textContent = q.hint;
     el.qResult.innerHTML = '';
     el.qSpec.innerHTML = specHTML(q);
@@ -1164,6 +1764,7 @@
       buildQuestList();
       selectQuestKeep(q.id);
       h = '<div class="good">◎ 合格　NAND ' + r.gates + '個（お手本は ' + r.goal + '個）</div>';
+      if (q.why) h += '<div class="why">これで ' + esc(q.why) + '</div>';
       var next = Q.QUESTS[Q.QUESTS.indexOf(q) + 1];
       h += '<div class="why">「チップにする」で登録しておくと、次から部品として使える。'
          + (next ? '次は 「' + esc(next.name) + '」。' : 'ここまでで一巡。README の続きに CPU までの道順がある。') + '</div>';
@@ -1215,6 +1816,7 @@
         var r = ST.fromJSON(box.value);
         if (r.error) { setMsg(r.error); return false; }
         snapshot();
+        setEditing(null);
         S.circuit = r.state.circuit;
         S.lib = r.state.lib;
         S.cleared = r.state.cleared;
@@ -1268,5 +1870,10 @@
   }
 
   /* geom はテストが端子の座標を出すために使う。画面の当たり判定と同じ関数でないと意味がない */
-  NL.ui = { mount: mount, state: S, geom: { sizeOf: sizeOf, portXY: portXY, outPath: outPath } };
+  NL.ui = {
+    mount: mount, state: S,
+    geom: { sizeOf: sizeOf, portXY: portXY, outPath: outPath, routePath: routePath },
+    /* 束（同じ語幹＋数字の端子のまとまり）の読み取り。検査から数として確かめるため */
+    bus: { of: busesOf, value: busValue, bits: busBits }
+  };
 })(typeof window !== 'undefined' ? window : globalThis);

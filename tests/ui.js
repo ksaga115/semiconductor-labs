@@ -15,7 +15,7 @@ const ctx = vm.createContext({ console, URLSearchParams });
 ctx.globalThis = ctx;
 const dom = domStub.install(ctx);
 
-for (const f of ['netlist.js', 'lib.js', 'sim.js', 'truth.js', 'quest.js', 'expr.js', 'store.js', 'ui.js', 'main.js']) {
+for (const f of ['netlist.js', 'lib.js', 'sim.js', 'truth.js', 'quest.js', 'expr.js', 'mos.js', 'slim.js', 'answer.js', 'layout.js', 'store.js', 'ui.js', 'main.js']) {
   vm.runInContext(fs.readFileSync(path.join(__dirname, '..', 'src', f), 'utf8'), ctx, { filename: f });
 }
 const NL = ctx.NL;
@@ -69,9 +69,26 @@ function frames(n) { for (let i = 0; i < n; i++) dom.frame(); }
 group('起動', () => {
   ok(S.circuit, '回路がある');
   eq(ctx._alerts, [], '警告なしで立ち上がる');
-  eq(Object.keys(S.circuit.parts).length, 0, '最初は空');
+  /* 初めて開いたときは、NAND 1個に触れる状態から始まる */
+  eq(Object.keys(S.circuit.parts).length, 4, '最初から NAND のお試し回路が置いてある');
+  eq(Object.keys(S.circuit.wires).length, 3, 'お試し回路は繋がっている');
+  frames(2);
+  eq(SIM.show(S.sim.read('Y')), '1', 'A も B も 0 なので、NAND の出力は 1');
+  {
+    const on = Object.keys(S.circuit.parts).map(i => S.circuit.parts[i]).filter(p => p.kind === 'in');
+    on.forEach(p => click(p));
+    frames(3);
+    eq(SIM.show(S.sim.read('Y')), '0', '両方 1 にすると 0 になる ― それが NAND');
+  }
+  /* この先の検査は空の盤面から始めたいので、いったん消す */
+  dom.byId.get('btnNew').onclick();
+  dom.byId.get('mOk').onclick();
+  eq(Object.keys(S.circuit.parts).length, 0, '「作業台を消す」で空になる');
   ok(palette({ kind: 'nand' }), 'パレットに NAND がある');
-  eq(dom.created.filter(e => e.tagName === 'LI').length, NL.quest.QUESTS.length, '課題が全部並んでいる');
+  const items = dom.created.filter(e => e.tagName === 'LI' && !e.classList.contains('sec'));
+  eq(items.length, NL.quest.QUESTS.length, '課題が全部並んでいる');
+  eq(dom.created.filter(e => e.tagName === 'LI' && e.classList.contains('sec')).length,
+    NL.quest.STAGES.length, '章の見出しが章の数だけある');
   frames(3);
   ok(dom.byId.get('statLeft').textContent.length > 0, 'ステータス行に何か出ている');
 });
@@ -316,6 +333,209 @@ group('発振する回路', () => {
   eq(S.sim.hot.length, 0, '収まれば赤も消える');
 });
 
+group('整える', () => {
+  const before = Object.keys(S.circuit.parts).map(i => `${S.circuit.parts[i].x},${S.circuit.parts[i].y}`);
+  const sim0 = S.sim;
+  dom.byId.get('btnTidy').onclick();
+  const after = Object.keys(S.circuit.parts).map(i => `${S.circuit.parts[i].x},${S.circuit.parts[i].y}`);
+  ok(before.join('|') !== after.join('|'), '押すと並びが変わる');
+  ok(S.sim === sim0, 'シミュレータは作り直さない（ラッチの記憶を消さない）');
+
+  /* 重なっていないこと。当たり判定と同じ寸法で見る */
+  const list = Object.keys(S.circuit.parts).map(i => S.circuit.parts[i]);
+  let hit = 0;
+  for (let i = 0; i < list.length; i++) for (let j = i + 1; j < list.length; j++) {
+    const a = list[i], b = list[j], sa = G.sizeOf(a, S.lib), sb = G.sizeOf(b, S.lib);
+    if (a.x < b.x + sb.w && b.x < a.x + sa.w && a.y < b.y + sb.h && b.y < a.y + sa.h) hit++;
+  }
+  eq(hit, 0, '部品が重ならない');
+
+  dom.fire(ctx, 'keydown', { key: 'z', ctrlKey: true });
+  const undone = Object.keys(S.circuit.parts).map(i => `${S.circuit.parts[i].x},${S.circuit.parts[i].y}`);
+  eq(undone, before, 'Ctrl+Z で元の並びに戻る');
+  dom.byId.get('btnTidy').onclick();                 /* 戻したので、もう一度整えておく */
+  frames(2);
+  ok(true, '整えたあとも描画が落ちない');
+});
+
+group('束を数として読む', () => {
+  /* 2ビットの入力 A1A0 と、その値をそのまま出す出力 Y1Y0 を、読み込みで持ち込む */
+  const c = NL.netlist.create();
+  NL.netlist.addPart(c, 'in', 0, 0, { name: 'A0' });
+  NL.netlist.addPart(c, 'in', 0, 60, { name: 'A1' });
+  NL.netlist.addPart(c, 'in', 0, 120, { name: 'B' });      /* 1本だけの名前は束にならない */
+  const y0 = NL.netlist.addPart(c, 'out', 200, 0, { name: 'Y0' });
+  const y1 = NL.netlist.addPart(c, 'out', 200, 60, { name: 'Y1' });
+  const ins = NL.netlist.externalInputs(c);
+  NL.netlist.connect(c, ins[0].id, 0, y0.id, 0);
+  NL.netlist.connect(c, ins[1].id, 0, y1.id, 0);
+
+  dom.byId.get('btnImport').onclick();
+  dom.byId.get('mIn').value = JSON.stringify({ v: 1, circuit: c, lib: S.lib, cleared: S.cleared, quest: S.questId });
+  dom.byId.get('mOk').onclick();
+  frames(3);
+
+  const find = nm => Object.keys(S.circuit.parts).map(i => S.circuit.parts[i]).find(p => p.name === nm);
+  const a0 = find('A0'), a1 = find('A1');
+  const list = NL.ui.bus.of(S.circuit);
+  eq(list.map(b => b.name), ['A', 'Y'], '2本以上そろった名前だけが束になる（1本の B は入らない）');
+
+  const A = list[0], Y = list[1];
+  eq(NL.ui.bus.value(A), 0, '最初は 0');
+  click(a0); frames(3);
+  eq(NL.ui.bus.value(A), 1, '添字 0 が最下位');
+  eq(NL.ui.bus.value(Y), 1, '出力側も数として読める');
+  click(a1); frames(3);
+  eq(NL.ui.bus.value(A), 3, 'A1 も立てると 3');
+  eq(NL.ui.bus.bits(A), '11', '二進の並びは上位が左');
+  click(a0); frames(3);
+  eq(NL.ui.bus.value(A), 2, 'A0 を戻すと 2');
+
+  S.running = false;
+  S.sim.reset();
+  eq(NL.ui.bus.value(Y), null, '1ビットでも未定なら数にしない（0 で埋めない）');
+  S.running = true; frames(3);
+});
+
+group('道のり', () => {
+  dom.byId.get('btnPath').onclick();
+  const h = dom.byId.get('modal').innerHTML;
+  eq((h.match(/class="path-node/g) || []).length, NL.quest.QUESTS.length, '全課題が箱として並ぶ');
+  ok(/クリア/.test(h), 'クリア数が出ている');
+  ok(h.indexOf(NL.quest.STAGES[0].name) >= 0, '章の名前が出ている');
+  ok(/path-node done/.test(h), 'クリア済みの課題が済みとして描かれる');
+  ok(/NAND 1</.test(h), 'お手本の NAND 数が箱に出ている');
+  dom.byId.get('mCancel').onclick();
+  eq(dom.byId.get('modal').innerHTML, '', '閉じられる');
+
+  /* 積み上げの数え方 */
+  eq(NL.lib.depth('NOT', S.lib), 1, 'NAND だけのチップは 1 段目');
+  eq(NL.truth.gateCount(S.lib.NOT.circuit, S.lib).nand, 1, 'NOT はばらすと NAND 1個');
+  const item = dom.created.find(e => e.dataset && e.dataset.chip === 'NOT');
+  ok(item && /ばらすと NAND 1個/.test(item.title), 'パレットのチップに素子数と深さが出ている');
+  ok(item && /1 段目/.test(item.title), 'パレットのチップに深さが出ている');
+});
+
+function pickQuest(id) {
+  const li = dom.created.find(e => e.tagName === 'LI' && e.dataset.id === id);
+  if (!li) throw new Error('課題が一覧に無い: ' + id);
+  li.onclick();
+}
+
+group('お手本を見る', () => {
+  /* 課題を選んで、お手本を出す。作業台には触らない */
+  const before = JSON.stringify(S.circuit);
+  pickQuest('xor');
+  dom.byId.get('btnAnswer').onclick();
+  ok(/お手本/.test(dom.byId.get('modal').innerHTML), '先に自分で組むよう促してから聞く');
+  dom.byId.get('mOk').onclick();
+
+  ok(S.peek && S.peek.kind === 'answer', 'お手本の窓が開く');
+  ok(/NAND 4個/.test(dom.byId.get('peekName').textContent), '何個で組んであるかが出る');
+  eq(JSON.stringify(S.circuit), before, '作業台は一切変わらない');
+  ok(!dom.byId.get('peek').classList.contains('small'), 'お手本は大きい窓で出る');
+
+  /* 出したお手本は、本当にその課題を通るものでなければ意味がない */
+  const r = NL.answer.build('xor');
+  ok(NL.quest.grade(NL.quest.BY_ID.xor, r.circuit, r.lib).ok, '出しているお手本は採点を通る');
+
+  /* 整えてから見せているので、部品が重なっていない */
+  const list = Object.keys(S.peek.circuit.parts).map(i => S.peek.circuit.parts[i]);
+  let over = 0;
+  for (let i = 0; i < list.length; i++) for (let j = i + 1; j < list.length; j++) {
+    const a = list[i], b = list[j];
+    const sa = G.sizeOf(a, S.peek.lib), sb = G.sizeOf(b, S.peek.lib);
+    if (a.x < b.x + sb.w && b.x < a.x + sa.w && a.y < b.y + sb.h && b.y < a.y + sa.h) over++;
+  }
+  eq(over, 0, '整えてから見せている（部品が重なっていない）');
+
+  const calls = dom.byId.get('peekBoard').getContext()._calls.n;
+  frames(2);
+  ok(dom.byId.get('peekBoard').getContext()._calls.n > calls, 'お手本を実際に描いている');
+  ok(S.sim !== S.peek.sim, '盤面のシミュレータとは別のもので動かしている');
+
+  /* チップを使うお手本も出せる */
+  pickQuest('add4');
+  dom.byId.get('btnAnswer').onclick();
+  dom.byId.get('mOk').onclick();
+  ok(/FULL/.test(dom.byId.get('peekName').textContent), '使っているチップの名前が出る');
+  frames(2);
+  ok(true, 'チップ入りのお手本を描いても落ちない');
+
+  dom.byId.get('peekClose').onclick();
+  eq(S.peek, null, '閉じられる');
+});
+
+group('NAND の中身を覗く', () => {
+  /* 盤面に NAND を1個置いて、ダブルクリックで中身を出す */
+  dom.byId.get('btnNew').onclick();
+  dom.byId.get('mOk').onclick();
+  const a = placeAt({ kind: 'in' }, 100, 100);
+  const b = placeAt({ kind: 'in' }, 100, 220);
+  const g = placeAt({ kind: 'nand' }, 300, 150);
+  connect(a, 0, g, 0); connect(b, 0, g, 1);
+  frames(3);
+
+  dom.fire(cv, 'dblclick', bodyScr(g));
+  ok(S.peek && S.peek.kind === 'mos', 'NAND のダブルクリックで中身が開く');
+  ok(dom.byId.get('peek').classList.contains('small'), '盤面を触れるように小さい窓で出る');
+  ok(dom.byId.get('peekEdit').classList.contains('hidden'), '「作業台に取り出す」は出ない');
+  ok(/トランジスタ/.test(dom.byId.get('peekName').textContent), '何を見ているか名前で分かる');
+
+  const calls = dom.byId.get('peekBoard').getContext()._calls.n;
+  frames(2);
+  ok(dom.byId.get('peekBoard').getContext()._calls.n > calls, '中身を実際に描いている');
+
+  /* 盤面のスイッチを切り替えると、中身の状態も変わる */
+  const M = NL.mos;
+  eq(M.nand(SIM.X, SIM.X).y, SIM.X, '未定なら中身も未定');
+  frames(2);
+  const now = () => M.nand(S.sim.atPath(String(a.id)), S.sim.atPath(String(b.id)));
+  eq(now().y, 1, '0 と 0 なら Y は 1（上の p が繋がっている）');
+  eq(now().up, M.ON, '電源側が繋がっている');
+  click(a); click(b); frames(4);
+  eq(now().y, 0, '両方 1 にすると Y は 0');
+  eq(now().down, M.ON, '地面側が繋がっている');
+  eq(now().up, M.OFF, 'そのとき電源側は切れている');
+
+  dom.byId.get('peekClose').onclick();
+  eq(S.peek, null, '閉じられる');
+  ok(!dom.byId.get('peek').classList.contains('small'), '小窓の印も外れる');
+});
+
+group('チップの上書き保存', () => {
+  /* NOT を作業台に取り出して、中身を変えて、名前を打ち直さずに上書きする */
+  ok(S.lib.NOT, '前の検査で作った NOT がある');
+  const before = NL.truth.gateCount(S.lib.NOT.circuit, S.lib).nand;
+
+  dom.created.filter(e => e.dataset && e.dataset.chip === 'NOT')[0].ondblclick();
+  dom.byId.get('mOk').onclick();                       /* 「取り出す」を承諾 */
+  frames(2);
+  eq(S.editing, 'NOT', '取り出したチップを覚えている');
+  ok(!dom.byId.get('btnSaveChip').classList.contains('hidden'), '上書き保存のボタンが出る');
+
+  /* 中身に NAND を1個足してから上書き（NOT NOT で、働きは同じまま素子だけ増える）*/
+  const y = Object.keys(S.circuit.parts).map(i => S.circuit.parts[i]).find(p => p.kind === 'out');
+  const g0 = Object.keys(S.circuit.parts).map(i => S.circuit.parts[i]).find(p => p.kind === 'nand');
+  const g1 = placeAt({ kind: 'nand' }, 500, 300);
+  connect(g0, 0, g1, 0); connect(g0, 0, g1, 1);
+  const g2 = placeAt({ kind: 'nand' }, 640, 300);
+  connect(g1, 0, g2, 0); connect(g1, 0, g2, 1);
+  connect(g2, 0, y, 0);
+
+  dom.fire(ctx, 'keydown', { key: 's', ctrlKey: true });
+  eq(NL.truth.gateCount(S.lib.NOT.circuit, S.lib).nand, before + 2, 'Ctrl+S で中身が入れ替わる');
+  ok(/上書きした/.test(S.msg), '何が起きたかを言う');
+
+  /* 使っている側も新しい中身になる */
+  ok(NL.lib.dependents(S.lib, 'NOT').length >= 0, '使っている側を数えられる');
+
+  dom.byId.get('btnNew').onclick();
+  dom.byId.get('mOk').onclick();
+  eq(S.editing, null, '作業台を消したら、上書き先も忘れる');
+  ok(dom.byId.get('btnSaveChip').classList.contains('hidden'), 'ボタンも消える');
+});
+
 group('書き出しと読み込み', () => {
   dom.byId.get('btnExport').onclick();
   const json = NL.store.toJSON({ circuit: S.circuit, lib: S.lib, cleared: S.cleared, quest: S.questId });
@@ -367,6 +587,45 @@ group('チップを持っていない回路を読み込んでも落ちない', (
   ok(NL.netlist.validate(S.circuit, S.lib).some(m => /ないチップ/.test(m)), 'validate も指摘する');
   frames(3);
   ok(true, '描画が落ちない');
+});
+
+group('名前は F2 で変える', () => {
+  const a = placeAt({ kind: 'in' }, 200, 420);
+  /* スイッチをかちゃかちゃ切り替えているだけで名前の窓が開いてはいけない */
+  dom.fire(cv, 'dblclick', bodyScr(a));
+  eq(dom.byId.get('modal').innerHTML, '', 'ダブルクリックでは名前の窓が開かない');
+  ok(/F2/.test(S.msg), 'かわりに F2 だと教えてくれる');
+
+  S.sel = { parts: {}, wires: {} };
+  S.sel.parts[a.id] = true;
+  dom.fire(ctx, 'keydown', { key: 'F2' });
+  dom.byId.get('mIn').value = 'ZZ';
+  dom.byId.get('mOk').onclick();
+  eq(a.name, 'ZZ', 'F2 で名前を変えられる');
+
+  S.sel = { parts: {}, wires: {} };
+  dom.fire(ctx, 'keydown', { key: 'F2' });
+  ok(/1つだけ選んで/.test(S.msg), '何も選んでいなければ、選べと言う');
+
+  /* 配線にも名前を付けられる */
+  const g1 = placeAt({ kind: 'nand' }, 300, 480);
+  connect(a, 0, g1, 0);
+  const wid = Object.keys(S.circuit.wires).filter(k => S.circuit.wires[k].to.part === g1.id)[0];
+  S.sel = { parts: {}, wires: {} };
+  S.sel.wires[wid] = true;
+  dom.fire(ctx, 'keydown', { key: 'F2' });
+  dom.byId.get('mIn').value = '桁上がり';
+  dom.byId.get('mOk').onclick();
+  eq(S.circuit.wires[wid].name, '桁上がり', '配線に名前が付く');
+  frames(2);
+  ok(true, '名前付きの配線を描いても落ちない');
+
+  S.sel = { parts: {}, wires: {} };
+  S.sel.wires[wid] = true;
+  dom.fire(ctx, 'keydown', { key: 'F2' });
+  dom.byId.get('mIn').value = '   ';
+  dom.byId.get('mOk').onclick();
+  ok(!S.circuit.wires[wid].name, '空にすれば名前は消える');
 });
 
 console.log(`

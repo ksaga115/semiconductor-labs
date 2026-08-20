@@ -55,8 +55,8 @@
   /** 戻り値 { state, broken }。broken が真なら前の保存を退避した */
   function load() {
     var raw;
-    try { raw = global.localStorage.getItem(KEY); } catch (e) { return { state: blank(), broken: false }; }
-    if (!raw) return { state: blank(), broken: false };
+    try { raw = global.localStorage.getItem(KEY); } catch (e) { return { state: blank(), broken: false, fresh: true }; }
+    if (!raw) return { state: blank(), broken: false, fresh: true };   /* まだ一度も使っていない */
 
     var s = null;
     try { s = JSON.parse(raw); } catch (e) { s = null; }
