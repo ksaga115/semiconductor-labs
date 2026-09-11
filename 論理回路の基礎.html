@@ -1,0 +1,901 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>論理回路の基礎</title>
+<meta name="description" content="第3部 どう計算するか ― MOSFET というスイッチから、NAND・NOR、組合せ回路、加算器、ラッチとフリップフロップ、レジスタ・カウンタ・ALU まで。NandLab の5章に対応。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* 色の約束は第2部・第4部と同じ。信号の色は NandLab の盤面と同じ: 1 ＝ 緑、0 ＝ 青、X（未定）＝ 灰 */
+:root{
+  --ground:#EDEEF2; --surface:#FFFFFF; --surface-2:#F5F6F9; --surface-3:#E2E5ED;
+  --ink:#14161E; --ink-2:#4A5061; --ink-3:#787F92;
+  --line:#D3D7E1; --line-2:#E5E7EF;
+  --photon:#D98803; --photon-2:#A96504; --photon-soft:#FAEBCD;
+  --electron:#1D74B8; --electron-2:#155A91; --electron-soft:#D6E7F5;
+  --hole:#CF4437; --hole-soft:#F6DCD8;
+  --one:#2C7A55; --one-soft:#D3EAE6; --zero:#1D74B8; --zero-soft:#D6E7F5; --unk:#9AA1AF; --unk-soft:#E2E5ED;
+  --digital:#0F766E; --digital-soft:#D3EAE6;
+  --volt:#7047B5; --volt-soft:#E7DEF7;
+  --warn:#B4400C;
+  --shadow:0 1px 2px rgba(20,22,30,.06), 0 8px 24px -12px rgba(20,22,30,.18);
+  --mono:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;
+  --sans:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic UI","Yu Gothic",Meiryo,sans-serif;
+  --disp:"Zen Old Mincho","Hiragino Mincho ProN","Yu Mincho",serif;
+  color-scheme:light dark;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#0F1117; --surface:#171A22; --surface-2:#1D212B; --surface-3:#2B3140;
+    --ink:#E8EAF1; --ink-2:#AAB1C3; --ink-3:#7C8397; --line:#2D323F; --line-2:#232833;
+    --photon:#F0B444; --photon-2:#F7C766; --photon-soft:#3A2C10;
+    --electron:#5FB0E8; --electron-2:#8ACAF3; --electron-soft:#12293C;
+    --hole:#E56E60; --hole-soft:#3D1F1B;
+    --one:#5CBF8E; --one-soft:#0F2E2B; --zero:#5FB0E8; --zero-soft:#12293C; --unk:#767C92; --unk-soft:#2B3140;
+    --digital:#4FBFAE; --digital-soft:#0F2E2B; --volt:#A98AE0; --volt-soft:#2A2140; --warn:#E8875A;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0F1117; --surface:#171A22; --surface-2:#1D212B; --surface-3:#2B3140;
+  --ink:#E8EAF1; --ink-2:#AAB1C3; --ink-3:#7C8397; --line:#2D323F; --line-2:#232833;
+  --photon:#F0B444; --photon-2:#F7C766; --photon-soft:#3A2C10;
+  --electron:#5FB0E8; --electron-2:#8ACAF3; --electron-soft:#12293C;
+  --hole:#E56E60; --hole-soft:#3D1F1B;
+  --one:#5CBF8E; --one-soft:#0F2E2B; --zero:#5FB0E8; --zero-soft:#12293C; --unk:#767C92; --unk-soft:#2B3140;
+  --digital:#4FBFAE; --digital-soft:#0F2E2B; --volt:#A98AE0; --volt-soft:#2A2140; --warn:#E8875A;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.7);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.8;-webkit-font-smoothing:antialiased;font-feature-settings:"palt" 1}
+h1,h2,h3,h4{margin:0;text-wrap:balance;line-height:1.35}
+p{margin:0}
+a{color:var(--electron)}
+code{font-family:var(--mono);font-size:.9em;background:var(--surface-2);padding:1px 5px;border-radius:2px;border:1px solid var(--line-2)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 22px 90px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:500}
+.back{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--ink-3);text-decoration:none;display:inline-block;margin-bottom:14px}
+.back:hover{color:var(--ink)}
+.hero{padding:52px 0 34px;border-bottom:1px solid var(--line)}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:28px}
+@media(min-width:900px){.hero-grid{grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);gap:48px;align-items:end}}
+.hero h1{font-family:var(--disp);font-weight:700;font-size:clamp(33px,5.2vw,56px);letter-spacing:.02em;line-height:1.2;margin:12px 0 0}
+.hero h1 .lit{color:var(--volt)}
+.hero .sub{margin-top:18px;color:var(--ink-2);font-size:17px;max-width:36em}
+.spec{display:flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:3px;background:var(--surface);overflow:hidden}
+.spec div{flex:1 1 30%;padding:11px 13px;border-right:1px solid var(--line-2);border-bottom:1px solid var(--line-2)}
+.spec dt{font-size:10px;font-family:var(--mono);letter-spacing:.07em;color:var(--ink-3);margin:0}
+.spec dd{margin:2px 0 0;font-family:var(--mono);font-size:14.5px;font-weight:600;font-variant-numeric:tabular-nums}
+.spec dd small{font-size:10.5px;color:var(--ink-3);font-weight:400;margin-left:2px}
+.spec-cap{padding:9px 13px;font-size:11.5px;color:var(--ink-3);flex:1 1 100%;border-right:0;border-bottom:0;background:var(--surface-2)}
+.guide{margin-top:26px;border:1px solid var(--line);border-radius:3px;background:var(--surface);overflow:hidden}
+.guide-h{padding:9px 15px;border-bottom:1px solid var(--line-2);background:var(--surface-2);font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;color:var(--ink-2);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.guide-b{display:grid;grid-template-columns:minmax(0,1fr)}
+@media(min-width:760px){.guide-b{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.guide-b > div{padding:12px 15px;border-bottom:1px solid var(--line-2)}
+@media(min-width:760px){.guide-b > div{border-bottom:0;border-right:1px solid var(--line-2)}.guide-b > div:last-child{border-right:0}}
+.guide-b b{display:block;font-size:13px;color:var(--ink);margin-bottom:3px}
+.guide-b span{font-size:12.5px;color:var(--ink-2);line-height:1.65}
+.main{display:grid;grid-template-columns:minmax(0,1fr)}
+@media(min-width:1080px){.main{grid-template-columns:180px minmax(0,1fr);gap:46px}}
+.rail{display:none}
+@media(min-width:1080px){.rail{display:block;position:sticky;top:20px;align-self:start;padding-top:58px;max-height:calc(100vh - 40px);overflow-y:auto;scrollbar-width:thin}}
+.rail ol{list-style:none;margin:0;padding:0}
+.rail li.dom{font-family:var(--mono);font-size:9px;letter-spacing:.11em;color:var(--ink-3);padding:16px 0 4px;text-transform:uppercase}
+.rail li.dom.first{padding-top:0}
+.rail a{display:grid;grid-template-columns:24px 1fr;gap:6px;padding:4px 0 4px 8px;margin-left:-10px;text-decoration:none;color:var(--ink-2);font-size:12.5px;line-height:1.4;border-left:2px solid transparent}
+.rail a .n{font-family:var(--mono);font-size:10px;color:var(--ink-3);padding-top:2px}
+.rail a:hover{color:var(--ink)}
+.rail a.on{color:var(--ink);font-weight:700;border-left-color:var(--volt)}
+.rail a.on .n{color:var(--volt)}
+.stage{padding:58px 0 0}
+.stage + .stage{margin-top:26px;border-top:1px solid var(--line)}
+.stage-head{display:flex;gap:15px;align-items:baseline}
+.stage-num{font-family:var(--mono);font-size:11.5px;font-weight:600;color:var(--volt);letter-spacing:.06em;flex:0 0 auto;padding-top:5px}
+.stage h2{font-family:var(--disp);font-weight:700;font-size:clamp(23px,3.1vw,32px);letter-spacing:.02em}
+.lede{color:var(--ink-2);font-size:16.5px;max-width:40em;margin-top:12px}
+.stage h3{font-size:15px;font-weight:700;margin-top:28px;letter-spacing:.02em}
+.stage h3 + p{margin-top:8px}
+.stage p + p{margin-top:14px}
+.body-col{max-width:42em}
+.two .body-col{max-width:none}
+.two{display:grid;grid-template-columns:minmax(0,1fr);gap:26px;margin-top:26px}
+@media(min-width:880px){.two{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:34px;align-items:start}}
+.full{margin-top:26px}
+.key{font-weight:700;background:linear-gradient(transparent 62%, var(--volt-soft) 62%);padding:0 1px}
+figure{margin:0;background:var(--surface);border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.fig-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 13px;border-bottom:1px solid var(--line-2);background:var(--surface-2);flex-wrap:wrap}
+.fig-title{font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;color:var(--ink-2);font-weight:500}
+.fig-body{padding:14px 13px}
+figcaption{padding:10px 13px 12px;border-top:1px solid var(--line-2);font-size:12.5px;line-height:1.65;color:var(--ink-3)}
+canvas{display:block;width:100%;height:auto}
+svg{display:block;max-width:100%;height:auto}
+.scroll-x{overflow-x:auto}
+.btns{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.btn{appearance:none;font-family:var(--mono);font-size:11.5px;letter-spacing:.03em;padding:5px 12px;border:1px solid var(--line);background:var(--surface);color:var(--ink-2);border-radius:2px;cursor:pointer;line-height:1.5}
+.btn:hover{border-color:var(--ink-3);color:var(--ink)}
+.btn[aria-pressed="true"]{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+.btn.one[aria-pressed="true"]{background:var(--one);border-color:var(--one)}
+.btns .lab{font-family:var(--mono);font-size:10px;letter-spacing:.07em;color:var(--ink-3);margin-right:4px}
+.slider-row{display:grid;gap:3px;margin-top:12px}
+.slider-row .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.slider-row .lab{font-family:var(--mono);font-size:10px;letter-spacing:.07em;color:var(--ink-3)}
+.slider-row .num{font-family:var(--mono);font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;appearance:none;background:transparent;margin:0;height:15px;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:3px;background:var(--surface-3);border-radius:2px}
+input[type=range]::-moz-range-track{height:3px;background:var(--surface-3);border-radius:2px}
+input[type=range]::-webkit-slider-thumb{appearance:none;width:14px;height:14px;border-radius:50%;background:var(--ink);margin-top:-5.5px;border:2px solid var(--surface)}
+input[type=range]::-moz-range-thumb{width:11px;height:11px;border-radius:50%;background:var(--ink);border:2px solid var(--surface)}
+.sl3{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;margin-top:14px}
+@media(min-width:760px){.sl3{grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}}
+.sl3 .slider-row{margin-top:0}
+.readouts{display:flex;flex-wrap:wrap;border-top:1px solid var(--line-2)}
+.readouts div{flex:1 1 auto;min-width:92px;padding:8px 12px;border-right:1px solid var(--line-2)}
+.readouts div:last-child{border-right:0}
+.readouts dt{margin:0;font-family:var(--mono);font-size:9px;letter-spacing:.05em;color:var(--ink-3);white-space:nowrap}
+.readouts dd{margin:1px 0 0;font-family:var(--mono);font-size:13.5px;font-weight:600;font-variant-numeric:tabular-nums}
+.eq{font-family:var(--mono);font-size:13px;background:var(--surface-2);border:1px solid var(--line-2);border-radius:2px;padding:10px 13px;margin-top:12px;overflow-x:auto;white-space:nowrap;color:var(--ink)}
+.eq b{color:var(--volt);font-weight:600}
+.eq i{font-style:normal;color:var(--one);font-weight:600}
+.eq u{text-decoration:none;color:var(--zero);font-weight:600}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line-2);vertical-align:top}
+th{font-family:var(--mono);font-size:10px;letter-spacing:.07em;color:var(--ink-3);font-weight:500;border-bottom:1px solid var(--line)}
+td:first-child{font-family:var(--mono);font-weight:600;white-space:nowrap;color:var(--ink)}
+td.num{font-variant-numeric:tabular-nums;font-family:var(--mono);text-align:right;white-space:nowrap}
+tbody tr:last-child td{border-bottom:0}
+tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;letter-spacing:.09em;color:var(--ink-3);font-weight:500;white-space:normal;padding:9px 12px;border-bottom:1px solid var(--line)}
+/* 真理値表 */
+table.tt{width:auto;font-family:var(--mono);font-size:13px}
+table.tt th,table.tt td{text-align:center;padding:5px 12px;font-family:var(--mono);white-space:nowrap}
+table.tt td:first-child{font-weight:500;color:var(--ink-2)}
+table.tt td.o{font-weight:700;background:var(--volt-soft)}
+table.tt td.x{color:var(--ink-3)}
+.tts{display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start;margin-top:12px}
+.tts > div{border:1px solid var(--line);border-radius:3px;overflow:hidden;background:var(--surface)}
+.tts .cap{font-family:var(--mono);font-size:10px;letter-spacing:.07em;color:var(--ink-2);padding:5px 10px;background:var(--surface-2);border-bottom:1px solid var(--line-2)}
+.deep-note{margin-top:20px;border-left:2px solid var(--volt);padding:1px 0 1px 16px;max-width:46em}
+.deep-note .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;color:var(--volt);display:block;margin-bottom:5px}
+.deep-note p + p{margin-top:12px}
+.caveat{margin-top:18px;border:1px solid var(--line);border-left:2px solid var(--warn);border-radius:2px;background:var(--surface);padding:12px 16px;max-width:46em}
+.caveat .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;color:var(--warn);display:block;margin-bottom:6px}
+.caveat p{font-size:13.5px;color:var(--ink-2);line-height:1.72}
+.caveat p + p{margin-top:10px}
+.lab-go{margin-top:22px;border:1px solid var(--line);border-left:2px solid var(--digital);border-radius:2px;background:var(--surface);padding:12px 16px;max-width:46em}
+.lab-go .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;color:var(--digital);display:block;margin-bottom:6px}
+.lab-go p{font-size:13.5px;color:var(--ink-2);line-height:1.72}
+.lab-go .qs{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px;align-items:center}
+.lab-go .qs a{font-family:var(--mono);font-size:11.5px;padding:4px 10px;border:1px solid var(--line);border-radius:2px;background:var(--surface-2);color:var(--ink);text-decoration:none;white-space:nowrap}
+.lab-go .qs a:hover{border-color:var(--digital);color:var(--digital)}
+.lab-go .qs .lab{font-family:var(--mono);font-size:10px;color:var(--ink-3);letter-spacing:.07em;margin-left:4px}
+.lab-go .qs .lab:first-child{margin-left:0}
+.foot{margin-top:54px;padding-top:22px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-3);display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+@media print{.rail,.lab-go,.back,.btns{display:none!important}.main{display:block!important}figure,.caveat,.deep-note,.eq{break-inside:avoid}}
+</style>
+</head>
+<body>
+
+<header class="wrap hero">
+  <div class="hero-grid">
+    <div>
+      <a class="back" href="index.html">&larr; Labs / 半導体 ― 第3部 どう計算するか（実践: NandLab）</a><br>
+      <span class="eyebrow">Switch &rarr; NAND &rarr; Logic &rarr; Memory &rarr; ALU</span>
+      <h1>スイッチ4個から、<br><span class="lit">計算機</span>ができるまで</h1>
+      <p class="sub">第2部の最後で作った MOSFET は、ゲートの電圧で通り道が繋がったり切れたりするだけのスイッチです。それを4個組むと NAND になり、NAND だけで NOT も AND も OR も、足し算も、記憶も、CPU の部品も作れる。なぜ NAND ひとつで足りるのか、なぜ 0 と 1 が何千段積んでも濁らないのか、記憶とは何か ― 第3部はその筋道です。</p>
+      <div class="guide">
+        <div class="guide-h"><span>読み方</span><span>5章 ＝ NandLab の5章。章を読んだら末尾の課題を組む</span></div>
+        <div class="guide-b">
+          <div><b>論理まで</b><span>1・2章。スイッチが NAND になり、NAND だけで全部の論理が作れること。選ぶ・見分ける回路まで。</span></div>
+          <div><b>数と記憶</b><span>3・4章。2進数の足し算と2の補数、そして出力を入力へ戻すと「時間」が生まれること。</span></div>
+          <div><b>CPU の部品</b><span>5章。レジスタ・カウンタ・ALU。ここまで揃うと、CPU に足りないのはメモリと制御だけ。</span></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <dl class="spec">
+        <div><dt>原始部品</dt><dd>NAND<small>1種類</small></dd></div>
+        <div><dt>NAND の中身</dt><dd>4<small>石 (CMOS)</small></dd></div>
+        <div><dt>信号</dt><dd>3<small>値 0 / 1 / X</small></dd></div>
+        <div><dt>電源 (物理層)</dt><dd>3.3<small>V</small></dd></div>
+        <div><dt>ALU の NAND 数</dt><dd>124<small>個</small></dd></div>
+        <div><dt>雑音余裕</dt><dd>1.0<small>V 以上</small></dd></div>
+        <div class="spec-cap">この参考書が前提にしているもの。NAND の数は NandLab のお手本を実際に組んで数えた値、電圧と雑音余裕は NandLab の物理層（<code>mos.js</code>・<code>analog.js</code>）の二乗則モデルの値です。</div>
+      </dl>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+<div class="main">
+
+<nav class="rail" aria-label="章">
+  <ol>
+    <li class="dom first">出発点</li>
+    <li><a href="#s0"><span class="n">00</span><span>一枚の地図</span></a></li>
+    <li class="dom">組合せ</li>
+    <li><a href="#s1"><span class="n">01</span><span>スイッチから論理へ</span></a></li>
+    <li><a href="#s2"><span class="n">02</span><span>選ぶ・見分ける</span></a></li>
+    <li><a href="#s3"><span class="n">03</span><span>数として扱う</span></a></li>
+    <li class="dom">順序</li>
+    <li><a href="#s4"><span class="n">04</span><span>記憶する</span></a></li>
+    <li><a href="#s5"><span class="n">05</span><span>組み上げる</span></a></li>
+    <li class="dom">付録</li>
+    <li><a href="#snum"><span class="n">—</span><span>数字の根拠</span></a></li>
+    <li><a href="#smodel"><span class="n">—</span><span>どこまでがモデルか</span></a></li>
+    <li><a href="#sref"><span class="n">—</span><span>参考文献</span></a></li>
+  </ol>
+</nav>
+
+<main>
+
+<!-- ================= 00 ================= -->
+<section class="stage" id="s0">
+  <div class="stage-head"><span class="stage-num">00</span><h2>一枚の地図 ― 0 と 1 は、電圧を切っただけのもの</h2></div>
+  <p class="lede">回路の中を流れているのは電圧です。それを<span class="key">しきい値で「低い／高い」に切って 0 と 1 と呼ぶ</span>と、以降は電圧を忘れて記号だけで考えられる。忘れてよい理由は第1章で示します。この部は、記号の世界で NAND ひとつから計算機の部品を積み上げる話で、階段は5段あります。</p>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">OVERVIEW — スイッチから ALU まで</span><span class="fig-title">緑 ＝ 1 · 青 ＝ 0 · 灰 ＝ X（NandLab の盤面と同じ）</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 1120 236" role="img" aria-label="5段: MOSFET というスイッチ、NAND、組合せ回路（セレクタ・加算器）、記憶（ラッチ・フリップフロップ）、CPU の部品（レジスタ・カウンタ・ALU）。" style="min-width:920px">
+        <defs><marker id="ar0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink-3)"/></marker></defs>
+        <g font-family="var(--mono)" font-size="10" fill="var(--ink-3)"><text x="16" y="24">第2部から</text><text x="240" y="24">01</text><text x="464" y="24">02 · 03</text><text x="688" y="24">04</text><text x="912" y="24">05</text></g>
+        <g fill="var(--surface-2)" stroke="var(--line)"><rect x="16" y="36" width="190" height="90" rx="2"/><rect x="240" y="36" width="190" height="90" rx="2"/><rect x="464" y="36" width="190" height="90" rx="2"/><rect x="688" y="36" width="190" height="90" rx="2"/><rect x="912" y="36" width="190" height="90" rx="2"/></g>
+        <!-- 0: switch -->
+        <g stroke="var(--ink-2)" stroke-width="1.6" fill="none"><line x1="60" y1="81" x2="90" y2="81"/><line x1="90" y1="81" x2="118" y2="64"/><line x1="122" y1="81" x2="160" y2="81"/><line x1="105" y1="52" x2="105" y2="60"/><rect x="92" y="60" width="26" height="3" fill="var(--volt)" stroke="none"/></g>
+        <text x="111" y="112" text-anchor="middle" font-size="12" font-weight="700" fill="var(--ink)">MOSFET ＝ スイッチ</text>
+        <!-- 1: NAND -->
+        <g stroke="var(--ink-2)" stroke-width="1.6" fill="var(--surface)"><path d="M300,58 h22 a20,22 0 0 1 0,44 h-22 z"/><circle cx="346" cy="80" r="4"/><line x1="290" y1="70" x2="300" y2="70"/><line x1="290" y1="90" x2="300" y2="90"/><line x1="350" y1="80" x2="366" y2="80"/></g>
+        <text x="335" y="112" text-anchor="middle" font-size="12" font-weight="700" fill="var(--ink)">NAND（4石）</text>
+        <!-- 2: comb -->
+        <g font-family="var(--mono)" font-size="10.5" fill="var(--ink-2)"><text x="480" y="62">NOT AND OR XOR</text><text x="480" y="78">MUX DEC 比較器</text><text x="480" y="94">半加算 → 全加算 → 4bit</text></g>
+        <text x="559" y="112" text-anchor="middle" font-size="12" font-weight="700" fill="var(--ink)">組合せ回路</text>
+        <!-- 3: memory -->
+        <g stroke="var(--ink-2)" stroke-width="1.4" fill="var(--surface)"><rect x="740" y="52" width="26" height="20"/><rect x="800" y="52" width="26" height="20"/><path d="M766,58 L800,66" fill="none"/><path d="M800,58 L766,66" fill="none"/></g>
+        <g font-family="var(--mono)" font-size="10.5" fill="var(--ink-2)"><text x="783" y="94" text-anchor="middle">SR → D → D-FF</text></g>
+        <text x="783" y="112" text-anchor="middle" font-size="12" font-weight="700" fill="var(--ink)">記憶（時間が入る）</text>
+        <!-- 4: cpu parts -->
+        <g font-family="var(--mono)" font-size="10.5" fill="var(--ink-2)"><text x="1007" y="62" text-anchor="middle">レジスタ · シフト</text><text x="1007" y="78" text-anchor="middle">カウンタ</text><text x="1007" y="94" text-anchor="middle">ALU（124 石）</text></g>
+        <text x="1007" y="112" text-anchor="middle" font-size="12" font-weight="700" fill="var(--ink)">CPU の部品</text>
+        <g class="arrow" stroke="var(--ink-3)" stroke-width="1.4" fill="none"><line x1="206" y1="81" x2="234" y2="81" marker-end="url(#ar0)"/><line x1="430" y1="81" x2="458" y2="81" marker-end="url(#ar0)"/><line x1="654" y1="81" x2="682" y2="81" marker-end="url(#ar0)"/><line x1="878" y1="81" x2="906" y2="81" marker-end="url(#ar0)"/></g>
+        <g font-family="var(--sans)" font-size="12" fill="var(--ink-2)">
+          <text x="16" y="156">電圧が連続量として流れる</text><text x="16" y="174">しきい値 0.7 V で通じる／切れる</text>
+          <text x="240" y="156">4個で NAND、4個で NOR</text><text x="240" y="174">これ1種類で全部が作れる</text>
+          <text x="464" y="156">入力が決まれば出力が決まる</text><text x="464" y="174">真理値表 ＝ 回路</text>
+          <text x="688" y="156">出力を入力へ戻す</text><text x="688" y="174">前の値が残る。時計（クロック）が要る</text>
+          <text x="912" y="156">覚える ＋ 計算する ＋ 数える</text><text x="912" y="174">足りないのはメモリと制御だけ</text>
+        </g>
+        <g font-family="var(--mono)" font-size="9.5" fill="var(--ink-3)"><text x="16" y="212">→ 第2部 05 章</text><text x="912" y="212">→ NandLab「ここから先 ― CPU までの道順」</text></g>
+      </svg>
+    </div>
+    <figcaption>左の1段だけが物理（電圧）で、残りは記号の世界。切り替わりの場所が<b>しきい値</b>で、第2部の V<sub>th</sub> がそのまま出てきます。5段は NandLab の5章と同じ順です。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>この参考書の約束</h3>
+      <p><b>原始部品は NAND だけ。</b>AND も OR も XOR も、最初から用意されていない。それを作るのが NandLab で、この参考書は「なぜそれで足りるのか」「作ったものは何なのか」を説明する側です。NAND の数（「お手本は 13 個」など）は NandLab のお手本を実際に組んで数えた値で、少なければ偉いという話ではありません。</p>
+      <p><b>信号は 3 値。</b>0 と 1 のほかに「まだ決まっていない」X がある。第1章と第4章で、X が無いと嘘の回路が動いてしまうことを示します。</p>
+    </div>
+    <div class="body-col">
+      <h3>先に結論を3つ</h3>
+      <p><b>① NAND ひとつで全部作れるのは、「否定」を含んでいるから。</b>AND と OR をいくら組み合わせても NOT は作れない。NAND（や NOR）は否定を持っているので、そこから全部が出る。</p>
+      <p><b>② 何千段積んでも 0 と 1 が濁らないのは、坂が急だから。</b>NAND の入出力の坂は利得が 1 をはるかに超えていて、汚れた入力をきれいな 0 か 1 に押し戻す。だから記号だけで考えてよい。</p>
+      <p><b>③ 記憶とは、出力を自分の入力に戻すこと。</b>そこで初めて回路に「前の状態」＝時間が入る。全部を同じ拍で動かすためにクロックが要る。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 01 ================= -->
+<section class="stage" id="s1">
+  <div class="stage-head"><span class="stage-num">01</span><h2>スイッチから論理へ ― なぜ NAND ひとつで足りるのか</h2></div>
+  <p class="lede">第2部の MOSFET を、ここでは「ゲートが 1 なら通じ、0 なら切れるスイッチ」とだけ見ます。p 型の基板に作った nMOS がそれで、n 型の基板に鏡写しに作った pMOS は逆に「0 で通じる」。<span class="key">この2種類を電源と地面のあいだに置くだけで、論理ができます。</span></p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>引き上げと引き下げ ― インバータ</h3>
+      <p>出力を電源（1）に繋ぐ道を pMOS で、地面（0）に繋ぐ道を nMOS で作り、両方のゲートに同じ入力を入れます。入力が 1 なら下の nMOS が通じて出力は地面へ引き下げられ 0。入力が 0 なら上の pMOS が通じて出力は電源へ引き上げられ 1。これが <b>NOT（インバータ）</b>で、石は2個。</p>
+      <p>大事なのは、<b>上と下が同時に通じることが無い</b>こと。だから切り替わる瞬間以外、電源から地面へ電流が流れない。CMOS（相補型 MOS）が発熱しない理由で、これがあるから何十億個も1つのチップに載せられます。</p>
+      <h3>NAND と NOR ― 4個で、否定つきの論理</h3>
+      <p>入力を2本にします。<b>上の pMOS を並列、下の nMOS を直列</b>にすると、下が地面まで通じるのは A も B も 1 のときだけ。それ以外はどちらかの pMOS が通じて出力は 1。「両方 1 のときだけ 0」＝ <b>NAND</b>。石は4個。</p>
+      <p>上下を入れ替えて<b>上を直列、下を並列</b>にすると、上が電源まで通じるのは A も B も 0 のときだけ。「両方 0 のときだけ 1」＝ <b>NOR</b>。これも4個。AND や OR を作るには、この後ろに NOT（2個）を足すので6個になる。<span class="key">否定つきのゲートのほうが、否定なしより安くて速い</span> ― 原始部品を NAND にした物理的な理由です。</p>
+    </div>
+    <div class="body-col">
+      <figure>
+        <div class="fig-head"><span class="fig-title">NAND — 4石の中で何が起きているか</span><span class="fig-title">A・B を切り替える</span></div>
+        <div class="fig-body">
+          <svg id="svgNand" viewBox="0 0 420 300" role="img" aria-label="CMOS NAND の回路図。上に pMOS 2個が並列、下に nMOS 2個が直列。入力に応じて通じているスイッチが光る。"></svg>
+          <div class="btns"><span class="lab">入力</span><button class="btn" id="bNA" aria-pressed="false">A = 0</button><button class="btn" id="bNB" aria-pressed="false">B = 0</button><button class="btn" id="bNX">X を入れる</button><span id="tNand" style="font-size:12.5px;color:var(--ink-2);margin-left:6px"></span></div>
+        </div>
+        <figcaption id="cNand">上の p は「0 で通じる」、下の n は「1 で通じる」。黄色が通じているスイッチ。線の色はその節点の電位（緑 1／青 0／灰 X）。NandLab で NAND をダブルクリックすると、盤面の値でこれが動く。</figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <h3>真理値表 ― 回路は表そのもの</h3>
+  <p>入力が決まれば出力が決まる回路（<b>組合せ回路</b>）は、入力の全パターンに対する出力の表で完全に言い表せます。逆に、表を与えられればそれを実現する回路が必ず作れる（第2章）。だから NandLab の採点は、あなたの回路の表を総当りで取って期待の表と突き合わせるだけで、配線の形は見ません。</p>
+  <div class="tts">
+    <div><div class="cap">NAND</div><table class="tt"><tr><th>A</th><th>B</th><th>Y</th></tr><tr><td>0</td><td>0</td><td class="o">1</td></tr><tr><td>0</td><td>1</td><td class="o">1</td></tr><tr><td>1</td><td>0</td><td class="o">1</td></tr><tr><td>1</td><td>1</td><td class="o">0</td></tr></table></div>
+    <div><div class="cap">NOR</div><table class="tt"><tr><th>A</th><th>B</th><th>Y</th></tr><tr><td>0</td><td>0</td><td class="o">1</td></tr><tr><td>0</td><td>1</td><td class="o">0</td></tr><tr><td>1</td><td>0</td><td class="o">0</td></tr><tr><td>1</td><td>1</td><td class="o">0</td></tr></table></div>
+    <div><div class="cap">AND</div><table class="tt"><tr><th>A</th><th>B</th><th>Y</th></tr><tr><td>0</td><td>0</td><td class="o">0</td></tr><tr><td>0</td><td>1</td><td class="o">0</td></tr><tr><td>1</td><td>0</td><td class="o">0</td></tr><tr><td>1</td><td>1</td><td class="o">1</td></tr></table></div>
+    <div><div class="cap">OR</div><table class="tt"><tr><th>A</th><th>B</th><th>Y</th></tr><tr><td>0</td><td>0</td><td class="o">0</td></tr><tr><td>0</td><td>1</td><td class="o">1</td></tr><tr><td>1</td><td>0</td><td class="o">1</td></tr><tr><td>1</td><td>1</td><td class="o">1</td></tr></table></div>
+    <div><div class="cap">XOR（違えば 1）</div><table class="tt"><tr><th>A</th><th>B</th><th>Y</th></tr><tr><td>0</td><td>0</td><td class="o">0</td></tr><tr><td>0</td><td>1</td><td class="o">1</td></tr><tr><td>1</td><td>0</td><td class="o">1</td></tr><tr><td>1</td><td>1</td><td class="o">0</td></tr></table></div>
+    <div><div class="cap">XNOR（同じなら 1）</div><table class="tt"><tr><th>A</th><th>B</th><th>Y</th></tr><tr><td>0</td><td>0</td><td class="o">1</td></tr><tr><td>0</td><td>1</td><td class="o">0</td></tr><tr><td>1</td><td>0</td><td class="o">0</td></tr><tr><td>1</td><td>1</td><td class="o">1</td></tr></table></div>
+    <div><div class="cap">NAND の 3 値表</div><table class="tt"><tr><th></th><th>B=0</th><th>B=1</th><th>B=X</th></tr><tr><td>A=0</td><td class="o">1</td><td class="o">1</td><td class="o">1</td></tr><tr><td>A=1</td><td class="o">1</td><td class="o">0</td><td class="x">X</td></tr><tr><td>A=X</td><td class="o">1</td><td class="x">X</td><td class="x">X</td></tr></table></div>
+  </div>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>NAND だけで全部 ― 万能性</h3>
+      <p>NAND の両方の入力に同じものを入れると NOT になる: NAND(A, A) = NOT A。NAND の後ろに NOT を付ければ AND。OR は<b>ド・モルガンの法則</b>で: A または B ＝ NOT（NOT A かつ NOT B）なので、入力を先に反転して NAND に入れればよい。</p>
+      <div class="eq">NOT A = <b>NAND</b>(A, A)　　A·B = NOT <b>NAND</b>(A, B)　　A + B = <b>NAND</b>(NOT A, NOT B)</div>
+      <p>NOT・AND・OR が揃えばどんな真理値表でも作れる（第2章）ので、<span class="key">NAND ひとつで全部作れる</span>。NOR でもまったく同じ（NOR(A,A) = NOT A、A+B = NOT NOR、A·B = NOR(NOT A, NOT B)）。アポロ誘導計算機は NOR だけで組まれていました。</p>
+      <p><b>では AND と OR の2つでは？ 作れません。</b>AND も OR も「入力を 0 から 1 に上げると、出力は下がらない」性質（単調性）を持ち、それをいくら組み合わせても単調なまま。NOT は入力を上げると出力が下がるので、単調な部品からは決して出てこない。<b>否定を持っている</b>ことが、NAND と NOR が万能である理由そのものです。</p>
+      <h3>XOR ― NAND 4個</h3>
+      <p>「違うときだけ 1」。素直に書くと A·B̄ + Ā·B で NAND 5〜6 個ですが、NAND(A,B) を共有すると4個で組めます: t = NAND(A,B)、Y = NAND(NAND(A,t), NAND(B,t))。第3章の足し算の1桁ぶんがこれです。</p>
+    </div>
+    <div class="body-col">
+      <h3>3値 ― 「まだ決まっていない」を持つ</h3>
+      <p>NandLab の信号は 0 と 1 のほかに <b>X</b> があります。繋ぎ忘れた入力、電源を入れた直後のフリップフロップの中身は X。0/1 しか無いシミュレータは、これを勝手に 0 にして「繋ぎ忘れているのに偶然動く」回路を作ってしまう。</p>
+      <p>上の3値表で大事なのは、<span class="key">片方が 0 なら、もう片方が X でも出力は 1 で確定する</span>こと。4石の絵で見ればそのままで、A が 0 なら上の p（A）が通じて出力は電源に繋がる ― B のスイッチがどうであれ。この性質のおかげで、リセットを入れると X が回路から追い出されていきます（第4章）。</p>
+      <h3>なぜ NOR ではなく NAND なのか</h3>
+      <p>どちらも万能で4石。差は速さです。直列に繋いだ2個のスイッチは抵抗が2倍になるので遅い。NAND は<b>電子が運ぶ nMOS を直列</b>にし、NOR は<b>正孔が運ぶ pMOS を直列</b>にする。第2部第1章のとおり電子の移動度は正孔の約3倍（1164 対 386 cm²/V·s）なので、同じ大きさなら NAND のほうが速い。だから CMOS では NAND が基本です。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">ANALOG — 0 と 1 の下にある連続量。NAND の伝達特性と雑音余裕</span><span class="fig-title">電源 3.3 V · V<sub>th</sub> 0.7 V · 二乗則（NandLab analog.js）</span></div>
+    <div class="fig-body">
+      <canvas id="cvVtc" width="1100" height="320" aria-label="入力 A の電圧に対する NAND の出力電圧。しきい値付近で急な坂を下り、その外側では 0 か 1 に押し戻される"></canvas>
+      <div class="sl3">
+        <div class="slider-row"><div class="top"><span class="lab">もう片方の入力 B</span><span class="num" id="vVB">3.30 V（= 1）</span></div><input type="range" id="cVB" min="0" max="330" value="330" aria-label="B の電圧"></div>
+        <div class="slider-row"><div class="top"><span class="lab">入力 A の汚れ（雑音）</span><span class="num" id="vVN">±0.50 V</span></div><input type="range" id="cVN" min="0" max="150" value="50" aria-label="雑音の振幅"></div>
+      </div>
+    </div>
+    <dl class="readouts">
+      <div><dt>V<sub>IL</sub> / V<sub>IH</sub></dt><dd id="rVil">—</dd></div>
+      <div><dt>V<sub>OH</sub> / V<sub>OL</sub></dt><dd id="rVoh">—</dd></div>
+      <div><dt>雑音余裕 NM<sub>L</sub> / NM<sub>H</sub></dt><dd id="rVnm">—</dd></div>
+      <div><dt>坂の最大利得</dt><dd id="rVg">—</dd></div>
+    </dl>
+    <figcaption>横軸が入力 A の電圧、縦軸が出力。坂の傾きが −1 になる2点（V<sub>IL</sub>・V<sub>IH</sub>）の外側では、入力の揺れが出力で<b>小さく</b>なる ― 押し戻される。灰色の帯が入力の汚れ、その先の細い帯が出力に残る汚れ。B を下げると坂が右へ動く（下の n が直列なので、B が弱いと A をより強く押す必要がある）。坂の途中（薄紫）が「どちらとも言えない」電圧で、3値の X はここに居る。<b>利得が 1 を超えるから、何千段積んでも信号が濁らない。</b>これが 0 と 1 だけで考えてよい理由で、この図から先は電圧を忘れる。</figcaption>
+  </figure>
+
+  <div class="caveat">
+    <span class="tag">断定していないこと</span>
+    <p><b>伝達特性は最も素朴な二乗則（level 1）で、n と p の強さを同じにしています。</b>実物は p が弱いので坂が少し右にずれ、短チャネル（第4部 付録 B）では利得がもっと小さい。それでも「坂ができる」「利得が 1 を超える」「上下の釣り合いで出力が決まる」という肝は同じです。配線の容量と遅延、消費電力は入れていません。</p>
+    <p><b>NandLab の物理層はまだ 0/1 の絵だけです。</b>この伝達特性を解く <code>analog.js</code> は書けていますが、画面には繋がっていません（NandLab README「ここから先」）。</p>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — NandLab 第1章</span>
+    <p>盤面に NAND を1個置き、両方の入力に同じスイッチを繋ぐ。それが NOT。「チップにする」で名前を付けると次から部品として置ける ― あとはこの繰り返しで AND・OR・XOR・NOR・XNOR。NAND をダブルクリックすると4石の中身が出て、盤面のスイッチを切り替えると中のスイッチが開け閉めされる。</p>
+    <div class="qs"><span class="lab">NandLab</span><a href="NandLab/index.html?quest=not">NOT</a><a href="NandLab/index.html?quest=and">AND</a><a href="NandLab/index.html?quest=or">OR</a><a href="NandLab/index.html?quest=xor">XOR</a><a href="NandLab/index.html?quest=nor">NOR</a><a href="NandLab/index.html?quest=xnor">一致（XNOR）</a><span class="lab">SemiLab</span><a href="SemiLab/index.html?quest=nand">NAND の中身（nMOS を作る）</a></div>
+  </div>
+</section>
+
+<!-- ================= 02 ================= -->
+<section class="stage" id="s2">
+  <div class="stage-head"><span class="stage-num">02</span><h2>選ぶ・見分ける ― 真理値表から回路へ</h2></div>
+  <p class="lede">第1章で「表を与えられれば回路が作れる」と言いました。その手順が<span class="key">積和形</span>で、しかもそれは<span class="key">NAND 2段</span>にそのまま化けます。これで NAND の万能性が手順として確かめられる。この章の部品 ― セレクタ・デコーダ・比較器 ― は全部この手順で出てきます。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>積和形 ― 出力が 1 の行を拾って束ねる</h3>
+      <p>表の中で出力が 1 になっている行を見る。その行の入力の組み合わせ「だけ」で 1 になる AND 項を作る（0 の入力は反転して入れる）。全部の項を OR で束ねれば、その表を実現する式になる。<b>どんな表でもこれで作れる</b>ので、NOT・AND・OR があれば何でも作れることの証明になっています。</p>
+      <p>そして OR で束ねた AND は、ド・モルガンで <b>NAND の NAND</b> に書き換えられる: A·B + C·D = NAND(NAND(A,B), NAND(C,D))。だから積和形は、そのまま <b>2段の NAND</b>。入力の反転ぶん（NAND 1個ずつ）を足しても、どんな表も NAND だけで、深さ3で組めます。</p>
+      <div class="eq">Y = Σ(1 の行の AND 項) = <b>NAND</b>( <b>NAND</b>(項₁), <b>NAND</b>(項₂), … )</div>
+      <h3>遅延 ― 段数がそのまま時間</h3>
+      <p>NandLab は全部の NAND に遅延 1 を与えて時間を1歩ずつ進めます（第4章で理由を書きます）。だから回路の速さは<b>入力から出力までの NAND の段数</b>で、積和形は最悪でも3段。ただし項の数が入力の数に対して指数で増えるので、大きい表は「共有」と「木」で小さくします。第1章の XOR で NAND(A,B) を2回使い回したのが共有、4:1 セレクタと比較器で出てくるのが木です。</p>
+    </div>
+    <div class="body-col">
+      <figure>
+        <div class="fig-head"><span class="fig-title">TRUTH TABLE → NAND — 表を叩いて、式と NAND 数を見る</span><span class="fig-title">3 入力</span></div>
+        <div class="fig-body">
+          <div class="scroll-x"><table class="tt" id="ttSop" aria-label="3入力の真理値表。出力の欄をクリックして 0/1 を切り替える"></table></div>
+          <div class="btns"><span class="lab">お手本</span><button class="btn" data-preset="mux">2:1 セレクタ</button><button class="btn" data-preset="maj">多数決</button><button class="btn" data-preset="xor3">3入力 XOR</button><button class="btn" data-preset="zero">全部 0</button></div>
+        </div>
+        <dl class="readouts">
+          <div><dt>積和形</dt><dd id="rSop" style="white-space:normal;font-weight:500">—</dd></div>
+        </dl>
+        <dl class="readouts">
+          <div><dt>AND 項の数</dt><dd id="rSopN">—</dd></div>
+          <div><dt>NAND 2段の個数（反転込み）</dt><dd id="rSopG">—</dd></div>
+          <div><dt>深さ</dt><dd id="rSopD">—</dd></div>
+        </dl>
+        <figcaption>出力 Y の欄をクリックすると 0/1 が入れ替わり、下の式が変わる。項ごとに NAND 1個、束ねる NAND 1個、使った反転ぶんの NAND を足したのが個数。「2:1 セレクタ」は S̄·A + S·B の2項。多数決は3項、3入力 XOR は4項で、同じ3入力でも表の形で大きさが変わる。NandLab の「小さくする」は、この個数を今の回路を指さして減らす。</figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>セレクタ（MUX）― どちらを使うかを1本の線で</h3>
+      <p>S が 0 なら A を、1 なら B を出す。Y = S̄·A + S·B。積和形の2項で、NAND にすると NAND(NAND(A, S̄), NAND(B, S))、反転を入れて <b>4個</b>。CPU が「計算した結果」と「メモリから読んだ値」のどちらをレジスタに入れるかを選ぶのがこれで、第5章のレジスタは「自分の値を書き戻すか、新しい値を入れるか」をこれで選びます。</p>
+      <p>4つから1つ選ぶ <b>4:1 セレクタ</b>は、2:1 を3個の<b>木</b>にする。S0 で (D0,D1) と (D2,D3) をそれぞれ選び、その2つを S1 で選ぶ。12個・深さ6。ALU が4種類の演算結果から1つを出すのに、同じ形が要ります。</p>
+      <h3>デコーダ ― 番号を「その1本だけ 1」に</h3>
+      <p>2ビットの数を受けて、その番号の出力だけを 1 にする。4本の出力それぞれが「その組み合わせのときだけ 1 になる AND」で、Y0 = Ā·B̄、Y1 = Ā·B、Y2 = A·B̄、Y3 = A·B。お手本は10個。命令の番号から「この装置を動かせ」を作る<b>命令デコーダ</b>の原型で、メモリの番地選択もこれです。</p>
+    </div>
+    <div class="body-col">
+      <h3>比較器 ― 同じかどうか</h3>
+      <p>2つの4ビットの数が等しいか。桁ごとに XNOR（同じなら 1）を取り、4つ全部が 1 かを AND でまとめる。AND は2入力なので3個を木にする。お手本は26個。「この番地を指定されたときだけ反応する」＝メモリの番地の一致、プログラムの if の比較は、みなこれです。</p>
+      <h3>設計の順番</h3>
+      <p>この章の部品はどれも「表 → 積和形 → 共有と木で縮める」の順で出てきました。実務ではこの縮める手順を機械（論理合成）がやりますが、NandLab では自分でやる。<b>正解の形は無い</b> ― 採点は表だけを見るので、お手本と違う配線でも通ります。お手本の NAND 数は「これくらいで組める」の目安でしかありません。</p>
+    </div>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — NandLab 第2章</span>
+    <p>第1章で作った NOT・AND・OR・XNOR のチップを部品として使う。セレクタは4個で組めるが、AND と OR のチップで素直に組めば8個 ― 通ればどちらでもよい。右の「論理式」で自分の回路が S̄·A + S·B まで戻るのを見ると、積和形が回路の中にそのまま居るのが分かる。</p>
+    <div class="qs"><span class="lab">NandLab</span><a href="NandLab/index.html?quest=mux">2:1 セレクタ</a><a href="NandLab/index.html?quest=dec24">2→4 デコーダ</a><a href="NandLab/index.html?quest=mux4">4:1 セレクタ</a><a href="NandLab/index.html?quest=eq4">4ビット比較器</a></div>
+  </div>
+</section>
+
+<!-- ================= 03 ================= -->
+<section class="stage" id="s3">
+  <div class="stage-head"><span class="stage-num">03</span><h2>数として扱う ― 足し算ができれば、引き算も掛け算も</h2></div>
+  <p class="lede">0 と 1 の列を<span class="key">2進数</span>として読むと、回路が数を扱えるようになります。1桁の足し算は XOR と AND、それを縦に繋げば何桁でも。引き算は「負の数の表し方」を工夫すると足し算の回路でできてしまい、掛け算は筆算そのもの。<b>コンピュータが引き算専用の回路を持たない理由</b>がこの章にあります。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>1桁の足し算 ― 半加算器</h3>
+      <p>0+0=0、0+1=1、1+0=1、1+1=10（2進で「10」＝ 2）。和の桁は「違うときだけ 1」＝ <b>XOR</b>、桁上がりは「両方 1 のときだけ 1」＝ <b>AND</b>。第1章の XOR の途中で作った NAND(A,B) は AND の否定なので、そのまま桁上がりに使い回せる。お手本は5個。</p>
+      <h3>下からの桁上がりも足す ― 全加算器</h3>
+      <p>2桁目からは、下の桁からの桁上がり C も足すので入力が3本。半加算器を2つ縦に繋いで A+B、その和に C を足し、2つの桁上がりのどちらかが立てば上へ桁上がり（OR）。お手本は13個（最小なら9個にできますが、半加算器チップを2つ使う素直な組み方が13個）。</p>
+      <div class="eq">S = A ⊕ B ⊕ C　　C<sub>out</sub> = A·B + (A ⊕ B)·C</div>
+      <h3>並べる ― 4ビット加算器と、桁上げの遅延</h3>
+      <p>全加算器を4つ並べ、桁上がりを数珠つなぎにする（<b>リップルキャリー</b>）。一番下の C には定数 0。お手本は52個。7 + 5 = 12 が、自分で組んだ回路の上で見えます。</p>
+      <p>ただし桁上がりは<b>下から順に伝わる</b>。1桁ぶんの桁上げが NAND 2〜3段なら、4桁で 10 段前後、32桁なら 80 段近く待つことになる。実物の CPU が加算器に「桁上げ先読み」という別の工夫を入れるのはこのためで、NandLab の「時間を1歩ずつ進める」モードで、桁上げが右から左へ走っていくのが見えます。</p>
+    </div>
+    <div class="body-col">
+      <figure>
+        <div class="fig-head"><span class="fig-title">ADD / SUB — 4ビットの足し算と、2の補数の引き算</span><span class="fig-title">ビットをクリック</span></div>
+        <div class="fig-body">
+          <svg id="svgAdd" viewBox="0 0 520 250" role="img" aria-label="4ビットの A と B、桁ごとの桁上がり、結果 S を表す図。足し算と引き算を切り替えられる。"></svg>
+          <div class="btns"><span class="lab">演算</span><button class="btn" id="bOpAdd" aria-pressed="true">A + B</button><button class="btn" id="bOpSub" aria-pressed="false">A − B</button><span id="tAdd" style="font-size:12.5px;color:var(--ink-2);margin-left:6px"></span></div>
+        </div>
+        <figcaption>上段が A、中段が B（引き算のときは反転した B̄ が薄く出る）、下が結果。桁上がりは右から左へ流れる。引き算は「B を全部反転して足し、一番下の桁上がりに 1 を入れる」だけで、加算器は何も変わらない。上に出た桁上がりが引き算では「借りが出なかった」印（A ≥ B）になる。</figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>2の補数 ― 引き算を足し算にする</h3>
+      <p>4ビットで数えると 15 の次は 0 に戻ります（桁上がりが捨てられる）。つまり 16 を足しても何も変わらない。だから「B を引く」は「16 − B を足す」と同じ。そして 16 − B は <b>B の全ビットを反転して 1 を足したもの</b>（15 − B が反転そのもので、そこに 1）。これが <b>2の補数</b>です。</p>
+      <div class="eq">A − B = A + (B̄ + 1) = A + B̄ + <b>1</b>　　← この 1 を一番下の桁上がりに入れる</div>
+      <p>反転は NOT 4個、+1 は最下位の C<sub>in</sub> に 1 を入れるだけ。<span class="key">加算器はそのまま、引き算になる。</span>負の数を2の補数で表す約束にすれば、−1 は 1111、−8 は 1000 で、足し算の回路が正負を区別せずに正しく動く。コンピュータが引き算の回路を持たず、符号ビットを特別扱いしないのは、この表し方のおかげです。</p>
+      <p>4ビット加算器のチップは最下位の桁上がりが 0 に固定してあるので、減算器は全加算器を4つ並べ直します。お手本は56個。</p>
+    </div>
+    <div class="body-col">
+      <h3>掛け算 ― 筆算そのもの</h3>
+      <p>2桁 × 2桁。筆算と同じで、A の各桁と B の各桁の<b>部分積</b> A<sub>i</sub>·B<sub>j</sub>（これは AND）を桁をずらして並べ、桁ごとに足す。足し算には半加算器チップが使える。お手本は18個。桁数を増やしても、AND の格子と加算器の三角形が大きくなるだけで、原理は同じです。</p>
+      <h3>数の見方は「約束」</h3>
+      <p>回路の中には 0 と 1 の列しかありません。それを「符号なしの 0〜15」と読むか「2の補数の −8〜7」と読むかは、回路ではなく読む側の約束です。同じ 1111 が 15 でも −1 でもある。NandLab の「束」は、配線をまとめて数として表示する機能で、束に X が1本でもあれば数を出さず「―」を出します。0 で埋めると、繋ぎ忘れが「たまたま 0」に見えてしまうからです。</p>
+      <div class="caveat">
+        <span class="tag">断定していないこと</span>
+        <p><b>この部の加算器はリップルキャリーだけです。</b>桁上げ先読み（CLA）や Kogge-Stone のような並列の桁上げは扱いません。オーバーフロー（2の補数で 7 + 1 = −8 になってしまう）の検出も、課題には含めていません。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — NandLab 第3章</span>
+    <p>半加算器 → 全加算器 → 4個並べる、の順にチップを積む。4ビット加算器で入力を「束」にして数で表示させ、7 + 5 が 12 になるところを見る。減算器は B の前に NOT を4つ、最下位の桁上がりに定数 1。上に出た桁上がりが「A ≥ B」の印になっているのを確かめる。</p>
+    <div class="qs"><span class="lab">NandLab</span><a href="NandLab/index.html?quest=half">半加算器</a><a href="NandLab/index.html?quest=full">全加算器</a><a href="NandLab/index.html?quest=add4">4ビット加算器</a><a href="NandLab/index.html?quest=sub4">4ビット減算器</a><a href="NandLab/index.html?quest=mul2">2ビット乗算器</a></div>
+  </div>
+</section>
+
+<!-- ================= 04 ================= -->
+<section class="stage" id="s4">
+  <div class="stage-head"><span class="stage-num">04</span><h2>記憶する ― 出力を入力へ戻すと、時間が生まれる</h2></div>
+  <p class="lede">ここまでの回路は、入力を決めれば出力が決まり、入力を戻せば出力も戻りました。<span class="key">NAND を2個、互い違いに繋ぐ</span> ― 片方の出力をもう片方の入力へ、その逆も ― と、入力を戻しても直前の値が残る。回路が「前に何があったか」を持つようになり、ここで初めて時間が入ります。記憶装置の最小単位です。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>SR ラッチ ― NAND 2個の互い違い</h3>
+      <p>NAND を2個置き、それぞれの出力を相手の入力へ戻す。空いた入力が S（セット）と R（リセット）で、どちらも<b>0 で効く</b>（負論理）。S = 0 にすると S 側の NAND の出力 Q は必ず 1（第1章の3値表: 片方が 0 なら出力は 1）。その 1 が R 側の NAND に入り、R = 1 なら Q̄ = 0。その 0 が S 側に戻って、S を 1 に戻しても Q = 1 が保たれる。<b>これが記憶。</b>R = 0 にすれば鏡写しに Q = 0 になり、それも保たれる。</p>
+      <p>S = R = 0 は<b>禁止入力</b>。両方の出力が 1 になり、同時に 1 に戻すと両方が相手を倒そうとして<b>発振</b>する。NandLab はこの発振をそのまま見せます（下記）。</p>
+      <h3>D ラッチ ― 「覚える箱」にする</h3>
+      <p>セットと解除、という入れ物は不便なので、手前に門を付ける。S = NAND(D, E)、R = NAND(D̄, E)。E（イネーブル）が 1 のあいだは D がそのまま Q に通り（<b>透過</b>）、E を 0 にした瞬間、S も R も 1 になってラッチは保持に入る ― <b>E を下げた瞬間の D を覚える箱</b>。お手本は5個。これを並べればメモリです。</p>
+    </div>
+    <div class="body-col">
+      <figure>
+        <div class="fig-head"><span class="fig-title">SR LATCH — 1歩ずつ進めて、記憶と発振を見る</span><span class="fig-title">単位遅延 · 3 値</span></div>
+        <div class="fig-body">
+          <svg id="svgSr" viewBox="0 0 520 220" role="img" aria-label="NAND 2個を互い違いに繋いだ SR ラッチ。S・R の入力と Q・Q̄ の出力の値が色で出る。"></svg>
+          <div class="btns"><span class="lab">入力（0 で効く）</span><button class="btn" id="bSrS" aria-pressed="true">S = 1</button><button class="btn" id="bSrR" aria-pressed="true">R = 1</button><span class="lab" style="margin-left:10px">時間</span><button class="btn" id="bSrStep">1 歩進める</button><button class="btn" id="bSrRun">落ち着くまで</button><button class="btn" id="bSrReset">電源を入れ直す</button></div>
+          <p id="tSr" style="font-size:12.5px;color:var(--ink-2);margin-top:8px;min-height:1.7em"></p>
+        </div>
+        <figcaption>電源を入れた直後は Q も Q̄ も X。S を 0 にして進めると Q が 1 に確定し、Q̄ が 0 に、S を戻しても保たれる。S と R を両方 0 にして両方 1 に戻すと、2つの NAND が交互にひっくり返り続ける（発振）。「全部を一斉に評価してから一斉に書き戻す」単位遅延のおかげで、この様子が実行のたびに同じに出る。</figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>D フリップフロップ ― 「瞬間」だけ取り込む</h3>
+      <p>D ラッチには困った性質があります。E が 1 のあいだ中身が動き続ける（素通し）ので、出力を自分の入力へ戻す回路 ― カウンタやシフトレジスタ ― を作ると、値が輪を何周も駆け抜けてしまう。欲しいのは「クロック C が 0 から 1 に変わった<b>瞬間</b>だけ取り込む」箱です。</p>
+      <p>作り方は D ラッチを2段（<b>主従</b>）。前段の E に NOT C、後段の E に C。C が 0 のあいだは前段だけが開いて D を取り込み、C が 1 になると前段が閉じて後段が開き、前段が持っていた値が出てくる。<b>両方が同時に開くことは無い</b>ので、値は1回の上げ下げで1段しか進めない。これが<b>エッジトリガ</b>で、お手本は11個。ここから先の部品は全部これでできています。</p>
+      <div class="eq">D ラッチ: E が 1 の<b>あいだ</b>通す　　D-FF: C の<b>立ち上がり</b>で1回だけ取り込む</div>
+      <h3>クロック ― 全部を同じ拍で</h3>
+      <p>フリップフロップの C を全部1本の線（クロック）に繋ぐと、回路全体が「せーの」で一斉に次の値を取り込む。取り込みと取り込みのあいだに組合せ回路が計算を済ませていればよく、どれだけ大きな回路でも破綻しない。CPU の「◯ GHz」はこの拍の速さで、1拍のあいだに最長の経路（第3章の桁上げなど）が間に合うかで決まります。</p>
+    </div>
+    <div class="body-col">
+      <h3>なぜ「単位遅延で1歩ずつ」なのか</h3>
+      <p>NandLab のシミュレータは、全ゲートに遅延 1 を与え、1歩ごとに「全部を評価してから、全部を書き戻す」。「出力が変わらなくなるまで計算し直す」方式にしなかったのは、<b>フィードバックのある回路でそれが原理的に破綻する</b>から。SR ラッチは同じ入力に対して辻褄の合う答えが2つある（Q = 0 でも 1 でも矛盾しない）ので、不動点が一意に決まらない。時間を1歩ずつ進めれば、ラッチは自然に「前の状態を保つ」ようになり、発振も発振として観測できる。</p>
+      <p>1歩の中で評価と反映を分けるのも同じ理由で、1つずつ書き戻すと評価の順番で答えが変わり、同じ回路が実行のたびに違う挙動になります。</p>
+      <h3>X とリセット ― 電源を入れた直後</h3>
+      <p>電源を入れた瞬間のラッチは 0 か 1 のどちらに転ぶか分からない。だから NandLab では X から始まり、<b>リセットを入れるまで中身は読めない</b>。3値表の「片方が 0 なら X でも 1 に確定」のおかげで、リセット信号が 0 を注ぐと X が回路から順に追い出されていく。リセット線を忘れた回路は X のまま一生抜け出せない ― 実物と同じで、0 で埋めるシミュレータではこれが見えません。</p>
+      <div class="caveat">
+        <span class="tag">断定していないこと</span>
+        <p><b>セットアップ／ホールド時間と準安定は扱いません。</b>実物のフリップフロップはクロックの直前直後に D が動くとどちらとも言えない中間電位に留まることがあります（第1章の坂の途中）。NandLab は単位遅延の理想化なので、それは出ません。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — NandLab 第4章</span>
+    <p>NAND を2つ互い違いに繋ぐ。上の「時間」を止めて Space で1歩ずつ進めると、S を 0 にした値が輪を回って落ち着くのが見える。両方 0 → 両方 1 で発振させてみる。D ラッチ、D フリップフロップの課題は「入力を順に与えて、そのつど出力が合っているか」で採点される ― 前の状態を保っていること自体が見たい性質だから。</p>
+    <div class="qs"><span class="lab">NandLab</span><a href="NandLab/index.html?quest=srlatch">SR ラッチ</a><a href="NandLab/index.html?quest=dlatch">D ラッチ</a><a href="NandLab/index.html?quest=dff">D フリップフロップ</a></div>
+  </div>
+</section>
+
+<!-- ================= 05 ================= -->
+<section class="stage" id="s5">
+  <div class="stage-head"><span class="stage-num">05</span><h2>組み上げる ― レジスタ・カウンタ・ALU、そして CPU まであと2つ</h2></div>
+  <p class="lede">覚える箱（フリップフロップ）と、計算する回路（加算器・セレクタ）が揃いました。この章はその2つを組み合わせるだけです。<span class="key">覚え続けるとは、自分自身を書き戻し続けること。</span>数えるとは、自分に 1 を足して書き戻すこと。ここまで来ると、CPU に足りないものは2つしかありません。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>レジスタ ― 覚え続けるには書き戻す</h3>
+      <p>D フリップフロップを4つ並べ、クロックを配れば4ビットを一斉に取り込めます。しかしそれでは<b>クロックが来るたびに中身が上書き</b>される。「W（書き込み許可）が 0 のときは変えない」には、各 D の手前に2:1 セレクタを置き、W が 0 なら<b>自分の Q</b> を、1 なら外から来た D を選ばせる。W = 0 のとき、FF は毎拍自分の値を自分に書き戻し続けている ― それが「覚え続ける」の正体です。お手本は60個。CPU のレジスタそのもので、プログラムの変数を1つ持てるようになりました。</p>
+      <h3>シフトレジスタ ― 値をずらす</h3>
+      <p>FF を4つ数珠つなぎにし、前の Q を次の D へ。クロックが来るたびに、D から入れた 0/1 の列が Q0 → Q1 → Q2 → Q3 と行進する。2倍と半分（シフト）、直列通信、掛け算の筆算がこれでできる。お手本は44個。<b>D ラッチで組むと、E が 1 のあいだに値が最後まで突き抜けて全部同じになる</b> ― 第4章でエッジトリガが要ると言った理由が、ここで実際に踏めます。</p>
+      <h3>カウンタ ― 自分に 1 を足す</h3>
+      <p>「自分より下の桁が全部 1 なら、その桁は反転する」。Q0 は毎回反転、Q1 は Q0 と XOR、Q2 は Q0·Q1 と XOR、Q3 は Q0·Q1·Q2 と XOR。その結果を FF に戻す。R（リセット）は取り込む値を 0 に潰す AND。お手本は70個。<b>R が無いと、電源投入直後の X から一生抜け出せない</b> ― 第4章の X の話が、ここで採点に効いてきます。時計、プログラムカウンタ（次に実行する命令の番地）、分周器。数えるものは全部これです。</p>
+    </div>
+    <div class="body-col">
+      <h3>ALU ― 計算を1つの回路で切り替える</h3>
+      <p>足す・引く・AND・XOR を、2本の選択線 S1S0 で切り替える回路。引き算は第3章のとおり、B の各桁を XOR(B<sub>i</sub>, S0) に通すと S0 = 1 のときだけ B が反転し、最下位の桁上がりにも S0 を入れれば、<b>同じ加算器が足し算にも引き算にもなる</b>。AND と XOR は別に作り、最後に4:1 セレクタで選ぶ。桁ごとに同じものを4つ並べるので、1桁ぶんをチップにしてから4つ置くのが早い。お手本は124個。</p>
+      <div class="scroll-x" style="margin-top:12px"><table class="tt">
+        <tr><th>S1 S0</th><th>Y</th><th>中身</th></tr>
+        <tr><td>0 0</td><td class="o">A + B</td><td>加算器（C<sub>in</sub> = 0）</td></tr>
+        <tr><td>0 1</td><td class="o">A − B</td><td>同じ加算器（B 反転、C<sub>in</sub> = 1）</td></tr>
+        <tr><td>1 0</td><td class="o">A · B</td><td>AND × 4</td></tr>
+        <tr><td>1 1</td><td class="o">A ⊕ B</td><td>XOR × 4</td></tr>
+      </table></div>
+      <p>NOT 1個から始めて、同じ NAND だけで 124 個。第1章から第5章まで、原始部品は一度も増えていません。</p>
+      <h3>CPU まで、あと2つ</h3>
+      <p>レジスタ・カウンタ・ALU が揃うと、CPU に足りないのは<b>メモリ</b>（命令とデータを置く場所）と<b>制御</b>（命令の番号を読んで、どのレジスタを書き、ALU に何をさせるかを順に指示する仕掛け）だけ。制御は第2章のデコーダで作れ、プログラムカウンタは第5章のカウンタに「好きな値を入れる口」を足せば分岐ができる。</p>
+      <p>詰まるのはメモリです。16語 × 4ビットの RAM を NAND で組むと 600 個を超え、手で配線するのは現実的でない。NandLab README「ここから先 ― CPU までの道順」に、RAM を「ここだけは実装部品」として足すときの場所が書いてあります。</p>
+    </div>
+  </div>
+
+  <div class="deep-note">
+    <span class="tag">くわしく — 第2部・第4部へ戻る</span>
+    <p>この部で「石」と呼んできたスイッチは、第2部第5章の nMOS（p 基板・V<sub>th</sub> 0.4〜0.6 V・S 値 80 mV/桁以下）です。第1章の伝達特性で坂の急さを決めていたのは、その V<sub>th</sub> と二乗則の強さ。S 値は「オフのとき、しきい値の下でどれだけ漏れるか」で、これが CPU の待機電力の下限を決めます（第4部 付録 B「S 値の 59.5 mV/桁 という壁」）。第4部の画素の中にも、転送・リセット・ソースフォロワ・選択の4個の MOSFET がいて、同じ物理で動いています。</p>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — NandLab 第5章</span>
+    <p>レジスタは「FF ＋ 手前のセレクタ」を1桁ぶんチップにして4つ置く。カウンタはクロック部品を繋いで「動かす」と、自分で組んだ回路が勝手に数えはじめる。R を繋ぎ忘れると X のまま動かない ― それが正しい。ALU は1桁ぶんをチップにしてから4つ。「道のり」で、NOT からここまでが何の上に建っているかが図で見える。</p>
+    <div class="qs"><span class="lab">NandLab</span><a href="NandLab/index.html?quest=reg4">4ビットレジスタ</a><a href="NandLab/index.html?quest=shift4">4ビットシフトレジスタ</a><a href="NandLab/index.html?quest=count4">4ビットカウンタ</a><a href="NandLab/index.html?quest=alu4">4ビット ALU</a></div>
+  </div>
+</section>
+
+<!-- ================= 数字の根拠 ================= -->
+<section class="stage" id="snum">
+  <div class="stage-head"><span class="stage-num">—</span><h2>数字はどこから来たか</h2></div>
+  <p class="lede">この部の数値は2種類。NAND の個数は NandLab のお手本（<code>src/answer.js</code>）を <code>tests/quest.js</code> が実際に組んで数えた値。電圧は NandLab の物理層 <code>analog.js</code> の二乗則モデルを解いた値です。</p>
+  <figure class="full">
+    <div class="scroll-x"><table>
+      <thead><tr><th>量</th><th>値</th><th>どこから来たか</th></tr></thead>
+      <tbody>
+        <tr class="grp"><td colspan="3">石の数（CMOS）</td></tr>
+        <tr><td>NOT / NAND / NOR</td><td class="num">2 / 4 / 4</td><td>インバータは p と n が1個ずつ。2入力の NAND は p 並列 2 ＋ n 直列 2、NOR はその逆。</td></tr>
+        <tr><td>AND / OR</td><td class="num">6</td><td>NAND（NOR）の後ろにインバータ 2 石。否定つきのほうが2石少ない。</td></tr>
+        <tr class="grp"><td colspan="3">NAND の個数（NandLab のお手本の実測）</td></tr>
+        <tr><td>第1章</td><td class="num">1 / 2 / 3 / 4 / 4 / 5</td><td>NOT / AND / OR / XOR / NOR / XNOR。OR は入力を2つ反転して NAND（3個）。NOR は OR ＋ NOT。</td></tr>
+        <tr><td>第2章</td><td class="num">4 / 10 / 12 / 26</td><td>2:1 MUX / 2→4 デコーダ / 4:1 MUX（2:1 × 3）/ 4ビット比較器（XNOR × 4 ＋ AND × 3）。</td></tr>
+        <tr><td>第3章</td><td class="num">5 / 13 / 52 / 56 / 18</td><td>半加算器 / 全加算器（半加算器 × 2 ＋ OR）/ 4ビット加算器（全加算器 × 4）/ 減算器（＋ NOT × 4）/ 2ビット乗算器。全加算器は最小 9 個にできる。</td></tr>
+        <tr><td>第4章</td><td class="num">2 / 5 / 11</td><td>SR ラッチ / D ラッチ（SR ＋ 門 2 ＋ NOT）/ D-FF（D ラッチ × 2 ＋ NOT）。</td></tr>
+        <tr><td>第5章</td><td class="num">60 / 44 / 70 / 124</td><td>レジスタ（(D-FF 11 ＋ MUX 4) × 4）/ シフトレジスタ（D-FF × 4）/ カウンタ / ALU。</td></tr>
+        <tr><td>16語 × 4bit の RAM</td><td class="num">600 個超</td><td>D ラッチ 5 × 64 ビット ＝ 320 に、番地のデコーダと読み出しのセレクタを足した概算。NandLab README「ここから先」。</td></tr>
+        <tr class="grp"><td colspan="3">電圧（analog.js の二乗則。電源 3.3 V、V<sub>th</sub> 0.7 V、n と p は同じ強さ）</td></tr>
+        <tr><td>切り替わりの電圧</td><td class="num">≈ 1.7 V</td><td>B = 3.3 V（1）に固定して A を掃いたとき、出力が電源から地面へ落ちる位置。上の p と下の n 直列の電流が釣り合う点を二分法で解いた。n が直列なぶん、インバータの 1.65 V より少し右。</td></tr>
+        <tr><td>V<sub>IL</sub> / V<sub>IH</sub></td><td class="num">1.52 / 1.99 V</td><td>坂の傾きが −1 になる2点。この外側では入力の揺れが出力で小さくなる。</td></tr>
+        <tr><td>V<sub>OH</sub> / V<sub>OL</sub></td><td class="num">3.03 / 0.24 V</td><td>V<sub>IL</sub> と V<sub>IH</sub> を入れたときの出力。</td></tr>
+        <tr><td>雑音余裕 NM<sub>L</sub> / NM<sub>H</sub></td><td class="num">1.28 / 1.04 V</td><td>NM<sub>L</sub> = V<sub>IL</sub> − V<sub>OL</sub>、NM<sub>H</sub> = V<sub>OH</sub> − V<sub>IH</sub>。前の段の出力がこれだけ汚れても、次の段が読み違えない。</td></tr>
+        <tr><td>坂の最大利得</td><td class="num">−100 以下</td><td>二乗則で上下が飽和領域に入る点の傾き。理想化した二乗則では刻みを細かくするほど大きく出る（上の図の 220 点で −112、600 点で −290）。実物は数十。1 を超えていれば議論は同じ。</td></tr>
+        <tr class="grp"><td colspan="3">第2部から</td></tr>
+        <tr><td>µ<sub>n</sub> / µ<sub>p</sub></td><td class="num">1164 / 386</td><td>10¹⁶ の移動度（cm²/V·s）。NAND が NOR より速い理由。第2部第1章の表。</td></tr>
+        <tr><td>nMOS の V<sub>th</sub></td><td class="num">0.4〜0.6 V</td><td>SemiLab「NAND の中身へ」の課題の範囲。酸化膜 7 nm・基板 2.5×10¹⁷ で 0.427 V。</td></tr>
+      </tbody>
+    </table></div>
+  </figure>
+</section>
+
+<!-- ================= どこまでがモデルか ================= -->
+<section class="stage" id="smodel">
+  <div class="stage-head"><span class="stage-num">—</span><h2>どこまでが厳密で、どこからがモデルか</h2></div>
+  <div class="two">
+    <div class="body-col">
+      <h3>NandLab が本当にやっていること</h3>
+      <p>3値（0/1/X）・単位遅延・イベント駆動のシミュレーション。チップは展開してから回すので、階層をまたぐフィードバック（D-FF を使ったカウンタ）も本当に動く。採点は真理値表の総当り（組合せ）と、入力を順に与える手順（順序）。<b>論理としては近似が無い</b> ― 単位遅延の理想化を除いて。</p>
+      <h3>理想化しているもの</h3>
+      <p>全ゲートの遅延が等しい（実物は配線とファンアウトで違う）。セットアップ／ホールド時間と準安定が無い。電圧は物理層の絵でだけ出て、盤面は記号。消費電力・配線容量・駆動能力は無い。</p>
+    </div>
+    <div class="body-col">
+      <h3>物理層のモデル</h3>
+      <p>NAND の中身（<code>mos.js</code>）は「通じている／切れている／分からない」の3状態のスイッチ。伝達特性（<code>analog.js</code>）は最も素朴な二乗則で、n と p の強さが等しく、しきい値 0.7 V、電源 3.3 V。短チャネル効果・速度飽和・しきい値のばらつき（第4部 付録 B）は入っていません。</p>
+      <h3>扱わないもの</h3>
+      <p>桁上げ先読み、オーバーフロー検出、メモリ（RAM/ROM）、命令セットと制御、パイプライン。NAND 以外の原始部品（NOR だけの世界、伝送ゲート）。「原始部品は NAND だけ」を崩すと NandLab の本体が無くなるので、足すとしても「ここだけは実装部品」と画面上で区別する方針です。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 参考文献 ================= -->
+<section class="stage" id="sref">
+  <div class="stage-head"><span class="stage-num">—</span><h2>もっと先へ</h2></div>
+  <figure class="full">
+    <div class="scroll-x"><table>
+      <thead><tr><th>書名</th><th>著者</th><th>この部のどこに対応するか</th></tr></thead>
+      <tbody>
+        <tr><td>The Elements of<br>Computing Systems</td><td>Noam Nisan &amp; Shimon Schocken<br>MIT Press（Nand2Tetris）</td><td><b>この部の骨格にいちばん近い本。</b>NAND だけから ALU・メモリ・CPU・OS まで自分で作る。NandLab で ALU まで来た人の次の一冊。</td></tr>
+        <tr><td>Digital Design and<br>Computer Architecture</td><td>David Harris &amp; Sarah Harris<br>Morgan Kaufmann</td><td>1〜5章。組合せ・順序回路の設計から、この部が扱わない桁上げ先読み・パイプラインまで。CMOS の章もある。</td></tr>
+        <tr><td>Digital Integrated Circuits</td><td>Jan M. Rabaey ほか<br>Prentice Hall</td><td>1章の物理層。CMOS インバータの伝達特性・雑音余裕・遅延・消費電力を、この部より本気で導出している。第2部第5章との橋。</td></tr>
+        <tr><td>CODE</td><td>Charles Petzold<br>Microsoft Press</td><td>リレーから CPU まで、数式なしで積み上げる読み物。この部の「なぜ」を別の語り口で。</td></tr>
+        <tr><td>Introduction to<br>the Theory of Computation</td><td>Michael Sipser<br>Cengage</td><td>第1章の「万能性」と「単調性」の先。何が計算できて何ができないか。</td></tr>
+      </tbody>
+    </table></div>
+  </figure>
+  <div class="foot">
+    <span>NAND の個数は NandLab のお手本の実測、電圧は analog.js の二乗則モデルの値です。実物の石とは一致しません。</span>
+    <span><a href="index.html">学びの地図へ戻る</a> · 前: <a href="半導体デバイスの基礎.html">第2部 素子の物理</a> · 次: <a href="イメージセンサ解剖ラボ.html">第4部 イメージセンサ</a></span>
+    <span style="font-family:var(--mono)">スイッチ → NAND → 組合せ → 記憶 → ALU</span>
+  </div>
+</section>
+</main>
+</div>
+</div>
+
+<script>
+(function(){
+"use strict";
+var CS=getComputedStyle(document.documentElement);
+function C(n){return CS.getPropertyValue('--'+n).trim()}
+var MONO=C('mono')||'monospace', SANS=C('sans')||'sans-serif';
+function $(id){return document.getElementById(id)}
+var X='X';
+function sigColor(v){return v===1?C('one'):v===0?C('zero'):C('unk')}
+function sigName(v){return v===X?'X':String(v)}
+/* 3値 NAND（NandLab sim.js と同じ表） */
+function nand3(a,b){if(a===0||b===0)return 1;if(a===1&&b===1)return 0;return X}
+var SVG='http://www.w3.org/2000/svg';
+function el(p,tag,attrs,text){var e=document.createElementNS(SVG,tag);for(var k in attrs)e.setAttribute(k,attrs[k]);if(text!==undefined)e.textContent=text;p.appendChild(e);return e}
+function clear(s){while(s.firstChild)s.removeChild(s.firstChild)}
+
+/* ================= 01 NAND の中身 ================= */
+(function(){
+var svg=$('svgNand');if(!svg)return;
+var A=0,B=0;
+function gate(v,openAt){return v===X?'x':v===openAt?'on':'off'}
+function anyOn(a,b){return a==='on'||b==='on'?'on':a==='off'&&b==='off'?'off':'x'}
+function allOn(a,b){return a==='off'||b==='off'?'off':a==='on'&&b==='on'?'on':'x'}
+function swColor(s){return s==='on'?C('photon'):s==='off'?C('surface-3'):C('unk-soft')}
+function draw(){
+  clear(svg);
+  var p=[gate(A,0),gate(B,0)],n=[gate(A,1),gate(B,1)],up=anyOn(p[0],p[1]),down=allOn(n[0],n[1]);
+  var y=up==='on'?1:down==='on'?0:X;
+  var mid=(n[1]==='on')?0:(n[1]==='off'?(n[0]==='on'?y:X):X); /* n どうしの間の節点。下が切れていれば宙に浮く */
+  var yc=sigColor(y);
+  /* rails */
+  el(svg,'line',{x1:40,y1:24,x2:380,y2:24,stroke:C('one'),'stroke-width':3});el(svg,'text',{x:392,y:28,'font-family':MONO,'font-size':11,fill:C('one')},'電源 1');
+  el(svg,'line',{x1:40,y1:276,x2:380,y2:276,stroke:C('zero'),'stroke-width':3});el(svg,'text',{x:392,y:280,'font-family':MONO,'font-size':11,fill:C('zero')},'地面 0');
+  /* Y node */
+  el(svg,'line',{x1:120,y1:110,x2:300,y2:110,stroke:yc,'stroke-width':3});el(svg,'line',{x1:210,y1:110,x2:210,y2:150,stroke:yc,'stroke-width':3});
+  el(svg,'line',{x1:300,y1:110,x2:350,y2:110,stroke:yc,'stroke-width':3});
+  el(svg,'text',{x:356,y:114,'font-family':MONO,'font-size':13,'font-weight':700,fill:yc},'Y = '+sigName(y));
+  /* transistor drawer: x,y center; kind p/n; state; label; gate value */
+  function tr(x,yy,kind,st,label,gv){
+    var gc=sigColor(gv);
+    el(svg,'rect',{x:x-6,y:yy-22,width:12,height:44,rx:2,fill:swColor(st),stroke:st==='x'?C('ink-3'):'none','stroke-dasharray':st==='x'?'3 2':''});
+    el(svg,'line',{x1:x-18,y1:yy-24,x2:x-18,y2:yy+24,stroke:gc,'stroke-width':3});
+    if(kind==='p')el(svg,'circle',{cx:x-26,cy:yy,r:4,fill:'none',stroke:gc,'stroke-width':2});
+    el(svg,'line',{x1:x-(kind==='p'?30:18),y1:yy,x2:x-46,y2:yy,stroke:gc,'stroke-width':3});
+    el(svg,'text',{x:x+12,y:yy+4,'font-family':MONO,'font-size':11,fill:C('ink-2')},label+(st==='on'?' 通':st==='off'?' 切':' ?'));
+  }
+  /* pMOS parallel */
+  el(svg,'line',{x1:120,y1:24,x2:120,y2:110,stroke:C('one'),'stroke-width':3,opacity:.25});el(svg,'line',{x1:300,y1:24,x2:300,y2:110,stroke:C('one'),'stroke-width':3,opacity:.25});
+  el(svg,'line',{x1:120,y1:24,x2:120,y2:45,stroke:C('one'),'stroke-width':3});el(svg,'line',{x1:300,y1:24,x2:300,y2:45,stroke:C('one'),'stroke-width':3});
+  el(svg,'line',{x1:120,y1:89,x2:120,y2:110,stroke:yc,'stroke-width':3});el(svg,'line',{x1:300,y1:89,x2:300,y2:110,stroke:yc,'stroke-width':3});
+  tr(120,67,'p',p[0],'p(A)',A);tr(300,67,'p',p[1],'p(B)',B);
+  /* nMOS series */
+  var mc=sigColor(mid);
+  el(svg,'line',{x1:210,y1:150,x2:210,y2:158,stroke:yc,'stroke-width':3});
+  tr(210,180,'n',n[0],'n(A)',A);
+  el(svg,'line',{x1:210,y1:202,x2:210,y2:218,stroke:mc,'stroke-width':3});el(svg,'text',{x:222,y:214,'font-family':MONO,'font-size':10,fill:C('ink-3')},mid===X?'（宙に浮いている）':'');
+  tr(210,240,'n',n[1],'n(B)',B);
+  el(svg,'line',{x1:210,y1:262,x2:210,y2:276,stroke:C('zero'),'stroke-width':3});
+  /* input labels */
+  el(svg,'text',{x:44,y:71,'font-family':MONO,'font-size':13,'font-weight':700,fill:sigColor(A)},'A = '+sigName(A));
+  el(svg,'text',{x:224,y:56,'font-family':MONO,'font-size':13,'font-weight':700,fill:sigColor(B)},'B = '+sigName(B));
+  el(svg,'text',{x:40,y:190,'font-family':MONO,'font-size':10.5,fill:C('ink-3')},'上 p: 並列 → どちらか通じれば 1');
+  el(svg,'text',{x:40,y:250,'font-family':MONO,'font-size':10.5,fill:C('ink-3')},'下 n: 直列 → 両方通じて初めて 0');
+  $('bNA').textContent='A = '+sigName(A);$('bNA').setAttribute('aria-pressed',A===1);$('bNA').className='btn'+(A===1?' one':'');
+  $('bNB').textContent='B = '+sigName(B);$('bNB').setAttribute('aria-pressed',B===1);$('bNB').className='btn'+(B===1?' one':'');
+  var s;
+  if(A===X||B===X){s=(A===X&&B===X?'A も B も':(A===X?'A が':'B が'))+'まだ決まっていない。'+(up==='on'?'でも、もう片方が 0 なので上はもう通じている ― それだけで Y は 1 に決まる。':'通り道が決められないので Y も決まらない。0 で埋めない。')}
+  else if(A===1&&B===1)s='A も B も 1。下の n が2つとも通じ、Y は地面まで一本道 ― 0。上の p は2つとも切れているので、電源から地面へ電流は流れない。';
+  else s=(A===0&&B===0?'A も B も 0 なので上の p は2つとも':(A===0?'A が 0 なので p(A) が':'B が 0 なので p(B) が'))+'通じ、Y は電源へ引き上げられて 1。下の n は直列なので片方でも切れていれば地面には落ちない。';
+  $('tNand').textContent=s;
+}
+$('bNA').addEventListener('click',function(){A=A===0?1:0;draw()});
+$('bNB').addEventListener('click',function(){B=B===0?1:0;draw()});
+$('bNX').addEventListener('click',function(){B=B===X?0:X;draw()});
+draw();
+})();
+
+/* ================= 01 伝達特性（analog.js と同じ二乗則） ================= */
+(function(){
+var cv=$('cvVtc');if(!cv)return;
+var VDD=3.3,VTH=0.7,K=1,STEPS=40;
+function cur(vgs,vds){if(vgs<=VTH||vds<0)return 0;var ov=vgs-VTH;return vds>=ov?K/2*ov*ov:K*(ov*vds-vds*vds/2)}
+function pullUp(va,vb,vo){return cur(VDD-va,VDD-vo)+cur(VDD-vb,VDD-vo)}
+function midOf(va,vb,vo){var lo=0,hi=Math.max(0,vo),m;for(var i=0;i<STEPS;i++){m=(lo+hi)/2;if(cur(va-m,vo-m)>cur(vb,m))lo=m;else hi=m}return (lo+hi)/2}
+function pullDown(va,vb,vo){return cur(vb,midOf(va,vb,vo))}
+function solve(va,vb){var lo=0,hi=VDD,m;for(var i=0;i<STEPS;i++){m=(lo+hi)/2;if(pullUp(va,vb,m)>pullDown(va,vb,m))lo=m;else hi=m}return (lo+hi)/2}
+function draw(){
+  var vb=(+$('cVB').value)/100,noise=(+$('cVN').value)/100;
+  $('vVB').textContent=vb.toFixed(2)+' V'+(vb>=VDD-0.01?'（= 1）':vb<=0.01?'（= 0）':'');$('vVN').textContent='±'+noise.toFixed(2)+' V';
+  var n=220,pts=[],i,va;for(i=0;i<=n;i++){va=VDD*i/n;pts.push([va,solve(va,vb)])}
+  var vil=null,vih=null,g,gmax=0;
+  for(i=1;i<pts.length;i++){g=(pts[i][1]-pts[i-1][1])/(pts[i][0]-pts[i-1][0]);if(g<gmax)gmax=g;if(g<=-1&&vil===null)vil=pts[i-1][0];if(g<=-1)vih=pts[i][0]}
+  var gc=cv.getContext('2d');gc.clearRect(0,0,cv.width,cv.height);
+  var x0=70,y0=20,w=700,h=270;
+  function Xv(v){return x0+v/VDD*w}function Yv(v){return y0+h-v/VDD*h}
+  gc.strokeStyle=C('line');gc.strokeRect(x0+.5,y0+.5,w,h);
+  gc.font='11px '+MONO;gc.fillStyle=C('ink-3');gc.textAlign='center';
+  for(var v=0;v<=3.3;v+=0.5){gc.fillText(v.toFixed(1),Xv(v),y0+h+14);gc.textAlign='right';gc.fillText(v.toFixed(1),x0-6,Yv(v)+4);gc.textAlign='center'}
+  gc.fillText('入力 A [V]',x0+w/2,y0+h+30);gc.save();gc.translate(x0-46,y0+h/2);gc.rotate(-Math.PI/2);gc.fillText('出力 Y [V]',0,0);gc.restore();
+  function interp(v){var t=v/VDD*n,i0=Math.max(0,Math.min(n-1,Math.floor(t))),f=t-i0;return pts[i0][1]*(1-f)+pts[i0+1][1]*f}
+  if(vil!==null){
+    gc.fillStyle=C('volt-soft');gc.fillRect(Xv(vil),y0,Xv(vih)-Xv(vil),h);
+    gc.fillStyle=C('volt');gc.font='10.5px '+MONO;gc.textAlign='center';gc.fillText('X の居場所',(Xv(vil)+Xv(vih))/2,y0+14);
+    gc.strokeStyle=C('volt');gc.setLineDash([3,3]);gc.beginPath();gc.moveTo(Xv(vil),y0);gc.lineTo(Xv(vil),y0+h);gc.moveTo(Xv(vih),y0);gc.lineTo(Xv(vih),y0+h);gc.stroke();gc.setLineDash([]);
+  }
+  /* 雑音の帯: 入力 0±n と 3.3±n → 出力の帯 */
+  function band(center,col){var a=Math.max(0,center-noise),b=Math.min(VDD,center+noise);var oa=interp(a),ob=interp(b),lo=Math.min(oa,ob),hi=Math.max(oa,ob);
+    gc.fillStyle=col;gc.globalAlpha=.35;gc.fillRect(Xv(a),y0+h-6,Xv(b)-Xv(a),6);gc.fillRect(x0,Yv(hi),6,Yv(lo)-Yv(hi));gc.globalAlpha=.12;gc.fillRect(Xv(a),y0,Xv(b)-Xv(a),h);gc.globalAlpha=1;
+    gc.fillStyle=col;gc.font='10.5px '+MONO;gc.textAlign='left';gc.fillText('入力 '+center.toFixed(1)+'±'+noise.toFixed(2)+' → 出力の揺れ '+(hi-lo).toFixed(3)+' V',Xv(center===0?0:1.85),Yv(center===0?VDD:0)+(center===0?18:-8))}
+  band(0,C('zero'));band(VDD,C('one'));
+  gc.strokeStyle=C('volt');gc.lineWidth=2.5;gc.beginPath();for(i=0;i<pts.length;i++){i?gc.lineTo(Xv(pts[i][0]),Yv(pts[i][1])):gc.moveTo(Xv(pts[i][0]),Yv(pts[i][1]))}gc.stroke();gc.lineWidth=1;
+  /* 右: 説明 */
+  var rx=800;gc.fillStyle=C('ink-2');gc.font='12px '+SANS;gc.textAlign='left';
+  var lines=['坂の外側では 利得 < 1:','　入力の揺れが出力で縮む。','坂の途中では 利得 ≫ 1:','　少しの差が 0 か 1 に振り分けられる。','','だから何段積んでも濁らない。','B を下げると坂が右へ動く ―','下の n(B) が弱くなるぶん、','A を強く押さないと落ちない。'];
+  for(i=0;i<lines.length;i++)gc.fillText(lines[i],rx,y0+20+i*20);
+  var voh=vil!==null?interp(vil):NaN,vol=vil!==null?interp(vih):NaN;
+  $('rVil').textContent=vil!==null?vil.toFixed(2)+' / '+vih.toFixed(2)+' V':'坂が無い';
+  $('rVoh').textContent=vil!==null?voh.toFixed(2)+' / '+vol.toFixed(2)+' V':'—';
+  $('rVnm').textContent=vil!==null?(vil-vol).toFixed(2)+' / '+(voh-vih).toFixed(2)+' V':'—';
+  $('rVg').textContent=gmax.toFixed(0);
+}
+$('cVB').addEventListener('input',draw);$('cVN').addEventListener('input',draw);draw();
+})();
+
+/* ================= 02 真理値表 → 積和形 ================= */
+(function(){
+var t=$('ttSop');if(!t)return;
+var names=['A','B','S'],out=[0,0,0,0,0,0,0,0];
+var PRE={mux:function(a,b,s){return s?b:a},maj:function(a,b,s){return (a+b+s)>=2?1:0},xor3:function(a,b,s){return a^b^s},zero:function(){return 0}};
+function bar(n){return n+'̄'}
+function render(){
+  var html='<tr><th>A</th><th>B</th><th>S</th><th>Y</th></tr>';
+  for(var m=0;m<8;m++){var a=(m>>2)&1,b=(m>>1)&1,s=m&1;html+='<tr><td>'+a+'</td><td>'+b+'</td><td>'+s+'</td><td class="o" data-i="'+m+'" style="cursor:pointer" title="クリックで切り替え">'+out[m]+'</td></tr>'}
+  t.innerHTML=html;
+  var terms=[],inv={};
+  for(var i=0;i<8;i++)if(out[i]){var lits=[];for(var k=0;k<3;k++){var bit=(i>>(2-k))&1;lits.push(bit?names[k]:bar(names[k]));if(!bit)inv[names[k]]=1}terms.push(lits.join('·'))}
+  var ninv=Object.keys(inv).length,k=terms.length;
+  var sop=k===0?'Y = 0（定数）':k===8?'Y = 1（定数）':'Y = '+terms.join(' + ');
+  $('rSop').textContent=sop;$('rSopN').textContent=k;
+  var gates=k===0||k===8?0:(k===1?1+1+ninv:k+1+ninv);
+  $('rSopG').textContent=gates+(k===1?'（項の NAND ＋ NOT ＋ 反転）':k>1?'（項 '+k+' ＋ 束ね 1 ＋ 反転 '+ninv+'）':'');
+  $('rSopD').textContent=k===0||k===8?'0':(ninv?'3':'2')+' 段';
+}
+t.addEventListener('click',function(e){var td=e.target.closest('td[data-i]');if(!td)return;var i=+td.getAttribute('data-i');out[i]=out[i]?0:1;render()});
+Array.prototype.forEach.call(document.querySelectorAll('[data-preset]'),function(b){b.addEventListener('click',function(){var f=PRE[b.getAttribute('data-preset')];for(var m=0;m<8;m++)out[m]=f((m>>2)&1,(m>>1)&1,m&1);render()})});
+for(var m=0;m<8;m++)out[m]=PRE.mux((m>>2)&1,(m>>1)&1,m&1);render();
+})();
+
+/* ================= 03 加算器 / 2の補数 ================= */
+(function(){
+var svg=$('svgAdd');if(!svg)return;
+var A=[1,1,1,0],B=[1,0,1,0],sub=false; /* 添字 0 が最下位。A=7, B=5 */
+function num(bits){return bits[0]+2*bits[1]+4*bits[2]+8*bits[3]}
+function draw(){
+  clear(svg);
+  var bb=B.map(function(b){return sub?1-b:b}),c=sub?1:0,cs=[c],S=[];
+  for(var i=0;i<4;i++){var s=A[i]+bb[i]+c;S.push(s&1);c=s>>1;cs.push(c)}
+  var x0=150,dx=70;function X(i){return x0+(3-i)*dx}
+  function row(y,label,bits,col,clickable,which,faint){
+    el(svg,'text',{x:20,y:y+5,'font-family':MONO,'font-size':11.5,fill:C('ink-2')},label);
+    for(var i=0;i<4;i++){var r=el(svg,'rect',{x:X(i)-18,y:y-16,width:36,height:32,rx:3,fill:bits[i]?C('one-soft'):C('zero-soft'),stroke:bits[i]?C('one'):C('zero'),opacity:faint?.45:1,style:clickable?'cursor:pointer':''});
+      el(svg,'text',{x:X(i),y:y+5,'text-anchor':'middle','font-family':MONO,'font-size':15,'font-weight':700,fill:bits[i]?C('one'):C('zero'),opacity:faint?.6:1,style:'pointer-events:none'},bits[i]);
+      if(clickable){(function(i,which){r.addEventListener('click',function(){which[i]=1-which[i];draw()})})(i,which)}}
+  }
+  row(40,'A',A,null,true,A);
+  row(84,'B（クリック）',B,null,true,B);
+  if(sub)row(122,'B̄（反転）',bb,null,false,null,true);
+  /* carries */
+  var cy=sub?158:130;
+  el(svg,'text',{x:20,y:cy+4,'font-family':MONO,'font-size':11.5,fill:C('ink-2')},'桁上がり →');
+  for(var i=0;i<=4;i++){var cx=i===4?X(3)-dx:X(i);var cxx=i===4?X(3)-dx+dx/2- dx/2:X(i)-dx/2; var px=X(i)-dx/2; if(i===4)px=X(3)-dx/2-0;
+    var xx=X(i)-dx/2; if(i===4)xx=X(3)-dx/2;
+    el(svg,'text',{x:xx,y:cy+4,'text-anchor':'middle','font-family':MONO,'font-size':12,'font-weight':700,fill:cs[i]?C('photon-2'):C('ink-3')},cs[i]);
+  }
+  el(svg,'text',{x:X(0)+dx/2+8,y:cy+4,'font-family':MONO,'font-size':10,fill:C('ink-3')},'← C_in '+(sub?'= 1（2の補数の +1）':'= 0'));
+  el(svg,'line',{x1:x0-dx,y1:cy+16,x2:X(0)+24,y2:cy+16,stroke:C('line')});
+  var sy=cy+44;row(sy,sub?'D = A − B':'S = A + B',S,null,false,null);
+  el(svg,'text',{x:X(3)-dx,y:sy+5,'text-anchor':'middle','font-family':MONO,'font-size':13,'font-weight':700,fill:cs[4]?C('photon-2'):C('ink-3')},cs[4]);
+  el(svg,'text',{x:X(3)-dx,y:sy-22,'text-anchor':'middle','font-family':MONO,'font-size':9.5,fill:C('ink-3')},sub?'借りなし?':'桁上げ');
+  var a=num(A),b=num(B),r=num(S);
+  var msg=sub?(a+' − '+b+' = '+(a-b)+'。回路の答えは '+r+'（'+S.slice().reverse().join('')+'）'+(cs[4]?'、上の桁上がり 1 ＝ A ≥ B で借りなし。':'、上の桁上がり 0 ＝ 借りが出た。16 を足すと '+(r-16)+' ― 2の補数で読めば正しい。')):(a+' + '+b+' = '+(a+b)+'。回路の答えは '+r+(cs[4]?' ＋ 桁上がり 1（＝16）':'')+'（'+(cs[4]?'1':'')+S.slice().reverse().join('')+'）');
+  $('tAdd').textContent=msg;
+}
+$('bOpAdd').addEventListener('click',function(){sub=false;$('bOpAdd').setAttribute('aria-pressed','true');$('bOpSub').setAttribute('aria-pressed','false');draw()});
+$('bOpSub').addEventListener('click',function(){sub=true;$('bOpAdd').setAttribute('aria-pressed','false');$('bOpSub').setAttribute('aria-pressed','true');draw()});
+draw();
+})();
+
+/* ================= 04 SR ラッチ ================= */
+(function(){
+var svg=$('svgSr');if(!svg)return;
+var S=1,R=1,q=X,qb=X,t=0,hist=[];
+function step(){var nq=nand3(S,qb),nqb=nand3(R,q);var changed=(nq!==q||nqb!==qb);q=nq;qb=nqb;t++;return changed}
+function draw(msg){
+  clear(svg);
+  function gateAt(x,y,label,a,b,o){
+    el(svg,'path',{d:'M'+x+','+(y-22)+' h26 a22,22 0 0 1 0,44 h-26 z',fill:C('surface'),stroke:C('ink-2'),'stroke-width':1.6});
+    el(svg,'circle',{cx:x+53,cy:y,r:4.5,fill:C('surface'),stroke:C('ink-2'),'stroke-width':1.6});
+    el(svg,'line',{x1:x-40,y1:y-10,x2:x,y2:y-10,stroke:sigColor(a),'stroke-width':3});el(svg,'line',{x1:x-40,y1:y+10,x2:x,y2:y+10,stroke:sigColor(b),'stroke-width':3});
+    el(svg,'line',{x1:x+58,y1:y,x2:x+110,y2:y,stroke:sigColor(o),'stroke-width':3});
+    el(svg,'text',{x:x+13,y:y+4,'text-anchor':'middle','font-family':MONO,'font-size':10,fill:C('ink-3')},label);
+  }
+  gateAt(170,70,'NAND',S,qb,q);gateAt(170,160,'NAND',R,q,qb);
+  /* cross wires */
+  el(svg,'path',{d:'M280,70 L300,70 L300,110 L118,140 L130,150',fill:'none',stroke:sigColor(q),'stroke-width':3});
+  el(svg,'path',{d:'M280,160 L300,160 L300,120 L118,90 L130,80',fill:'none',stroke:sigColor(qb),'stroke-width':3});
+  el(svg,'text',{x:80,y:64,'font-family':MONO,'font-size':13,'font-weight':700,fill:sigColor(S)},'S = '+S);
+  el(svg,'text',{x:80,y:176,'font-family':MONO,'font-size':13,'font-weight':700,fill:sigColor(R)},'R = '+R);
+  el(svg,'text',{x:300,y:60,'font-family':MONO,'font-size':13,'font-weight':700,fill:sigColor(q)},'Q = '+sigName(q));
+  el(svg,'text',{x:300,y:186,'font-family':MONO,'font-size':13,'font-weight':700,fill:sigColor(qb)},'Q̄ = '+sigName(qb));
+  el(svg,'text',{x:400,y:120,'font-family':MONO,'font-size':11,fill:C('ink-3')},'t = '+t);
+  el(svg,'text',{x:20,y:210,'font-family':MONO,'font-size':10.5,fill:C('ink-3')},'履歴 Q: '+hist.slice(-12).join(' '));
+  $('bSrS').textContent='S = '+S;$('bSrS').setAttribute('aria-pressed',S===1);$('bSrS').className='btn'+(S===1?' one':'');
+  $('bSrR').textContent='R = '+R;$('bSrR').setAttribute('aria-pressed',R===1);$('bSrR').className='btn'+(R===1?' one':'');
+  $('tSr').textContent=msg||'';
+}
+function push(){hist.push(sigName(q))}
+$('bSrS').addEventListener('click',function(){S=1-S;draw('S を '+S+' にした。「1 歩進める」で伝わる。')});
+$('bSrR').addEventListener('click',function(){R=1-R;draw('R を '+R+' にした。「1 歩進める」で伝わる。')});
+$('bSrStep').addEventListener('click',function(){var ch=step();push();draw(ch?'両方の NAND を同時に評価して、同時に書き戻した。':'もう変わらない ― 落ち着いている。'+(q===X?'X のまま（既知の値を注ぐまで抜け出せない）。':'入力を戻しても Q = '+q+' が残る。これが記憶。'))});
+$('bSrRun').addEventListener('click',function(){var n=0;while(n<20&&step()){push();n++}if(n>=20){draw('20 歩進めても落ち着かない ― 発振している（S=R=0 から両方 1 に戻したときに起きる）。')}else{push();draw(n?n+' 歩で落ち着いた。Q = '+sigName(q)+'。':'すでに落ち着いていた。Q = '+sigName(q)+'。')}});
+$('bSrReset').addEventListener('click',function(){q=X;qb=X;t=0;hist=[];draw('電源を入れ直した。Q も Q̄ も X ― どちらに転ぶか分からない。S か R を 0 にして進める。')});
+draw('電源を入れた直後。Q も Q̄ も X。');
+})();
+
+/* ================= レール ================= */
+(function(){
+var links=Array.prototype.slice.call(document.querySelectorAll('.rail a'));if(!links.length||!('IntersectionObserver' in window))return;
+var map={};links.forEach(function(a){map[a.getAttribute('href').slice(1)]=a});
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){links.forEach(function(a){a.classList.remove('on')});var a=map[e.target.id];if(a)a.classList.add('on')}})},{rootMargin:'-20% 0px -70% 0px'});
+document.querySelectorAll('section.stage').forEach(function(s){io.observe(s)});
+})();
+})();
+</script>
+</body>
+</html>
