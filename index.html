@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>プロセスラボ</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+  <header id="topbar">
+    <div id="brand">プロセスラボ</div>
+
+    <div class="group">
+      <label title="最初のウェーハの型と濃度">基板
+        <select id="subType"><option value="p">p 型</option><option value="n">n 型</option></select>
+        <input id="subN" class="num" type="text" value="1e15"><span class="unit">cm⁻³</span>
+      </label>
+    </div>
+
+    <div class="group" id="toolGroup">
+      <button id="btnSemiDiode" class="tb primary" title="縦の1本を SemiLab に渡す（膜は外して、シリコン表面に電極）">SemiLab で開く（ダイオード）</button>
+      <button id="btnSemiMos" class="tb primary" title="縦の1本を SemiLab に渡す（シリコンの上の酸化膜をゲートに）">SemiLab で開く（MOS）</button>
+      <button id="btnClear"  class="tb">レシピを消す</button>
+      <button id="btnExport" class="tb">書き出し</button>
+      <button id="btnImport" class="tb">読み込み</button>
+    </div>
+  </header>
+
+  <main>
+    <aside id="left">
+      <section>
+        <h2>工程を足す</h2>
+        <div id="addGrid">
+          <button class="tb" data-add="depo" title="膜を全面に積む">成膜</button>
+          <button class="tb" data-add="mask" title="レジストを塗って、開ける所を決める">露光・現像</button>
+          <button class="tb" data-add="etch" title="上から、その材料だけ削る">エッチング</button>
+          <button class="tb" data-add="strip" title="レジストを全部はがす">レジスト除去</button>
+          <button class="tb" data-add="imp" title="イオンを打ち込む">イオン注入</button>
+          <button class="tb" data-add="heat" title="焼く（拡散・酸化）">熱処理</button>
+        </div>
+        <p class="note">選んでいる工程の<b>すぐ後ろ</b>に入る。工程を選ぶと、その工程の<b>直後のウェーハ</b>が真ん中に出る。</p>
+      </section>
+
+      <section>
+        <h2>レシピ</h2>
+        <ol id="stepList"></ol>
+        <p class="note" id="stepsEmpty">まだ何もない。上のボタンで工程を足す。</p>
+      </section>
+    </aside>
+
+    <div id="stage">
+      <div id="viewbar">
+        <span class="vlabel">断面で見る深さ</span>
+        <select id="depthSel">
+          <option value="0.3">0.3 µm</option>
+          <option value="1">1 µm</option>
+          <option value="2">2 µm</option>
+          <option value="4">4 µm</option>
+          <option value="8">8 µm</option>
+        </select>
+        <span class="vlabel">縦に切る位置</span>
+        <input id="cutVal" class="num" type="text" value="5.0"><span class="unit">µm</span>
+        <span class="grow"></span>
+        <span class="vlabel">断面をクリックしても切る位置を変えられる</span>
+      </div>
+      <canvas id="board"></canvas>
+      <div id="warnbar" class="hidden"></div>
+      <div id="status"><span id="statLeft"></span><span id="statRight"></span></div>
+    </div>
+
+    <aside id="quests">
+      <h2>課題</h2>
+      <div id="questBody" class="hidden">
+        <h3 id="qName"></h3>
+        <p id="qDesc"></p>
+        <p id="qWhy" class="why-line"></p>
+        <details id="qHintWrap"><summary>ヒント</summary><p id="qHint"></p></details>
+        <button id="btnGrade" class="tb primary wide">採点する</button>
+        <button id="btnAnswer" class="tb wide">お手本を見る</button>
+        <div id="qResult"></div>
+      </div>
+      <div id="questList"></div>
+    </aside>
+  </main>
+</div>
+
+<div id="overlay" class="hidden"><div id="modal"></div></div>
+
+<!-- SemiLab の物理をそのまま使う（移動度、第4章の採点）。フォルダは兄弟に置くこと -->
+<script src="../SemiLab/src/phys.js"></script>
+<script src="../SemiLab/src/stack.js"></script>
+<script src="../SemiLab/src/poisson.js"></script>
+<script src="../SemiLab/src/band.js"></script>
+<script src="../SemiLab/src/dev.js"></script>
+<script src="../SemiLab/src/light.js"></script>
+<script src="../SemiLab/src/parse.js"></script>
+
+<script src="src/grid.js"></script>
+<script src="src/implant.js"></script>
+<script src="src/oxide.js"></script>
+<script src="src/diffuse.js"></script>
+<script src="src/recipe.js"></script>
+<script src="src/measure.js"></script>
+<script src="src/quest.js"></script>
+<script src="src/answer.js"></script>
+<script src="src/store.js"></script>
+<script src="src/ui.js"></script>
+<script src="src/main.js"></script>
+</body>
+</html>
