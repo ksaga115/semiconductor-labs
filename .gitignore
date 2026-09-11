@@ -1,4 +1,15 @@
+# ビルド成果物は無い（ブラウザだけで動く）。念のための除外
 node_modules/
+bin/
+obj/
+publish_output/
+dist/
 *.log
-.DS_Store
+
+# OS / エディタ
 Thumbs.db
+desktop.ini
+.DS_Store
+.vscode/
+.idea/
+*.swp
