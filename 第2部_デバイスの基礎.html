@@ -826,6 +826,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
         <tr><td>5兆個に1個</td><td class="num">5×10²² / 10¹⁰</td><td>シリコンの原子密度 5×10²² /cm³ を n<sub>i</sub> で割った。</td></tr>
         <tr><td>1 Ω·cm の n 型</td><td class="num">5.2×10¹⁵</td><td>1/(q·N·µ<sub>n</sub>(N)) = 1 を解いた。µ<sub>n</sub>(5.2×10¹⁵) = 1208。p 型なら 1.4×10¹⁶（µ<sub>p</sub> = 380）。</td></tr>
         <tr><td>9 ℃で 2.06 倍</td><td class="num">n<sub>i</sub>(309)/n<sub>i</sub>(300)</td><td>上の n<sub>i</sub>(T) をそのまま。d(ln n<sub>i</sub>)/dT ≈ (1.5/T + E<sub>g</sub>/2kT²) = 0.080 /K → ln2/0.080 = 8.7 K。</td></tr>
+        <tr><td>四探針の係数</td><td class="num">π/ln2 = 4.532</td><td>無限に広い薄層で、針から放射状に広がる電流を鏡像で足し合わせた幾何の因子（Valdes 1954）。試料の端や厚みが効く場合は補正係数を掛ける。</td></tr>
         <tr class="grp"><td colspan="3">第2章</td></tr>
         <tr><td>V<sub>bi</sub> (10¹⁶/10¹⁶)</td><td class="num">0.714 V</td><td>0.02585 × ln(10³²/10²⁰) = 0.02585 × 27.63。解も 0.714（平衡は準フェルミ電位の近似が無いので厳密に一致する）。</td></tr>
         <tr><td>W (10¹⁶/10¹⁶)</td><td class="num">式 0.430 / 解 0.415 µm</td><td>√(2×1.036×10⁻¹²/1.602×10⁻¹⁹ × 2×10⁻¹⁶ × 0.714) = 4.30×10⁻⁵ cm。解は多数キャリアの欠損 ∫(1−n/N<sub>d</sub>)dx で測る（SemiLab README「落とし穴 3」）。</td></tr>
@@ -843,6 +844,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
         <tr><td>裸の反射 35%</td><td class="num">((n−1)/(n+1))²</td><td>600 nm で n = 3.95 → 0.355。400 nm は n = 5.57 で 0.484。</td></tr>
         <tr><td>感度 A/W</td><td class="num">QE·λ/1240</td><td>光子1個 = hc/λ の J、電子1個 = q の C。q/(hc/λ) = λ[nm]/1239.84 A/W。700 nm で QE 80% なら 0.45 A/W。</td></tr>
         <tr><td>QE 400 nm (p⁺ 0.3 µm)</td><td class="num">48%</td><td>反射 48% を引いた 52% のうち、空乏層で 3%、手前の層から拡散で届いたのが 45%、表面で消えたのが 4%。SemiLab の解。</td></tr>
+        <tr><td>太陽電池の V<sub>oc</sub></td><td class="num">V<sub>t</sub>·ln(J<sub>L</sub>/J<sub>0</sub>+1)</td><td>J = J<sub>0</sub>(e<sup>V/V<sub>t</sub></sup>−1) − J<sub>L</sub> = 0 を V について解いた。J<sub>0</sub> を 1/10 で +59.5 mV — 第3章の「飽和電流を小さくする」がそのまま効く。</td></tr>
         <tr class="grp"><td colspan="3">第5章</td></tr>
         <tr><td>C<sub>ox</sub> (5 nm)</td><td class="num">6.9×10⁻⁷ F/cm²</td><td>3.9 × 8.854×10⁻¹⁴ / 5×10⁻⁷。1 µm² で 6.9 fF。</td></tr>
         <tr><td>φ<sub>F</sub> (10¹⁷)</td><td class="num">0.417 V</td><td>V<sub>t</sub>·ln(N<sub>a</sub>/n<sub>i</sub>) = 0.02585 × 16.12。</td></tr>
