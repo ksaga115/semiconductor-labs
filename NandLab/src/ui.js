@@ -1397,8 +1397,9 @@
       line(PX(va), gy + gh, PX(va), PY(sol.vout), col, 1, [3, 4]);
       line(gx, PY(sol.vout), PX(va), PY(sol.vout), col, 1, [3, 4]);
       c2.beginPath(); c2.arc(PX(va), PY(sol.vout), 6, 0, Math.PI * 2); c2.fillStyle = col; c2.fill();
+      /* 札は点の反対側へ。A=0 の点は左上に居るので右下へ、A=1 の点は右下に居るので左上へ（軸の目盛りと重ねない） */
       text('A = ' + SIM.show(a) + '（' + A.volts(va) + '） → Y = ' + A.volts(sol.vout) + ' ＝ ' + (d === null ? 'X' : d),
-        PX(va) + (a === 1 ? -10 : 10), PY(sol.vout) + (a === 1 ? 16 : -14), col, 12, a === 1 ? 'right' : 'left');
+        PX(va) + (a === 1 ? -12 : 12), PY(sol.vout) + (a === 1 ? -16 : 16), col, 12, a === 1 ? 'right' : 'left');
       story = [
         (a === 1 && b !== 0) ? '下の n が2つとも通じて、Y は地面へ引き下げられている。'
                              : '上の p のどちらかが通じて、Y は電源へ引き上げられている。',
