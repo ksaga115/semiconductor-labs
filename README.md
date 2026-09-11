@@ -11,7 +11,7 @@
 参考書  製造プロセス体系マップ  半導体デバイスの基礎       論理回路の基礎        イメージセンサ解剖ラボ
 ラボ    ProcessLab          SemiLab                    NandLab           PixelLab
 
-   工程 → 不純物 → pn接合 → MOSFET → NAND → ALU
+   工程 → 不純物 → pn接合 → MOSFET → インバータ → NAND → ALU
                      └→ フォトダイオード → 画素 → カメラ → 像
 ```
 

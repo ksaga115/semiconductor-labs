@@ -183,7 +183,7 @@ table.tt td.x{color:var(--ink-3)}
   <div class="hero-grid">
     <div>
       <a class="back" href="index.html">&larr; Labs / 半導体 ― 第3部 どう計算するか（実践: NandLab）</a><br>
-      <span class="eyebrow">Switch &rarr; NAND &rarr; Logic &rarr; Memory &rarr; ALU</span>
+      <span class="eyebrow">Switch &rarr; Inverter &rarr; NAND &rarr; Logic &rarr; Memory &rarr; ALU</span>
       <h1>スイッチ4個から、<br><span class="lit">計算機</span>ができるまで</h1>
       <p class="sub">第2部の最後で作った MOSFET は、ゲートの電圧で通り道が繋がったり切れたりするだけのスイッチです。それを4個組むと NAND になり、NAND だけで NOT も AND も OR も、足し算も、記憶も、CPU の部品も作れる。なぜ NAND ひとつで足りるのか、なぜ 0 と 1 が何千段積んでも濁らないのか、記憶とは何か ― 第3部はその筋道です。</p>
       <div class="guide">
@@ -263,7 +263,7 @@ table.tt td.x{color:var(--ink-3)}
         <g class="arrow" stroke="var(--ink-3)" stroke-width="1.4" fill="none"><line x1="206" y1="81" x2="234" y2="81" marker-end="url(#ar0)"/><line x1="430" y1="81" x2="458" y2="81" marker-end="url(#ar0)"/><line x1="654" y1="81" x2="682" y2="81" marker-end="url(#ar0)"/><line x1="878" y1="81" x2="906" y2="81" marker-end="url(#ar0)"/></g>
         <g font-family="var(--sans)" font-size="12" fill="var(--ink-2)">
           <text x="16" y="156">電圧が連続量として流れる</text><text x="16" y="174">しきい値 0.7 V で通じる／切れる</text>
-          <text x="240" y="156">4個で NAND、4個で NOR</text><text x="240" y="174">これ1種類で全部が作れる</text>
+          <text x="240" y="156">2石でインバータ、4石で NAND</text><text x="240" y="174">NAND 1種類で全部が作れる</text>
           <text x="464" y="156">入力が決まれば出力が決まる</text><text x="464" y="174">真理値表 ＝ 回路</text>
           <text x="688" y="156">出力を入力へ戻す</text><text x="688" y="174">前の値が残る。時計（クロック）が要る</text>
           <text x="912" y="156">覚える ＋ 計算する ＋ 数える</text><text x="912" y="174">足りないのはメモリと制御だけ</text>
@@ -689,7 +689,7 @@ table.tt td.x{color:var(--ink-3)}
   <div class="foot">
     <span>NAND の個数は NandLab のお手本の実測、電圧は analog.js の二乗則モデルの値です。実物の石とは一致しません。</span>
     <span><a href="index.html">学びの地図へ戻る</a> · 前: <a href="第2部_デバイスの基礎.html">第2部 素子の物理</a> · 次: <a href="第4部_イメージセンサ.html">第4部 イメージセンサ</a></span>
-    <span style="font-family:var(--mono)">スイッチ → NAND → 組合せ → 記憶 → ALU</span>
+    <span style="font-family:var(--mono)">スイッチ → インバータ → NAND → 組合せ → 記憶 → ALU</span>
   </div>
 </section>
 </main>
