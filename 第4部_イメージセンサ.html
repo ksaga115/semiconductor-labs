@@ -596,6 +596,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p>被写体照度 <code>E</code>[lx]から画素に届く光子数までは、次の順で計算しています。被写体を反射率 &rho;=0.18 の完全拡散面、レンズを F2.8・透過率0.9 とすると、センサ面照度は <code>E&#8209;sensor &asymp; &rho;E/(4N&sup2;)&times;T &asymp; 0.0052E</code>。555nmの単色として 1 lx = 4.1&times;10&sup3; photons/(&micro;m&sup2;&middot;s) なので、3.0&micro;m角(9&micro;m&sup2;)の画素には <b>190&middot;E</b> [photons/s] が入射します。</p>
     <div class="eq">e&#8209;<sub>信号</sub> = <b>190&middot;E</b> &times; (&rho;/0.18) &times; <i>QE 0.65</i> &times; <i>CFA透過 0.35</i> &times; t<sub>露光</sub></div>
     <p>晴天の屋外は10万lx前後、明るいオフィスが500〜1000lx、夜道が数lx。スライダの目盛りはこの実感に合わせてあります。</p>
+    <p style="margin-top:12px">写真の言葉に翻訳するなら、露出計のEV（ISO 100・入射光式、較正定数 C=250 の流儀）でおよそ <code>E [lx] &asymp; 2.5&times;2<sup>EV</sup></code>。1,000 lx は EV 8.6、晴天の10万 lx は EV 15 前後、夜道の 3 lx は EV 0 あたりに相当します（Cの流儀で1/3段ほど動く目安値です）。</p>
   </div>
 </section>
 
@@ -843,7 +844,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
 
     <div class="body-col">
       <h3>短いほう：浅すぎて、表面で消える</h3>
-      <p>逆の端では、問題が逆転します。400 nm の吸収長はわずか 0.09 &micro;m。<span class="key">表面から 0.21 &micro;m 以内で 90% が吸収されてしまいます</span>。深さは十分すぎるほど足りている——足りていないのは、<strong>その浅さで生まれた電子が生き残れるかどうか</strong>です。</p>
+      <p>逆の端では、問題が逆転します。400 nm の吸収長はわずか 0.11 &micro;m。<span class="key">表面から 0.24 &micro;m 以内で 90% が吸収されてしまいます</span>。深さは十分すぎるほど足りている——足りていないのは、<strong>その浅さで生まれた電子が生き残れるかどうか</strong>です。</p>
       <p>付録Cで見るとおり、Si と SiO<sub>2</sub> の境目は結合の相手を失った原子が並ぶ場所で、結晶内部より桁違いに多くの準位があります。<span class="key">青の光子が電子を作る場所は、まさにその真上</span>。生まれた電子はすぐ界面に捕まって再結合し、信号になる前に消えます。</p>
       <p>だから青の対策は「厚み」ではなく<strong>「表面から遠ざける」</strong>になります。裏面照射型センサが裏面に高濃度の p+ 層を作るのは、そこに電界の坂を作って<span class="key">生まれた電子を界面から内側へ押し戻すため</span>です。薄化した裏面をどれだけきれいに終端できるかが、そのまま青の感度になります。</p>
       <p>さらに短い紫外では、事情がもうひとつ変わります。<strong>光子1個のエネルギーがバンドギャップの3倍を超えると、余ったエネルギーで2個目の電子・正孔対を作れるようになります</strong>（衝突電離）。およそ 3.5 eV = 354 nm から。<span class="key">この領域では、光子1個から電子が2個以上生まれ、量子効率が1を超えます</span>——02 の見出し「光子1個が電子1個」が成り立たなくなる境目です。</p>
@@ -1156,6 +1157,18 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
         </div>
         <figcaption>いま流通しているセンサのほぼすべてがCMOSです。かつての弱点（ノイズ・感度ムラ）はCDSと微細化、裏面照射で解消され、速度と低消費電力という構造的な強みだけが残りました。</figcaption>
   </figure>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — CCDの3つの方式と、スミアとの戦い</span>
+    <p>CCDの教科書（米本『CCD/CMOSイメージセンサの基礎と応用』など）は、受光部と転送路の置き方で方式を3つに分けます。<strong>FT（フレーム転送）</strong>：受光部の下に同じ大きさの遮光した蓄積部を持ち、露光が終わると画像を丸ごと高速に下へ流し込む。構造は単純で開口率が高いが、<span class="key">流し込んでいる最中も光が当たり続ける</span>ので、明るい点が縦に尾を引く——これがスミアの出方そのものです。<strong>IT（インターライン転送）</strong>：画素の列ごとに遮光した垂直転送CCDを隣に置き、露光終了の瞬間に電荷を横へ1回だけ移す。移してしまえば遮光路の中なのでスミアが桁で減る。代償は、転送路が画素の面積を食うことによる開口率の低下——01のマイクロレンズは、もともとこの損を取り返すためにITで発達した部品です。<strong>FIT（フレーム・インターライン転送）</strong>：ITの下にFTの蓄積部まで持たせた放送局用の贅沢な構成で、垂直転送路に電荷が留まる時間も潰してスミアを極小にします。</p>
+    <p>この3方式の対比は、そのままCMOSに引き継がれています。<span class="key">04のグローバルシャッター画素の「画素内に遮光した退避先を置く」はITの考え方そのもの</span>で、寄生感度はスミアの言い換えです。方式の名前が変わっても、「露光を終えた電荷を、光の当たらない場所へどう逃がすか」という問題は同じ形のまま残っています。</p>
+  </div>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — 歴史の一本道：発明から積層まで</span>
+    <p><strong>1969〜70年</strong>、ベル研の Boyle と Smith が電荷結合素子を考案（2009年ノーベル物理学賞）。<strong>1975〜76年</strong>、Kodak の Bayer が色フィルタの市松配列を特許化。<strong>1982年</strong>、NEC の寺西らが埋め込みフォトダイオード（PPD）を発表し、暗電流と残像を桁で下げて完全転送を実現——のちにCMOSにもそのまま移植される、画素側の最重要発明です。<strong>1990年代</strong>、JPL の Fossum らがCMOSアクティブピクセル（画素内増幅＋CDS）を確立し、「カメラ・オン・ア・チップ」を提唱。<strong>2000年代後半</strong>に裏面照射（BSI）が量産に入って開口の制約が消え、<strong>2012年ごろ</strong>から画素層と回路層を貼り合わせる積層型が標準になっていきます（付録B）。</p>
+    <p>並べてみると、<span class="key">発明のたびに「損の出どころ」が一段ずつ潰されてきた</span>のが分かります。転送の取りこぼし（CCD→PPD）、読み出しの遅さ（→列並列ADC）、配線が光路を塞ぐ損（→BSI）、画素と回路の面積の取り合い（→積層）。この一本道の先に、いまのセンサがあります。</p>
+  </div>
 </section>
 
 <!-- ================= 05 ================= -->
@@ -1260,7 +1273,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
 
   <div class="deep deep-note">
     <span class="tag">くわしく — ビット深度と、その使い道</span>
-    <p>12bitなら4096段階。飽和12,000電子を4096で割ると <strong>1DN = 2.93電子</strong>（ゲイン×1のとき）です。刻んだことで生じる誤差は1段の幅の中でほぼ一様に散らばるので、その分散は <code>LSB&sup2;/12</code>、標準偏差は <code>LSB/&radic;12</code>。つまり <strong>2.93/3.46 = 0.85電子</strong> です。</p>
+    <p>12bitなら4096段階。1段の電圧は満量程 0.6 V &divide; 4095 = 146.5 &micro;V、変換ゲイン 45 &micro;V/e&minus; で割ると <strong>1DN = 3.26電子</strong>（ゲイン×1のとき）です（「飽和12,000 &divide; 4096 = 2.93」ではありません——飽和はADCの満量程の90%にしか届かないからです。「センサを測る」と「数字はどこから来たか」参照）。刻んだことで生じる誤差は1段の幅の中でほぼ一様に散らばるので、その分散は <code>LSB&sup2;/12</code>、標準偏差は <code>LSB/&radic;12</code>。つまり <strong>3.26/3.46 = 0.94電子</strong> です。</p>
     <p>これを読み出しノイズ2.5電子と比べると<span class="key">約1/3で、十分に小さい</span>。ここが bit 数の決めどころです。<span class="key">量子化ノイズがアナログノイズより十分小さくなった時点で、それ以上ビットを増やしても新しい情報は入ってきません</span>。逆に足りなければ、せっかくのアナログ信号を刻みすぎで潰してしまいます。</p>
     <p>いまのハイエンドセンサが14〜16bitを持つのは、ダイナミックレンジを稼ぐためです。高ゲイン側と低ゲイン側の2回読みを合成する<strong>デュアルゲイン読み出し</strong>や、変換ゲインを切り替えて2枚を合成するHDR読み出しでは、出力側により広いビット幅が要ります。</p>
   </div>
@@ -1343,6 +1356,13 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   </div>
 
   <div class="deep deep-note">
+    <span class="tag">くわしく — 車載HDRのもう一つの敵：LEDフリッカ</span>
+    <p>HDRを車載で使うと、ダイナミックレンジとは別の問題が顔を出します。<strong>LED光源は、人の目に見えない速さ（数百Hz〜数kHz）でPWM点滅しています</strong>。信号機、テールランプ、電光掲示板。露光時間がその消灯期間より短いと、<span class="key">点いているのに、たまたま消えている瞬間だけを切り取ってしまう</span>——信号機が消えて写る、フレームごとに点滅して写る、という現象になります。</p>
+    <p>①の長短合成とは相性が最悪です。明部を受け持つのは短露光側なので、<strong>いちばん消えてほしくない「明るい光源」だけが消える</strong>。しかも長露光側では点いているので、繋ぎ目で矛盾します。</p>
+    <p>対策は「実効的な露光をLEDの周期より長く保つ」方向で、露光を1フレーム内で細かく分割して撒く方式や、③のLOFICのように<span class="key">大きな飽和容量で長い露光そのものを成立させる</span>方式が使われます。車載センサの仕様書にHDRのdB数と並んで「LEDフリッカ低減（LFM）」が書かれているのは、この2つが同じ場面で同時に要求されるからです。</p>
+  </div>
+
+  <div class="deep deep-note">
     <span class="tag">くわしく — 合成しても「見えるようになる」わけではない</span>
     <p>ここで注意が要ります。<strong>ダイナミックレンジが広がることと、それが見えることは別</strong>です。</p>
     <p>合成して 100 dB のデータを作っても、表示側（ディスプレイや紙）はせいぜい 60〜70 dB しか出せません。<span class="key">そのまま出すと、広げたぶんは表示の外へ落ちるだけ</span>です。だから HDR の画像には必ず、広い範囲を狭い範囲へ押し込める処理——トーンマッピングが付きます。</p>
@@ -1406,6 +1426,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     </div>
   </div>
 
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — 「色温度」という物差し</span>
+    <p>ホワイトバランスの設定に出てくる「色温度」は、<strong>黒体（理想の熱放射体）を熱していったときの色の並び</strong>に、光源の色みを写し取った物差しです。単位はケルビン。白熱電球はおよそ 2800 K（規格上の基準は A 光源 = 2856 K）、昼光の代表 D65 は 6504 K。<span class="key">数字が高いほど青い</span>——「温度が高い＝赤い」という日常の直感と逆向きなのは、熱放射のピークが高温ほど短波長に寄るからです。</p>
+    <p>実際の蛍光灯やLEDは黒体の軌跡（プランク軌跡）の上に正確には乗らないので、色温度1つでは表しきれず、軌跡からの緑寄り／マゼンタ寄りのずれをもう1軸（Duv）で持ちます。カメラのWBプリセット「電球」「曇天」は、この物差しの上の点を選んでいる操作です。そして本文のとおり、<strong>WBで白を合わせても、カラーマトリクスの仕事（分光感度のずれの補正）は別に残ります</strong>。</p>
+  </div>
 
   <h3 style="margin-top:44px">色を合わせる — センサの目は、人の目とは違う</h3>
   <p class="body-col" style="margin-top:8px">デモザイクで各画素にRGBが揃いました。しかし<span class="key">その3つの数値は、まだ「色」ではありません</span>。センサが測ったのは「赤フィルタを通った光の量」であって、人がその場面を見たときに感じる赤ではないからです。この2つはずれています。しかも<strong>ずれ方は、掛け算で直せる種類のものではありません</strong>。</p>
@@ -1499,6 +1525,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <p>露光時間に比例して増え、温度で指数的に増えます。長秒撮影と高温でのみ問題になります。<span class="tag-inline t-v">時間と温度に依存</span></p></div>
     <div><h4>固定パターンノイズ — ばらつきの癖</h4>
       <p>画素ごとの感度差やオフセット差。ランダムではなく毎回同じ場所に出るので、補正データで引き算できます。CMOSが克服してきた課題そのものです。<span class="tag-inline t-d">補正可能</span></p></div>
+  </div>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — 一枚ぶん、手で計算してみる</span>
+    <p>上のバーの標準設定（明るい室内 3,000 lx・1/60 s・ゲイン×1）で、18%グレーの1画素を追うと: 入射光子 ≈ 9,500、QE 0.65 とフィルタ透過 0.35 を掛けて<b>信号 ≈ 2,100 e&minus;</b>。ノイズは &radic;(2,100 + 暗電流ぶん + 2.5&sup2;) ≈ <b>46 e&minus;</b> ― 中身はほぼ全部ショットノイズで、読み出しの 2.5 e&minus; は2乗和の中に消えています。SN比は 2,100/46 ≈ 46倍 = <b>約 33 dB</b>。上のバーの読み値と一致するはずです（動かして確かめてください）。</p>
+    <p>スライダを夜道（3 lx）まで落とすと、信号は ≈ 2 e&minus;。こんどは読み出しノイズ 2.5 e&minus; が信号より大きく、SN比は1を切ります。<span class="key">同じ式の、どの項が生きるかが3桁の明るさの差で入れ替わる</span> ― 上の図で起きているのはそれだけです。</p>
   </div>
 
   <h3 style="margin-top:44px">では、どれを減らせばいいのか</h3>
@@ -2315,6 +2347,8 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>BSI</td><td>裏面照射。基板を薄化し裏側から受光する構造</td><td class="num">開口ほぼ100%</td></tr>
           <tr><td>グローバル<br>シャッター</td><td>全画素で同時に露光を終える方式。画素内に電荷の退避先が要り、面積と寄生感度を代償に払う</td><td class="num">歪みゼロ</td></tr>
           <tr><td>寄生感度</td><td>退避中の電荷に光が漏れ込んで偽の信号になること。遮光の良さを分離比で表す</td><td class="num">10⁻⁴〜10⁻⁵</td></tr>
+          <tr><td>FT / IT / FIT</td><td>CCDの3方式。フレーム転送／インターライン転送／その併用。遮光した退避先をどこに置くかの違いで、スミアの出方が決まる（「CCDという別解」のくわしく）</td><td class="num">ITが主流だった</td></tr>
+          <tr><td>LEDフリッカ</td><td>PWM調光のLED光源（信号機・テールランプ）が、短い露光のOFF期間に消えて写る現象。長短合成HDRでは繋ぎ目の破綻としても出る</td><td class="num">数百Hz〜数kHz</td></tr>
           <tr><td>積層</td><td>画素層とロジック層を別々のプロセスで作り、貼り合わせて縦につなぐ構造。画素は太い寸法・厚い酸化膜・数Vの電源が要るのに対し、ロジックは細く薄く1V級で動かしたいという両立しない要求を、階を分けて解く</td><td class="num">付録B</td></tr>
           <tr><td>回折</td><td>光が有限の開口を通ることで広がる現象。レンズがどれだけ良くても避けられない</td><td class="num">絞るほど増</td></tr>
           <tr><td>エアリー円板</td><td>回折でにじんだ点光源の像。直径 2.44&lambda;N</td><td class="num">3.76 &micro;m<br>(F2.8)</td></tr>
@@ -2369,6 +2403,8 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
         <tbody>
           <tr><td>Image Sensors and<br>Signal Processing for<br>Digital Still Cameras</td><td>Junichi Nakamura 編<br>CRC Press</td>
             <td>CMOSイメージセンサの全体像を、画素から信号処理まで一冊で通す本。<strong>このページの構成にいちばん近い</strong>ので、次に読むならまずこれ。01〜07 の全体に対応します。</td></tr>
+          <tr><td>CCD/CMOSイメージセンサの<br>基礎と応用</td><td>米本和也<br>CQ出版（改訂版あり）</td>
+            <td><strong>日本語の定番。</strong>CCDの方式（FT/IT/FIT）と駆動、PPD、CMOS画素、ノイズ、色まで。このページの 01〜07 と「CCD という別解」を、回路設計者の視点からもう一段実務寄りに掘れます。</td></tr>
           <tr><td>Solid-State Imaging with<br>Charge-Coupled Devices</td><td>Albert J. P. Theuwissen<br>Kluwer</td>
             <td>CCD側の定番。転送効率、スミア、ブルーミングなど「CCD という別解」で触れた話が、設計者の視点で詳しく書かれています。</td></tr>
           <tr><td>Physics of<br>Semiconductor Devices</td><td>S. M. Sze &amp; Kwok K. Ng<br>Wiley</td>
@@ -2404,6 +2440,8 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
             <td>03 蓄積 / 付録C。<strong>暗電流を桁で下げ、完全転送を可能にした</strong>構造で、いまのCMOSセンサの前提になっています。</td></tr>
           <tr><td>CMOS<br>アクティブピクセル</td><td>Eric R. Fossum<br>IEEE Trans. Electron Devices, 1997 ほか</td>
             <td>04 電荷転送。「カメラ・オン・ア・チップ」という言い方はここから広まりました。</td></tr>
+          <tr><td>相関二重サンプリング<br>（CDS）</td><td>M. H. White ほか<br>IEEE J. Solid-State Circuits, 1974</td>
+            <td>05 電荷を電圧に。低照度CCDの読み出しで、リセットに伴う不定な基準を2回サンプルの差で消す手法を確立した仕事です。</td></tr>
           <tr><td>ベイヤー配列</td><td>Bryce E. Bayer<br>米国特許, 1976</td><td>01 入射と色分け</td></tr>
           <tr><td>しきい値ばらつきが<br>面積で決まること</td><td>Marcel Pelgrom ほか<br>IEEE J. Solid-State Circuits, 1989</td><td>付録B 短チャネル効果</td></tr>
           <tr><td>1/f ノイズの<br>数ゆらぎモデル</td><td>A. L. McWhorter<br>1957</td>
@@ -2910,7 +2948,7 @@ function drawTop(){
 draws.push(drawTop);
 
 /* ================= 02 absorption ================= */
-var WLTAB=[[400,.09],[420,.21],[450,.40],[470,.55],[500,.90],[530,1.15],[550,1.40],[580,1.90],
+var WLTAB=[[400,.105],[420,.21],[450,.40],[470,.55],[500,.90],[530,1.15],[550,1.40],[580,1.90],
            [600,2.40],[620,2.90],[650,3.50],[680,4.60],[700,5.50],[730,7.0],[750,8.0],[780,10.5],
            [800,12],[830,16],[850,19],[880,25],[900,32],[930,48],[950,62],[980,105],[1000,150]];
 function absLen(w){

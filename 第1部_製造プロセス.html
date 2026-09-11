@@ -820,6 +820,7 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
       </ol>
       <p class="src"><b>読み方の注意：</b>金額ベースではASMLが8〜9割ですが、<b>出荷台数ベースではキヤノンが3割前後</b>を占めます。EUV1台の価格が旧世代機の10倍以上あるため、同じ市場でも指標により順位の見え方が大きく変わります。EUV露光装置はASMLの独占（100%）。<span class="mono">[R5][R14]</span></p>
     </div>
+    <div class="note"><b>なぜ 13.5nm なのか。</b>波長をここまで短くすると、<b>あらゆる物質が光を吸収する</b>ためレンズ（屈折光学）が成立しません。残された手は多層膜ミラーの干渉反射だけで、モリブデンとシリコンを数nmずつ数十層重ねた Mo/Si 多層膜が高い反射率（理論上限で7割強）を出せる帯が、ちょうど 13.5nm 付近にあります。スズのプラズマがこの帯で強く発光することと合わせて、この波長が選ばれました。ただし反射率7割のミラーを照明系と投影系で10枚前後経由するので、<b>ウェーハに届くのは光源の数%</b>。EUVが「光量との戦い」になり、数百W級の光源と高感度の化学増幅型レジスト（05 現像の注）が要るのはこのためです。<span class="mono">[R24]</span></div>
   </article>
 
   <!-- 05 現像 -->
@@ -1653,6 +1654,7 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
 
   <div class="prose">
     <div class="note w"><b>読み取ってほしいこと。</b>面積を2倍にすると、取れる数は半分以下になるうえ、1個が欠陥を踏む確率も上がるので、良品数は<b>半分よりずっと少なく</b>なります。だから「大きな1個」をやめてチップレットに分割する動きが起きたのです。歩留まりモデルは <span class="mono">Y = ((1−e<sup>−AD₀</sup>)/AD₀)²</span>、取れ数は円板からの縁の損失を考慮した近似式を使っています。</div>
+    <div class="note"><b>式の素性。</b>欠陥が完全にランダムに散らばる（ポアソン）と仮定すると <span class="mono">Y = e<sup>−AD₀</sup></span> になります。マーフィーのモデルは「欠陥密度 D₀ 自体がロットや場所でばらつく」ことを平均に織り込んだもので、同じ D₀ ならポアソンより高い歩留まりを予測します。実際の欠陥は装置起因で固まって出る（クラスタする）ことが多く、業界ではクラスタの度合いをパラメータに持つ負の二項分布モデルまで使われます。式は違っても、<b>「面積が指数の肩に乗る」という骨格は共通</b>です。</div>
   </div>
 </section>
 
@@ -1771,6 +1773,7 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
     <li><span class="rn">R21</span><span>QYResearch / LP Information「ABF基板（FC-BGA）世界市場シェア 2025」<a href="https://www.dreamnews.jp/press/0000328663">dreamnews.jp</a></span></li>
     <li><span class="rn">R22</span><span>WSTS 2026年春季予測（2026-06-02発表）／JETRO ビジネス短信「世界半導体市場は2026年に1.5兆ドル超え」<span class="rd">2025年実績 7,956億ドル（+26.2%）</span><a href="https://www.jetro.go.jp/biznews/2026/06/d681cb7828ae6c7a.html">jetro.go.jp</a></span></li>
     <li><span class="rn">R23</span><span>SEMI「世界半導体製造装置販売額は2025年に15%増の1,350億ドルへ到達」<span class="rd">2026-04-08</span><a href="https://www.semi.org/jp/news-resources/press/20260408">semi.org</a></span></li>
+    <li><span class="rn">R24</span><span>ASML「EUV lithography systems」（EUV光学系・Mo/Si多層膜ミラー・光源の技術解説）<a href="https://www.asml.com/en/products/euv-lithography-systems">asml.com</a></span></li>
   </ol>
   <p class="foot">この資料は公開情報をもとに、半導体製造プロセスの全体像を初学者が体系的につかむことを目的に整理したものです。市場シェアは調査会社・集計年・対象範囲によって数値が異なるため、投資判断や事業判断に用いる際は必ず一次資料をあたってください。数値は2026年9月時点で参照できたものを採用しています。</p>
   <p class="foot" style="margin-top:14px;padding-top:14px"><a href="index.html">学びの地図へ戻る</a> · この資料が「どう作るか」を説明する側で、<a href="ProcessLab/index.html">ProcessLab</a> が自分で工程を並べて断面を育て、何ができたかを計算で確かめる側です。各工程の末尾の「手を動かす」の箱から、対応する課題へ飛べます。</p>

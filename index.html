@@ -190,7 +190,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       <span class="eyebrow">Labs / 半導体 ― 参考書と実践</span>
       <h1>工程から<span class="lit">像</span>まで、<br>読んで、作って、確かめる</h1>
       <p class="sub">半導体を、製造工程 → 素子の物理 → 論理回路 → イメージセンサの4部で通して学ぶための場所。各部は<b>参考書</b>（読んで理解する）と<b>ラボ</b>（自分の手で作って、機械に採点させる）の二層になっていて、参考書の節から対応するラボの課題へその場で飛べる。</p>
-      <p class="sub">4部は地続き。工程が不純物の分布を作り、不純物が接合を立て、接合が MOSFET とフォトダイオードになり、MOSFET は NAND に、フォトダイオードは画素になる。</p>
+      <p class="sub">4部は地続き。工程が不純物の分布を作り、不純物が接合を立て、接合が MOSFET とフォトダイオードになり、MOSFET は NAND に、フォトダイオードは画素になる。<b>背骨はイメージセンサ</b> ― 結晶と接合という物理層から、画素・読み出し回路をへて、現像・画像というアプリ層まで、1本の信号がどう登っていくかを全部の部で追いかけられるようにしてある。</p>
     </div>
     <div>
       <dl class="spec">
@@ -538,31 +538,31 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
 
   <div class="routes">
     <div class="route rec">
-      <span class="tag">RECOMMENDED — はじめての人</span>
+      <span class="tag">RECOMMENDED — イメージセンサを主軸に</span>
+      <h3>物理層からアプリ層まで、センサを背骨に登る</h3>
+      <p class="for">半導体を「1個の製品を貫く縦の断面」で学ぶ。結晶と接合（物理層）→ 画素という素子（デバイス層）→ 読み出しを支える論理（回路層）→ 現像と画像（アプリ層）。4部全部を、イメージセンサに効く順で通る。</p>
+      <ol>
+        <li><b>物理層:</b> 第2部 2-1・2-2 → SemiLab 第1・2章<span class="r">9問</span><span class="why">不純物がキャリアを決め、接合が空乏層＝「井戸」を立てる。センサの床がここ</span></li>
+        <li><b>作り方:</b> 第1部 参考書 01〜05 → ProcessLab 第1〜4章<span class="r">13問</span><span class="why">その接合を工場はどう刻むか。第4章「フォトダイオードを作る」は工程で作った1本を SemiLab に渡して採点する ― 2つの部が繋がる</span></li>
+        <li><b>デバイス層:</b> 第2部 2-3・2-4 → SemiLab 第3・4章<span class="r">9問</span><span class="why">暗電流の正体（生成電流）と、波長で決まる量子効率。両方そのまま第4部の性能表になる</span></li>
+        <li><b>スイッチ:</b> 第2部 2-5 → SemiLab 第5章<span class="r">4問</span><span class="why">画素の中の4個のトランジスタ（転送・リセット・SF・選択）の物理</span></li>
+        <li><b>回路層:</b> 第3部 → NandLab<span class="r">22問</span><span class="why">列並列ADCのカウンタも制御ロジックも、この部の部品でできている</span></li>
+        <li><b>センサ本体:</b> 第4部 00〜07 → PixelLab 第1〜3章<span class="r">11問</span><span class="why">光子→電子→電圧→数値→像の一本道。謎のカメラを測って当て、自分の画素を設計する</span></li>
+        <li><b>床下:</b> 第4部 付録 A〜D とむすび<span class="r">読む</span><span class="why">トンネル・短チャネル・暗電流・ノイズ。すべて同じ欠陥と電界に戻る</span></li>
+      </ol>
+    </div>
+
+    <div class="route">
+      <span class="tag">CLASSIC — はじめての人・体系順</span>
       <h3>第1部から第4部まで、下から通す</h3>
-      <p class="for">半導体を体系的に一周したい。工程 → 素子 → 論理 → 像の順で、前で作ったものが次の部品になる。</p>
+      <p class="for">半導体を教科書の順で一周したい。工程 → 素子 → 論理 → 像の順で、前で作ったものが次の部品になる。</p>
       <ol>
         <li><b>第1部</b> 参考書 01〜05 → ProcessLab 第1〜3章<span class="r">10問</span><span class="why">酸化・注入・拡散を並べて断面を育てる。接合が「部品」ではなく工程の結果だと分かる</span></li>
         <li><b>第2部</b> 2-1〜2-3 → SemiLab 第1〜3章<span class="r">13問</span><span class="why">不純物を塗った一片を隣に置くと接合が立つ。ポアソン方程式が解いた空乏層を見る</span></li>
         <li><b>第1部に戻って</b> ProcessLab 第4章<span class="r">3問</span><span class="why">工程で作った1本を SemiLab に渡して素子として測る。2本が繋がる</span></li>
         <li><b>第2部</b> 2-4〜2-5 → SemiLab 第4〜5章<span class="r">9問</span><span class="why">フォトダイオードと MOSFET。最後の課題が「NAND の中身」</span></li>
         <li><b>第3部</b> NandLab 第1〜5章<span class="r">22問</span><span class="why">NAND だけから NOT・加算器・フリップフロップ・ALU まで</span></li>
-        <li><b>第4部</b> 参考書 00〜07 → PixelLab 第1〜3章<span class="r">11問</span><span class="why">謎のカメラを撮って測って当て、自分の画素を設計する</span></li>
-        <li><b>第4部</b> 付録 A〜D<span class="r">読む</span><span class="why">床下の物理。第2部の MOSFET と暗電流にもう一度戻る</span></li>
-      </ol>
-    </div>
-
-    <div class="route">
-      <span class="tag">SHORTEST — イメージセンサが目的</span>
-      <h3>光から像へ、最短で</h3>
-      <p class="for">画素・ノイズ・PTC を理解したい。工程と論理は飛ばし、フォトダイオードの物理だけ第2部で押さえる。</p>
-      <ol>
-        <li><b>第2部</b> 2-1・2-2 → SemiLab 第1・2章<span class="r">9問</span><span class="why">n 型／p 型と接合。空乏層が「井戸」の正体</span></li>
-        <li><b>第2部</b> 2-4 → SemiLab 第4章<span class="r">5問</span><span class="why">青は表面で消え、赤は深すぎて届かない</span></li>
-        <li><b>第4部</b> 参考書 00〜07<span class="r">読む</span></li>
-        <li><b>第4部</b> PixelLab 第1章<span class="r">6問</span><span class="why">PTC で K・読み出し雑音・飽和・暗電流・PRNU を当てる</span></li>
-        <li><b>第4部</b> ノイズの正体／センサを測る／付録 C<span class="r">読む</span><span class="why">測った数字の裏側</span></li>
-        <li><b>第4部</b> PixelLab 第2・3章 ＋ <b>第2部</b> SemiLab「暗電流を減らす」<span class="r">6問</span></li>
+        <li><b>第4部</b> 参考書 00〜07 → PixelLab 第1〜3章<span class="r">11問</span><span class="why">光子→電子→電圧→数値→像。付録 A〜D で床下の物理へ</span></li>
       </ol>
     </div>
 

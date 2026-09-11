@@ -262,7 +262,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
           <rect x="559" y="40" width="95" height="70" fill="var(--electron-soft)" stroke="var(--electron)"/>
           <rect x="454" y="40" width="10" height="70" fill="var(--metal)"/><rect x="654" y="40" width="10" height="70" fill="var(--metal)"/>
           <rect x="548" y="40" width="22" height="70" fill="var(--surface-3)" opacity=".85"/>
-          <text x="459" y="30" text-anchor="middle" font-family="var(--mono)" font-size="10" fill="var(--volt)">+V</text>
+          <text x="442" y="30" text-anchor="middle" font-family="var(--mono)" font-size="10" fill="var(--volt)">+V</text>
           <path d="M470,75 L648,75" stroke="var(--volt)" stroke-width="2" marker-end="url(#ar0)"/>
           <text x="559" y="128" text-anchor="middle" font-family="var(--mono)" font-size="9.5" fill="var(--ink-3)">J ∝ exp(V/V<tspan font-size="7" baseline-shift="sub">t</tspan>)</text>
         </g>
@@ -284,7 +284,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
           <rect x="902" y="40" width="10" height="70" fill="var(--metal)"/><rect x="1104" y="40" width="10" height="70" fill="var(--metal)"/>
           <rect x="926" y="40" width="4" height="70" fill="var(--electron)"/>
           <rect x="930" y="40" width="30" height="70" fill="var(--surface-3)" opacity=".85"/>
-          <text x="907" y="30" text-anchor="middle" font-family="var(--mono)" font-size="10" fill="var(--volt)">V<tspan font-size="7" baseline-shift="sub">G</tspan></text>
+          <text x="884" y="30" text-anchor="middle" font-family="var(--mono)" font-size="10" fill="var(--volt)">V<tspan font-size="7" baseline-shift="sub">G</tspan></text>
           <text x="1015" y="80" text-anchor="middle" font-family="var(--mono)" font-size="12" font-weight="600" fill="var(--hole)">p 基板</text>
           <text x="1008" y="128" text-anchor="middle" font-family="var(--mono)" font-size="9.5" fill="var(--ink-3)">反転層（電子） ← 触れずに作る</text>
         </g>
@@ -401,9 +401,28 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
     </div>
   </div>
 
+  <div class="deep-note">
+    <span class="tag">くわしく — 四探針という測り方</span>
+    <p>「抵抗率は直接測れる」の中身です。針を4本、一直線に等間隔で立て、<b>外側の2本に電流を流し、内側の2本では電圧だけを測ります</b>。電圧計にはほとんど電流が流れないので、針とシリコンの接触部で落ちる電圧が読みに入らない ― 接触抵抗という一番の不確かさが、配線の工夫だけで消えるのがこの方法の芯です。薄い層なら V/I に &pi;/ln2 &asymp; 4.53 を掛けたものが<b>シート抵抗</b> [Ω/□]（「1辺いくつの正方形か」に依らない、薄膜の抵抗の数え方）で、層の厚みを掛ければ &rho; に戻ります。ProcessLab「抵抗を下げる」で合わせているのがこのシート抵抗です。</p>
+  </div>
+
+  <div class="deep-note">
+    <span class="tag">くわしく — なぜシリコンが王様なのか：Ge・GaAs と並べる</span>
+    <p>この部の式は材料を選びません。定数を入れ替えるだけで、他の半導体でもそのまま成り立ちます。並べてみると、シリコンが選ばれた理由が数字で見えます（300 K の教科書代表値。桁の比較用で、この参考書の当てはめとは端数が違います）。</p>
+    <div class="scroll-x" style="margin-top:12px"><table>
+      <thead><tr><th>材料</th><th>E<sub>g</sub></th><th>n<sub>i</sub> /cm³</th><th>µ<sub>n</sub> cm²/V·s</th><th>遷移</th></tr></thead>
+      <tbody>
+        <tr><td>Ge</td><td class="num">0.66 eV</td><td class="num">2.4×10¹³</td><td class="num">3900</td><td>間接</td></tr>
+        <tr><td>Si</td><td class="num">1.12</td><td class="num">1.0×10¹⁰</td><td class="num">≈1400</td><td>間接</td></tr>
+        <tr><td>GaAs</td><td class="num">1.42</td><td class="num">2.1×10⁶</td><td class="num">8500</td><td><b>直接</b></td></tr>
+      </tbody>
+    </table></div>
+    <p style="margin-top:12px">n<sub>i</sub> は exp(−E<sub>g</sub>/2kT) に乗っているので、<b>E<sub>g</sub> が半分の Ge は n<sub>i</sub> が3桁以上大きい</b>。少数キャリアも漏れも n<sub>i</sub>（や n<sub>i</sub>²）に比例するので、Ge のダイオードは室温でも漏れが大きく、少し熱くなると使い物にならない ― 初期のトランジスタが Ge から Si へ移った理由のひとつです。GaAs は µ<sub>n</sub> が大きく<b>直接遷移</b>（フォノンの助けなしに光と電子が直接やり取りできる）なので、高周波と LED・レーザーの主役。それでも集積回路が Si になったのは、E<sub>g</sub> の手頃さに加えて、<span class="key">熱酸化だけで SiO₂ という緻密な絶縁膜が育つ</span>という、他の材料が持たない性質が効いています（第1部 02 成膜、第5章の MOS はこの膜の上に建っている）。</p>
+  </div>
+
   <div class="caveat">
     <span class="tag">断定していないこと</span>
-    <p><b>n<sub>i</sub> = 1.0×10¹⁰ は実測側の値です。</b>教科書の N<sub>c</sub> = 2.8×10¹⁹、N<sub>v</sub> = 1.04×10¹⁹、E<sub>g</sub> = 1.12 eV を式に入れると 6.9×10⁹ が出て、同じ教科書に書いてある 1.0×10¹⁰ と合いません（有名な不整合。古い本は 1.45×10¹⁰）。この参考書と SemiLab は 1.0×10¹⁰ を採り、N<sub>c</sub>・N<sub>v</sub> はバンド図で E<sub>F</sub> の位置を描くのにだけ使います。</p>
+    <p><b>n<sub>i</sub> = 1.0×10¹⁰ は実測側の値です。</b>教科書の N<sub>c</sub> = 2.8×10¹⁹、N<sub>v</sub> = 1.04×10¹⁹、E<sub>g</sub> = 1.12 eV を式に入れると 6.9×10⁹ が出て、同じ教科書に書いてある 1.0×10¹⁰ と合いません（有名な不整合。古い本は 1.45×10¹⁰）。この参考書と SemiLab は実測の代表値 Sproul &amp; Green (1991) の <b>1.00×10¹⁰</b> を採り、N<sub>c</sub>・N<sub>v</sub> はバンド図で E<sub>F</sub> の位置を描くのにだけ使います（のちの再評価では 9.65×10⁹ とやや小さい値も報告されています — Altermatt ほか 2003）。</p>
     <p><b>完全電離を仮定しています。</b>10¹⁹ を超える濃度ではフェルミ準位がバンドの中に入り（縮退）、ボルツマン統計が使えなくなります。SemiLab は 5×10¹⁹ を超える層があると「縮退」の帯を出します。</p>
   </div>
 
@@ -440,7 +459,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
   <figure class="full">
     <div class="fig-head"><span class="fig-title">JUNCTION — 電荷 · 電界 · バンド（空乏近似）</span><span class="fig-title">300 K · 逆バイアスは負</span></div>
     <div class="fig-body">
-      <canvas id="cvJunction" width="1100" height="360" aria-label="pn接合の電荷密度、電界、バンド図。濃度とバイアスで空乏層の幅が変わる"></canvas>
+      <canvas id="cvJunction" width="1100" height="380" aria-label="pn接合の電荷密度、電界、バンド図。濃度とバイアスで空乏層の幅が変わる"></canvas>
       <div class="sl3">
         <div class="slider-row"><div class="top"><span class="lab">p 側 N<sub>a</sub></span><span class="num" id="vJNa">1.0×10¹⁶</span></div><input type="range" id="cJNa" min="0" max="400" value="200" aria-label="アクセプタ濃度"></div>
         <div class="slider-row"><div class="top"><span class="lab">n 側 N<sub>d</sub></span><span class="num" id="vJNd">1.0×10¹⁶</span></div><input type="range" id="cJNd" min="0" max="400" value="200" aria-label="ドナー濃度"></div>
@@ -487,6 +506,13 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
         <p><b>「1/C² の切片 = V<sub>bi</sub> − 2kT/q」は片側が濃い接合では成り立ちません。</b>p⁺ 10¹⁹ / n 10¹⁵ では約 6.7 kT/q（0.17 V）低く出ます。濃い側から染み出した正孔が n 側の最初の 0.2 V ぶんの曲がりを受け持っていて、それはドナーの空乏に見えないからです。濃度（傾き）のほうは 1% 以内で読み戻せます。SemiLab の README「繰り返し踏んだ落とし穴 3''」に経緯があります。</p>
       </div>
     </div>
+  </div>
+
+  <div class="deep-note">
+    <span class="tag">くわしく — 階段ではない接合（なだらかな勾配）</span>
+    <p>この章の式は、濃度が境目で不連続に切り替わる<b>階段接合</b>を仮定しています。しかし第1部の拡散で作った接合は、実際には濃度が距離に対してなだらかに横切ります。境目のまわりを直線勾配 a [cm⁻⁴] で近似すると、裸で残る電荷は ±の三角形、電界は放物線になり、空乏層の幅は</p>
+    <div class="eq">W = ( 12&epsilon;(V<sub>bi</sub>&minus;V) / (q&middot;<b>a</b>) )<sup>1/3</sup>　　← 平方根ではなく<b>立方根</b></div>
+    <p>で伸びます。電圧を上げたとき階段接合より伸びにくい（C-V で 1/C² ではなく 1/C³ が直線になる）のが見分け方です。SemiLab の検査にある「なだらかな接合」は、勾配を持たせた層でポアソンの解がこの立方根則に乗ることを見張っているものです。実物の接合はたいてい両者の中間にいます。</p>
   </div>
 
   <div class="deep-note">
@@ -574,6 +600,14 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
     </div>
   </div>
 
+  <div class="deep-note">
+    <span class="tag">くわしく — 接合を2つ置くと、増幅器になる（BJT）</span>
+    <p>この章の道具だけで、バイポーラトランジスタの骨格が全部書けます。npn ― <b>濃い n（エミッタ）／薄い p（ベース）／n（コレクタ）</b>と接合を2つ背中合わせに置き、ベース・エミッタ間を順方向にする。ショックレーの境界条件どおり電子がベースへ注入されますが、<span class="key">ベースの厚みを拡散長よりずっと薄くしてある</span>ので、注入された電子は再結合する暇もなくコレクタ側の空乏層に届き、電界に拾われて流れ去ります。コレクタ電流の正体は、まさに上の<b>短基底ダイオードの電子流</b>です。</p>
+    <p>いっぽうベース端子に流れるのは、エミッタへ逆向きに注入される正孔と、ベース内でわずかに再結合するぶんだけ。その比が電流増幅率で、</p>
+    <div class="eq">&beta; &asymp; (D<sub>n</sub>/D<sub>p</sub>) &middot; (<b>N<sub>E</sub></b>/<i>N<sub>B</sub></i>) &middot; (L<sub>p</sub>/W<sub>B</sub>)　　エミッタを濃く、ベースを薄く</div>
+    <p>「薄くすると電流が増える（coth の式）」がここでは欠点ではなく本体です。SemiLab README の「ここから先」に BJT が挙がっているのは、この部の式のままで組めるから。ただし接合が2つある構造のバイアス下は SemiLab の外（付録「どこまでがモデルか」）なので、ここでは言葉までにしておきます。</p>
+  </div>
+
   <div class="caveat">
     <span class="tag">断定していないこと</span>
     <p><b>降伏は扱いません。</b>逆バイアスを深くすると実物はアバランシェかツェナーで急に流れ出しますが、この部の式にも SemiLab にも入っていません。SemiLab は最大電界が降伏の目安（Sze の近似）を超えると「降伏」の帯を出して、数値としては解け続けますが電流は出ません。降伏の切り分け（4E<sub>g</sub>/q と 6E<sub>g</sub>/q）は第4部 付録 A にあります。</p>
@@ -658,6 +692,15 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
       <p>画素は 3 µm 角しかなく、厚さも数 µm。だから近赤外は拾えず、可視だけを相手にします。この章と違うのは主に2つ。① 表面に p⁺ を薄く被せて空乏層を表面から離す<b>埋め込み型（pinned）フォトダイオード</b>で、表面再結合と暗電流を桁で下げる ― 第4部 03 と付録 C。② 拾った電子を電流として流し続けるのではなく<b>井戸に溜めて</b>、あとで一度に読む ― 溜める容量が第2章の接合容量、読み出しが第4部 05 以降。</p>
       <p>PixelLab の量子効率は、この章と同じ p⁺ 0.15 µm / n 10¹⁵ / n⁺ のフォトダイオードを −2 V で SemiLab に解かせた値をそのまま使っています。「850 nm で量子効率 25%」の課題は、光を集める層の厚みをこの章の考え方で決める課題です。</p>
     </div>
+  </div>
+
+  <div class="deep-note">
+    <span class="tag">くわしく — 同じ素子を発電機として使う（太陽電池）</span>
+    <p>フォトダイオードの式に、電圧の項を残したまま光電流を足すと、太陽電池になります。</p>
+    <div class="eq">J = J<sub>0</sub>( e<sup>V/V<sub>t</sub></sup> &minus; 1 ) &minus; <b>J<sub>L</sub></b>　　J<sub>L</sub> = q &times; QE &times; 光子流</div>
+    <p>端子を短絡すれば J = &minus;J<sub>L</sub> ― 流れる電流はこの章の量子効率の話そのもの。端子を開けば J = 0 になるところまで電圧が持ち上がり、</p>
+    <div class="eq">V<sub>oc</sub> = V<sub>t</sub> &middot; ln( J<sub>L</sub>/J<sub>0</sub> + 1 )　　J<sub>0</sub> を 1/10 にするたび 60 mV 上がる</div>
+    <p><span class="key">第3章の「飽和電流を小さくする」が、太陽電池ではそのまま開放電圧になります</span>。J<sub>0</sub> ∝ n<sub>i</sub>² に床があるので V<sub>oc</sub> はバンドギャップに縛られ、シリコンの実物では 0.6〜0.74 V 程度。最大出力はこの2点（短絡と開放）の中間で取り、その「四角形にどれだけ近いか」を曲線因子と呼びます。センサと太陽電池は、同じ素子を<b>電荷を数える向き</b>で使うか<b>仕事を取り出す向き</b>で使うかの違いです。</p>
   </div>
 
   <div class="caveat">
@@ -749,6 +792,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
     <span class="tag">断定していないこと</span>
     <p><b>1次元です。</b>チャネル長が短くなるとソース・ドレインの空乏層がチャネルの下まで届き、ゲートの支配力が落ちる（短チャネル効果）― それは2次元の話で、この部にも SemiLab にも出ません。第4部 付録 B にあります。第1部「トランジスタ構造の進化」で FinFET や GAA が出てくるのは、この1次元の絵がもう成り立たなくなったからです。</p>
     <p><b>酸化膜は完全な絶縁体として扱っています。</b>3 nm を切るとトンネル電流が流れ（第4部 付録 A）、ポリシリコンのゲートは自身が空乏し、反転層の電子は量子化されて表面から少し離れます。どれも V<sub>th</sub> を数十 mV 動かしますが、入れていません。SemiLab「NAND の中身へ」が酸化膜 3 nm 以上を課すのはこのためです。酸化膜の電界が 10 MV/cm を超えると SemiLab は「絶縁破壊」の帯を出します。</p>
+  </div>
+
+  <div class="deep-note">
+    <span class="tag">くわしく — 酸化膜が薄くできなくなった日（High-k）</span>
+    <p>微細化は長らく「t<sub>ox</sub> も一緒に薄くする」ことで進みました（第4部 付録 B の特性長 &lambda; を縮めるため）。ところが 2 nm を切るあたりで、第4部 付録 A のトンネル電流が指数で立ち上がり、<b>ゲートが絶縁体でなくなり始めます</b>。ここで使われた手が材料の交換です。C<sub>ox</sub> = &epsilon;<sub>ox</sub>/t<sub>ox</sub> なので、<span class="key">誘電率 &epsilon; を大きな材料（ハフニウム系酸化物、比誘電率20前後）に替えれば、物理的に厚い膜のまま同じ容量が出せる</span> ― トンネルは物理的な厚みの指数で減るので、漏れだけが桁で下がります。「SiO<sub>2</sub> 換算で何nmぶんの容量か」を EOT（等価酸化膜厚）と呼び、2000年代後半の45nm世代からこの High-k と金属ゲートの組が標準になりました。この参考書の式では &epsilon;<sub>ox</sub> を差し替えるだけで、同じ枠組みのまま成り立ちます。</p>
   </div>
 
   <div class="lab-go">
@@ -851,6 +899,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
         <tr><td>Semiconductors and<br>Semimetals: Solar Cells</td><td>Harold J. Hovel<br>Academic Press</td><td>4章。中性領域の収集効率の解析解。この部の QE の図はそれを数値で解いたもの。</td></tr>
         <tr><td>Optical properties of<br>intrinsic silicon at 300 K</td><td>M. A. Green &amp; M. J. Keevers<br>Prog. Photovoltaics, 1995</td><td>4章。吸収係数と屈折率の表。SemiLab <code>phys.js</code> の ALPHA / NREF はこれ。</td></tr>
         <tr><td>Empirical Mobility Model</td><td>D. M. Caughey &amp; R. E. Thomas<br>Proc. IEEE, 1967</td><td>1章。濃度依存の移動度の当てはめ。</td></tr>
+        <tr><td>Intrinsic carrier concentration<br>of silicon</td><td>A. B. Sproul &amp; M. A. Green<br>J. Appl. Phys., 1991</td><td>1章。n<sub>i</sub>(300 K) = 1.00×10¹⁰ /cm³ の実測。この参考書と SemiLab が採っている値の出どころ。</td></tr>
       </tbody>
     </table></div>
   </figure>
@@ -1095,7 +1144,7 @@ function draw(){
   var pts=[];for(var i=0;i<=200;i++){var v=vlo+(vhi-vlo)*i/200;pts.push([X(v),Y(Qinv(v))])}
   line(g,pts,C('electron'),2.5);line(g,[[X(Vth),y0],[X(Vth),y0+h]],C('ink'),1,[3,4]);
   txt(g,'Vth = '+Vth.toFixed(2)+' V',X(Vth)+6,y0+16,{color:C('ink'),w:'600'});
-  txt(g,'弱反転: 1桁に S = '+(S*1000).toFixed(0)+' mV',X(Vth-0.75),Y(Qinv(Vth-0.5))-10,{color:C('electron-2')});
+  txt(g,'弱反転: 1桁に S = '+(S*1000).toFixed(0)+' mV',X(Vth-0.75),Math.min(Y(Qinv(Vth-0.5))-10,y0+h-24),{color:C('electron-2')});
   txt(g,'強反転: Cox(V_G − Vth)/q',X(Vth+0.6),Y(Qinv(Vth+0.6))-10,{color:C('electron-2')});
   txt(g,'下限 59.5 mV/桁 (300 K)',x0+8,y0+h-8,{color:C('ink-3')});
   /* 右: Vth の内訳 */
@@ -1105,7 +1154,14 @@ function draw(){
   line(g,[[bx,zero],[bx+bw,zero]],C('line'),1);txt(g,'0 V',bx+bw-6,zero+12,{align:'right'});
   var cx=bx+90,cw=60,cur=0;
   var parts=[['V_FB',Vfb,C('volt')],['2φF',2*phiF,C('hole')],['Qdep/Cox',Qdep/Cox,C('electron')]];
-  parts.forEach(function(p){var a=BY(cur),b=BY(cur+p[1]);g.fillStyle=p[2];g.fillRect(cx,Math.min(a,b),cw,Math.abs(a-b));txt(g,p[0]+'  '+(p[1]>=0?'+':'')+p[1].toFixed(3),cx+cw+8,(a+b)/2+4,{color:p[2],w:'600'});cur+=p[1]});
+  /* 棒とラベルを分けて描く。V_FB と 2φF は棒の中点が数 px しか離れず
+     ラベルが重なるので、中点で並べたあと 16px の間隔を強制する */
+  var labs=[];
+  parts.forEach(function(p){var a=BY(cur),b=BY(cur+p[1]);g.fillStyle=p[2];g.fillRect(cx,Math.min(a,b),cw,Math.abs(a-b));labs.push({t:p[0]+'  '+(p[1]>=0?'+':'')+p[1].toFixed(3),y:(a+b)/2+4,c:p[2]});cur+=p[1]});
+  labs.sort(function(a,b){return a.y-b.y});
+  for(var li=1;li<labs.length;li++){if(labs[li].y-labs[li-1].y<16)labs[li].y=labs[li-1].y+16}
+  for(var li=labs.length-2;li>=0;li--){if(labs[li+1].y-labs[li].y<16)labs[li].y=labs[li+1].y-16}
+  labs.forEach(function(l){txt(g,l.t,cx+cw+8,l.y,{color:l.c,w:'600'})});
   line(g,[[cx-20,BY(Vth)],[cx+cw+20,BY(Vth)]],C('ink'),2);txt(g,'Vth = '+Vth.toFixed(3)+' V',cx-24,BY(Vth)+4,{align:'right',color:C('ink'),w:'600'});
   txt(g,'しきい値の内訳',bx+8,by+16,{sans:true,size:12,w:'700',color:C('ink-2')});
   txt(g,'Wmax '+fUm(Wmax)+'  Cdep/Cox '+(Cdep/Cox).toFixed(2),bx+8,by+bh-8,{color:C('ink-3')});
