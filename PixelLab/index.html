@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>画素ラボ</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+  <header id="topbar">
+    <div id="brand">画素ラボ</div>
+    <div class="group">
+      <label>カメラ
+        <select id="camSel">
+          <option value="design">設計したカメラ</option>
+          <option value="A">謎のカメラ A</option>
+          <option value="B">謎のカメラ B</option>
+          <option value="C">謎のカメラ C</option>
+        </select>
+      </label>
+      <label title="1枚の露光時間">露光 <input id="expVal" class="num" type="text" value="10"><span class="unit">ms</span></label>
+      <label class="chk" title="消すとふたを閉めて撮る（暗い画像）"><input id="lightOn" type="checkbox" checked> 光</label>
+      <button id="btnShot" class="tb primary" title="この露光で明るい2枚・暗い2枚を撮って、1点ぶん測る">撮る</button>
+      <button id="btnSweep" class="tb primary" title="露光を 0.1ms〜5s で 40 通りに変えて撮る">掃く</button>
+      <button id="btnClear" class="tb" title="このカメラで測った点を消す">点を消す</button>
+      <label class="chk" title="自動の当てはめの線を図に出す（測る練習のときは消しておく）"><input id="showFit" type="checkbox"> 当てはめを見せる</label>
+    </div>
+  </header>
+
+  <main>
+    <aside id="left">
+      <section id="designBox">
+        <h2>画素を設計する</h2>
+        <div id="designForm"></div>
+        <h2>設計から出る数字</h2>
+        <div id="derived"></div>
+      </section>
+      <section id="mysteryBox" class="hidden">
+        <h2 id="mysteryName">謎のカメラ</h2>
+        <p class="note">中身の数字は伏せてある。<b>撮って、測って、当てる</b>。
+          分かっているのは「平らな光を当てている」ことだけ（光の強さも伏せてある）。</p>
+      </section>
+      <section>
+        <h2>測った点</h2>
+        <div id="pointsBox"></div>
+      </section>
+    </aside>
+
+    <div id="stage">
+      <canvas id="board"></canvas>
+      <div id="status"><span id="statLeft"></span><span id="statRight"></span></div>
+    </div>
+
+    <aside id="quests">
+      <h2>課題</h2>
+      <div id="questBody" class="hidden">
+        <h3 id="qName"></h3>
+        <p id="qDesc"></p>
+        <p id="qWhy" class="why-line"></p>
+        <details id="qHintWrap"><summary>ヒント</summary><p id="qHint"></p></details>
+        <div id="qAnswerRow" class="hidden">
+          <label>答え <input id="qAnswer" class="num wide-num" type="text"> <span id="qUnit" class="unit"></span></label>
+        </div>
+        <div id="qChoiceRow" class="hidden">
+          <select id="qChoice"></select>
+        </div>
+        <button id="btnGrade" class="tb primary wide">採点する</button>
+        <button id="btnAnswer" class="tb wide">お手本を見る</button>
+        <div id="qResult"></div>
+      </div>
+      <div id="questList"></div>
+    </aside>
+  </main>
+</div>
+
+<!-- SemiLab の物理（量子効率・ni）と数値の読み取りを使う。フォルダは兄弟に置くこと -->
+<script src="../SemiLab/src/phys.js"></script>
+<script src="../SemiLab/src/stack.js"></script>
+<script src="../SemiLab/src/poisson.js"></script>
+<script src="../SemiLab/src/band.js"></script>
+<script src="../SemiLab/src/dev.js"></script>
+<script src="../SemiLab/src/light.js"></script>
+<script src="../SemiLab/src/parse.js"></script>
+
+<script src="src/rng.js"></script>
+<script src="src/pixel.js"></script>
+<script src="src/camera.js"></script>
+<script src="src/ptc.js"></script>
+<script src="src/quest.js"></script>
+<script src="src/answer.js"></script>
+<script src="src/store.js"></script>
+<script src="src/ui.js"></script>
+<script src="src/main.js"></script>
+</body>
+</html>
