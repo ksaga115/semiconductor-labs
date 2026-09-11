@@ -1,0 +1,1126 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>半導体デバイスの基礎</title>
+<meta name="description" content="第2部 なぜ動くか ― 不純物を入れたシリコンの一片から、pn 接合・ダイオード・フォトダイオード・MOS・MOSFET まで。数値はすべて SemiLab が解いた値。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* 色の約束は第4部（イメージセンサ解剖ラボ）と同じ。p 型＝赤、n 型＝青、酸化膜＝黄土、電極＝銀 は SemiLab の断面図と同じ */
+:root{
+  --ground:#EDEEF2; --surface:#FFFFFF; --surface-2:#F5F6F9; --surface-3:#E2E5ED;
+  --ink:#14161E; --ink-2:#4A5061; --ink-3:#787F92;
+  --line:#D3D7E1; --line-2:#E5E7EF;
+  --photon:#D98803; --photon-2:#A96504; --photon-soft:#FAEBCD;
+  --electron:#1D74B8; --electron-2:#155A91; --electron-soft:#D6E7F5;
+  --hole:#CF4437; --hole-soft:#F6DCD8;
+  --ox:#B08A3E; --ox-soft:#EFE3C8; --metal:#9AA1AF;
+  --digital:#0F766E; --digital-soft:#D3EAE6;
+  --volt:#7047B5; --volt-soft:#E7DEF7;
+  --warn:#B4400C;
+  --shadow:0 1px 2px rgba(20,22,30,.06), 0 8px 24px -12px rgba(20,22,30,.18);
+  --mono:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;
+  --sans:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic UI","Yu Gothic",Meiryo,sans-serif;
+  --disp:"Zen Old Mincho","Hiragino Mincho ProN","Yu Mincho",serif;
+  color-scheme:light dark;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#0F1117; --surface:#171A22; --surface-2:#1D212B; --surface-3:#2B3140;
+    --ink:#E8EAF1; --ink-2:#AAB1C3; --ink-3:#7C8397; --line:#2D323F; --line-2:#232833;
+    --photon:#F0B444; --photon-2:#F7C766; --photon-soft:#3A2C10;
+    --electron:#5FB0E8; --electron-2:#8ACAF3; --electron-soft:#12293C;
+    --hole:#E56E60; --hole-soft:#3D1F1B; --ox:#D1A95A; --ox-soft:#3A3018; --metal:#767C92;
+    --digital:#4FBFAE; --digital-soft:#0F2E2B; --volt:#A98AE0; --volt-soft:#2A2140; --warn:#E8875A;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0F1117; --surface:#171A22; --surface-2:#1D212B; --surface-3:#2B3140;
+  --ink:#E8EAF1; --ink-2:#AAB1C3; --ink-3:#7C8397; --line:#2D323F; --line-2:#232833;
+  --photon:#F0B444; --photon-2:#F7C766; --photon-soft:#3A2C10;
+  --electron:#5FB0E8; --electron-2:#8ACAF3; --electron-soft:#12293C;
+  --hole:#E56E60; --hole-soft:#3D1F1B; --ox:#D1A95A; --ox-soft:#3A3018; --metal:#767C92;
+  --digital:#4FBFAE; --digital-soft:#0F2E2B; --volt:#A98AE0; --volt-soft:#2A2140; --warn:#E8875A;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.7);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.8;-webkit-font-smoothing:antialiased;font-feature-settings:"palt" 1}
+h1,h2,h3,h4{margin:0;text-wrap:balance;line-height:1.35}
+p{margin:0}
+a{color:var(--electron)}
+code{font-family:var(--mono);font-size:.9em;background:var(--surface-2);padding:1px 5px;border-radius:2px;border:1px solid var(--line-2)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 22px 90px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:500}
+.back{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--ink-3);text-decoration:none;display:inline-block;margin-bottom:14px}
+.back:hover{color:var(--ink)}
+
+/* hero */
+.hero{padding:52px 0 34px;border-bottom:1px solid var(--line)}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:28px}
+@media(min-width:900px){.hero-grid{grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);gap:48px;align-items:end}}
+.hero h1{font-family:var(--disp);font-weight:700;font-size:clamp(33px,5.2vw,56px);letter-spacing:.02em;line-height:1.2;margin:12px 0 0}
+.hero h1 .lit{color:var(--electron)}
+.hero .sub{margin-top:18px;color:var(--ink-2);font-size:17px;max-width:36em}
+.spec{display:flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:3px;background:var(--surface);overflow:hidden}
+.spec div{flex:1 1 30%;padding:11px 13px;border-right:1px solid var(--line-2);border-bottom:1px solid var(--line-2)}
+.spec dt{font-size:10px;font-family:var(--mono);letter-spacing:.07em;color:var(--ink-3);margin:0}
+.spec dd{margin:2px 0 0;font-family:var(--mono);font-size:14.5px;font-weight:600;font-variant-numeric:tabular-nums}
+.spec dd small{font-size:10.5px;color:var(--ink-3);font-weight:400;margin-left:2px}
+.spec-cap{padding:9px 13px;font-size:11.5px;color:var(--ink-3);flex:1 1 100%;border-right:0;border-bottom:0;background:var(--surface-2)}
+.guide{margin-top:26px;border:1px solid var(--line);border-radius:3px;background:var(--surface);overflow:hidden}
+.guide-h{padding:9px 15px;border-bottom:1px solid var(--line-2);background:var(--surface-2);font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;color:var(--ink-2);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.guide-b{display:grid;grid-template-columns:minmax(0,1fr)}
+@media(min-width:760px){.guide-b{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.guide-b > div{padding:12px 15px;border-bottom:1px solid var(--line-2)}
+@media(min-width:760px){.guide-b > div{border-bottom:0;border-right:1px solid var(--line-2)}.guide-b > div:last-child{border-right:0}}
+.guide-b b{display:block;font-size:13px;color:var(--ink);margin-bottom:3px}
+.guide-b span{font-size:12.5px;color:var(--ink-2);line-height:1.65}
+
+/* layout + rail */
+.main{display:grid;grid-template-columns:minmax(0,1fr)}
+@media(min-width:1080px){.main{grid-template-columns:180px minmax(0,1fr);gap:46px}}
+.rail{display:none}
+@media(min-width:1080px){.rail{display:block;position:sticky;top:20px;align-self:start;padding-top:58px;max-height:calc(100vh - 40px);overflow-y:auto;scrollbar-width:thin}}
+.rail ol{list-style:none;margin:0;padding:0}
+.rail li.dom{font-family:var(--mono);font-size:9px;letter-spacing:.11em;color:var(--ink-3);padding:16px 0 4px;text-transform:uppercase}
+.rail li.dom.first{padding-top:0}
+.rail a{display:grid;grid-template-columns:24px 1fr;gap:6px;padding:4px 0;text-decoration:none;color:var(--ink-2);font-size:12.5px;line-height:1.4;border-left:2px solid transparent;padding-left:8px;margin-left:-10px}
+.rail a .n{font-family:var(--mono);font-size:10px;color:var(--ink-3);padding-top:2px}
+.rail a:hover{color:var(--ink)}
+.rail a.on{color:var(--ink);font-weight:700;border-left-color:var(--electron)}
+.rail a.on .n{color:var(--electron)}
+
+/* stage */
+.stage{padding:58px 0 0}
+.stage + .stage{margin-top:26px;border-top:1px solid var(--line)}
+.stage-head{display:flex;gap:15px;align-items:baseline}
+.stage-num{font-family:var(--mono);font-size:11.5px;font-weight:600;color:var(--electron);letter-spacing:.06em;flex:0 0 auto;padding-top:5px}
+.stage h2{font-family:var(--disp);font-weight:700;font-size:clamp(23px,3.1vw,32px);letter-spacing:.02em}
+.lede{color:var(--ink-2);font-size:16.5px;max-width:40em;margin-top:12px}
+.stage h3{font-size:15px;font-weight:700;margin-top:28px;letter-spacing:.02em}
+.stage h3 + p{margin-top:8px}
+.stage p + p{margin-top:14px}
+.body-col{max-width:42em}
+.two .body-col{max-width:none}
+.two{display:grid;grid-template-columns:minmax(0,1fr);gap:26px;margin-top:26px}
+@media(min-width:880px){.two{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:34px;align-items:start}}
+.full{margin-top:26px}
+.key{font-weight:700;background:linear-gradient(transparent 62%, var(--electron-soft) 62%);padding:0 1px}
+
+/* figure */
+figure{margin:0;background:var(--surface);border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.fig-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 13px;border-bottom:1px solid var(--line-2);background:var(--surface-2);flex-wrap:wrap}
+.fig-title{font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;color:var(--ink-2);font-weight:500}
+.fig-body{padding:14px 13px}
+figcaption{padding:10px 13px 12px;border-top:1px solid var(--line-2);font-size:12.5px;line-height:1.65;color:var(--ink-3)}
+canvas{display:block;width:100%;height:auto}
+svg{display:block;max-width:100%;height:auto}
+.scroll-x{overflow-x:auto}
+.slider-row{display:grid;gap:3px;margin-top:12px}
+.slider-row .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.slider-row .lab{font-family:var(--mono);font-size:10px;letter-spacing:.07em;color:var(--ink-3)}
+.slider-row .num{font-family:var(--mono);font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;appearance:none;background:transparent;margin:0;height:15px;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:3px;background:var(--surface-3);border-radius:2px}
+input[type=range]::-moz-range-track{height:3px;background:var(--surface-3);border-radius:2px}
+input[type=range]::-webkit-slider-thumb{appearance:none;width:14px;height:14px;border-radius:50%;background:var(--ink);margin-top:-5.5px;border:2px solid var(--surface)}
+input[type=range]::-moz-range-thumb{width:11px;height:11px;border-radius:50%;background:var(--ink);border:2px solid var(--surface)}
+.sl3{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;margin-top:14px}
+@media(min-width:760px){.sl3{grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}}
+.sl3 .slider-row{margin-top:0}
+.readouts{display:flex;flex-wrap:wrap;border-top:1px solid var(--line-2)}
+.readouts div{flex:1 1 auto;min-width:92px;padding:8px 12px;border-right:1px solid var(--line-2)}
+.readouts div:last-child{border-right:0}
+.readouts dt{margin:0;font-family:var(--mono);font-size:9px;letter-spacing:.05em;color:var(--ink-3);white-space:nowrap}
+.readouts dd{margin:1px 0 0;font-family:var(--mono);font-size:13.5px;font-weight:600;font-variant-numeric:tabular-nums}
+.eq{font-family:var(--mono);font-size:13px;background:var(--surface-2);border:1px solid var(--line-2);border-radius:2px;padding:10px 13px;margin-top:12px;overflow-x:auto;white-space:nowrap;color:var(--ink)}
+.eq b{color:var(--electron);font-weight:600}
+.eq i{font-style:normal;color:var(--hole);font-weight:600}
+.eq u{text-decoration:none;color:var(--volt);font-weight:600}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line-2);vertical-align:top}
+th{font-family:var(--mono);font-size:10px;letter-spacing:.07em;color:var(--ink-3);font-weight:500;border-bottom:1px solid var(--line)}
+td:first-child{font-family:var(--mono);font-weight:600;white-space:nowrap;color:var(--ink)}
+td.num{font-variant-numeric:tabular-nums;font-family:var(--mono);text-align:right;white-space:nowrap}
+tbody tr:last-child td{border-bottom:0}
+tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;letter-spacing:.09em;color:var(--ink-3);font-weight:500;white-space:normal;padding:9px 12px;border-bottom:1px solid var(--line)}
+
+/* 箱: 深掘り / 断定していないこと / ラボへ */
+.deep-note{margin-top:20px;border-left:2px solid var(--electron);padding:1px 0 1px 16px;max-width:46em}
+.deep-note .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;color:var(--electron);display:block;margin-bottom:5px}
+.deep-note p + p{margin-top:12px}
+.caveat{margin-top:18px;border:1px solid var(--line);border-left:2px solid var(--warn);border-radius:2px;background:var(--surface);padding:12px 16px;max-width:46em}
+.caveat .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;color:var(--warn);display:block;margin-bottom:6px}
+.caveat p{font-size:13.5px;color:var(--ink-2);line-height:1.72}
+.caveat p + p{margin-top:10px}
+.lab-go{margin-top:22px;border:1px solid var(--line);border-left:2px solid var(--digital);border-radius:2px;background:var(--surface);padding:12px 16px;max-width:46em}
+.lab-go .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;color:var(--digital);display:block;margin-bottom:6px}
+.lab-go p{font-size:13.5px;color:var(--ink-2);line-height:1.72}
+.lab-go .qs{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px;align-items:center}
+.lab-go .qs a{font-family:var(--mono);font-size:11.5px;padding:4px 10px;border:1px solid var(--line);border-radius:2px;background:var(--surface-2);color:var(--ink);text-decoration:none;white-space:nowrap}
+.lab-go .qs a:hover{border-color:var(--digital);color:var(--digital)}
+.lab-go .qs .lab{font-family:var(--mono);font-size:10px;color:var(--ink-3);letter-spacing:.07em;margin-left:4px}
+.lab-go .qs .lab:first-child{margin-left:0}
+.foot{margin-top:54px;padding-top:22px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-3);display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+@media print{.rail,.lab-go,.back{display:none!important}.main{display:block!important}figure,.caveat,.deep-note,.eq{break-inside:avoid}}
+</style>
+</head>
+<body>
+
+<header class="wrap hero">
+  <div class="hero-grid">
+    <div>
+      <a class="back" href="index.html">&larr; Labs / 半導体 ― 第2部 なぜ動くか（実践: SemiLab）</a><br>
+      <span class="eyebrow">Dopant &rarr; Junction &rarr; Diode &rarr; Photodiode &rarr; MOSFET</span>
+      <h1>一片のシリコンから、<br><span class="lit">スイッチ</span>ができるまで</h1>
+      <p class="sub">使える操作は「シリコンの一片に不純物を塗る」ことだけ。それを2枚並べると接合が立ち、電圧をかけるとダイオードになり、光を当てるとフォトダイオードになり、酸化膜を挟むと MOSFET になる。第1部の工程が作った不純物の分布が、第3部の NAND と第4部の画素に変わる場所です。</p>
+      <div class="guide">
+        <div class="guide-h"><span>読み方</span><span>5章 ＝ SemiLab の5章。章を読んだら末尾の課題を解く</span></div>
+        <div class="guide-b">
+          <div><b>接合まで</b><span>1・2章。キャリアの数の決まり方と、空乏層が「出てくる」こと。第4部「蓄積」の井戸の正体はここ。</span></div>
+          <div><b>ダイオードと光</b><span>3・4章。指数関数の整流、暗電流、量子効率の両端。第4部と PixelLab に直結する。</span></div>
+          <div><b>MOS へ</b><span>5章。触れずにスイッチする仕組みと、しきい値・S値。第3部 NAND の中身。</span></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <dl class="spec">
+        <div><dt>n<sub>i</sub> (300 K)</dt><dd>1.0&times;10<sup>10</sup><small>/cm³</small></dd></div>
+        <div><dt>E<sub>g</sub> (300 K)</dt><dd>1.12<small>eV</small></dd></div>
+        <div><dt>kT/q (300 K)</dt><dd>25.9<small>mV</small></dd></div>
+        <div><dt>&epsilon;<sub>Si</sub> / &epsilon;<sub>ox</sub></dt><dd>11.7 / 3.9</dd></div>
+        <div><dt>Si 原子</dt><dd>5&times;10<sup>22</sup><small>/cm³</small></dd></div>
+        <div><dt>S 値の下限</dt><dd>59.5<small>mV/桁</small></dd></div>
+        <div class="spec-cap">この参考書が信じている定数。SemiLab の <code>phys.js</code> と同じ値で、本文中の数値はすべて SemiLab に同じ構造を置いて解いた結果です。「式」と書いた値は教科書の解析式、「解」と書いた値はポアソン方程式の数値解。</div>
+      </dl>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+<div class="main">
+
+<nav class="rail" aria-label="章">
+  <ol>
+    <li class="dom first">出発点</li>
+    <li><a href="#s0"><span class="n">00</span><span>一枚の地図</span></a></li>
+    <li class="dom">平衡</li>
+    <li><a href="#s1"><span class="n">01</span><span>一片のシリコン</span></a></li>
+    <li><a href="#s2"><span class="n">02</span><span>接合が立つ</span></a></li>
+    <li class="dom">流れる</li>
+    <li><a href="#s3"><span class="n">03</span><span>ダイオード</span></a></li>
+    <li><a href="#s4"><span class="n">04</span><span>光を電気にする</span></a></li>
+    <li class="dom">切り替える</li>
+    <li><a href="#s5"><span class="n">05</span><span>MOS、そして MOSFET</span></a></li>
+    <li class="dom">付録</li>
+    <li><a href="#snum"><span class="n">—</span><span>数字の根拠</span></a></li>
+    <li><a href="#smodel"><span class="n">—</span><span>どこまでがモデルか</span></a></li>
+    <li><a href="#sref"><span class="n">—</span><span>参考文献</span></a></li>
+  </ol>
+</nav>
+
+<main>
+
+<!-- ================= 00 ================= -->
+<section class="stage" id="s0">
+  <div class="stage-head"><span class="stage-num">00</span><h2>一枚の地図 ― 操作はひとつ、出てくるものは五つ</h2></div>
+  <p class="lede">この部でやることは全部、<span class="key">「シリコンの一片に不純物を塗って、並べる」</span>の言い換えです。1枚ならキャリアの数が決まる。2枚並べれば接合が立つ。電圧をかければ流れ、光を当てれば対ができ、酸化膜を挟めばスイッチになる。部品を「置く」操作はどこにもありません。</p>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">OVERVIEW — 一片から MOSFET まで</span><span class="fig-title">赤 ＝ p 型 · 青 ＝ n 型 · 黄土 ＝ 酸化膜 · 銀 ＝ 電極（SemiLab の断面図と同じ）</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 1120 250" role="img" aria-label="5つの段: 一片のシリコン、pn接合、ダイオード、フォトダイオード、MOS。それぞれの下に何が出てくるかの説明。" style="min-width:920px">
+        <defs><marker id="ar0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink-3)"/></marker></defs>
+        <g font-family="var(--mono)" font-size="10" fill="var(--ink-3)">
+          <text x="16" y="24">01</text><text x="240" y="24">02</text><text x="464" y="24">03</text><text x="688" y="24">04</text><text x="912" y="24">05</text>
+        </g>
+        <!-- 01 一片 -->
+        <g>
+          <rect x="16" y="40" width="190" height="70" fill="var(--electron-soft)" stroke="var(--electron)"/>
+          <rect x="6" y="40" width="10" height="70" fill="var(--metal)"/><rect x="206" y="40" width="10" height="70" fill="var(--metal)"/>
+          <text x="111" y="80" text-anchor="middle" font-family="var(--mono)" font-size="12" font-weight="600" fill="var(--electron-2)">n · N<tspan font-size="9" baseline-shift="sub">d</tspan> = 10¹⁶</text>
+        </g>
+        <!-- 02 接合 -->
+        <g>
+          <rect x="240" y="40" width="95" height="70" fill="var(--hole-soft)" stroke="var(--hole)"/>
+          <rect x="335" y="40" width="95" height="70" fill="var(--electron-soft)" stroke="var(--electron)"/>
+          <rect x="230" y="40" width="10" height="70" fill="var(--metal)"/><rect x="430" y="40" width="10" height="70" fill="var(--metal)"/>
+          <rect x="315" y="40" width="40" height="70" fill="var(--surface-3)" opacity=".85"/>
+          <line x1="335" y1="40" x2="335" y2="110" stroke="var(--ink)" stroke-dasharray="2 2"/>
+          <text x="287" y="80" text-anchor="middle" font-family="var(--mono)" font-size="12" font-weight="600" fill="var(--hole)">p</text>
+          <text x="392" y="80" text-anchor="middle" font-family="var(--mono)" font-size="12" font-weight="600" fill="var(--electron-2)">n</text>
+          <text x="335" y="128" text-anchor="middle" font-family="var(--mono)" font-size="9.5" fill="var(--ink-3)">空乏層 W</text>
+        </g>
+        <!-- 03 ダイオード -->
+        <g>
+          <rect x="464" y="40" width="95" height="70" fill="var(--hole-soft)" stroke="var(--hole)"/>
+          <rect x="559" y="40" width="95" height="70" fill="var(--electron-soft)" stroke="var(--electron)"/>
+          <rect x="454" y="40" width="10" height="70" fill="var(--metal)"/><rect x="654" y="40" width="10" height="70" fill="var(--metal)"/>
+          <rect x="548" y="40" width="22" height="70" fill="var(--surface-3)" opacity=".85"/>
+          <text x="459" y="30" text-anchor="middle" font-family="var(--mono)" font-size="10" fill="var(--volt)">+V</text>
+          <path d="M470,75 L648,75" stroke="var(--volt)" stroke-width="2" marker-end="url(#ar0)"/>
+          <text x="559" y="128" text-anchor="middle" font-family="var(--mono)" font-size="9.5" fill="var(--ink-3)">J ∝ exp(V/V<tspan font-size="7" baseline-shift="sub">t</tspan>)</text>
+        </g>
+        <!-- 04 フォトダイオード -->
+        <g>
+          <rect x="688" y="40" width="28" height="70" fill="var(--hole-soft)" stroke="var(--hole)"/>
+          <rect x="716" y="40" width="140" height="70" fill="var(--electron-soft)" stroke="var(--electron)"/>
+          <rect x="856" y="40" width="22" height="70" fill="var(--electron)" opacity=".55"/>
+          <rect x="678" y="40" width="10" height="70" fill="var(--metal)"/><rect x="878" y="40" width="10" height="70" fill="var(--metal)"/>
+          <rect x="716" y="40" width="70" height="70" fill="var(--surface-3)" opacity=".85"/>
+          <g stroke="var(--photon)" stroke-width="1.6"><line x1="640" y1="52" x2="700" y2="52" marker-end="url(#ar0)"/><line x1="640" y1="74" x2="730" y2="74" marker-end="url(#ar0)"/><line x1="640" y1="96" x2="790" y2="96" marker-end="url(#ar0)"/></g>
+          <text x="646" y="46" font-family="var(--mono)" font-size="9" fill="var(--photon-2)">青</text><text x="646" y="90" font-family="var(--mono)" font-size="9" fill="var(--photon-2)">赤</text>
+          <text x="783" y="128" text-anchor="middle" font-family="var(--mono)" font-size="9.5" fill="var(--ink-3)">拾えた対 ÷ 来た光子 = QE</text>
+        </g>
+        <!-- 05 MOS -->
+        <g>
+          <rect x="912" y="40" width="14" height="70" fill="var(--ox-soft)" stroke="var(--ox)"/>
+          <rect x="926" y="40" width="178" height="70" fill="var(--hole-soft)" stroke="var(--hole)"/>
+          <rect x="902" y="40" width="10" height="70" fill="var(--metal)"/><rect x="1104" y="40" width="10" height="70" fill="var(--metal)"/>
+          <rect x="926" y="40" width="4" height="70" fill="var(--electron)"/>
+          <rect x="930" y="40" width="30" height="70" fill="var(--surface-3)" opacity=".85"/>
+          <text x="907" y="30" text-anchor="middle" font-family="var(--mono)" font-size="10" fill="var(--volt)">V<tspan font-size="7" baseline-shift="sub">G</tspan></text>
+          <text x="1015" y="80" text-anchor="middle" font-family="var(--mono)" font-size="12" font-weight="600" fill="var(--hole)">p 基板</text>
+          <text x="1008" y="128" text-anchor="middle" font-family="var(--mono)" font-size="9.5" fill="var(--ink-3)">反転層（電子） ← 触れずに作る</text>
+        </g>
+        <!-- captions -->
+        <g font-family="var(--sans)" font-size="12" fill="var(--ink)">
+          <text x="16" y="160" font-weight="700">1枚置く</text><text x="16" y="178" fill="var(--ink-2)">キャリアの数が決まる</text><text x="16" y="196" fill="var(--ink-2)">n ≈ N<tspan font-size="9" baseline-shift="sub">d</tspan>、p = n<tspan font-size="9" baseline-shift="sub">i</tspan>²/n</text>
+          <text x="240" y="160" font-weight="700">2枚並べる</text><text x="240" y="178" fill="var(--ink-2)">拡散と電界が釣り合う</text><text x="240" y="196" fill="var(--ink-2)">V<tspan font-size="9" baseline-shift="sub">bi</tspan> と空乏層が出てくる</text>
+          <text x="464" y="160" font-weight="700">電圧をかける</text><text x="464" y="178" fill="var(--ink-2)">順方向は指数で流れ</text><text x="464" y="196" fill="var(--ink-2)">逆方向は生成電流だけ</text>
+          <text x="688" y="160" font-weight="700">光を当てる</text><text x="688" y="178" fill="var(--ink-2)">生まれた場所で運命が決まる</text><text x="688" y="196" fill="var(--ink-2)">空乏層なら拾える</text>
+          <text x="912" y="160" font-weight="700">酸化膜を挟む</text><text x="912" y="178" fill="var(--ink-2)">電界だけが染み込み</text><text x="912" y="196" fill="var(--ink-2)">表面の型がひっくり返る</text>
+        </g>
+        <g font-family="var(--mono)" font-size="9.5" fill="var(--ink-3)">
+          <text x="16" y="228">→ 第1部 ProcessLab が作る分布</text>
+          <text x="688" y="228">→ 第4部 画素</text>
+          <text x="912" y="228">→ 第3部 NAND</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>5つの段は SemiLab の5章と同じ順です。左の3段は<b>平衡</b>（電流が流れていない状態）で決まる話が中心で、ポアソン方程式ひとつで出ます。右の2段で初めて「流れる」「切り替わる」が入ります。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>この参考書の約束</h3>
+      <p><b>数値はすべて SemiLab が解いた値です。</b>「Vbi 0.714 V」のような数字は、SemiLab に同じ層を置いて採点したときに画面に出る数字と一致します（数値解なので最後の桁は数%動きます）。教科書の解析式で出した値には「式」と添え、ポアソン方程式の数値解には「解」と添えました。両者の差がどこから来るかも、そのつど書きます。</p>
+      <p>長さは cm、濃度は cm<sup>−3</sup> で考え、画面に出すときだけ µm・nm に直します。半導体の現場の単位系で、SemiLab の内部もこれです。</p>
+    </div>
+    <div class="body-col">
+      <h3>先に結論を3つ</h3>
+      <p><b>① キャリアの数は指数、電圧は対数。</b>n = n<sub>i</sub>·exp(ψ/V<sub>t</sub>) という1本の式が、以降の全部を貫きます。濃度を10倍にしても電圧は 60 mV しか動かない。逆に電圧を 60 mV 動かすと電流は10倍になる。</p>
+      <p><b>② 空乏層は描くものではなく出てくるもの。</b>電荷の釣り合い（ポアソン方程式）を解くと、そこが勝手に空乏します。井戸も、容量も、しきい値も、全部その結果です。</p>
+      <p><b>③ 出ないものは出ない。</b>この部と SemiLab は、降伏・大注入・量子効果を扱いません。そこへ行くと SemiLab は赤い帯を出します。付録「どこまでがモデルか」に境界があります。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 01 ================= -->
+<section class="stage" id="s1">
+  <div class="stage-head"><span class="stage-num">01</span><h2>一片のシリコン ― 5兆個に1個から、10万倍へ</h2></div>
+  <p class="lede">純粋なシリコンは、ほとんど電気を通しません。1 cm³ に原子が 5×10²² 個あるのに、動けるキャリアは 10¹⁰ 個 ― <span class="key">5兆個に1個</span>です。そこへ不純物を 10¹⁵ 個（原子 5000万個に1個）混ぜるだけで、キャリアは10万倍になる。「半」導体という名前は、この効き方のことです。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>なぜ 10¹⁰ 個なのか ― バンドギャップ</h3>
+      <p>シリコンの結晶では、各原子が4本の腕で隣と手をつないでいます。この結合に使われている電子は動けません。動けるようになるには、結合から外れて<b>伝導帯</b>に上がる必要があり、そのために要るエネルギーが<b>バンドギャップ E<sub>g</sub> = 1.12 eV</b>（300 K）です。</p>
+      <p>室温の熱エネルギー kT は 0.026 eV。1.12 eV はその43倍で、熱だけで結合を切られる電子はほとんどいない。それでもゼロではなく、ボルツマン分布の裾にいる電子が exp(−E<sub>g</sub>/2kT) の割合で上がっている。これが<b>真性キャリア密度 n<sub>i</sub> = 1.0×10¹⁰ /cm³</b> の正体で、電子が1個上がると、抜けた穴（<b>正孔</b>）も1個できるので、n = p = n<sub>i</sub> です。</p>
+      <div class="eq">n<sub>i</sub> = &radic;(N<sub>c</sub>N<sub>v</sub>) &middot; exp(&minus;<b>E<sub>g</sub></b>/2kT) &asymp; <b>1.0&times;10<sup>10</sup></b> /cm³　　(300 K)</div>
+    </div>
+    <div class="body-col">
+      <h3>質量作用の法則 ― n·p は一定</h3>
+      <p>熱平衡では、電子と正孔は「対で生まれ、出会うと対で消える」を繰り返しています。生まれる速さは温度だけで決まり、消える速さは出会う頻度 ∝ n·p。釣り合うところで<span class="key">n·p = n<sub>i</sub>²</span>。<b>電子を増やせば正孔は同じ倍率で減る。</b>この1行が、ダイオードの飽和電流も暗電流も決めます。</p>
+      <h3>ドナーとアクセプタ</h3>
+      <p>リン（P）や砒素（As）は腕が5本。シリコンの席に座ると1本余り、その電子は 0.045 eV で外れる ― 室温なら全部外れています（<b>完全電離</b>）。だから <b>n ≈ N<sub>d</sub></b>、正孔は n<sub>i</sub>²/N<sub>d</sub> まで減る。これが <b>n 型</b>。ホウ素（B）は腕が3本で、1本足りないぶん隣から電子を奪い、正孔を1個残す。<b>p ≈ N<sub>a</sub></b> で <b>p 型</b>。鏡写しです。</p>
+      <p>N<sub>d</sub> = 10¹⁶ なら n = 10¹⁶、p = 10²⁰/10¹⁶ = <b>10⁴</b>。多数キャリアと少数キャリアの差は12桁になります。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">CARRIERS — 不純物を塗ると、キャリアと抵抗率がどう決まるか</span><span class="fig-title">300 K</span></div>
+    <div class="fig-body">
+      <canvas id="cvCarrier" width="1100" height="300" aria-label="ドナーとアクセプタの濃度に対する電子・正孔濃度と、バンド図の中のフェルミ準位の位置"></canvas>
+      <div class="sl3">
+        <div class="slider-row"><div class="top"><span class="lab">ドナー N<sub>d</sub></span><span class="num" id="vNd">1.0×10¹⁶ /cm³</span></div><input type="range" id="cNd" min="0" max="800" value="600" aria-label="ドナー濃度"></div>
+        <div class="slider-row"><div class="top"><span class="lab">アクセプタ N<sub>a</sub></span><span class="num" id="vNa">入れない</span></div><input type="range" id="cNa" min="0" max="800" value="0" aria-label="アクセプタ濃度"></div>
+        <div class="slider-row"><div class="top"><span class="lab">温度 T</span><span class="num" id="vT">300 K</span></div><input type="range" id="cT" min="250" max="400" value="300" aria-label="温度"></div>
+      </div>
+    </div>
+    <dl class="readouts">
+      <div><dt>型</dt><dd id="rType">n 型</dd></div>
+      <div><dt>電子 n</dt><dd id="rN">—</dd></div>
+      <div><dt>正孔 p</dt><dd id="rP">—</dd></div>
+      <div><dt>n<sub>i</sub>(T)</dt><dd id="rNi">—</dd></div>
+      <div><dt>移動度 µ</dt><dd id="rMu">—</dd></div>
+      <div><dt>抵抗率 ρ</dt><dd id="rRho">—</dd></div>
+    </dl>
+    <figcaption>左は濃度を対数で。点線は n<sub>i</sub>。多数キャリアが上がると少数キャリアが同じ倍率で下がる（n·p = n<sub>i</sub>²）。右はバンド図で、フェルミ準位 E<sub>F</sub> が n 型では E<sub>c</sub> に、p 型では E<sub>v</sub> に寄る。両方入れると効くのは<b>差</b>だけだが、移動度は<b>総量</b>で落ちる ― N<sub>d</sub> と N<sub>a</sub> を両方 10¹⁷ 付近にして、ρ が「差だけ入れた場合」より大きいのを見てください。SemiLab「打ち消す」の罠がこれです。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>移動度 ― 濃く入れるほど遅くなる</h3>
+      <p>キャリアが電界で流されるときの速さ／電界が<b>移動度 µ</b>。不純物イオンはキャリアを散乱するので、濃く入れるほど µ は落ちます。しかも散乱するのは<span class="key">正味ではなく、入れた不純物の総量</span>。N<sub>d</sub> = 1.01×10¹⁷ と N<sub>a</sub> = 1.00×10¹⁷ を入れると正味は 10¹⁵ ですが、散乱体は 2.01×10¹⁷ あり、µ<sub>n</sub> は 1254 ではなく約 560 cm²/V·s です。</p>
+      <div class="scroll-x" style="margin-top:12px"><table>
+        <thead><tr><th>不純物の総量 /cm³</th><th>µ<sub>n</sub></th><th>µ<sub>p</sub></th><th>ρ（n 型）</th><th>ρ（p 型）</th></tr></thead>
+        <tbody>
+          <tr><td>10¹⁴</td><td class="num">1266</td><td class="num">407</td><td class="num">49 Ω·cm</td><td class="num">154 Ω·cm</td></tr>
+          <tr><td>10¹⁵</td><td class="num">1254</td><td class="num">404</td><td class="num">5.0</td><td class="num">15.4</td></tr>
+          <tr><td>5.2×10¹⁵</td><td class="num">1208</td><td class="num">395</td><td class="num"><b>0.99</b></td><td class="num">3.0</td></tr>
+          <tr><td>10¹⁶</td><td class="num">1164</td><td class="num">386</td><td class="num">0.54</td><td class="num">1.6</td></tr>
+          <tr><td>10¹⁷</td><td class="num">750</td><td class="num">294</td><td class="num">0.083</td><td class="num">0.21</td></tr>
+          <tr><td>10¹⁸</td><td class="num">251</td><td class="num">131</td><td class="num">0.025</td><td class="num">0.048</td></tr>
+          <tr><td>10¹⁹</td><td class="num">114</td><td class="num">67</td><td class="num">0.0055</td><td class="num">0.0093</td></tr>
+        </tbody>
+      </table></div>
+      <p style="font-size:12.5px;color:var(--ink-3);margin-top:8px">単位は cm²/V·s。Caughey-Thomas の式（SemiLab <code>phys.js</code>）。濃度を10倍にしても ρ は 1/10 にならない ― 10¹⁷ → 10¹⁸ で 3.3 倍にしか下がらない。</p>
+    </div>
+    <div class="body-col">
+      <h3>抵抗率 ― ウェーハはこれで買う</h3>
+      <div class="eq">&rho; = 1 / ( q &middot; ( n&middot;µ<sub>n</sub> + p&middot;µ<sub>p</sub> ) )　　[Ω·cm]</div>
+      <p>ウェーハの仕様書には濃度ではなく「n 型 1〜10 Ω·cm」のように抵抗率が書いてあります。四探針で直接測れるからです。1 Ω·cm の n 型はドナー <b>5.2×10¹⁵</b>。同じ 1 Ω·cm でも p 型なら 1.4×10¹⁶ 要る ― 正孔は電子の 1/3 しか速くないので。</p>
+      <h3>温度 ― n<sub>i</sub> は指数で動く</h3>
+      <p>n<sub>i</sub> は exp(−E<sub>g</sub>/2kT) に乗っているので、温度に敏感です。300 K 付近では <b>9 ℃上がると n<sub>i</sub> が 2.06 倍</b>、n<sub>i</sub>² は 4.2 倍。多数キャリアは N<sub>d</sub> で固定なので動きませんが、<b>少数キャリアは n<sub>i</sub>² に比例して桁で増える</b>。第3章の暗電流、第4部の「8〜10℃で倍」は、ここから出ます。</p>
+      <div class="scroll-x" style="margin-top:12px"><table>
+        <thead><tr><th>T</th><th>E<sub>g</sub></th><th>n<sub>i</sub></th><th>n<sub>i</sub>² / n<sub>i</sub>²(300K)</th></tr></thead>
+        <tbody>
+          <tr><td>250 K (−23℃)</td><td class="num">1.137 eV</td><td class="num">7.4×10⁷</td><td class="num">5.5×10⁻⁵</td></tr>
+          <tr><td>273 K (0℃)</td><td class="num">1.131</td><td class="num">8.8×10⁸</td><td class="num">7.7×10⁻³</td></tr>
+          <tr><td>300 K (27℃)</td><td class="num">1.125</td><td class="num">1.0×10¹⁰</td><td class="num">1</td></tr>
+          <tr><td>323 K (50℃)</td><td class="num">1.119</td><td class="num">5.9×10¹⁰</td><td class="num">34</td></tr>
+          <tr><td>350 K (77℃)</td><td class="num">1.111</td><td class="num">3.5×10¹¹</td><td class="num">1.2×10³</td></tr>
+          <tr><td>400 K (127℃)</td><td class="num">1.097</td><td class="num">5.3×10¹²</td><td class="num">2.8×10⁵</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+
+  <div class="caveat">
+    <span class="tag">断定していないこと</span>
+    <p><b>n<sub>i</sub> = 1.0×10¹⁰ は実測側の値です。</b>教科書の N<sub>c</sub> = 2.8×10¹⁹、N<sub>v</sub> = 1.04×10¹⁹、E<sub>g</sub> = 1.12 eV を式に入れると 6.9×10⁹ が出て、同じ教科書に書いてある 1.0×10¹⁰ と合いません（有名な不整合。古い本は 1.45×10¹⁰）。この参考書と SemiLab は 1.0×10¹⁰ を採り、N<sub>c</sub>・N<sub>v</sub> はバンド図で E<sub>F</sub> の位置を描くのにだけ使います。</p>
+    <p><b>完全電離を仮定しています。</b>10¹⁹ を超える濃度ではフェルミ準位がバンドの中に入り（縮退）、ボルツマン統計が使えなくなります。SemiLab は 5×10¹⁹ を超える層があると「縮退」の帯を出します。</p>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — SemiLab 第1章</span>
+    <p>一片を1枚置いて N<sub>d</sub> の摘みを動かすと、キャリア濃度の段で電子の線が上下する。採点は「電子濃度をこの範囲に」としか言わない ― N<sub>d</sub> をいくつにするかは自分で決める。「打ち消す」では移動度が総量で落ちることを、「抵抗率をあわせる」では µ が濃度で変わるせいで比例で合わないことを踏む。</p>
+    <div class="qs"><span class="lab">SemiLab</span><a href="SemiLab/index.html?quest=ntype">n 型をつくる</a><a href="SemiLab/index.html?quest=ptype">p 型をつくる</a><a href="SemiLab/index.html?quest=compensate">打ち消す</a><a href="SemiLab/index.html?quest=resistivity">抵抗率をあわせる</a></div>
+  </div>
+</section>
+
+<!-- ================= 02 ================= -->
+<section class="stage" id="s2">
+  <div class="stage-head"><span class="stage-num">02</span><h2>接合が立つ ― 2枚並べると、勝手に空乏する</h2></div>
+  <p class="lede">p 型の一片と n 型の一片を隣り合わせに置く。それだけです。「接合を作る」操作はどこにもないのに、境目に<span class="key">キャリアのいない層</span>と<span class="key">0.7 V の電位差</span>が現れる。これがこの部でいちばん大事な現象で、第4部の「井戸」も、第5章の「しきい値」も、ここで起きていることの言い換えです。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>何が起きるか ― 4段で止まる</h3>
+      <p>① 境目をはさんで、左は正孔が 10¹⁶、右は正孔が 10⁴。12桁の濃度差があるので、正孔は右へ、電子は左へ<b>拡散</b>します。② 出て行ったあとには、動けないイオン（左に負のアクセプタ、右に正のドナー）が<b>裸で残る</b>。③ 残った電荷は右から左へ向く<b>電界</b>を作り、それは拡散と逆向きにキャリアを押し戻す。④ 押し戻す力と拡散する力が釣り合ったところで止まる。</p>
+      <p>止まったときの電位差が<b>ビルトイン電位 V<sub>bi</sub></b>、キャリアが抜けた層が<b>空乏層</b>です。電子の分布は n = n<sub>i</sub>·exp(ψ/V<sub>t</sub>) に従うので、両側の n の比から電位差が決まります:</p>
+      <div class="eq">V<sub>bi</sub> = V<sub>t</sub> &middot; ln( <i>N<sub>a</sub></i> <b>N<sub>d</sub></b> / n<sub>i</sub>² )　　V<sub>t</sub> = kT/q = 25.9 mV</div>
+      <p>N<sub>a</sub> = N<sub>d</sub> = 10¹⁶ なら V<sub>t</sub>·ln(10¹²) = 0.0259 × 27.6 = <b>0.714 V</b>。<b>対数なので、片方を10倍にしても 60 mV しか上がりません。</b>両方 10¹⁸ でも 0.95 V。バンドギャップ 1.12 V が上限で、そこへは決して届かない。</p>
+    </div>
+    <div class="body-col">
+      <h3>ポアソン方程式 ― 曲がりと電荷の釣り合い</h3>
+      <p>電位 ψ(x) の曲がり（2階微分）は、そこにある電荷 ρ に比例します。電荷はキャリアと不純物イオンの和で、キャリアは電位に指数で乗っている。だから非線形で、SemiLab はこれをニュートン法で毎回解いています。</p>
+      <div class="eq">d²ψ/dx² = &minus;&rho;/&epsilon;　　&rho; = q( p &minus; n + N<sub>d</sub> &minus; N<sub>a</sub> )　　n = n<sub>i</sub>e<sup>ψ/V<sub>t</sub></sup>, p = n<sub>i</sub>e<sup>&minus;ψ/V<sub>t</sub></sup></div>
+      <p>手で解くときは<b>空乏近似</b>を使います。「空乏層の中はキャリアがゼロで電荷は ±qN、外は中性でゼロ」と割り切ると、電界は三角形、電位は放物線になり、幅が閉じた式で出る:</p>
+      <div class="eq">W = &radic;( 2&epsilon;/q &middot; (1/<i>N<sub>a</sub></i> + 1/<b>N<sub>d</sub></b>) &middot; (V<sub>bi</sub> &minus; V) )　　E<sub>max</sub> = 2(V<sub>bi</sub> &minus; V)/W</div>
+      <p>10¹⁶ どうしで <b>式 0.430 µm、解 0.415 µm</b>。3% の差は、空乏層の端が本当は鋭くなくデバイ長（10¹⁶ で 41 nm）の裾を引いているぶんです。SemiLab の検査は、この差が全条件で 7% 以内に収まることを見張っています。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">JUNCTION — 電荷 · 電界 · バンド（空乏近似）</span><span class="fig-title">300 K · 逆バイアスは負</span></div>
+    <div class="fig-body">
+      <canvas id="cvJunction" width="1100" height="360" aria-label="pn接合の電荷密度、電界、バンド図。濃度とバイアスで空乏層の幅が変わる"></canvas>
+      <div class="sl3">
+        <div class="slider-row"><div class="top"><span class="lab">p 側 N<sub>a</sub></span><span class="num" id="vJNa">1.0×10¹⁶</span></div><input type="range" id="cJNa" min="0" max="400" value="200" aria-label="アクセプタ濃度"></div>
+        <div class="slider-row"><div class="top"><span class="lab">n 側 N<sub>d</sub></span><span class="num" id="vJNd">1.0×10¹⁶</span></div><input type="range" id="cJNd" min="0" max="400" value="200" aria-label="ドナー濃度"></div>
+        <div class="slider-row"><div class="top"><span class="lab">バイアス V</span><span class="num" id="vJV">0.0 V</span></div><input type="range" id="cJV" min="-100" max="5" value="0" aria-label="バイアス電圧"></div>
+      </div>
+    </div>
+    <dl class="readouts">
+      <div><dt>V<sub>bi</sub></dt><dd id="rJVbi">—</dd></div>
+      <div><dt>W（式）</dt><dd id="rJW">—</dd></div>
+      <div><dt>p 側 / n 側</dt><dd id="rJWpn">—</dd></div>
+      <div><dt>E<sub>max</sub></dt><dd id="rJE">—</dd></div>
+      <div><dt>C<sub>j</sub> = &epsilon;/W</dt><dd id="rJC">—</dd></div>
+    </dl>
+    <figcaption>上段: 電荷密度（p 側に −qN<sub>a</sub>、n 側に +qN<sub>d</sub> が裸で残る）。中段: 電界 ― 三角形で、面積が電位差。下段: バンド（E<sub>c</sub>・E<sub>v</sub> は電位を裏返したもの）。<b>薄い側が大きく広がる。</b>N<sub>a</sub> を 10¹⁹ にして N<sub>d</sub> を 10¹⁶ のままにすると、空乏層はほぼ全部 n 側に入る。バイアスを負にすると W は √ で伸び、正にすると縮んで V<sub>bi</sub> で消える（そこから先は第3章）。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>片側接合 ― 薄いほうが全部引き受ける</h3>
+      <p>空乏層は「両側の電荷が等しい」ところまで広がります。N<sub>a</sub>·w<sub>p</sub> = N<sub>d</sub>·w<sub>n</sub>。だから濃度が1000倍違えば、幅は1000倍違う。p⁺ 10¹⁹ / n 10¹⁶ では <b>W = 0.322 µm のうち n 側が 0.321 µm</b>（99.7%）。濃いほうは 1 nm しか空乏しません。</p>
+      <p>実物の接合はほとんどこれです。フォトダイオードの p⁺ 層、MOSFET のソース／ドレイン、全部「濃い側は電極の延長で、薄い側だけが空乏する」。式も簡単になり、W = √(2εV/qN)（N は薄い側）だけ覚えれば足ります。</p>
+      <h3>逆バイアス ― 平方根で伸びる</h3>
+      <p>n 側を正にすると、V<sub>bi</sub> に電圧が上乗せされて空乏層が伸びます。p⁺ 10¹⁸ / n 10¹⁵ で:</p>
+      <div class="scroll-x" style="margin-top:12px"><table>
+        <thead><tr><th>V</th><th>W（解）</th><th>W（式）</th><th>0 V との比</th></tr></thead>
+        <tbody>
+          <tr><td>0 V</td><td class="num">0.938 µm</td><td class="num">1.001</td><td class="num">1</td></tr>
+          <tr><td>−1 V</td><td class="num">1.484</td><td class="num">1.515</td><td class="num">1.58</td></tr>
+          <tr><td>−2 V</td><td class="num">1.872</td><td class="num">1.895</td><td class="num">2.00</td></tr>
+          <tr><td>−5 V</td><td class="num">2.721</td><td class="num">2.734</td><td class="num">2.90</td></tr>
+          <tr><td>−10 V</td><td class="num">3.726</td><td class="num">3.734</td><td class="num">3.97</td></tr>
+        </tbody>
+      </table></div>
+      <p style="font-size:12.5px;color:var(--ink-3);margin-top:8px">√((0.774+10)/0.774) = 3.73。電圧を10倍にしても幅は3.7倍。第4部で「フォトダイオードに逆バイアスをかける」のは、この伸びで拾える範囲を広げるためです。</p>
+    </div>
+    <div class="body-col">
+      <h3>接合容量 ― 空乏層は平行板コンデンサ</h3>
+      <p>空乏層の両端に、バイアスを動かすと出入りする電荷があります。だから接合は容量を持ち、その値は平行板と同じ <b>C<sub>j</sub> = ε/W</b>（単位面積あたり）。10¹⁶ どうしの 0.415 µm で 2.5×10⁻⁸ F/cm² = <b>25 nF/cm²</b>、1 µm² あたり 0.25 fF です。</p>
+      <p>W ∝ √(V<sub>bi</sub> − V) なので <b>1/C<sub>j</sub>² は V に対して直線</b>になります。傾きから薄い側の濃度が、切片から V<sub>bi</sub> が読める ― これが C-V 法で、SemiLab の「測る」で見られます。第4部の画素で「浮遊拡散の容量」と言っているのも、大半はこの接合容量です。</p>
+      <h3>真性層を挟む ― pin</h3>
+      <p>p⁺ と n⁺ のあいだに不純物ゼロの層を 3 µm 挟むと、そこには打ち消す電荷が無いので<b>電界がそのまま通り抜け</b>、バイアス無しで 3 µm 全部が空乏します。電界は i 層で一定（V<sub>bi</sub>/W ≈ 3 kV/cm）。厚い空乏層を低い電圧で持てるので、高速で感度の高いフォトダイオードはこの形です。容量も ε/W で小さい。</p>
+      <div class="caveat">
+        <span class="tag">断定していないこと</span>
+        <p><b>「1/C² の切片 = V<sub>bi</sub> − 2kT/q」は片側が濃い接合では成り立ちません。</b>p⁺ 10¹⁹ / n 10¹⁵ では約 6.7 kT/q（0.17 V）低く出ます。濃い側から染み出した正孔が n 側の最初の 0.2 V ぶんの曲がりを受け持っていて、それはドナーの空乏に見えないからです。濃度（傾き）のほうは 1% 以内で読み戻せます。SemiLab の README「繰り返し踏んだ落とし穴 3''」に経緯があります。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="deep-note">
+    <span class="tag">くわしく — なぜ「解」は「式」より少し小さいのか</span>
+    <p>空乏近似は「空乏層の端でキャリアが 0 から N<sub>d</sub> へ不連続に戻る」と仮定しますが、実際は n = N<sub>d</sub>·exp(−Δψ/V<sub>t</sub>) で滑らかに戻ります。この裾の長さがデバイ長 L<sub>D</sub> = √(εV<sub>t</sub>/qN) で、10¹⁶ なら 41 nm、10¹⁷ なら 13 nm、10¹⁹ なら 1.3 nm。裾のぶん電荷が余計にあるので、同じ電位差を作るのに要る幅が少し短くて済む。逆バイアスを深くすると W に対する裾の割合が下がり、差は縮みます（上の表で −10 V では 0.2% まで縮んでいる）。</p>
+    <p>SemiLab はこの裾を含めて解いているので、格子はデバイ長より細かく切る必要があります。10¹⁹ の層に接する 10¹⁶ の層の刻みを 10 nm にしたら空乏層幅が4倍になった、という失敗が README にあります。</p>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — SemiLab 第2章</span>
+    <p>「シリコン」を2回押して、片方の N<sub>a</sub>、もう片方の N<sub>d</sub> を上げる。その瞬間、断面図に空乏層が現れ、バンド図が曲がり、下のバーに V<sub>bi</sub> が出る。上の「左」の電圧を −5 V にすると伸びる。この参考書の図は空乏近似だが、SemiLab は本当に解いている ― 両者の差（数%）を自分の目で確かめられる。</p>
+    <div class="qs"><span class="lab">SemiLab</span><a href="SemiLab/index.html?quest=junction">はじめての接合</a><a href="SemiLab/index.html?quest=vbi">ビルトイン電位を合わせる</a><a href="SemiLab/index.html?quest=onesided">片側だけ空乏させる</a><a href="SemiLab/index.html?quest=reverse">逆バイアスで伸ばす</a><a href="SemiLab/index.html?quest=pin">真性層を挟む（pin）</a></div>
+  </div>
+</section>
+
+<!-- ================= 03 ================= -->
+<section class="stage" id="s3">
+  <div class="stage-head"><span class="stage-num">03</span><h2>ダイオード ― 60 mV で 10 倍、逆向きは百万分の一</h2></div>
+  <p class="lede">接合に電圧をかけます。10¹⁷ どうしの厚い接合で、p 側を正にすると 0.6 V で 8 mA/cm² 流れ、同じ 0.6 V を逆にかけると 5 nA/cm² しか流れない。<span class="key">170 万倍の差</span>（SemiLab のお手本のように両側が 1 µm しかなければ、後述の短基底で順方向が 70 倍増えて 1 億倍）。この非対称は部品として設計したものではなく、第2章の指数関数がそのまま顔を出しているだけです。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>順方向 ― 障壁が下がり、少数キャリアが注入される</h3>
+      <p>p 側を正にすると、接合の電位差が V<sub>bi</sub> − V に減ります。障壁が低くなったぶん、p 側の正孔が n 側へ溢れ出す。n 側の境目の正孔濃度は、平衡値 n<sub>i</sub>²/N<sub>d</sub> の exp(V/V<sub>t</sub>) 倍になります（<b>ショックレーの境界条件</b>）。0.6 V なら exp(23.2) = 1.2×10¹⁰ 倍 ― 10⁴ だった正孔が 10¹⁴ に。</p>
+      <p>溢れた正孔は n 側の中性領域を拡散しながら、拡散長 L<sub>p</sub> = √(D<sub>p</sub>τ<sub>p</sub>) ほど進む間に電子と出会って消えます。この拡散の勾配が電流です:</p>
+      <div class="eq">J = <b>J<sub>0</sub></b> ( e<sup>V/V<sub>t</sub></sup> &minus; 1 )　　<b>J<sub>0</sub></b> = q n<sub>i</sub>² ( D<sub>p</sub>/(L<sub>p</sub>N<sub>d</sub>) + D<sub>n</sub>/(L<sub>n</sub>N<sub>a</sub>) )</div>
+      <p>V<sub>t</sub>·ln10 = <b>59.5 mV で電流が10倍</b>。10¹⁷ どうしで拡散長は L<sub>p</sub> 50 µm・L<sub>n</sub> 80 µm、それより厚い接合なら J<sub>0</sub> = 6.3×10⁻¹³ A/cm²。SemiLab の「整流する」のお手本は両側 1 µm しかないので、後述の短基底の効果で J<sub>0</sub> = 4.7×10⁻¹¹ と 70 倍大きく出ます。</p>
+    </div>
+    <div class="body-col">
+      <h3>逆方向 ― 流れているのは J<sub>0</sub> ではない</h3>
+      <p>逆にかけると exp の項が消えて −J<sub>0</sub> だけが残る、と教科書の式は言います。しかし実測の逆電流は J<sub>0</sub> よりずっと大きい。10¹⁷ どうしの厚い接合の −0.6 V で <b>4.6×10⁻⁹ A/cm² ― J<sub>0</sub> の 7000 倍</b>です。</p>
+      <p>正体は<b>空乏層の中で熱的に生まれる対</b>。中性領域なら生まれた対はすぐ再結合しますが、空乏層には電界があるので、生まれた瞬間に引き裂かれて電流になる。生まれる速さは n<sub>i</sub>/2τ（SRH）、空乏層の体積は W なので:</p>
+      <div class="eq">J<sub>gen</sub> = q n<sub>i</sub> W / (2&tau;)　　← n<sub>i</sub> の<b>1乗</b>。J<sub>0</sub> は n<sub>i</sub>²</div>
+      <p>n<sub>i</sub>² = 10²⁰ と n<sub>i</sub> = 10¹⁰ では10桁違うので、室温のシリコンでは逆電流はほぼ全部これ。順方向でも低い電圧（0.3 V 以下）では空乏層の中の再結合が勝ち、電流は exp(V/2V<sub>t</sub>) ― 理想係数 n = 2 ― で立ち上がります。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">I-V — 対数で見る整流。拡散（n=1）と生成・再結合（n=2）の2本立て</span><span class="fig-title">両側の濃度が同じ接合</span></div>
+    <div class="fig-body">
+      <canvas id="cvIV" width="1100" height="340" aria-label="ダイオードの電流電圧特性を対数で。順方向は指数、逆方向は生成電流で頭打ち"></canvas>
+      <div class="sl3">
+        <div class="slider-row"><div class="top"><span class="lab">濃度 N<sub>a</sub> = N<sub>d</sub></span><span class="num" id="vIN">1.0×10¹⁷</span></div><input type="range" id="cIN" min="150" max="190" value="170" aria-label="濃度"></div>
+        <div class="slider-row"><div class="top"><span class="lab">温度 T</span><span class="num" id="vIT">300 K</span></div><input type="range" id="cIT" min="250" max="400" value="300" aria-label="温度"></div>
+        <div class="slider-row"><div class="top"><span class="lab">中性領域の厚み（両側）</span><span class="num" id="vIW">100 µm</span></div><input type="range" id="cIW" min="0" max="300" value="200" aria-label="中性領域の厚み"></div>
+      </div>
+    </div>
+    <dl class="readouts">
+      <div><dt>J<sub>0</sub>（拡散）</dt><dd id="rIJ0">—</dd></div>
+      <div><dt>J<sub>gen</sub>（−1 V）</dt><dd id="rIJg">—</dd></div>
+      <div><dt>+0.6 V</dt><dd id="rIF">—</dd></div>
+      <div><dt>−0.6 V</dt><dd id="rIR">—</dd></div>
+      <div><dt>整流比</dt><dd id="rIRatio">—</dd></div>
+      <div><dt>L<sub>p</sub></dt><dd id="rILp">—</dd></div>
+    </dl>
+    <figcaption>青の実線が全電流。細い線は内訳 ― 拡散電流（傾き 59.5 mV/桁）と、空乏層の生成・再結合電流（傾き 119 mV/桁、逆方向では W とともにゆっくり増える）。<b>濃度を上げると J<sub>0</sub> は下がるが、寿命 τ も短くなるので生成電流はむしろ増える</b>（10¹⁹ どうしで J<sub>0</sub> = 2×10⁻¹⁴、J<sub>gen</sub> は 3×10⁻⁸）。温度を上げると逆電流が桁で増える ― 生成は n<sub>i</sub> に、拡散は n<sub>i</sub>² に比例して。中性領域を拡散長より薄くすると J<sub>0</sub> が増える（下記）。この図は SemiLab の <code>dev.js</code> と同じ式で、直列抵抗は入れていない。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>J<sub>0</sub> を下げる ― 濃くすると少数キャリアが減る</h3>
+      <p>J<sub>0</sub> ∝ n<sub>i</sub>²/(N·L)。両側を 10¹⁹ にすると J<sub>0</sub> = 2.2×10⁻¹⁴ A/cm² と、10¹⁷ の厚い接合の 30 分の 1 になります。少数キャリアの平衡濃度 n<sub>i</sub>²/N が 100 分の 1 になるが、拡散長が短くなる（L<sub>p</sub> 50 µm → 3 µm）ぶん勾配が急になって、一部を戻します。</p>
+      <p>ただし濃くすると寿命 τ が縮み（10¹⁷ で 3.3 µs → 10¹⁹ で 50 ns）、生成電流 q n<sub>i</sub> W/2τ は<b>増えます</b>。−1 V の逆電流は 10¹⁷ で 5.3 nA/cm²、10¹⁹ で 37 nA/cm²。「J<sub>0</sub> を下げる」と「暗電流を下げる」は別の勝負です。</p>
+      <h3>薄くすると電流が増える ― 短基底</h3>
+      <p>拡散電流は<b>濃度の勾配</b>で決まります。n 側の中性領域が拡散長 L<sub>p</sub> より厚ければ、注入された正孔は L<sub>p</sub> の距離で自然に減衰する。しかし 2 µm で裏の電極（無限の再結合）に突き当たると、同じ注入量が 2 µm で 0 まで落ちる ― 勾配は L<sub>p</sub>/W = 91/2 ≈ 45 倍急になり、電流も増えます。</p>
+      <div class="eq">J<sub>0</sub>（有限）= J<sub>0</sub>（無限）&middot; coth(W<sub>n</sub>/L<sub>p</sub>) &asymp; J<sub>0</sub> &middot; L<sub>p</sub>/W<sub>n</sub>　　(W<sub>n</sub> ≪ L<sub>p</sub>)</div>
+      <p>直感に反しますが、蓄積される少数キャリアも W<sub>n</sub>/L<sub>p</sub> の割合に減るので、<b>切り替えが速くなる</b>。高速ダイオードとバイポーラトランジスタのベースがこの原理です。</p>
+    </div>
+    <div class="body-col">
+      <h3>暗電流 ― 温度で桁が動く</h3>
+      <p>第4部で「暗電流」と呼んでいるのは、逆バイアスのフォトダイオードに光が無くても流れるこの逆電流です。p⁺ 10¹⁹ / n 5×10¹⁶ の接合を −5 V にして温度を振ると:</p>
+      <div class="scroll-x" style="margin-top:12px"><table>
+        <thead><tr><th>T</th><th>逆電流</th><th>うち生成</th><th>うち拡散</th><th>300 K 比</th></tr></thead>
+        <tbody>
+          <tr><td>273 K (0℃)</td><td class="num">5.5×10⁻¹⁰</td><td class="num">5.5×10⁻¹⁰</td><td class="num">5×10⁻¹⁴</td><td class="num">0.09</td></tr>
+          <tr><td>300 K (27℃)</td><td class="num">6.3×10⁻⁹</td><td class="num">6.3×10⁻⁹</td><td class="num">6×10⁻¹²</td><td class="num">1</td></tr>
+          <tr><td>309 K (36℃)</td><td class="num">1.3×10⁻⁸</td><td class="num">1.3×10⁻⁸</td><td class="num">2.5×10⁻¹¹</td><td class="num"><b>2.06</b></td></tr>
+          <tr><td>323 K (50℃)</td><td class="num">3.7×10⁻⁸</td><td class="num">3.7×10⁻⁸</td><td class="num">1.9×10⁻¹⁰</td><td class="num">5.9</td></tr>
+          <tr><td>350 K (77℃)</td><td class="num">2.3×10⁻⁷</td><td class="num">2.2×10⁻⁷</td><td class="num">6×10⁻⁹</td><td class="num">36</td></tr>
+        </tbody>
+      </table></div>
+      <p style="font-size:12.5px;color:var(--ink-3);margin-top:8px">単位 A/cm²。SemiLab「暗電流を減らす」のお手本の構造。</p>
+      <p><b>9 ℃で 2.06 倍。</b>これは決め打ちではなく、生成電流が n<sub>i</sub> ∝ exp(−E<sub>g</sub>/2kT) に比例することから出ています（見かけの活性化エネルギー 0.6 eV）。拡散電流が支配すれば n<sub>i</sub>² で <b>4.8 ℃で倍</b>になる。「何℃で倍か」を測ると、どちらが支配しているか分かる ― 第4部 付録 C がこれを診断に使います。PixelLab の暗電流の温度依存も、同じ n<sub>i</sub>(T) を呼んでいます。</p>
+      <p>暗電流を減らす手は、W を狭くする（濃くする）か、τ を伸ばす（欠陥を減らす）か、冷やすか。<b>感度のために空乏層を広げると暗電流も増える</b> ― センサ設計の綱引きはここにあります。</p>
+    </div>
+  </div>
+
+  <div class="caveat">
+    <span class="tag">断定していないこと</span>
+    <p><b>降伏は扱いません。</b>逆バイアスを深くすると実物はアバランシェかツェナーで急に流れ出しますが、この部の式にも SemiLab にも入っていません。SemiLab は最大電界が降伏の目安（Sze の近似）を超えると「降伏」の帯を出して、数値としては解け続けますが電流は出ません。降伏の切り分け（4E<sub>g</sub>/q と 6E<sub>g</sub>/q）は第4部 付録 A にあります。</p>
+    <p><b>大注入も扱いません。</b>注入された少数キャリアが多数キャリアに迫る領域（順方向が V<sub>bi</sub> に近づくあたり）では、上の式は成り立ちません。SemiLab は順方向が V<sub>bi</sub> に届くと「大注入」の帯を出します。直列抵抗は入っていて、高電流で理想係数が 1.5 を超えるのはそのせいです。</p>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — SemiLab 第3章</span>
+    <p>「測る」で I-V が出る。対数で見ると、低い電圧で傾きが緩く（n = 2）、真ん中で 60 mV/桁（n = 1）、高電流で寝る（直列抵抗）。「薄くすると電流が増える」は、n 側を 2 µm にして J<sub>0</sub> が「厚かったら」の何倍になったかを見る。「暗電流を減らす」は、濃くしすぎると τ が縮んで逆に増えるので、真ん中を狙う。</p>
+    <div class="qs"><span class="lab">SemiLab</span><a href="SemiLab/index.html?quest=rectify">整流する</a><a href="SemiLab/index.html?quest=j0">飽和電流を小さくする</a><a href="SemiLab/index.html?quest=shortbase">薄くすると電流が増える</a><a href="SemiLab/index.html?quest=dark">暗電流を減らす</a></div>
+  </div>
+</section>
+
+<!-- ================= 04 ================= -->
+<section class="stage" id="s4">
+  <div class="stage-head"><span class="stage-num">04</span><h2>光を電気にする ― 生まれた場所で運命が決まる</h2></div>
+  <p class="lede">逆バイアスをかけた接合に光を当てます。光子が1個入って電子正孔対が1組でき、それを電界が引き裂けば電流1個ぶん。<span class="key">拾えるかどうかは、対がどこで生まれたかで決まります。</span>そして生まれる深さは波長で決まる。だから量子効率は波長の関数になり、両端で違う理由で落ちる。第4部の「光電変換」の床下がここです。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>吸収 ― 光子のエネルギーがバンドギャップを超えていれば</h3>
+      <p>光子1個のエネルギーは E = hc/λ = <b>1240/λ[nm] eV</b>。これが E<sub>g</sub> = 1.12 eV より大きければ、価電子帯の電子を伝導帯へ叩き上げられる。境目は λ = 1240/1.12 = <b>1107 nm</b>。それより長い波長のシリコンは透明です。</p>
+      <p>ただしシリコンは<b>間接遷移</b>半導体で、吸収に格子振動（フォノン）の助けが要ります。そのためバンド端に近いほど吸収が急に弱くなり、光は深くまで潜る。強度は深さとともに I(x) = I<sub>0</sub>·e<sup>−αx</sup> で減り（ビア・ランベルト）、1/α が「平均してそこまでで吸われる深さ」＝<b>吸収長</b>です。</p>
+      <div class="scroll-x" style="margin-top:12px"><table>
+        <thead><tr><th>波長</th><th>色</th><th>α</th><th>吸収長 1/α</th><th>裸の反射</th></tr></thead>
+        <tbody>
+          <tr><td>400 nm</td><td>紫</td><td class="num">9.5×10⁴ /cm</td><td class="num"><b>0.11 µm</b></td><td class="num">48 %</td></tr>
+          <tr><td>450</td><td>青</td><td class="num">2.7×10⁴</td><td class="num">0.38</td><td class="num">44</td></tr>
+          <tr><td>550</td><td>緑</td><td class="num">6.6×10³</td><td class="num">1.5</td><td class="num">37</td></tr>
+          <tr><td>600</td><td>橙</td><td class="num">4.1×10³</td><td class="num">2.4</td><td class="num">36</td></tr>
+          <tr><td>700</td><td>赤</td><td class="num">1.9×10³</td><td class="num">5.3</td><td class="num">34</td></tr>
+          <tr><td>850</td><td>近赤外</td><td class="num">5.4×10²</td><td class="num">19</td><td class="num">32</td></tr>
+          <tr><td>1000</td><td>近赤外</td><td class="num">64</td><td class="num"><b>156</b></td><td class="num">32</td></tr>
+          <tr><td>1100</td><td>端</td><td class="num">3.5</td><td class="num">2.9 mm</td><td class="num">31</td></tr>
+        </tbody>
+      </table></div>
+      <p style="font-size:12.5px;color:var(--ink-3);margin-top:8px">α は Green & Keevers (1995) の実測を対数で内挿（SemiLab <code>phys.js</code>）。反射は屈折率 n から ((n−1)/(n+1))²。</p>
+    </div>
+    <div class="body-col">
+      <h3>3つの運命</h3>
+      <p><b>空乏層の中で生まれた対</b>は、電界が即座に引き裂くので 100% 電流になります。<b>中性領域で生まれた対</b>は電界が無いので拡散するしかなく、拡散長 L のうちに空乏層の端まで辿り着けたぶんだけ電流になる。裏の電極（オーミック接点は無限の再結合）や表面に着いたら消える。<b>表面のすぐ下で生まれた対</b>は、表面の欠陥（表面再結合速度 S で表す）に食われやすい。</p>
+      <div class="eq">QE(λ) = 拾えた対 ÷ 来た光子　　感度 R = QE &middot; λ[nm]/1240　[A/W]</div>
+      <p>逆バイアスは空乏層を広げて「確実に拾える範囲」を増やすためにかけます。p⁺ 0.3 µm / n 10¹⁵ 10 µm / n⁺ の構造で、−5 V の W は 2.7 µm。</p>
+      <h3>両端が難しい ― 青と赤は落ちる理由が違う</h3>
+      <p><b>青（400 nm）は 0.11 µm で全部吸われる。</b>そこは p⁺ の中性領域で、電界が無い。生まれた対は表面（S = 10⁴ cm/s）に食われるか、0.3 µm 先の空乏層まで拡散して届くかの競争になる。手前の層を薄くするほど届きやすい ― でも反射が 48% あるので、それが最大の損です。</p>
+      <p><b>赤（1000 nm）は 156 µm 進む。</b>10 µm しかないシリコンは 63% を素通りさせる。対策は「厚くする」しかない。200 µm にすれば、空乏層の外でも拡散長（10¹⁴ で 100 µm）の中なら拾えるので 26% まで上がる。<span class="key">青は表面のせい、赤は厚みのせい。</span>原因が別だから対策も別で、両立できる ― 手前を薄く、全体を厚く。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">QUANTUM EFFICIENCY — 波長ごとに、どこで拾えてどこで失ったか</span><span class="fig-title">p⁺ / n (10¹⁵) / n⁺ · −5 V · W = 2.7 µm</span></div>
+    <div class="fig-body">
+      <canvas id="cvQE" width="1100" height="340" aria-label="波長に対する量子効率の内訳: 空乏層で拾った、手前の層から拡散で届いた、奥から届いた、反射で失った、透過で失った、再結合で失った"></canvas>
+      <div class="sl3">
+        <div class="slider-row"><div class="top"><span class="lab">手前の p⁺ の厚み</span><span class="num" id="vQtf">0.30 µm</span></div><input type="range" id="cQtf" min="0" max="100" value="48" aria-label="手前の層の厚み"></div>
+        <div class="slider-row"><div class="top"><span class="lab">全体の厚み</span><span class="num" id="vQtt">12 µm</span></div><input type="range" id="cQtt" min="0" max="100" value="30" aria-label="全体の厚み"></div>
+        <div class="slider-row"><div class="top"><span class="lab">表面の反射</span><span class="num" id="vQar">裸（35〜48 %）</span></div><input type="range" id="cQar" min="-1" max="50" value="-1" aria-label="反射率"></div>
+      </div>
+      <div class="sl3" style="margin-top:6px">
+        <div class="slider-row"><div class="top"><span class="lab">表面再結合速度 S</span><span class="num" id="vQs">1×10⁴ cm/s</span></div><input type="range" id="cQs" min="2" max="6" step="0.1" value="4" aria-label="表面再結合速度"></div>
+        <div class="slider-row"><div class="top"><span class="lab">見る波長</span><span class="num" id="vQnm">600 nm</span></div><input type="range" id="cQnm" min="400" max="1100" step="10" value="600" aria-label="波長"></div>
+      </div>
+    </div>
+    <dl class="readouts">
+      <div><dt>QE</dt><dd id="rQqe">—</dd></div>
+      <div><dt>感度</dt><dd id="rQresp">—</dd></div>
+      <div><dt>空乏層 / 手前 / 奥</dt><dd id="rQparts">—</dd></div>
+      <div><dt>反射 / 透過 / 再結合</dt><dd id="rQloss">—</dd></div>
+      <div><dt>吸収長</dt><dd id="rQabs">—</dd></div>
+    </dl>
+    <figcaption>積み上げは「来た光子 100%」の内訳。灰＝反射、青＝空乏層で拾った、水色＝手前の層から拡散で届いた、薄青＝奥から届いた、橙＝表面や裏で再結合した、白＝透過。<b>手前の層を 0.15 µm にすると青が上がり、全体を 200 µm にすると赤が上がり、反射を 1% にすると全部が 1/(1−R) 倍になる。</b>S を 10⁶ にすると青だけ落ちる。計算は SemiLab <code>light.js</code> と同じ少数キャリアの拡散方程式を、手前・奥それぞれで数値的に解いたもの（空乏層幅は −5 V の 2.7 µm に固定）。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>反射 ― 何を作り込んでも、最初から失っている</h3>
+      <p>シリコンの屈折率は可視で 3.9〜5.6。空気との境で ((n−1)/(n+1))² = <b>35〜48%</b> が跳ね返ります。素子の中をどれだけ工夫しても、このぶんは入ってすらいない。だから実物のフォトダイオードとイメージセンサには必ず<b>反射防止膜</b>が載っています。屈折率 √n<sub>Si</sub> ≈ 2 の膜（窒化膜が近い）を λ/4 の厚さで挟むと、膜の表と裏で反射した光が打ち消し合って、その波長ではほぼ 0 になる。</p>
+      <p>手前 0.15 µm・全体 200 µm の構造に反射 1% を付けると、QE は 400 nm で 97%、550 nm で 99%、800 nm で 94%、1000 nm で 38%。<b>可視の損はほとんど反射だった</b>ことが分かります。SemiLab は反射率を直接いじる摘みだけを持っていて、膜の干渉計算はしていません（README「ここから先」）。</p>
+    </div>
+    <div class="body-col">
+      <h3>第4部へ ― 画素のフォトダイオードは何が違うか</h3>
+      <p>画素は 3 µm 角しかなく、厚さも数 µm。だから近赤外は拾えず、可視だけを相手にします。この章と違うのは主に2つ。① 表面に p⁺ を薄く被せて空乏層を表面から離す<b>埋め込み型（pinned）フォトダイオード</b>で、表面再結合と暗電流を桁で下げる ― 第4部 03 と付録 C。② 拾った電子を電流として流し続けるのではなく<b>井戸に溜めて</b>、あとで一度に読む ― 溜める容量が第2章の接合容量、読み出しが第4部 05 以降。</p>
+      <p>PixelLab の量子効率は、この章と同じ p⁺ 0.15 µm / n 10¹⁵ / n⁺ のフォトダイオードを −2 V で SemiLab に解かせた値をそのまま使っています。「850 nm で量子効率 25%」の課題は、光を集める層の厚みをこの章の考え方で決める課題です。</p>
+    </div>
+  </div>
+
+  <div class="caveat">
+    <span class="tag">断定していないこと</span>
+    <p><b>1次元です。</b>横方向へ拡散して隣の画素に入る（クロストーク）、斜めに入る光、マイクロレンズの集光は入っていません。第4部 01 と「解像の限界」がその話です。</p>
+    <p><b>表面再結合速度 S は与えています。</b>実物では表面のパッシベーションの出来で 10² 〜 10⁶ cm/s まで振れる量で、この参考書と SemiLab の課題は 10⁴ cm/s で固定しています。</p>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — SemiLab 第4章 / PixelLab 第3章</span>
+    <p>「光」を入れて波長を動かすと、下の段に光の生成の分布が出て、「測る」で量子効率の曲線が出る。採点の内訳「空乏層 / 手前 / 奥」がこの章の3つの運命そのもの。青を上げるには手前を薄く、赤を上げるには全体を厚く、両方やれば「広く拾う」が通る。</p>
+    <div class="qs"><span class="lab">SemiLab</span><a href="SemiLab/index.html?quest=photo">光が見える</a><a href="SemiLab/index.html?quest=blue">青を拾う</a><a href="SemiLab/index.html?quest=red">赤を拾う</a><a href="SemiLab/index.html?quest=ar">反射を殺す</a><a href="SemiLab/index.html?quest=broad">広く拾う</a><span class="lab">PixelLab</span><a href="PixelLab/index.html?quest=nir">850nm で量子効率 25%</a></div>
+  </div>
+</section>
+
+<!-- ================= 05 ================= -->
+<section class="stage" id="s5">
+  <div class="stage-head"><span class="stage-num">05</span><h2>MOS、そして MOSFET ― 触れずに、表面の型をひっくり返す</h2></div>
+  <p class="lede">p 型の一片の端に、酸化膜を 5 nm 挟んで電極を置きます。酸化膜は電流を通さない。それなのに電極を正にすると、その下のシリコン表面から正孔が追い払われ、やがて<span class="key">電子の層が現れる</span>。p 型の表面が n 型になる ― 反転です。電流を流さずに電界だけで型を切り替える。これが MOS の全部で、第3部の NAND はこれを4個並べたものです。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>3つの状態 ― 蓄積・空乏・反転</h3>
+      <p>ゲート電圧を負から正へ上げていくと、表面は3段階で変わります。<b>蓄積</b>: 負のゲートは正孔を表面に引き寄せ、表面はより p 型になる。<b>空乏</b>: 正にすると正孔が押しのけられ、アクセプタイオンが裸で残る ― 第2章の空乏層と同じものが、接合ではなく<b>電界で</b>できる。<b>反転</b>: さらに上げると表面の電位 ψ<sub>s</sub> が上がり、n = n<sub>i</sub>·exp(ψ<sub>s</sub>/V<sub>t</sub>) の電子が正孔を追い越す。</p>
+      <p>「追い越した」の目安は、表面の電子濃度が基板の正孔濃度 N<sub>a</sub> に等しくなるところ。基板の電位が −φ<sub>F</sub>（φ<sub>F</sub> = V<sub>t</sub>·ln(N<sub>a</sub>/n<sub>i</sub>)、10¹⁷ で 0.417 V）なので、表面がそこから <b>2φ<sub>F</sub></b> だけ持ち上がったとき。ここから先は電子が指数で増えるので、ψ<sub>s</sub> はほぼ 2φ<sub>F</sub> に釘付けになり、空乏層もそれ以上広がらない（W<sub>max</sub>）。</p>
+    </div>
+    <div class="body-col">
+      <h3>しきい値電圧 ― 3つの足し算</h3>
+      <p>表面を 2φ<sub>F</sub> まで持ち上げるのに要るゲート電圧が<b>しきい値電圧 V<sub>th</sub></b>。ゲートに置いた電圧は、①ゲートと基板の仕事関数の差を埋め（V<sub>FB</sub>）、②表面を 2φ<sub>F</sub> 曲げ、③空乏層の電荷 Q<sub>dep</sub> を酸化膜の容量 C<sub>ox</sub> で支える、の3つに使われます:</p>
+      <div class="eq">V<sub>th</sub> = <u>V<sub>FB</sub></u> + <i>2φ<sub>F</sub></i> + <b>Q<sub>dep</sub>/C<sub>ox</sub></b>　　Q<sub>dep</sub> = &radic;(2&epsilon;qN<sub>a</sub>&middot;2φ<sub>F</sub>)　C<sub>ox</sub> = &epsilon;<sub>ox</sub>/t<sub>ox</sub></div>
+      <p>n⁺ ポリシリコンのゲート・10¹⁷ の基板・酸化膜 13.4 nm で: V<sub>FB</sub> = −0.979、2φ<sub>F</sub> = 0.833、Q<sub>dep</sub>/C<sub>ox</sub> = 0.645 → <b>V<sub>th</sub> = 0.500 V</b>。ポアソン方程式で「ψ<sub>s</sub> = 2φ<sub>F</sub> になるゲート電圧」を探しても同じ 0.500 が出ます（SemiLab はこちらで採点）。</p>
+      <p>動かせる摘みは3つ。<b>基板を濃く</b>すると φ<sub>F</sub> と Q<sub>dep</sub> が上がる。<b>酸化膜を厚く</b>すると C<sub>ox</sub> が下がって Q<sub>dep</sub>/C<sub>ox</sub> が効く。<b>ゲートの材料</b>で V<sub>FB</sub> が動く（p⁺ ポリなら +1.1 V）。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">MOS — しきい値の内訳と、反転電荷の立ち上がり（S 値）</span><span class="fig-title">p 基板 · 300 K</span></div>
+    <div class="fig-body">
+      <canvas id="cvMOS" width="1100" height="340" aria-label="ゲート電圧に対する反転層の電子面密度（対数）と、しきい値電圧の3つの内訳"></canvas>
+      <div class="sl3">
+        <div class="slider-row"><div class="top"><span class="lab">基板 N<sub>a</sub></span><span class="num" id="vMNa">1.0×10¹⁷</span></div><input type="range" id="cMNa" min="150" max="185" value="170" aria-label="基板濃度"></div>
+        <div class="slider-row"><div class="top"><span class="lab">酸化膜 t<sub>ox</sub></span><span class="num" id="vMtox">13.4 nm</span></div><input type="range" id="cMtox" min="20" max="300" value="134" aria-label="酸化膜厚"></div>
+        <div class="slider-row"><div class="top"><span class="lab">ゲート</span><span class="num" id="vMg">n⁺ ポリ</span></div><input type="range" id="cMg" min="0" max="2" value="0" aria-label="ゲート材料"></div>
+      </div>
+    </div>
+    <dl class="readouts">
+      <div><dt>C<sub>ox</sub></dt><dd id="rMCox">—</dd></div>
+      <div><dt>V<sub>FB</sub> / 2φ<sub>F</sub> / Q<sub>dep</sub>/C<sub>ox</sub></dt><dd id="rMparts">—</dd></div>
+      <div><dt>V<sub>th</sub></dt><dd id="rMVth">—</dd></div>
+      <div><dt>S 値</dt><dd id="rMS">—</dd></div>
+      <div><dt>C<sub>dep</sub>/C<sub>ox</sub></dt><dd id="rMcd">—</dd></div>
+      <div><dt>W<sub>max</sub></dt><dd id="rMW">—</dd></div>
+    </dl>
+    <figcaption>左: 反転層の電子面密度をゲート電圧に対して対数で。V<sub>th</sub> より下（弱反転）は直線 ― 1桁動かすのに S 値ぶんの電圧が要る。上（強反転）は C<sub>ox</sub>(V<sub>G</sub>−V<sub>th</sub>)/q で線形に増える。右: V<sub>th</sub> の3つの内訳。<b>酸化膜を薄くすると Q<sub>dep</sub>/C<sub>ox</sub> が縮んで V<sub>th</sub> が下がり、同時に S 値も下限へ近づく。</b>基板を 10¹⁶ にすると V<sub>th</sub> は負になり、ゲートが 0 V でもオン（デプレッション型）。数式は教科書の解析式（SemiLab の <code>vthAnalytic</code>）で、ポアソンの解とは 5 mV 以内で一致する。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>S 値 ― 熱が決める 59.5 mV/桁 の壁</h3>
+      <p>しきい値の下でも電流はゼロではなく、表面の電子は ψ<sub>s</sub> に指数で乗っているので、ゲート電圧に対して指数で減っていきます。<b>1桁減らすのに要るゲート電圧</b>が S 値（サブスレッショルド・スイング）:</p>
+      <div class="eq">S = ln10 &middot; V<sub>t</sub> &middot; ( 1 + <b>C<sub>dep</sub>/C<sub>ox</sub></b> )　　ln10&middot;V<sub>t</sub> = <b>59.5 mV/桁</b> (300 K)</div>
+      <p>ゲート電圧は酸化膜の容量と空乏層の容量で分圧されるので、表面には (1 + C<sub>dep</sub>/C<sub>ox</sub>) 分の 1 しか届かない。酸化膜を薄く（C<sub>ox</sub> 大）、基板を薄く（C<sub>dep</sub> 小）すれば 59.5 に近づきますが、<b>室温である限り決して下回れない</b>。オフ電流を 6 桁下げたければ最低 0.36 V 要る ― これが「電源電圧をこれ以上下げられない」理由そのもので、第4部 付録 B の「S 値の 59.5 mV/桁 という壁」と同じ話です。</p>
+      <div class="scroll-x" style="margin-top:12px"><table>
+        <thead><tr><th>t<sub>ox</sub> / N<sub>a</sub></th><th>V<sub>th</sub></th><th>S 値</th><th>C<sub>dep</sub>/C<sub>ox</sub></th></tr></thead>
+        <tbody>
+          <tr><td>5 nm / 10¹⁶</td><td class="num">−0.135 V</td><td class="num">62.5</td><td class="num">0.05</td></tr>
+          <tr><td>5 nm / 10¹⁷</td><td class="num">0.095</td><td class="num">68.1</td><td class="num">0.14</td></tr>
+          <tr><td>4 nm / 3×10¹⁷</td><td class="num">0.228</td><td class="num">71.1</td><td class="num">0.19</td></tr>
+          <tr><td>7 nm / 2.5×10¹⁷</td><td class="num"><b>0.427</b></td><td class="num">78.0</td><td class="num">0.31</td></tr>
+          <tr><td>13.4 nm / 10¹⁷</td><td class="num">0.500</td><td class="num">82.6</td><td class="num">0.39</td></tr>
+          <tr><td>5 nm / 10¹⁸</td><td class="num">0.729</td><td class="num">85.0</td><td class="num">0.43</td></tr>
+          <tr><td>20 nm / 10¹⁷</td><td class="num">0.819</td><td class="num">93.9</td><td class="num">0.58</td></tr>
+        </tbody>
+      </table></div>
+      <p style="font-size:12.5px;color:var(--ink-3);margin-top:8px">n⁺ ポリのゲート。S 値の単位は mV/桁。SemiLab がポアソンで解いた値。</p>
+    </div>
+    <div class="body-col">
+      <h3>MOSFET ― 反転層の両端に出入口を付ける</h3>
+      <p>反転層は電子の薄い層です。その両脇に n⁺ の島（ソースとドレイン）を置けば、ゲートで作った電子の通り道が両者をつなぐ。ゲートが V<sub>th</sub> より下なら通り道が無く、p 基板と n⁺ の接合が逆バイアスなので流れない（オフ）。上ならドレイン電圧に応じて流れる（オン）。</p>
+      <div class="eq">I<sub>D</sub> = µ<sub>n</sub>C<sub>ox</sub>(W/L)&middot;[ (V<sub>G</sub>&minus;V<sub>th</sub>)V<sub>D</sub> &minus; V<sub>D</sub>²/2 ]　　V<sub>D</sub> &ge; V<sub>G</sub>&minus;V<sub>th</sub> で飽和</div>
+      <p>ドレイン側ではチャネルの電位が上がるぶんゲートとの差が減り、反転電荷が薄くなる。V<sub>D</sub> = V<sub>G</sub> − V<sub>th</sub> でドレイン端の反転が消え（ピンチオフ）、それ以上は電流が増えない ― 飽和です。SemiLab の「測る」の Id-Vd は、この二乗則を仮定せず、<b>チャネル電位ごとにポアソンを解いて反転電荷を積んで</b>出しています。</p>
+      <h3>NAND の中身へ</h3>
+      <p>p 基板に作った nMOS は「ゲートが 1 のとき通じる」スイッチ。n 基板に鏡写しに作った pMOS は「ゲートが 0 のとき通じる」。両者を電源と地面のあいだに直列に置き、ゲートを共通にすると、入力が 1 なら下が通じて出力は 0、入力が 0 なら上が通じて出力は 1 ― <b>CMOS インバータ</b>。上下が同時に通じることが無いので、切り替わる瞬間以外は電流が流れない。</p>
+      <p>nMOS を直列に2個、pMOS を並列に2個にすると、両方の入力が 1 のときだけ出力が 0 になる ― <b>NAND</b>。4石。AND を作るにはこの後ろに NOT（2石）が要るので6石。<span class="key">原始部品を NAND にする物理的な理由がここにあります。</span>ここから上は第3部の話です。</p>
+    </div>
+  </div>
+
+  <div class="caveat">
+    <span class="tag">断定していないこと</span>
+    <p><b>1次元です。</b>チャネル長が短くなるとソース・ドレインの空乏層がチャネルの下まで届き、ゲートの支配力が落ちる（短チャネル効果）― それは2次元の話で、この部にも SemiLab にも出ません。第4部 付録 B にあります。第1部「トランジスタ構造の進化」で FinFET や GAA が出てくるのは、この1次元の絵がもう成り立たなくなったからです。</p>
+    <p><b>酸化膜は完全な絶縁体として扱っています。</b>3 nm を切るとトンネル電流が流れ（第4部 付録 A）、ポリシリコンのゲートは自身が空乏し、反転層の電子は量子化されて表面から少し離れます。どれも V<sub>th</sub> を数十 mV 動かしますが、入れていません。SemiLab「NAND の中身へ」が酸化膜 3 nm 以上を課すのはこのためです。酸化膜の電界が 10 MV/cm を超えると SemiLab は「絶縁破壊」の帯を出します。</p>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — SemiLab 第5章 → NandLab</span>
+    <p>「酸化膜」を押すと先頭に挟まり、左の電極が自動でゲートになる。ゲート電圧を上げていくと、キャリア濃度の段で表面の電子の線が正孔を追い越す瞬間が見える。「測る」で C-V と Id-Vd。最後の「NAND の中身へ」で作った nMOS が、NandLab で NAND をダブルクリックすると出てくる4石の中身。</p>
+    <div class="qs"><span class="lab">SemiLab</span><a href="SemiLab/index.html?quest=moscap">MOS キャパシタ</a><a href="SemiLab/index.html?quest=vth">しきい値電圧を合わせる</a><a href="SemiLab/index.html?quest=swing">切れ味を上げる</a><a href="SemiLab/index.html?quest=nand">NAND の中身へ</a><span class="lab">NandLab</span><a href="NandLab/index.html?quest=not">NOT を作る（第3部へ）</a></div>
+  </div>
+</section>
+
+<!-- ================= 数字の根拠 ================= -->
+<section class="stage" id="snum">
+  <div class="stage-head"><span class="stage-num">—</span><h2>数字はどこから来たか</h2></div>
+  <p class="lede">材料そのものを測って決まる定数（E<sub>g</sub>・ε・n<sub>i</sub>・α・移動度と寿命の当てはめ）を除いて、この部の数値は全部ここから計算で追えます。第4部の同じ表と、定数は一致しています。</p>
+  <figure class="full">
+    <div class="scroll-x"><table>
+      <thead><tr><th>量</th><th>値</th><th>どこから来たか</th></tr></thead>
+      <tbody>
+        <tr class="grp"><td colspan="3">材料の定数（測るしかないもの）</td></tr>
+        <tr><td>E<sub>g</sub></td><td class="num">1.124 eV (300 K)</td><td>Varshni の式 E<sub>g</sub>(T) = 1.170 − 4.73×10⁻⁴·T²/(T+636)。0 K で 1.170、300 K で 1.124。</td></tr>
+        <tr><td>n<sub>i</sub></td><td class="num">1.0×10¹⁰ /cm³</td><td>300 K の実測側の値。温度は T<sup>1.5</sup>·exp(−E<sub>g</sub>(T)/2kT) で動かす（形は物理、目盛りは実測）。</td></tr>
+        <tr><td>ε<sub>Si</sub>, ε<sub>ox</sub></td><td class="num">11.7ε₀, 3.9ε₀</td><td>ε₀ = 8.854×10⁻¹⁴ F/cm。ε<sub>Si</sub> = 1.036×10⁻¹² F/cm。</td></tr>
+        <tr><td>移動度 µ</td><td class="num">Caughey-Thomas</td><td>µ = µ<sub>min</sub> + (µ<sub>max</sub>−µ<sub>min</sub>)/(1+(N/N<sub>ref</sub>)<sup>a</sup>)。電子: 92, 1268, 1.3×10¹⁷, 0.91。正孔: 54.3, 406.9, 2.35×10¹⁷, 0.88。N は不純物の総量。</td></tr>
+        <tr><td>寿命 τ</td><td class="num">10 µs / (1 + N/5×10¹⁶)</td><td>SRH。低濃度で 10 µs、10¹⁷ で 3.3 µs、10¹⁹ で 50 ns。</td></tr>
+        <tr><td>吸収係数 α</td><td class="num">実測表</td><td>Green & Keevers (1995)。50 nm 刻みの表を対数で内挿。表の外は端の値で止める。</td></tr>
+        <tr class="grp"><td colspan="3">第1章</td></tr>
+        <tr><td>kT/q</td><td class="num">25.85 mV</td><td>8.617×10⁻⁵ eV/K × 300 K。</td></tr>
+        <tr><td>5兆個に1個</td><td class="num">5×10²² / 10¹⁰</td><td>シリコンの原子密度 5×10²² /cm³ を n<sub>i</sub> で割った。</td></tr>
+        <tr><td>1 Ω·cm の n 型</td><td class="num">5.2×10¹⁵</td><td>1/(q·N·µ<sub>n</sub>(N)) = 1 を解いた。µ<sub>n</sub>(5.2×10¹⁵) = 1208。p 型なら 1.4×10¹⁶（µ<sub>p</sub> = 380）。</td></tr>
+        <tr><td>9 ℃で 2.06 倍</td><td class="num">n<sub>i</sub>(309)/n<sub>i</sub>(300)</td><td>上の n<sub>i</sub>(T) をそのまま。d(ln n<sub>i</sub>)/dT ≈ (1.5/T + E<sub>g</sub>/2kT²) = 0.080 /K → ln2/0.080 = 8.7 K。</td></tr>
+        <tr class="grp"><td colspan="3">第2章</td></tr>
+        <tr><td>V<sub>bi</sub> (10¹⁶/10¹⁶)</td><td class="num">0.714 V</td><td>0.02585 × ln(10³²/10²⁰) = 0.02585 × 27.63。解も 0.714（平衡は準フェルミ電位の近似が無いので厳密に一致する）。</td></tr>
+        <tr><td>W (10¹⁶/10¹⁶)</td><td class="num">式 0.430 / 解 0.415 µm</td><td>√(2×1.036×10⁻¹²/1.602×10⁻¹⁹ × 2×10⁻¹⁶ × 0.714) = 4.30×10⁻⁵ cm。解は多数キャリアの欠損 ∫(1−n/N<sub>d</sub>)dx で測る（SemiLab README「落とし穴 3」）。</td></tr>
+        <tr><td>デバイ長</td><td class="num">41 nm (10¹⁶)</td><td>√(εV<sub>t</sub>/qN) = √(1.036×10⁻¹² × 0.02585 / (1.602×10⁻¹⁹ × 10¹⁶))。</td></tr>
+        <tr><td>C<sub>j</sub></td><td class="num">25 nF/cm²</td><td>ε/W = 1.036×10⁻¹² / 4.15×10⁻⁵。1 µm² = 10⁻⁸ cm² なら 0.25 fF。</td></tr>
+        <tr><td>−5 V で 2.90 倍</td><td class="num">2.721 / 0.938</td><td>p⁺ 10¹⁸ / n 10¹⁵ の解。式なら √((0.774+5)/0.774) = 2.73。裾のぶん 0 V の W が式より短いので、比は式より大きく出る。</td></tr>
+        <tr class="grp"><td colspan="3">第3章</td></tr>
+        <tr><td>59.5 mV/桁</td><td class="num">V<sub>t</sub>·ln10</td><td>0.02585 × 2.3026。第5章の S 値の下限と同じ数。</td></tr>
+        <tr><td>J<sub>0</sub> (10¹⁷/10¹⁷)</td><td class="num">6.3×10⁻¹³ A/cm²</td><td>q n<sub>i</sub>² (D<sub>p</sub>/(L<sub>p</sub>N<sub>d</sub>) + D<sub>n</sub>/(L<sub>n</sub>N<sub>a</sub>))。D = µV<sub>t</sub>（アインシュタイン）、L = √(Dτ)。D<sub>p</sub> = 7.6, L<sub>p</sub> = 50 µm, D<sub>n</sub> = 19.4, L<sub>n</sub> = 80 µm。両側 1 µm の SemiLab のお手本では coth(1/50)+coth(1/80) の短基底補正で 4.7×10⁻¹¹。</td></tr>
+        <tr><td>170 万倍</td><td class="num">7.7×10⁻³ / 4.6×10⁻⁹</td><td>+0.6 V は J<sub>0</sub>·exp(0.6/0.02585) = 6.3×10⁻¹³ × 1.2×10¹⁰ ≈ 7.7×10⁻³（再結合項を含めて 8.7×10⁻³）。−0.6 V は生成電流 q n<sub>i</sub> W/2τ が支配。両側 1 µm なら 0.54 / 4.7×10⁻⁹ = 1.2×10⁸。</td></tr>
+        <tr><td>短基底 ≈ 45 倍</td><td class="num">L<sub>p</sub>/W<sub>n</sub></td><td>coth(2/91) ≈ 45.6。n 側 10¹⁶ で L<sub>p</sub> = 91 µm、中性領域 2 µm。SemiLab の解は約 50 倍（p⁺ 側の寄与と W の分だけずれる）。</td></tr>
+        <tr><td>4.8 ℃で倍</td><td class="num">拡散支配</td><td>n<sub>i</sub>² ∝ exp(−E<sub>g</sub>/kT)。d/dT = E<sub>g</sub>/kT² + 3/T = 0.155 /K → ln2/0.155 = 4.5 K（E<sub>g</sub> の温度依存を入れると 4.8）。</td></tr>
+        <tr class="grp"><td colspan="3">第4章</td></tr>
+        <tr><td>1107 nm</td><td class="num">1240 / 1.12</td><td>hc = 1239.84 eV·nm。E<sub>g</sub> = 1.124 なら 1103 nm。</td></tr>
+        <tr><td>裸の反射 35%</td><td class="num">((n−1)/(n+1))²</td><td>600 nm で n = 3.95 → 0.355。400 nm は n = 5.57 で 0.484。</td></tr>
+        <tr><td>感度 A/W</td><td class="num">QE·λ/1240</td><td>光子1個 = hc/λ の J、電子1個 = q の C。q/(hc/λ) = λ[nm]/1239.84 A/W。700 nm で QE 80% なら 0.45 A/W。</td></tr>
+        <tr><td>QE 400 nm (p⁺ 0.3 µm)</td><td class="num">48%</td><td>反射 48% を引いた 52% のうち、空乏層で 3%、手前の層から拡散で届いたのが 45%、表面で消えたのが 4%。SemiLab の解。</td></tr>
+        <tr class="grp"><td colspan="3">第5章</td></tr>
+        <tr><td>C<sub>ox</sub> (5 nm)</td><td class="num">6.9×10⁻⁷ F/cm²</td><td>3.9 × 8.854×10⁻¹⁴ / 5×10⁻⁷。1 µm² で 6.9 fF。</td></tr>
+        <tr><td>φ<sub>F</sub> (10¹⁷)</td><td class="num">0.417 V</td><td>V<sub>t</sub>·ln(N<sub>a</sub>/n<sub>i</sub>) = 0.02585 × 16.12。</td></tr>
+        <tr><td>V<sub>FB</sub> (n⁺ ポリ / p 10¹⁷)</td><td class="num">−0.979 V</td><td>φ<sub>m</sub> − φ<sub>s</sub>。n⁺ ポリの仕事関数は χ = 4.05 eV（E<sub>c</sub> の位置）、p 基板は χ + E<sub>g</sub>/2 + φ<sub>F</sub> = 4.05 + 0.562 + 0.417 = 5.029。差 −0.979。</td></tr>
+        <tr><td>Q<sub>dep</sub>/C<sub>ox</sub> (13.4 nm, 10¹⁷)</td><td class="num">0.645 V</td><td>Q<sub>dep</sub> = √(2 × 1.036×10⁻¹² × 1.602×10⁻¹⁹ × 10¹⁷ × 0.833) = 1.66×10⁻⁷ C/cm²。C<sub>ox</sub> = 2.58×10⁻⁷。</td></tr>
+        <tr><td>S 値 (13.4 nm, 10¹⁷)</td><td class="num">82.6 mV/桁</td><td>59.5 × (1 + C<sub>dep</sub>/C<sub>ox</sub>)、C<sub>dep</sub> = ε/W<sub>max</sub> = 1.036×10⁻¹² / 1.04×10⁻⁵ = 1.0×10⁻⁷ → 0.387。</td></tr>
+        <tr><td>6 桁に 0.36 V</td><td class="num">6 × 59.5 mV</td><td>下限の S 値でオフ電流を 10⁶ 分の 1 にするのに要るゲート電圧。実物は S ≈ 70 で 0.42 V。</td></tr>
+      </tbody>
+    </table></div>
+  </figure>
+</section>
+
+<!-- ================= どこまでがモデルか ================= -->
+<section class="stage" id="smodel">
+  <div class="stage-head"><span class="stage-num">—</span><h2>どこまでが厳密で、どこからがモデルか</h2></div>
+  <p class="lede">出ないものを出たように見せるほうが、出ないと言うより害が大きい。この部と SemiLab が共有している境界です。</p>
+  <div class="two">
+    <div class="body-col">
+      <h3>ポアソン方程式を解いて出しているもの（数値解）</h3>
+      <p>電位・電界・キャリア分布・電荷。空乏層幅、ビルトイン電位、最大電界。MOS の表面ポテンシャル、反転電荷、しきい値電圧、フラットバンド電圧。容量（dQ/dV を数値微分）。MOSFET の Id-Vd（チャネル電位ごとに解いて積む）。</p>
+      <p>唯一の近似は<b>準フェルミ電位を与えていること</b>。平衡では厳密。バイアス下では φ<sub>n</sub> を n 側電極、φ<sub>p</sub> を p 側電極の電位で全域一定と置く。この置き方から n 側の少数キャリアが (n<sub>i</sub>²/N<sub>d</sub>)·exp(V/V<sub>t</sub>) と自動的に出る ― ショックレーの境界条件を別に書き足していない。</p>
+      <h3>教科書の解析式で出しているもの（モデル）</h3>
+      <p>ダイオードの電流（ショックレー式 ＋ SRH の n=2 項 ＋ 直列抵抗）。I-V の中で使う空乏層幅（空乏近似。ポアソンの解と 7% 以内であることを検査が見張る）。移動度・寿命・吸収係数の当てはめ。</p>
+    </div>
+    <div class="body-col">
+      <h3>出ないもの</h3>
+      <p><b>降伏</b>（アバランシェ・ツェナー）― 第4部 付録 A。<b>大注入</b>。<b>界面準位</b>（表面再結合速度だけ）。<b>量子効果</b>（薄い酸化膜のトンネル、反転層の量子化）― 第4部 付録 A。<b>時間</b>（高周波 C-V、スイッチング、蓄積電荷）。<b>接合が2つ以上ある構造のバイアス下</b>（npn は平衡でだけ意味のある解）。<b>2次元の効果</b>（短チャネル効果、クロストーク、LOCOS の端）― 第4部 付録 B、第1部。</p>
+      <h3>SemiLab が赤い帯で知らせる条件</h3>
+      <div class="scroll-x" style="margin-top:12px"><table>
+        <thead><tr><th>帯</th><th>条件</th></tr></thead>
+        <tbody>
+          <tr><td>降伏</td><td>シリコンの最大電界が Sze の近似 4×10⁵/(1−log₁₀(N/10¹⁶)/3) V/cm を超えた。電流は出ない</td></tr>
+          <tr><td>絶縁破壊</td><td>酸化膜の電界が 10 MV/cm を超えた</td></tr>
+          <tr><td>大注入</td><td>順方向がビルトイン電位に届いた</td></tr>
+          <tr><td>縮退</td><td>5×10¹⁹ を超える濃度の層がある。ボルツマン統計の外</td></tr>
+          <tr><td>未収束</td><td>段階的に上げても解が収束しなかった</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 参考文献 ================= -->
+<section class="stage" id="sref">
+  <div class="stage-head"><span class="stage-num">—</span><h2>もっと先へ</h2></div>
+  <p class="lede">この部の式はどれも、次の本に導出付きで載っています。ここでの数値はそれらから引き写したものではなく、SemiLab に同じ構造を置いて解いた値です。</p>
+  <figure class="full">
+    <div class="scroll-x"><table>
+      <thead><tr><th>書名</th><th>著者</th><th>この部のどこに対応するか</th></tr></thead>
+      <tbody>
+        <tr><td>Physics of<br>Semiconductor Devices</td><td>S. M. Sze &amp; Kwok K. Ng<br>Wiley</td><td><b>全章の土台。</b>pn 接合、空乏近似、ショックレー式、SRH 生成、MOS の表面ポテンシャルと V<sub>th</sub>、降伏の目安の式。第4部 付録 A〜C とも共通。</td></tr>
+        <tr><td>Semiconductor Device<br>Fundamentals</td><td>Robert F. Pierret<br>Addison-Wesley</td><td>1・2章。キャリア統計、質量作用の法則、接合の静電気学を最も丁寧に導出している入門書。</td></tr>
+        <tr><td>Fundamentals of Modern<br>VLSI Devices</td><td>Yuan Taur &amp; Tak H. Ning<br>Cambridge</td><td>5章。MOS の S 値、短チャネル効果（この部が扱わない2次元）、CMOS の設計則。第3部への橋。</td></tr>
+        <tr><td>Semiconductors and<br>Semimetals: Solar Cells</td><td>Harold J. Hovel<br>Academic Press</td><td>4章。中性領域の収集効率の解析解。この部の QE の図はそれを数値で解いたもの。</td></tr>
+        <tr><td>Optical properties of<br>intrinsic silicon at 300 K</td><td>M. A. Green &amp; M. J. Keevers<br>Prog. Photovoltaics, 1995</td><td>4章。吸収係数と屈折率の表。SemiLab <code>phys.js</code> の ALPHA / NREF はこれ。</td></tr>
+        <tr><td>Empirical Mobility Model</td><td>D. M. Caughey &amp; R. E. Thomas<br>Proc. IEEE, 1967</td><td>1章。濃度依存の移動度の当てはめ。</td></tr>
+      </tbody>
+    </table></div>
+  </figure>
+  <div class="foot">
+    <span>数値は SemiLab（<code>node tests/run.js</code> が解析解と突き合わせている）が解いた値です。実物のウェーハとは一致しません。</span>
+    <span><a href="index.html">学びの地図へ戻る</a> · 前: <a href="半導体製造プロセス体系マップ.html">第1部 製造プロセス</a> · 次: 第3部 論理回路（NandLab） / <a href="イメージセンサ解剖ラボ.html">第4部 イメージセンサ</a></span>
+    <span style="font-family:var(--mono)">不純物 → 接合 → ダイオード → フォトダイオード → MOSFET</span>
+  </div>
+</section>
+</main>
+</div>
+</div>
+
+<script>
+(function(){
+"use strict";
+/* ---------- 物理（SemiLab phys.js と同じ式・同じ定数） ---------- */
+var Q=1.602176634e-19, KB=8.617333262e-5, EPS0=8.8541878128e-14, EPS=11.7*EPS0, EOX=3.9*EPS0, CHI=4.05;
+function vt(T){return KB*T}
+function eg(T){return 1.170-4.73e-4*T*T/(T+636)}
+function ni(T){var r=T/300;return 1e10*Math.pow(r,1.5)*Math.exp(eg(300)/(2*vt(300))-eg(T)/(2*vt(T)))}
+function mu(p,N,T){N=Math.max(N,1);return (p.min+(p.max-p.min)/(1+Math.pow(N/p.nref,p.a)))*Math.pow((T||300)/300,-2.3)}
+var MUN={min:92,max:1268,nref:1.3e17,a:.91}, MUP={min:54.3,max:406.9,nref:2.35e17,a:.88};
+function muN(N,T){return mu(MUN,N,T)} function muP(N,T){return mu(MUP,N,T)}
+function tau(N){return 1e-5/(1+N/5e16)}
+var ALPHA=[[250,1.84e6],[300,1.73e6],[350,1.05e6],[400,9.52e4],[450,2.65e4],[500,1.11e4],[550,6.55e3],[600,4.14e3],[650,2.80e3],[700,1.90e3],[750,1.33e3],[800,8.50e2],[850,5.35e2],[900,3.06e2],[950,1.53e2],[1000,6.40e1],[1050,1.60e1],[1100,3.50e0],[1150,3.0e-1],[1200,2.0e-2]];
+function alpha(nm){var a=ALPHA;if(nm<=a[0][0])return a[0][1];if(nm>=a[a.length-1][0])return a[a.length-1][1];for(var i=1;i<a.length;i++)if(nm<=a[i][0]){var t=(nm-a[i-1][0])/(a[i][0]-a[i-1][0]);return Math.exp(Math.log(a[i-1][1])*(1-t)+Math.log(a[i][1])*t)}return 0}
+var NREF=[[400,5.57],[500,4.30],[600,3.95],[700,3.79],[800,3.68],[900,3.60],[1000,3.57],[1100,3.55]];
+function nIdx(nm){var a=NREF;if(nm<=a[0][0])return a[0][1];if(nm>=a[a.length-1][0])return a[a.length-1][1];for(var i=1;i<a.length;i++)if(nm<=a[i][0]){var t=(nm-a[i-1][0])/(a[i][0]-a[i-1][0]);return a[i-1][1]*(1-t)+a[i][1]*t}return 3.6}
+function reflect(nm){var n=nIdx(nm),r=(n-1)/(n+1);return r*r}
+
+/* ---------- 見た目 ---------- */
+var CS=getComputedStyle(document.documentElement);
+function C(n){return CS.getPropertyValue('--'+n).trim()}
+var MONO=C('mono')||'monospace', SANS=C('sans')||'sans-serif';
+var SUP={'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹','-':'⁻'};
+function sup(n){return String(n).split('').map(function(c){return SUP[c]||c}).join('')}
+function fE(v,d){if(!(v>0))return '0';var e=Math.floor(Math.log10(v)),m=v/Math.pow(10,e);if(m>=9.95){m=1;e++}return m.toFixed(d===undefined?1:d)+'×10'+sup(e)}
+function fUm(cm){var u=cm*1e4;return (u<0.1?(u*1e3).toFixed(0)+' nm':u<10?u.toFixed(2)+' µm':u.toFixed(0)+' µm')}
+function $(id){return document.getElementById(id)}
+function on(id,fn){var el=$(id);if(el){el.addEventListener('input',fn)}}
+function g2(cv){var g=cv.getContext('2d');g.clearRect(0,0,cv.width,cv.height);g.font='11px '+MONO;return g}
+function txt(g,s,x,y,o){o=o||{};g.save();g.font=(o.w||'')+' '+(o.size||11)+'px '+(o.sans?SANS:MONO);g.fillStyle=o.color||C('ink-3');g.textAlign=o.align||'left';g.textBaseline=o.base||'alphabetic';g.fillText(s,x,y);g.restore()}
+function frame(g,x,y,w,h){g.strokeStyle=C('line');g.lineWidth=1;g.strokeRect(x+.5,y+.5,w,h)}
+function line(g,pts,color,wd,dash){g.save();g.strokeStyle=color;g.lineWidth=wd||1.5;g.setLineDash(dash||[]);g.beginPath();for(var i=0;i<pts.length;i++){if(!isFinite(pts[i][1]))continue;i?g.lineTo(pts[i][0],pts[i][1]):g.moveTo(pts[i][0],pts[i][1])}g.stroke();g.restore()}
+function tri(a,b,c){var n=1e-9;return a<b+n&&a>b-n}
+/* 三重対角 */
+function thomas(a,b,c,d,n){var i,m,x=new Float64Array(n);for(i=1;i<n;i++){m=a[i]/b[i-1];b[i]-=m*c[i-1];d[i]-=m*d[i-1]}x[n-1]=d[n-1]/b[n-1];for(i=n-2;i>=0;i--)x[i]=(d[i]-c[i]*x[i+1])/b[i];return x}
+
+/* ================= 01 キャリア ================= */
+(function(){
+var cv=$('cvCarrier');if(!cv)return;
+var sNd=$('cNd'),sNa=$('cNa'),sT=$('cT');
+sNd.value=400;
+function conc(v){v=+v;return v<=0?0:Math.pow(10,12+v/100)}
+function draw(){
+  var Nd=conc(sNd.value),Na=conc(sNa.value),T=+sT.value,n_i=ni(T),Vt=vt(T),Eg=eg(T);
+  var net=Nd-Na,n=net/2+Math.sqrt(net*net/4+n_i*n_i),p=n_i*n_i/n;
+  var tot=Nd+Na,mn=muN(tot,T),mp=muP(tot,T),rho=1/(Q*(n*mn+p*mp));
+  var type=Math.abs(net)<n_i*3?'真性に近い':net>0?'n 型':'p 型';
+  $('vNd').textContent=Nd?fE(Nd)+' /cm³':'入れない';$('vNa').textContent=Na?fE(Na)+' /cm³':'入れない';$('vT').textContent=T+' K';
+  $('rType').textContent=type;$('rN').textContent=fE(n)+' /cm³';$('rP').textContent=fE(p)+' /cm³';$('rNi').textContent=fE(n_i);
+  $('rMu').textContent=(net>=0?'µn '+mn.toFixed(0):'µp '+mp.toFixed(0))+' cm²/Vs';
+  $('rRho').textContent=(rho>=100?rho.toFixed(0):rho>=1?rho.toFixed(2):rho.toFixed(4))+' Ω·cm';
+  var g=g2(cv),W=cv.width,H=cv.height;
+  /* 左: 濃度の段 */
+  var x0=60,y0=20,w=520,h=240,lo=0,hi=20;
+  frame(g,x0,y0,w,h);
+  function Y(v){return y0+h-(Math.log10(Math.max(v,1))-lo)/(hi-lo)*h}
+  for(var e=0;e<=20;e+=4){var y=Y(Math.pow(10,e));g.strokeStyle=C('line-2');g.beginPath();g.moveTo(x0,y+.5);g.lineTo(x0+w,y+.5);g.stroke();txt(g,'10'+sup(e),x0-6,y+4,{align:'right'})}
+  txt(g,'/cm³',x0-6,y0-6,{align:'right'});
+  line(g,[[x0,Y(n_i)],[x0+w,Y(n_i)]],C('ink-3'),1,[3,4]);txt(g,'nᵢ = '+fE(n_i),x0+w-6,Y(n_i)-5,{align:'right'});
+  var bw=110,bx=[x0+70,x0+230,x0+390];
+  var bars=[['ドナー Nd',Nd,C('electron-soft'),C('electron-2')],['電子 n',n,C('electron'),C('electron-2')],['正孔 p',p,C('hole'),C('hole')]];
+  if(Na>0){bars.splice(1,0,['アクセプタ Na',Na,C('hole-soft'),C('hole')]);bw=85;bx=[x0+40,x0+160,x0+280,x0+400]}
+  bars.forEach(function(b,i){var yb=Y(b[1]);g.fillStyle=b[2];g.fillRect(bx[i],yb,bw,y0+h-yb);txt(g,b[0],bx[i]+bw/2,y0+h+16,{align:'center',sans:true,size:12,color:C('ink-2')});txt(g,fE(b[1]),bx[i]+bw/2,yb-5,{align:'center',color:b[3],w:'600'})});
+  txt(g,'n·p = '+fE(n*p)+' = nᵢ²',x0+6,y0+14,{color:C('ink-2')});
+  /* 右: バンド図 */
+  var bx0=660,by0=20,bw2=400,bh=240;frame(g,bx0,by0,bw2,bh);
+  var eScale=bh/(Eg+0.9);function EY(E){return by0+bh/2-E*eScale}
+  var Ec=Eg/2,Ev=-Eg/2,Ei=0,Ef=Vt*Math.log(n/n_i);
+  Ef=Math.max(Ev-0.15,Math.min(Ec+0.15,Ef));
+  g.fillStyle=C('electron-soft');g.fillRect(bx0+1,by0+1,bw2-1,EY(Ec)-by0-1);
+  g.fillStyle=C('hole-soft');g.fillRect(bx0+1,EY(Ev),bw2-1,by0+bh-EY(Ev)-1);
+  line(g,[[bx0,EY(Ec)],[bx0+bw2,EY(Ec)]],C('electron'),2);line(g,[[bx0,EY(Ev)],[bx0+bw2,EY(Ev)]],C('hole'),2);
+  line(g,[[bx0,EY(Ei)],[bx0+bw2,EY(Ei)]],C('ink-3'),1,[3,4]);line(g,[[bx0,EY(Ef)],[bx0+bw2,EY(Ef)]],C('ink'),1.5,[6,3]);
+  txt(g,'Ec',bx0+bw2-8,EY(Ec)-5,{align:'right',color:C('electron-2'),w:'600'});txt(g,'Ev',bx0+bw2-8,EY(Ev)+14,{align:'right',color:C('hole'),w:'600'});
+  txt(g,'Ei',bx0+8,EY(Ei)-4);txt(g,'EF  '+(Ef>=0?'+':'')+(Ef*1000).toFixed(0)+' meV から Ei',bx0+8,EY(Ef)+(Ef>0?-5:14),{color:C('ink'),w:'600'});
+  txt(g,'Eg = '+Eg.toFixed(3)+' eV',bx0+8,by0+14,{color:C('ink-2')});
+  txt(g,'伝導帯',bx0+bw2/2,by0+14,{align:'center',sans:true,color:C('electron-2')});txt(g,'価電子帯',bx0+bw2/2,by0+bh-6,{align:'center',sans:true,color:C('hole')});
+  txt(g,'EF − Ei = Vt·ln(n/nᵢ)。n 型で上に、p 型で下に寄る',bx0,by0+bh+16,{sans:true,size:11.5,color:C('ink-3')});
+}
+['cNd','cNa','cT'].forEach(function(id){on(id,draw)});draw();
+})();
+
+/* ================= 02 接合 ================= */
+(function(){
+var cv=$('cvJunction');if(!cv)return;
+function conc(v){return Math.pow(10,14+(+v)/100)}
+function draw(){
+  var Na=conc($('cJNa').value),Nd=conc($('cJNd').value),V=(+$('cJV').value)/10,T=300,Vt=vt(T),n_i=ni(T),Eg=eg(T);
+  var Vbi=Vt*Math.log(Na*Nd/(n_i*n_i));if(V>Vbi-0.08)V=Vbi-0.08;
+  var W=Math.sqrt(2*EPS/Q*(1/Na+1/Nd)*(Vbi-V)),wp=W*Nd/(Na+Nd),wn=W*Na/(Na+Nd),Emax=Q*Na*wp/EPS,Cj=EPS/W;
+  $('vJNa').textContent=fE(Na);$('vJNd').textContent=fE(Nd);$('vJV').textContent=((+$('cJV').value)/10).toFixed(1)+' V';
+  $('rJVbi').textContent=Vbi.toFixed(3)+' V';$('rJW').textContent=fUm(W);$('rJWpn').textContent=fUm(wp)+' / '+fUm(wn);
+  $('rJE').textContent=fE(Emax,2)+' V/cm';$('rJC').textContent=fE(Cj*1e9/1,1).replace('×10⁰','')+' nF/cm²';
+  var g=g2(cv),x0=60,pw=1000;var xr=Math.max(W*1.5,0.2e-4);function X(x){return x0+pw/2+x/xr*(pw/2)}
+  var panels=[[20,90,'電荷 ρ'],[130,90,'電界 E'],[240,110,'バンド']];
+  panels.forEach(function(p){frame(g,x0,p[0],pw,p[1]);txt(g,p[2],x0+8,p[0]+14,{sans:true,color:C('ink-2'),w:'700',size:12})});
+  /* 背景の型 */
+  panels.forEach(function(p){g.fillStyle=C('hole-soft');g.globalAlpha=.35;g.fillRect(x0+1,p[0]+1,pw/2-1,p[1]-1);g.fillStyle=C('electron-soft');g.fillRect(x0+pw/2,p[0]+1,pw/2-1,p[1]-1);g.globalAlpha=1});
+  txt(g,'p  Na = '+fE(Na),x0+pw/4,panels[0][0]-5,{align:'center',color:C('hole'),w:'600'});txt(g,'n  Nd = '+fE(Nd),x0+3*pw/4,panels[0][0]-5,{align:'center',color:C('electron-2'),w:'600'});
+  /* ρ */
+  var py=panels[0][0],ph=panels[0][1],mid=py+ph/2,rs=(ph/2-8)/Math.max(Na,Nd);
+  g.fillStyle=C('hole');g.fillRect(X(-wp),mid,X(0)-X(-wp),Na*rs);g.fillStyle=C('electron');g.fillRect(X(0),mid-Nd*rs,X(wn)-X(0),Nd*rs);
+  line(g,[[x0,mid],[x0+pw,mid]],C('line'),1);txt(g,'−qNa',X(-wp)-6,mid+Na*rs*.6+4,{align:'right',color:C('hole')});txt(g,'+qNd',X(wn)+6,mid-Nd*rs*.6+4,{color:C('electron-2')});
+  /* E */
+  var ey=panels[1][0],eh=panels[1][1],eb=ey+eh-10,es=(eh-24)/Emax;
+  g.fillStyle=C('volt-soft');g.beginPath();g.moveTo(X(-wp),eb);g.lineTo(X(0),eb-Emax*es);g.lineTo(X(wn),eb);g.closePath();g.fill();
+  line(g,[[X(-wp),eb],[X(0),eb-Emax*es],[X(wn),eb]],C('volt'),2);line(g,[[x0,eb],[x0+pw,eb]],C('line'),1);
+  txt(g,'Emax = '+fE(Emax,2)+' V/cm   面積 = Vbi − V = '+(Vbi-V).toFixed(3)+' V',X(0)+10,ey+16,{color:C('volt')});
+  txt(g,'W = '+fUm(W),X(0),eb+10,{align:'center',color:C('ink'),w:'600',base:'top'});
+  /* バンド */
+  var by=panels[2][0],bh=panels[2][1],bs=(bh-30)/(Vbi-V+Eg);
+  function psi(x){if(x<-wp)return 0;if(x>wn)return Vbi-V;if(x<0){return Q*Na/(2*EPS)*(x+wp)*(x+wp)}return Vbi-V-Q*Nd/(2*EPS)*(wn-x)*(wn-x)}
+  var ec=[],ev=[],N=200;for(var i=0;i<=N;i++){var x=-xr+2*xr*i/N,e0=by+14+(Vbi-V-psi(x))*bs;ec.push([X(x),e0]);ev.push([X(x),e0+Eg*bs])}
+  line(g,ec,C('electron'),2);line(g,ev,C('hole'),2);
+  var efp=by+14+(Vbi-V)*bs-(Vt*Math.log(Na/n_i)-Eg/2)*bs*0-(Eg/2-Vt*Math.log(Na/n_i))*bs;
+  /* EF: p 側は Ev の上 Vt ln(Na/ni)、n 側は Ec の下 Vt ln(Nd/ni)。バイアスで qV 割れる */
+  var EFp=by+14+(Vbi-V)*bs+Eg*bs-Vt*Math.log(Na/n_i)*bs, EFn=by+14+Vt*Math.log(Nd/n_i)*bs;
+  line(g,[[x0,EFp],[X(0),EFp]],C('ink'),1.2,[6,3]);line(g,[[X(0),EFn],[x0+pw,EFn]],C('ink'),1.2,[6,3]);
+  txt(g,'Ec',x0+pw-8,ec[N][1]-5,{align:'right',color:C('electron-2'),w:'600'});txt(g,'Ev',x0+pw-8,ev[N][1]+14,{align:'right',color:C('hole'),w:'600'});
+  txt(g,'EFp',x0+8,EFp-5,{color:C('ink')});txt(g,'EFn'+(Math.abs(V)>1e-6?'  （EFp との差 = qV = '+V.toFixed(2)+' eV）':''),X(0)+8,EFn-5,{color:C('ink')});
+  txt(g,'q(Vbi − V) = '+(Vbi-V).toFixed(3)+' eV',X(0)+8,by+bh-8,{color:C('ink-2')});
+  txt(g,'←  '+fUm(xr)+'  |  '+fUm(xr)+'  →',x0+pw/2,by+bh+14,{align:'center'});
+}
+['cJNa','cJNd','cJV'].forEach(function(id){on(id,draw)});draw();
+})();
+
+/* ================= 03 I-V ================= */
+(function(){
+var cv=$('cvIV');if(!cv)return;
+function draw(){
+  var N=Math.pow(10,(+$('cIN').value)/10),T=+$('cIT').value,wn=Math.pow(10,(+$('cIW').value)/100)*1e-4;
+  var Vt=vt(T),n_i=ni(T),Dp=muP(N,T)*Vt,Dn=muN(N,T)*Vt,t=tau(N),Lp=Math.sqrt(Dp*t),Ln=Math.sqrt(Dn*t);
+  function coth(x){return x>20?1:(Math.exp(2*x)+1)/(Math.exp(2*x)-1)}
+  var J0=Q*n_i*n_i*(Dp/(Lp*N)*coth(wn/Lp)+Dn/(Ln*N)*coth(wn/Ln));
+  var Vbi=Vt*Math.log(N*N/(n_i*n_i));
+  function Wof(V){return Math.sqrt(2*EPS/Q*(2/N)*Math.max(Vbi-V,0.05))}
+  function Jd(V){return J0*(Math.exp(Math.min(V/Vt,80))-1)}
+  function Jr(V){return Q*n_i*Wof(V)/(2*t)*(Math.exp(Math.min(V/(2*Vt),40))-1)}
+  $('vIN').textContent=fE(N);$('vIT').textContent=T+' K';$('vIW').textContent=fUm(wn);
+  var f=Jd(.6)+Jr(.6),r=Math.abs(Jd(-.6)+Jr(-.6));
+  $('rIJ0').textContent=fE(J0,2)+' A/cm²';$('rIJg').textContent=fE(Math.abs(Jr(-1)),2);$('rIF').textContent=fE(f,2);$('rIR').textContent=fE(r,2);$('rIRatio').textContent=fE(f/r,1)+' 倍';$('rILp').textContent=fUm(Lp)+(wn<Lp?'（中性領域のほうが薄い）':'');
+  var g=g2(cv),x0=70,y0=20,w=1000,h=270,vlo=-1,vhi=.8,jlo=-14,jhi=2;frame(g,x0,y0,w,h);
+  function X(V){return x0+(V-vlo)/(vhi-vlo)*w}function Y(J){return y0+h-(Math.log10(Math.max(Math.abs(J),1e-30))-jlo)/(jhi-jlo)*h}
+  for(var e=jlo;e<=jhi;e+=2){var y=Y(Math.pow(10,e));g.strokeStyle=C('line-2');g.beginPath();g.moveTo(x0,y+.5);g.lineTo(x0+w,y+.5);g.stroke();txt(g,'10'+sup(e),x0-6,y+4,{align:'right'})}
+  for(var v=-1;v<=.8;v+=.2){var x=X(v);g.strokeStyle=C('line-2');g.beginPath();g.moveTo(x+.5,y0);g.lineTo(x+.5,y0+h);g.stroke();txt(g,v.toFixed(1),x,y0+h+14,{align:'center'})}
+  txt(g,'|J| A/cm²',x0-6,y0-6,{align:'right'});txt(g,'V',x0+w+4,y0+h+14);
+  line(g,[[X(0),y0],[X(0),y0+h]],C('ink-3'),1,[3,4]);
+  var pd=[],pr=[],pt=[],n=240;for(var i=0;i<=n;i++){var V=vlo+(vhi-vlo)*i/n;pd.push([X(V),Y(Jd(V))]);pr.push([X(V),Y(Jr(V))]);pt.push([X(V),Y(Jd(V)+Jr(V))])}
+  line(g,pd,C('electron'),1,[4,3]);line(g,pr,C('hole'),1,[4,3]);line(g,pt,C('electron'),2.5);
+  txt(g,'拡散  J₀(e^(V/Vt) − 1)   59.5 mV/桁',X(.42),Y(Jd(.42))-8,{color:C('electron-2')});
+  txt(g,'生成・再結合  q nᵢ W/2τ · (e^(V/2Vt) − 1)   119 mV/桁',X(-.95),Y(Jr(-.95))-8,{color:C('hole')});
+  txt(g,'逆方向は生成電流が支配（J₀ の '+(Math.abs(Jr(-.6))/J0).toFixed(0)+' 倍）',X(-.6),Y(Jr(-.6))+16,{color:C('ink-2')});
+  txt(g,'順方向',X(.4),y0+14,{sans:true,color:C('ink-2')});txt(g,'逆方向',X(-.5),y0+14,{sans:true,color:C('ink-2')});
+}
+['cIN','cIT','cIW'].forEach(function(id){on(id,draw)});draw();
+})();
+
+/* ================= 04 QE ================= */
+(function(){
+var cv=$('cvQE');if(!cv)return;
+$('cQtf').value=60;$('cQtt').value=21;
+var Wdep=2.7e-4, NF=5e18, NB=1e15;
+/* 中性領域の拡散方程式を解いて、接合側の端から出て行く少数キャリア流（入射光子1個あたり）を返す。
+   sSurf: 表面（x=0）の再結合速度。null なら x=0 が空乏層の端（Δn=0）。xj: 領域の始まりの深さ。 */
+function collect(len,D,L,a,xj,sSurf,junctionAtEnd){
+  var n=80,h=len/(n-1),i,A=new Float64Array(n),B=new Float64Array(n),Cc=new Float64Array(n),R=new Float64Array(n);
+  for(i=0;i<n;i++){var x=xj+i*h;A[i]=D/(h*h);Cc[i]=D/(h*h);B[i]=-2*D/(h*h)-D/(L*L);R[i]=-a*Math.exp(-a*x)}
+  if(sSurf!==null){B[0]=-D/(h*h)-D/(L*L)-sSurf/h;Cc[0]=D/(h*h);A[0]=0;R[0]=-a*Math.exp(-a*xj)}else{A[0]=0;B[0]=1;Cc[0]=0;R[0]=0}
+  A[n-1]=0;B[n-1]=1;Cc[n-1]=0;R[n-1]=0;
+  var u=thomas(A,B,Cc,R,n);
+  return junctionAtEnd?D*(u[n-2]-u[n-1])/h:D*(u[1]-u[0])/h;
+}
+function qeAt(nm,tf,tt,ar,S){
+  var a=alpha(nm),R=ar<0?reflect(nm):ar/100,tb=Math.max(tt-tf-Wdep,1e-6);
+  var Df=muN(NF)*vt(300),Lf=Math.sqrt(Df*tau(NF)),Db=muP(NB)*vt(300),Lb=Math.sqrt(Db*tau(NB));
+  var absF=1-Math.exp(-a*tf),absD=Math.exp(-a*tf)*(1-Math.exp(-a*Wdep)),absB=Math.exp(-a*(tf+Wdep))*(1-Math.exp(-a*tb)),tr=Math.exp(-a*(tf+Wdep+tb));
+  var cF=Math.max(0,Math.min(absF,collect(tf,Df,Lf,a,0,S,true)));
+  var cB=Math.max(0,Math.min(absB,collect(tb,Db,Lb,a,tf+Wdep,null,false)));
+  return {R:R,dep:(1-R)*absD,front:(1-R)*cF,back:(1-R)*cB,rec:(1-R)*(absF-cF+absB-cB),tr:(1-R)*tr,qe:(1-R)*(absD+cF+cB)};
+}
+function draw(){
+  var tf=Math.pow(10,-1.3+1.3*(+$('cQtf').value)/100)*1e-4,tt=Math.pow(10,.7+1.8*(+$('cQtt').value)/100)*1e-4,ar=+$('cQar').value,S=Math.pow(10,+$('cQs').value),nm0=+$('cQnm').value;
+  if(tt<tf+Wdep+1e-4)tt=tf+Wdep+1e-4;
+  $('vQtf').textContent=fUm(tf);$('vQtt').textContent=fUm(tt);$('vQar').textContent=ar<0?'裸（35〜48 %）':ar+' %';$('vQs').textContent=fE(S,0)+' cm/s';$('vQnm').textContent=nm0+' nm';
+  var g=g2(cv),x0=60,y0=20,w=1000,h=260;frame(g,x0,y0,w,h);
+  function X(nm){return x0+(nm-400)/700*w}function Y(f){return y0+h-f*h}
+  var cols={dep:C('electron'),front:C('electron-2'),back:C('electron-soft'),rec:C('photon-soft'),tr:C('surface-2'),R:C('surface-3')};
+  var pts=[];for(var nm=400;nm<=1100;nm+=10)pts.push([nm,qeAt(nm,tf,tt,ar,S)]);
+  var order=['dep','front','back','rec','tr','R'];
+  var base=pts.map(function(){return 0});
+  order.forEach(function(k){g.fillStyle=cols[k];g.beginPath();pts.forEach(function(p,i){var y=Y(base[i]);i?g.lineTo(X(p[0]),y):g.moveTo(X(p[0]),y)});for(var i=pts.length-1;i>=0;i--){g.lineTo(X(pts[i][0]),Y(base[i]+pts[i][1][k]))}g.closePath();g.fill();base=base.map(function(b,i){return b+pts[i][1][k]})});
+  var qe=pts.map(function(p){return [X(p[0]),Y(p[1].qe)]});line(g,qe,C('ink'),2);
+  for(var f=0;f<=1;f+=.2){txt(g,(f*100).toFixed(0)+'%',x0-6,Y(f)+4,{align:'right'})}
+  for(var nm=400;nm<=1100;nm+=100){txt(g,nm,X(nm),y0+h+14,{align:'center'})}txt(g,'nm',x0+w+6,y0+h+14);
+  line(g,[[X(nm0),y0],[X(nm0),y0+h]],C('ink'),1,[3,3]);
+  var r=qeAt(nm0,tf,tt,ar,S);
+  txt(g,'QE '+(r.qe*100).toFixed(1)+'%',X(nm0)+6,Y(r.qe)-6,{color:C('ink'),w:'600'});
+  var lg=[['空乏層で拾った','dep'],['手前から届いた','front'],['奥から届いた','back'],['再結合した','rec'],['透過した','tr'],['反射した','R']],lx=x0+8;
+  lg.forEach(function(l){g.fillStyle=cols[l[1]];g.fillRect(lx,y0+8,10,10);g.strokeStyle=C('line');g.strokeRect(lx+.5,y0+8.5,10,10);txt(g,l[0],lx+14,y0+17,{sans:true,size:11,color:C('ink-2')});lx+=l[0].length*11.5+30});
+  $('rQqe').textContent=(r.qe*100).toFixed(1)+' %';$('rQresp').textContent=(r.qe*nm0/1239.84).toFixed(3)+' A/W';
+  $('rQparts').textContent=(r.dep*100).toFixed(0)+' / '+(r.front*100).toFixed(0)+' / '+(r.back*100).toFixed(0)+' %';
+  $('rQloss').textContent=(r.R*100).toFixed(0)+' / '+(r.tr*100).toFixed(0)+' / '+(r.rec*100).toFixed(0)+' %';
+  $('rQabs').textContent=fUm(1/alpha(nm0));
+}
+['cQtf','cQtt','cQar','cQs','cQnm'].forEach(function(id){on(id,draw)});draw();
+})();
+
+/* ================= 05 MOS ================= */
+(function(){
+var cv=$('cvMOS');if(!cv)return;
+var GATES=[['n⁺ ポリ',CHI],['p⁺ ポリ',CHI+1.12],['アルミ',4.10]];
+function draw(){
+  var Na=Math.pow(10,(+$('cMNa').value)/10),tox=(+$('cMtox').value)/10*1e-7,gi=+$('cMg').value,T=300,Vt=vt(T),n_i=ni(T),Eg=eg(T);
+  var phiF=Vt*Math.log(Na/n_i),Cox=EOX/tox,Qdep=Math.sqrt(2*EPS*Q*Na*2*phiF),Wmax=Math.sqrt(2*EPS*2*phiF/(Q*Na)),Cdep=EPS/Wmax;
+  var phiS=CHI+Eg/2+phiF,Vfb=GATES[gi][1]-phiS,Vth=Vfb+2*phiF+Qdep/Cox,S=Math.LN10*Vt*(1+Cdep/Cox);
+  $('vMNa').textContent=fE(Na);$('vMtox').textContent=(tox*1e7).toFixed(1)+' nm';$('vMg').textContent=GATES[gi][0];
+  $('rMCox').textContent=fE(Cox,2)+' F/cm²';$('rMparts').textContent=Vfb.toFixed(3)+' / '+(2*phiF).toFixed(3)+' / '+(Qdep/Cox).toFixed(3)+' V';
+  $('rMVth').textContent=Vth.toFixed(3)+' V';$('rMS').textContent=(S*1000).toFixed(1)+' mV/桁';$('rMcd').textContent=(Cdep/Cox).toFixed(3);$('rMW').textContent=fUm(Wmax);
+  var g=g2(cv);
+  /* 左: 反転電荷 vs Vg */
+  var x0=70,y0=20,w=620,h=270;frame(g,x0,y0,w,h);
+  var vlo=Vth-0.8,vhi=Vth+1.5,qlo=6,qhi=14;
+  function X(v){return x0+(v-vlo)/(vhi-vlo)*w}function Y(q){return y0+h-(Math.log10(Math.max(q,1))-qlo)/(qhi-qlo)*h}
+  var Q0=Cdep*Vt/Q;
+  function Qinv(v){return v<Vth?Q0*Math.pow(10,(v-Vth)/S):Q0+Cox*(v-Vth)/Q}
+  for(var e=qlo;e<=qhi;e+=2){var y=Y(Math.pow(10,e));g.strokeStyle=C('line-2');g.beginPath();g.moveTo(x0,y+.5);g.lineTo(x0+w,y+.5);g.stroke();txt(g,'10'+sup(e),x0-6,y+4,{align:'right'})}
+  txt(g,'電子 /cm²',x0-6,y0-6,{align:'right'});
+  var v0=Math.ceil(vlo*2)/2;for(var v=v0;v<=vhi;v+=.5){txt(g,v.toFixed(1),X(v),y0+h+14,{align:'center'})}txt(g,'V_G [V]',x0+w+6,y0+h+14);
+  var pts=[];for(var i=0;i<=200;i++){var v=vlo+(vhi-vlo)*i/200;pts.push([X(v),Y(Qinv(v))])}
+  line(g,pts,C('electron'),2.5);line(g,[[X(Vth),y0],[X(Vth),y0+h]],C('ink'),1,[3,4]);
+  txt(g,'Vth = '+Vth.toFixed(2)+' V',X(Vth)+6,y0+16,{color:C('ink'),w:'600'});
+  txt(g,'弱反転: 1桁に S = '+(S*1000).toFixed(0)+' mV',X(Vth-0.75),Y(Qinv(Vth-0.5))-10,{color:C('electron-2')});
+  txt(g,'強反転: Cox(V_G − Vth)/q',X(Vth+0.6),Y(Qinv(Vth+0.6))-10,{color:C('electron-2')});
+  txt(g,'下限 59.5 mV/桁 (300 K)',x0+8,y0+h-8,{color:C('ink-3')});
+  /* 右: Vth の内訳 */
+  var bx=760,by=20,bw=300,bh=270;frame(g,bx,by,bw,bh);
+  var vmax=Math.max(1.6,Math.abs(Vfb)+2*phiF+Qdep/Cox+0.2),zero=by+bh*0.58,sc=(bh*0.5)/vmax;
+  function BY(v){return zero-v*sc}
+  line(g,[[bx,zero],[bx+bw,zero]],C('line'),1);txt(g,'0 V',bx+bw-6,zero+12,{align:'right'});
+  var cx=bx+90,cw=60,cur=0;
+  var parts=[['V_FB',Vfb,C('volt')],['2φF',2*phiF,C('hole')],['Qdep/Cox',Qdep/Cox,C('electron')]];
+  parts.forEach(function(p){var a=BY(cur),b=BY(cur+p[1]);g.fillStyle=p[2];g.fillRect(cx,Math.min(a,b),cw,Math.abs(a-b));txt(g,p[0]+'  '+(p[1]>=0?'+':'')+p[1].toFixed(3),cx+cw+8,(a+b)/2+4,{color:p[2],w:'600'});cur+=p[1]});
+  line(g,[[cx-20,BY(Vth)],[cx+cw+20,BY(Vth)]],C('ink'),2);txt(g,'Vth = '+Vth.toFixed(3)+' V',cx-24,BY(Vth)+4,{align:'right',color:C('ink'),w:'600'});
+  txt(g,'しきい値の内訳',bx+8,by+16,{sans:true,size:12,w:'700',color:C('ink-2')});
+  txt(g,'Wmax '+fUm(Wmax)+'  Cdep/Cox '+(Cdep/Cox).toFixed(2),bx+8,by+bh-8,{color:C('ink-3')});
+}
+['cMNa','cMtox','cMg'].forEach(function(id){on(id,draw)});draw();
+})();
+
+/* ================= レール ================= */
+(function(){
+var links=Array.prototype.slice.call(document.querySelectorAll('.rail a'));if(!links.length||!('IntersectionObserver' in window))return;
+var map={};links.forEach(function(a){map[a.getAttribute('href').slice(1)]=a});
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){links.forEach(function(a){a.classList.remove('on')});var a=map[e.target.id];if(a)a.classList.add('on')}})},{rootMargin:'-20% 0px -70% 0px'});
+document.querySelectorAll('section.stage').forEach(function(s){io.observe(s)});
+})();
+})();
+</script>
+</body>
+</html>

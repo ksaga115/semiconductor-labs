@@ -1,0 +1,602 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>半導体 ― 工程から像まで</title>
+<meta name="description" content="半導体の参考書と、それを実践するラボ。製造工程・素子の物理・論理回路・イメージセンサの4部構成。読んで、作って、機械に採点させる。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* 色の名前は「イメージセンサ解剖ラボ」と揃えてある。参考書からここへ戻っても、同じ目で読めるように */
+:root{
+  --ground:#EDEEF2; --surface:#FFFFFF; --surface-2:#F5F6F9; --surface-3:#E2E5ED;
+  --ink:#14161E; --ink-2:#4A5061; --ink-3:#787F92;
+  --line:#D3D7E1; --line-2:#E5E7EF;
+  --photon:#D98803; --photon-2:#A96504; --photon-soft:#FAEBCD;
+  --electron:#1D74B8; --electron-2:#155A91; --electron-soft:#D6E7F5;
+  --digital:#0F766E; --digital-soft:#D3EAE6;
+  --volt:#7047B5; --volt-soft:#E7DEF7;
+  --warn:#B4400C;
+  --shadow:0 1px 2px rgba(20,22,30,.06), 0 8px 24px -12px rgba(20,22,30,.18);
+  --mono:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;
+  --sans:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic UI","Yu Gothic",Meiryo,sans-serif;
+  --disp:"Zen Old Mincho","Hiragino Mincho ProN","Yu Mincho",serif;
+  color-scheme:light dark;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#0F1117; --surface:#171A22; --surface-2:#1D212B; --surface-3:#2B3140;
+    --ink:#E8EAF1; --ink-2:#AAB1C3; --ink-3:#7C8397;
+    --line:#2D323F; --line-2:#232833;
+    --photon:#F0B444; --photon-2:#F7C766; --photon-soft:#3A2C10;
+    --electron:#5FB0E8; --electron-2:#8ACAF3; --electron-soft:#12293C;
+    --digital:#4FBFAE; --digital-soft:#0F2E2B;
+    --volt:#A98AE0; --volt-soft:#2A2140;
+    --warn:#E8875A;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0F1117; --surface:#171A22; --surface-2:#1D212B; --surface-3:#2B3140;
+  --ink:#E8EAF1; --ink-2:#AAB1C3; --ink-3:#7C8397;
+  --line:#2D323F; --line-2:#232833;
+  --photon:#F0B444; --photon-2:#F7C766; --photon-soft:#3A2C10;
+  --electron:#5FB0E8; --electron-2:#8ACAF3; --electron-soft:#12293C;
+  --digital:#4FBFAE; --digital-soft:#0F2E2B;
+  --volt:#A98AE0; --volt-soft:#2A2140;
+  --warn:#E8875A;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.7);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.8;
+  -webkit-font-smoothing:antialiased;font-feature-settings:"palt" 1}
+h1,h2,h3,h4{margin:0;text-wrap:balance;line-height:1.35}
+p{margin:0}
+a{color:var(--electron)}
+code{font-family:var(--mono);font-size:.88em;background:var(--surface-2);padding:1px 5px;border-radius:2px;border:1px solid var(--line-2)}
+.wrap{max-width:1120px;margin:0 auto;padding:0 22px 80px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:500}
+.mono{font-family:var(--mono)}
+
+/* hero */
+.hero{padding:52px 0 30px;border-bottom:1px solid var(--line)}
+.hero h1{font-family:var(--disp);font-weight:700;font-size:clamp(30px,4.8vw,52px);letter-spacing:.02em;line-height:1.25;margin-top:12px}
+.hero h1 .lit{color:var(--photon)}
+.hero .sub{margin-top:18px;color:var(--ink-2);font-size:16.5px;max-width:38em}
+.hero .sub + .sub{margin-top:10px}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:26px}
+@media(min-width:900px){.hero-grid{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:48px;align-items:end}}
+.spec{display:flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:3px;background:var(--surface);overflow:hidden}
+.spec div{flex:1 1 30%;padding:11px 13px;border-right:1px solid var(--line-2);border-bottom:1px solid var(--line-2)}
+.spec dt{font-size:10px;font-family:var(--mono);letter-spacing:.07em;color:var(--ink-3);margin:0}
+.spec dd{margin:2px 0 0;font-family:var(--mono);font-size:15px;font-weight:600;font-variant-numeric:tabular-nums}
+.spec dd small{font-size:10.5px;color:var(--ink-3);font-weight:400;margin-left:2px}
+.spec-cap{padding:9px 13px;font-size:11.5px;color:var(--ink-3);flex:1 1 100%;border-right:0;border-bottom:0;background:var(--surface-2)}
+
+/* 二層の説明 */
+.layers{display:grid;grid-template-columns:minmax(0,1fr);gap:0;margin-top:22px;border:1px solid var(--line);border-radius:3px;background:var(--surface);overflow:hidden}
+@media(min-width:700px){.layers{grid-template-columns:1fr 1fr}}
+.layers > div{padding:14px 18px}
+.layers > div + div{border-top:1px solid var(--line-2)}
+@media(min-width:700px){.layers > div + div{border-top:0;border-left:1px solid var(--line-2)}}
+.layers .kind{margin-bottom:6px;display:inline-block}
+.layers b{display:block;font-size:15px;color:var(--ink)}
+.layers p{font-size:13.5px;color:var(--ink-2);margin-top:4px;line-height:1.7}
+
+/* sections */
+section{padding:46px 0 0}
+.sec-head{display:flex;gap:15px;align-items:baseline}
+.sec-num{font-family:var(--mono);font-size:11.5px;font-weight:600;color:var(--photon);letter-spacing:.06em;padding-top:5px;flex:0 0 auto}
+section h2{font-family:var(--disp);font-weight:700;font-size:clamp(22px,3vw,30px);letter-spacing:.02em}
+.lede{color:var(--ink-2);font-size:16px;max-width:42em;margin-top:10px}
+
+/* figure frame（参考書と同じ枠） */
+figure{margin:24px 0 0;background:var(--surface);border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.fig-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 13px;border-bottom:1px solid var(--line-2);background:var(--surface-2);flex-wrap:wrap}
+.fig-title{font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;color:var(--ink-2);font-weight:500}
+.fig-body{padding:14px 13px}
+figcaption{padding:10px 13px 12px;border-top:1px solid var(--line-2);font-size:12.5px;line-height:1.65;color:var(--ink-3)}
+.scroll-x{overflow-x:auto}
+svg{display:block;max-width:100%;height:auto}
+
+/* 道のり図の色。参考書と同じ約束: 光＝橙、電子＝青、電圧＝紫、数値＝緑 */
+.map .t-read{fill:var(--surface-2);stroke:var(--line)}
+.map .t-lab{fill:var(--surface);stroke:var(--ink-3)}
+.map .t-todo{fill:var(--surface-2);stroke:var(--line);stroke-dasharray:3 3}
+.map text{font-family:var(--sans);font-size:12.5px;fill:var(--ink)}
+.map .name{font-weight:700;font-size:13px}
+.map .lab{font-family:var(--mono);font-size:10px;fill:var(--ink-3);letter-spacing:.05em}
+.map .arrow{stroke:var(--ink-3);stroke-width:1.4;fill:none}
+.map .band{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:1px}
+.map .b-proc{fill:var(--photon-soft)} .map .b-proc-t{fill:var(--photon-2)}
+.map .b-dev{fill:var(--electron-soft)} .map .b-dev-t{fill:var(--electron-2)}
+.map .b-logic{fill:var(--volt-soft)} .map .b-logic-t{fill:var(--volt)}
+.map .b-img{fill:var(--digital-soft)} .map .b-img-t{fill:var(--digital)}
+
+/* 目次（部 → 章） */
+.kind{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;padding:2px 7px;border-radius:2px;border:1px solid currentColor;white-space:nowrap}
+.kind.read{color:var(--photon-2)} .kind.lab{color:var(--electron)} .kind.todo{color:var(--ink-3);border-style:dashed}
+.part{margin-top:22px;background:var(--surface);border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.part-h{display:grid;grid-template-columns:minmax(0,1fr);gap:8px 18px;padding:16px 18px 14px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+@media(min-width:800px){.part-h{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);align-items:start}}
+.part-h .pn{font-family:var(--mono);font-size:10.5px;letter-spacing:.11em;color:var(--photon-2);font-weight:600}
+.part-h h3{font-size:19px;font-weight:700;margin-top:2px}
+.part-h .desc{font-size:13.5px;color:var(--ink-2);margin-top:6px;line-height:1.7;max-width:40em}
+.part-h .pair{display:flex;flex-direction:column;gap:8px}
+.part-h .pair > div{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;font-size:13.5px;line-height:1.6}
+.part-h .pair a{font-weight:700}
+.part-h .pair small{color:var(--ink-3);font-size:12px}
+.chap{display:grid;grid-template-columns:minmax(0,1fr);padding:12px 18px;border-bottom:1px solid var(--line-2);gap:4px 18px}
+@media(min-width:800px){.chap{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr)}}
+.chap:last-child{border-bottom:0}
+.chap .cn{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);letter-spacing:.05em}
+.chap .ct{font-size:14.5px;font-weight:700;color:var(--ink)}
+.chap .ct a{color:inherit;text-decoration:none;border-bottom:1px solid var(--line)}
+.chap .ct a:hover{border-bottom-color:var(--ink-3)}
+.chap .cd{font-size:13px;color:var(--ink-2);line-height:1.65;margin-top:2px}
+/* 課題は折り返せるチップにする。nowrap の <a> を区切り無しで並べると1行に固まり、狭い画面で右へはみ出す */
+.chap .do{font-size:13px;color:var(--ink-2);line-height:1.6;display:flex;flex-wrap:wrap;gap:5px 6px;align-content:flex-start}
+.chap .do .lbl{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;color:var(--electron);flex:1 1 100%;margin-bottom:1px}
+.chap .do .q{font-family:var(--mono);font-size:11.5px;padding:2px 8px;border:1px solid var(--line);border-radius:2px;
+  background:var(--surface-2);color:var(--ink);text-decoration:none;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.chap .do .q:hover{border-color:var(--electron);color:var(--electron)}
+.chap .do .none{color:var(--ink-3);font-size:12.5px}
+.chap.todo .ct{color:var(--ink-3)}
+
+/* routes */
+.routes{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;margin-top:22px}
+@media(min-width:860px){.routes{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.route{background:var(--surface);border:1px solid var(--line);border-radius:3px;padding:16px 18px 14px}
+.route.rec{border-color:var(--photon);box-shadow:var(--shadow)}
+.route .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;color:var(--ink-3);display:block;margin-bottom:4px}
+.route.rec .tag{color:var(--photon-2)}
+.route h3{font-size:16px;font-weight:700}
+.route .for{font-size:13px;color:var(--ink-2);margin-top:4px}
+.route ol{margin:12px 0 0;padding-left:0;list-style:none;counter-reset:st}
+.route li{position:relative;padding:7px 0 7px 34px;border-top:1px solid var(--line-2);font-size:13.5px;line-height:1.6;color:var(--ink-2);counter-increment:st}
+.route li::before{content:counter(st,decimal-leading-zero);position:absolute;left:0;top:9px;font-family:var(--mono);font-size:10.5px;color:var(--ink-3)}
+.route li b{color:var(--ink);font-weight:700}
+.route li .r{font-family:var(--mono);font-size:10px;color:var(--ink-3);margin-left:6px}
+.route li .why{display:block;font-size:12.5px;color:var(--ink-3)}
+
+/* promises */
+.two{display:grid;grid-template-columns:minmax(0,1fr);gap:22px;margin-top:22px}
+@media(min-width:860px){.two{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:34px;align-items:start}}
+.body-col{max-width:42em}
+.body-col h3{font-size:15px;font-weight:700;margin-top:18px}
+.body-col h3:first-child{margin-top:0}
+.body-col p{margin-top:8px;font-size:14.5px;color:var(--ink-2)}
+pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--surface-2);border:1px solid var(--line-2);border-radius:2px;padding:10px 13px;overflow-x:auto;line-height:1.6;color:var(--ink)}
+.caveat{margin-top:18px;border:1px solid var(--line);border-left:2px solid var(--warn);border-radius:2px;background:var(--surface);padding:12px 16px;max-width:46em}
+.caveat .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;color:var(--warn);display:block;margin-bottom:6px}
+.caveat p{font-size:13.5px;color:var(--ink-2);line-height:1.72;margin:0}
+.caveat p + p{margin-top:8px}
+
+.foot{margin-top:54px;padding-top:22px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-3);display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+@media print{.part,.route,figure{break-inside:avoid}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<header class="hero">
+  <div class="hero-grid">
+    <div>
+      <span class="eyebrow">Labs / 半導体 ― 参考書と実践</span>
+      <h1>工程から<span class="lit">像</span>まで、<br>読んで、作って、確かめる</h1>
+      <p class="sub">半導体を、製造工程 → 素子の物理 → 論理回路 → イメージセンサの4部で通して学ぶための場所。各部は<b>参考書</b>（読んで理解する）と<b>ラボ</b>（自分の手で作って、機械に採点させる）の二層になっていて、参考書の節から対応するラボの課題へその場で飛べる。</p>
+      <p class="sub">4部は地続き。工程が不純物の分布を作り、不純物が接合を立て、接合が MOSFET とフォトダイオードになり、MOSFET は NAND に、フォトダイオードは画素になる。</p>
+    </div>
+    <div>
+      <dl class="spec">
+        <div><dt>参考書</dt><dd>4<small>部</small></dd></div>
+        <div><dt>ラボ</dt><dd>4<small>本</small></dd></div>
+        <div><dt>採点つき課題</dt><dd>68<small>問</small></dd></div>
+        <div><dt>依存</dt><dd>0<small>ブラウザのみ</small></dd></div>
+        <div><dt>通信</dt><dd>0<small>手元で完結</small></dd></div>
+        <div><dt>自動検査</dt><dd>2,221<small>件 (Node)</small></dd></div>
+        <div class="spec-cap">課題数は ProcessLab 13 ＋ SemiLab 22 ＋ NandLab 22 ＋ PixelLab 11。検査は4本の <code>node tests/all.js</code> の合計（2026-09-11 時点）。</div>
+      </dl>
+    </div>
+  </div>
+
+  <div class="layers">
+    <div>
+      <span class="kind read">参考書 — 読む</span>
+      <b>どう作られ、なぜそう動き、どう使われているか</b>
+      <p>図と式で説明する側。数値は仮想の一台・一枚から計算で追えるようにしてあり、「数字はどこから来たか」を必ず書く。各節の末尾に、その内容を確かめるラボの課題への箱がある。</p>
+    </div>
+    <div>
+      <span class="kind lab">ラボ — 作る</span>
+      <b>原始部品をひとつだけ渡して、あとは全部自分で組む</b>
+      <p>「pn 接合を置く」「AND を置く」という操作は無い。濃度の違う一片を隣に置けば接合が立ち、NAND を2個繋げば AND になる。採点は振る舞いだけを見て、お手本と見比べない。</p>
+    </div>
+  </div>
+</header>
+
+<!-- ================= 00 道のり ================= -->
+<section id="map">
+  <div class="sec-head"><span class="sec-num">00</span><h2>道のり ― 4部はこう繋がっている</h2></div>
+  <p class="lede">上の段が「作る」側、下の段が「光を受ける」側。分かれ目は pn 接合で、そこから先はどちらへ進んでもいいし、両方進んでもいい。<b>矢印は依存でもある</b> ― ProcessLab と PixelLab は SemiLab の物理をそのまま読み込んで動く。</p>
+
+  <figure>
+    <div class="fig-head"><span class="fig-title">MAP — 何が何を作るか</span><span class="fig-title">参考書 ＝ 灰の箱、ラボ ＝ 白の箱</span></div>
+    <div class="fig-body scroll-x">
+      <svg class="map" viewBox="0 0 1080 330" role="img" aria-label="工程がProcessLab、不純物・pn接合・MOSFET・フォトダイオードがSemiLab、NANDとALUがNandLab、画素とカメラがPixelLabで扱われる流れ図。上段に各部の参考書。" style="min-width:860px">
+        <defs>
+          <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="var(--ink-3)"/>
+          </marker>
+        </defs>
+        <!-- domain bands -->
+        <g>
+          <rect x="16" y="288" width="188" height="26" rx="2" class="b-proc"/>
+          <rect x="208" y="288" width="404" height="26" rx="2" class="b-dev"/>
+          <rect x="616" y="288" width="232" height="26" rx="2" class="b-logic"/>
+          <rect x="852" y="288" width="212" height="26" rx="2" class="b-img"/>
+          <text x="110" y="306" text-anchor="middle" class="band b-proc-t">第1部 工程</text>
+          <text x="410" y="306" text-anchor="middle" class="band b-dev-t">第2部 素子の物理</text>
+          <text x="732" y="306" text-anchor="middle" class="band b-logic-t">第3部 論理</text>
+          <text x="958" y="306" text-anchor="middle" class="band b-img-t">第4部 像</text>
+        </g>
+
+        <!-- readings (top row) -->
+        <a href="半導体製造プロセス体系マップ.html">
+          <rect x="16" y="20" width="188" height="52" rx="2" class="t-read"/>
+          <text x="110" y="42" text-anchor="middle" class="name">製造プロセス体系マップ</text>
+          <text x="110" y="60" text-anchor="middle" class="lab">参考書 · どう作るか</text>
+        </a>
+        <a href="半導体デバイスの基礎.html">
+          <rect x="228" y="20" width="280" height="52" rx="2" class="t-read"/>
+          <text x="368" y="42" text-anchor="middle" class="name">半導体デバイスの基礎</text>
+          <text x="368" y="60" text-anchor="middle" class="lab">参考書 · 不純物 → 接合 → MOSFET</text>
+        </a>
+        <a href="論理回路の基礎.html">
+          <rect x="532" y="20" width="184" height="52" rx="2" class="t-read"/>
+          <text x="624" y="42" text-anchor="middle" class="name">論理回路の基礎</text>
+          <text x="624" y="60" text-anchor="middle" class="lab">参考書 · スイッチ → NAND → ALU</text>
+        </a>
+        <a href="イメージセンサ解剖ラボ.html">
+          <rect x="740" y="20" width="324" height="52" rx="2" class="t-read"/>
+          <text x="902" y="42" text-anchor="middle" class="name">イメージセンサ解剖ラボ</text>
+          <text x="902" y="60" text-anchor="middle" class="lab">参考書 · 光子 → 電子 → 電圧 → 数値 → 像</text>
+        </a>
+        <!-- reading → lab dotted -->
+        <g class="arrow" stroke-dasharray="3 4">
+          <line x1="110" y1="72" x2="110" y2="118" marker-end="url(#ar)"/>
+          <line x1="368" y1="72" x2="368" y2="118" marker-end="url(#ar)"/>
+          <line x1="624" y1="72" x2="624" y2="118" marker-end="url(#ar)"/>
+          <line x1="902" y1="72" x2="902" y2="118" marker-end="url(#ar)"/>
+        </g>
+
+        <!-- main row (y=120..172) -->
+        <a href="ProcessLab/index.html">
+          <rect x="16" y="120" width="188" height="52" rx="2" class="t-lab"/>
+          <text x="110" y="142" text-anchor="middle" class="name">工程 → 不純物の分布</text>
+          <text x="110" y="160" text-anchor="middle" class="lab">ProcessLab</text>
+        </a>
+        <a href="SemiLab/index.html?quest=junction">
+          <rect x="228" y="120" width="128" height="52" rx="2" class="t-lab"/>
+          <text x="292" y="142" text-anchor="middle" class="name">pn 接合</text>
+          <text x="292" y="160" text-anchor="middle" class="lab">SemiLab 1–3章</text>
+        </a>
+        <a href="SemiLab/index.html?quest=vth">
+          <rect x="380" y="120" width="128" height="52" rx="2" class="t-lab"/>
+          <text x="444" y="142" text-anchor="middle" class="name">MOSFET</text>
+          <text x="444" y="160" text-anchor="middle" class="lab">SemiLab 5章</text>
+        </a>
+        <a href="NandLab/index.html">
+          <rect x="532" y="120" width="128" height="52" rx="2" class="t-lab"/>
+          <text x="596" y="142" text-anchor="middle" class="name">NAND</text>
+          <text x="596" y="160" text-anchor="middle" class="lab">NandLab</text>
+        </a>
+        <a href="NandLab/index.html?quest=alu4">
+          <rect x="684" y="120" width="128" height="52" rx="2" class="t-lab"/>
+          <text x="748" y="142" text-anchor="middle" class="name">加算器 → ALU</text>
+          <text x="748" y="160" text-anchor="middle" class="lab">NandLab</text>
+        </a>
+
+        <!-- light branch (y=210..262) -->
+        <a href="SemiLab/index.html?quest=photo">
+          <rect x="380" y="210" width="160" height="52" rx="2" class="t-lab"/>
+          <text x="460" y="232" text-anchor="middle" class="name">フォトダイオード</text>
+          <text x="460" y="250" text-anchor="middle" class="lab">SemiLab 4章</text>
+        </a>
+        <a href="PixelLab/index.html">
+          <rect x="740" y="210" width="128" height="52" rx="2" class="t-lab"/>
+          <text x="804" y="232" text-anchor="middle" class="name">画素 · カメラ</text>
+          <text x="804" y="250" text-anchor="middle" class="lab">PixelLab</text>
+        </a>
+        <a href="PixelLab/index.html?quest=k">
+          <rect x="892" y="210" width="172" height="52" rx="2" class="t-lab"/>
+          <text x="978" y="232" text-anchor="middle" class="name">測って当てる（PTC）</text>
+          <text x="978" y="250" text-anchor="middle" class="lab">PixelLab 1章</text>
+        </a>
+
+        <!-- arrows main -->
+        <g class="arrow">
+          <line x1="204" y1="146" x2="222" y2="146" marker-end="url(#ar)"/>
+          <line x1="356" y1="146" x2="374" y2="146" marker-end="url(#ar)"/>
+          <line x1="508" y1="146" x2="526" y2="146" marker-end="url(#ar)"/>
+          <line x1="660" y1="146" x2="678" y2="146" marker-end="url(#ar)"/>
+          <path d="M292,172 L292,236 L374,236" marker-end="url(#ar)"/>
+          <line x1="540" y1="236" x2="734" y2="236" marker-end="url(#ar)"/>
+          <line x1="868" y1="236" x2="886" y2="236" marker-end="url(#ar)"/>
+        </g>
+        <g class="lab">
+          <text x="213" y="134" text-anchor="middle">縦の1本</text>
+          <text x="637" y="228" text-anchor="middle">量子効率 · ni(T) をそのまま使う</text>
+        </g>
+        <text x="596" y="196" text-anchor="middle" class="lab">5章の nMOS が NAND の中身</text>
+      </svg>
+    </div>
+    <figcaption>箱はクリックで開く（ラボは該当の課題を選んだ状態で開く）。ProcessLab の「SemiLab で開く」は、作ったウェーハの縦の1本を層の並びに直して SemiLab に渡す。PixelLab の量子効率と暗電流の温度依存は SemiLab の物理を呼んで計算している ― だから <b>3本は同じフォルダに兄弟として置く</b>必要がある。</figcaption>
+  </figure>
+</section>
+
+<!-- ================= 01 目次 ================= -->
+<section id="toc">
+  <div class="sec-head"><span class="sec-num">01</span><h2>目次 ― 参考書の章と、実践するラボの課題</h2></div>
+  <p class="lede">左が参考書の章、右がその章の内容を自分の手で確かめるラボの課題。<b>章を読んだら右の課題を解く</b>、が基本の進み方。課題名をクリックすると、その課題を選んだ状態でラボが開く。</p>
+
+  <!-- 第1部 -->
+  <article class="part" id="p1">
+    <div class="part-h">
+      <div>
+        <span class="pn">第1部</span>
+        <h3>どう作るか ― 製造プロセス</h3>
+        <p class="desc">1枚のシリコン円盤に、原子数十個ぶんの幅の回路を1000工程かけて刻む。「全面に膜をつけて、場所を指定して消す」の2手で1層、という骨格を押さえ、各工程が何のためにあるかを順にたどる。</p>
+      </div>
+      <div class="pair">
+        <div><span class="kind read">参考書</span><a href="半導体製造プロセス体系マップ.html">半導体製造プロセス体系マップ</a><small>ウェーハからチップまで · 13節</small></div>
+        <div><span class="kind lab">ラボ</span><a href="ProcessLab/index.html">ProcessLab</a><small>原始部品 ＝ 工程 · 4章 13問 · <a href="ProcessLab/README.md">README</a></small></div>
+      </div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">01–03</span><div class="ct"><a href="半導体製造プロセス体系マップ.html#why">なぜ1000工程も要るのか / 寸法の感覚 / 産業の全体地図</a></div><div class="cd">立体を彫るのではなく、平らな膜を敷いて要らない所を消す。2nm はどこの寸法でもない。</div></div>
+      <div class="do"><span class="lbl">読むだけ</span><span class="none">全体の見取り図。ここは手を動かす所が無い</span></div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">04</span><div class="ct"><a href="半導体製造プロセス体系マップ.html#litho">リソグラフィ・サイクル</a></div><div class="cd">成膜 → レジスト → 露光 → 現像 → エッチ → 剥離。1層ぶんの8ステップ。</div></div>
+      <div class="do"><span class="lbl">ProcessLab 第2章 · 第1章</span><a class="q" href="ProcessLab/index.html?quest=open">開けた所にだけ打つ</a><a class="q" href="ProcessLab/index.html?quest=locos">選んだ所だけ酸化する（LOCOS）</a></div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">05-02</span><div class="ct"><a href="半導体製造プロセス体系マップ.html#s02">成膜（熱酸化）</a></div><div class="cd">シリコンの表面そのものを SiO₂ に変える。最も緻密な絶縁膜。</div></div>
+      <div class="do"><span class="lbl">ProcessLab 第1章</span><a class="q" href="ProcessLab/index.html?quest=dryox">ゲート酸化膜を育てる</a><a class="q" href="ProcessLab/index.html?quest=wetox">厚い酸化膜を急いで</a></div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">05-07</span><div class="ct"><a href="半導体製造プロセス体系マップ.html#s07">イオン注入と熱処理</a></div><div class="cd">加速電圧で深さ、ビーム電流で濃度。熱で広がるから、熱くするが短時間で焼く。</div></div>
+      <div class="do"><span class="lbl">ProcessLab 第2章 · 第3章</span><a class="q" href="ProcessLab/index.html?quest=peak">深さを狙う</a><a class="q" href="ProcessLab/index.html?quest=guard">盾を厚くする</a><a class="q" href="ProcessLab/index.html?quest=xj">接合の深さ</a><a class="q" href="ProcessLab/index.html?quest=sheet">抵抗を下げる</a><a class="q" href="ProcessLab/index.html?quest=shallow">浅く低抵抗に</a><a class="q" href="ProcessLab/index.html?quest=well">ウェルを掘る</a></div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">06</span><div class="ct"><a href="半導体製造プロセス体系マップ.html#tr">トランジスタ構造の進化</a></div><div class="cd">ゲートが薄い膜1枚では電流を止めきれなくなる。planar → FinFET → GAA。</div></div>
+      <div class="do"><span class="lbl">ProcessLab 第4章（SemiLab で採点）</span><a class="q" href="ProcessLab/index.html?quest=pd">フォトダイオードを作る</a><a class="q" href="ProcessLab/index.html?quest=mos">MOS のしきい値を合わせる</a><a class="q" href="ProcessLab/index.html?quest=cmos">CMOS の土台</a></div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">07–13</span><div class="ct"><a href="半導体製造プロセス体系マップ.html#beflow">後工程 / 先端パッケージ / 歩留まり / 用語集 / 出典</a></div><div class="cd">ウェーハを部品にする。大きいチップが高い理由。</div></div>
+      <div class="do"><span class="lbl">読むだけ</span><span class="none">歩留まりのラボは「ここから先」（ProcessLab README）</span></div>
+    </div>
+  </article>
+
+  <!-- 第2部 -->
+  <article class="part" id="p2">
+    <div class="part-h">
+      <div>
+        <span class="pn">第2部</span>
+        <h3>なぜ動くか ― 素子の物理</h3>
+        <p class="desc">不純物を入れたシリコンの一片から、pn 接合・ダイオード・フォトダイオード・MOS キャパシタ・MOSFET まで。ポアソン方程式が空乏層を作り、ボルツマン分布が電流を決め、その両方が NAND の中身になる。参考書の数値はすべて SemiLab が解いた値で、5章の構成も SemiLab の5章と同じ。</p>
+      </div>
+      <div class="pair">
+        <div><span class="kind read">参考書</span><a href="半導体デバイスの基礎.html">半導体デバイスの基礎</a><small>一片のシリコンから、スイッチができるまで · 5章＋付録</small></div>
+        <div><span class="kind lab">ラボ</span><a href="SemiLab/index.html">SemiLab</a><small>原始部品 ＝ 不純物 · 5章 22問 · <a href="SemiLab/README.md">README</a></small></div>
+      </div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">2-1</span><div class="ct"><a href="半導体デバイスの基礎.html#s1">一片のシリコン ― キャリアと不純物</a></div><div class="cd">バンド、真性キャリア密度 ni、ドナーとアクセプタ、抵抗率。ni が温度の指数で効く。</div></div>
+      <div class="do"><span class="lbl">SemiLab 第1章</span><a class="q" href="SemiLab/index.html?quest=ntype">n 型をつくる</a><a class="q" href="SemiLab/index.html?quest=ptype">p 型をつくる</a><a class="q" href="SemiLab/index.html?quest=compensate">打ち消す</a><a class="q" href="SemiLab/index.html?quest=resistivity">抵抗率をあわせる</a></div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">2-2</span><div class="ct"><a href="半導体デバイスの基礎.html#s2">接合が立つ ― 空乏層とビルトイン電位</a></div><div class="cd">濃度の違う一片を隣に置くと拡散と電界が釣り合う。ポアソン方程式。片側接合、逆バイアス、pin。</div></div>
+      <div class="do"><span class="lbl">SemiLab 第2章</span><a class="q" href="SemiLab/index.html?quest=junction">はじめての接合</a><a class="q" href="SemiLab/index.html?quest=vbi">ビルトイン電位を合わせる</a><a class="q" href="SemiLab/index.html?quest=onesided">片側だけ空乏させる</a><a class="q" href="SemiLab/index.html?quest=reverse">逆バイアスで伸ばす</a><a class="q" href="SemiLab/index.html?quest=pin">真性層を挟む（pin）</a></div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">2-3</span><div class="ct"><a href="半導体デバイスの基礎.html#s3">ダイオード ― 整流と漏れ</a></div><div class="cd">ショックレー式、飽和電流、短基底、暗電流（生成電流）と温度。</div></div>
+      <div class="do"><span class="lbl">SemiLab 第3章</span><a class="q" href="SemiLab/index.html?quest=rectify">整流する</a><a class="q" href="SemiLab/index.html?quest=j0">飽和電流を小さくする</a><a class="q" href="SemiLab/index.html?quest=shortbase">薄くすると電流が増える</a><a class="q" href="SemiLab/index.html?quest=dark">暗電流を減らす</a></div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">2-4</span><div class="ct"><a href="半導体デバイスの基礎.html#s4">光を電気にする ― フォトダイオード</a></div><div class="cd">吸収係数と波長、量子効率、表面再結合、反射防止。第4部の入口。</div></div>
+      <div class="do"><span class="lbl">SemiLab 第4章</span><a class="q" href="SemiLab/index.html?quest=photo">光が見える</a><a class="q" href="SemiLab/index.html?quest=blue">青を拾う</a><a class="q" href="SemiLab/index.html?quest=red">赤を拾う</a><a class="q" href="SemiLab/index.html?quest=ar">反射を殺す</a><a class="q" href="SemiLab/index.html?quest=broad">広く拾う</a></div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">2-5</span><div class="ct"><a href="半導体デバイスの基礎.html#s5">MOS、そして MOSFET ― NAND の中身へ</a></div><div class="cd">酸化膜を挟むとゲートになる。表面ポテンシャル、しきい値電圧、S値の 60mV/桁 の壁、Id-Vd。第3部の入口。</div></div>
+      <div class="do"><span class="lbl">SemiLab 第5章</span><a class="q" href="SemiLab/index.html?quest=moscap">MOS キャパシタ</a><a class="q" href="SemiLab/index.html?quest=vth">しきい値電圧を合わせる</a><a class="q" href="SemiLab/index.html?quest=swing">切れ味を上げる</a><a class="q" href="SemiLab/index.html?quest=nand">NAND の中身へ</a></div>
+    </div>
+  </article>
+
+  <!-- 第3部 -->
+  <article class="part" id="p3">
+    <div class="part-h">
+      <div>
+        <span class="pn">第3部</span>
+        <h3>どう計算するか ― NAND から ALU</h3>
+        <p class="desc">原始部品は NAND ゲート1個。それだけから NOT・AND・加算器・ラッチ・フリップフロップ・レジスタ・ALU を積み上げる。なぜ NAND（や NOR）ひとつで足りるのか、なぜ 0 と 1 が何千段積んでも濁らないのか、記憶とは何か ― 参考書がその筋道を説明し、第2部の MOSFET に戻ってくる。</p>
+      </div>
+      <div class="pair">
+        <div><span class="kind read">参考書</span><a href="論理回路の基礎.html">論理回路の基礎</a><small>スイッチ4個から、計算機ができるまで · 5章＋付録</small></div>
+        <div><span class="kind lab">ラボ</span><a href="NandLab/index.html">NandLab</a><small>原始部品 ＝ NAND · 5章 22問</small></div>
+      </div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">3-1</span><div class="ct"><a href="論理回路の基礎.html#s1">スイッチから論理へ ― なぜ NAND ひとつで足りるのか</a></div><div class="cd">CMOS の4石、NAND と NOR の万能性、ド・モルガン、3値、伝達特性と雑音余裕。</div></div>
+      <div class="do"><span class="lbl">NandLab 第1章</span><a class="q" href="NandLab/index.html?quest=not">NOT</a><a class="q" href="NandLab/index.html?quest=and">AND</a><a class="q" href="NandLab/index.html?quest=or">OR</a><a class="q" href="NandLab/index.html?quest=xor">XOR</a><a class="q" href="NandLab/index.html?quest=nor">NOR</a><a class="q" href="NandLab/index.html?quest=xnor">XNOR</a></div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">3-2</span><div class="ct"><a href="論理回路の基礎.html#s2">選ぶ・見分ける ― 真理値表から回路へ</a></div><div class="cd">積和形と二段 NAND。セレクタ、デコーダ、比較器。</div></div>
+      <div class="do"><span class="lbl">NandLab 第2章</span><a class="q" href="NandLab/index.html?quest=mux">2:1 セレクタ</a><a class="q" href="NandLab/index.html?quest=dec24">2→4 デコーダ</a><a class="q" href="NandLab/index.html?quest=mux4">4:1 セレクタ</a><a class="q" href="NandLab/index.html?quest=eq4">4ビット比較器</a></div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">3-3</span><div class="ct"><a href="論理回路の基礎.html#s3">数として扱う ― 加算器と2の補数</a></div><div class="cd">半加算器 → 全加算器 → 4ビット。桁上げの遅延。引き算は足し算で。</div></div>
+      <div class="do"><span class="lbl">NandLab 第3章</span><a class="q" href="NandLab/index.html?quest=half">半加算器</a><a class="q" href="NandLab/index.html?quest=full">全加算器</a><a class="q" href="NandLab/index.html?quest=add4">4ビット加算器</a><a class="q" href="NandLab/index.html?quest=sub4">4ビット減算器</a><a class="q" href="NandLab/index.html?quest=mul2">2ビット乗算器</a></div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">3-4</span><div class="ct"><a href="論理回路の基礎.html#s4">記憶する ― ラッチとフリップフロップ</a></div><div class="cd">出力を自分の入力へ戻すと、状態が残る。禁止入力、透過、エッジ、クロック。</div></div>
+      <div class="do"><span class="lbl">NandLab 第4章</span><a class="q" href="NandLab/index.html?quest=srlatch">SR ラッチ</a><a class="q" href="NandLab/index.html?quest=dlatch">D ラッチ</a><a class="q" href="NandLab/index.html?quest=dff">D フリップフロップ</a></div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">3-5</span><div class="ct"><a href="論理回路の基礎.html#s5">組み上げる ― レジスタ・カウンタ・ALU</a></div><div class="cd">覚えるとは書き戻し続けること。ここまで揃うと、CPU に足りないのはメモリと制御だけ。</div></div>
+      <div class="do"><span class="lbl">NandLab 第5章</span><a class="q" href="NandLab/index.html?quest=reg4">4ビットレジスタ</a><a class="q" href="NandLab/index.html?quest=shift4">シフトレジスタ</a><a class="q" href="NandLab/index.html?quest=count4">カウンタ</a><a class="q" href="NandLab/index.html?quest=alu4">4ビット ALU</a></div>
+    </div>
+  </article>
+
+  <!-- 第4部 -->
+  <article class="part" id="p4">
+    <div class="part-h">
+      <div>
+        <span class="pn">第4部</span>
+        <h3>光から像へ ― イメージセンサ</h3>
+        <p class="desc">仮想センサ1台（3.0µm・12,000e⁻・2.5e⁻ rms）を決め、光子 → 電子 → 電圧 → 数値 → 像の一本道を途中で切らずにたどる。付録は床下の物理 ― トンネル・短チャネル・暗電流の出どころ・ノイズの起源。第2部のフォトダイオードと MOSFET が、ここで画素になる。</p>
+      </div>
+      <div class="pair">
+        <div><span class="kind read">参考書</span><a href="イメージセンサ解剖ラボ.html">イメージセンサ解剖ラボ</a><small>光子が像になるまでの7つの段 · 22節</small></div>
+        <div><span class="kind lab">ラボ</span><a href="PixelLab/index.html">PixelLab</a><small>原始部品 ＝ 光子と電子を数えること · 3章 11問 · <a href="PixelLab/README.md">README</a></small></div>
+      </div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">00–01</span><div class="ct"><a href="イメージセンサ解剖ラボ.html#s0">全体像 / 入射と色分け / 解像の限界</a></div><div class="cd">信号は4回姿を変える。マイクロレンズ、カラーフィルタ、回折とナイキスト。</div></div>
+      <div class="do"><span class="lbl">読むだけ</span><span class="none">光学はラボの範囲外（PixelLab は画素に届く光子束を直接与える）</span></div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">02</span><div class="ct"><a href="イメージセンサ解剖ラボ.html#s2">光電変換</a></div><div class="cd">長い波長は深すぎて届かず、短い波長は表面で消える。量子効率の両端。</div></div>
+      <div class="do"><span class="lbl">SemiLab 第4章 · PixelLab 第3章</span><a class="q" href="SemiLab/index.html?quest=blue">青を拾う</a><a class="q" href="SemiLab/index.html?quest=red">赤を拾う</a><a class="q" href="SemiLab/index.html?quest=ar">反射を殺す</a><a class="q" href="PixelLab/index.html?quest=nir">850nm で量子効率 25%</a></div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">03</span><div class="ct"><a href="イメージセンサ解剖ラボ.html#s3">蓄積</a></div><div class="cd">井戸の正体は空乏層。逆バイアスで広がる。飽和電子数と暗電流。</div></div>
+      <div class="do"><span class="lbl">SemiLab 第2章 · 第3章</span><a class="q" href="SemiLab/index.html?quest=junction">はじめての接合</a><a class="q" href="SemiLab/index.html?quest=reverse">逆バイアスで伸ばす</a><a class="q" href="SemiLab/index.html?quest=dark">暗電流を減らす</a></div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">04</span><div class="ct"><a href="イメージセンサ解剖ラボ.html#s4">電荷転送 / CCD という別解</a></div><div class="cd">転送ゲートが時間を切り取る。ローリングとグローバル。</div></div>
+      <div class="do"><span class="lbl">読むだけ</span><span class="none">転送はラボの範囲外（PixelLab は完全転送を仮定）</span></div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">05–06</span><div class="ct"><a href="イメージセンサ解剖ラボ.html#s5">電荷を電圧に / 読み出しと AD / ダイナミックレンジ</a></div><div class="cd">小さい容量ほど大きな電圧。kTC は容量だけで決まる。飽和は井戸か AD か。</div></div>
+      <div class="do"><span class="lbl">PixelLab 第2章 · 第1章</span><a class="q" href="PixelLab/index.html?quest=dr">ダイナミックレンジ 75dB</a><a class="q" href="PixelLab/index.html?quest=dim">暗い所で S/N 5.5</a><a class="q" href="PixelLab/index.html?quest=adc">AD の桁</a><a class="q" href="PixelLab/index.html?quest=limit">飽和を決めているのは井戸か AD か</a></div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">—</span><div class="ct"><a href="イメージセンサ解剖ラボ.html#sptc">ノイズの正体 / センサを測る（PTC）</a></div><div class="cd">分散と平均から電子が数えられる。合わせ込む係数がひとつも無い物差し。</div></div>
+      <div class="do"><span class="lbl">PixelLab 第1章</span><a class="q" href="PixelLab/index.html?quest=k">K を当てる</a><a class="q" href="PixelLab/index.html?quest=read">読み出し雑音</a><a class="q" href="PixelLab/index.html?quest=fw">飽和電荷</a><a class="q" href="PixelLab/index.html?quest=dark">暗電流</a><a class="q" href="PixelLab/index.html?quest=prnu">PRNU</a></div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">A–B</span><div class="ct"><a href="イメージセンサ解剖ラボ.html#sa">トンネル効果 / 短チャネル効果</a></div><div class="cd">薄ければ抜ける。S値 59.5 mV/桁 は熱が決める壁。</div></div>
+      <div class="do"><span class="lbl">SemiLab 第5章</span><a class="q" href="SemiLab/index.html?quest=swing">切れ味を上げる</a><a class="q" href="SemiLab/index.html?quest=nand">NAND の中身へ</a></div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">C–D</span><div class="ct"><a href="イメージセンサ解剖ラボ.html#sc">暗電流の出どころ / ばらつきの起源</a></div><div class="cd">「約 9℃ で倍」は定数ではなく、何が支配しているかを表す量。</div></div>
+      <div class="do"><span class="lbl">SemiLab 第3章 · PixelLab 第2章</span><a class="q" href="SemiLab/index.html?quest=dark">暗電流を減らす</a><a class="q" href="PixelLab/index.html?quest=cool">冷やして 60 秒</a></div>
+    </div>
+  </article>
+</section>
+
+<!-- ================= 02 進み方 ================= -->
+<section id="routes">
+  <div class="sec-head"><span class="sec-num">02</span><h2>どの順に進むか</h2></div>
+  <p class="lede">目的ごとに4本。どれも「全部読んでから作る」ではなく、<b>章ごとに読んで、その章の課題を解く</b>。</p>
+
+  <div class="routes">
+    <div class="route rec">
+      <span class="tag">RECOMMENDED — はじめての人</span>
+      <h3>第1部から第4部まで、下から通す</h3>
+      <p class="for">半導体を体系的に一周したい。工程 → 素子 → 論理 → 像の順で、前で作ったものが次の部品になる。</p>
+      <ol>
+        <li><b>第1部</b> 参考書 01〜05 → ProcessLab 第1〜3章<span class="r">10問</span><span class="why">酸化・注入・拡散を並べて断面を育てる。接合が「部品」ではなく工程の結果だと分かる</span></li>
+        <li><b>第2部</b> 2-1〜2-3 → SemiLab 第1〜3章<span class="r">13問</span><span class="why">不純物を塗った一片を隣に置くと接合が立つ。ポアソン方程式が解いた空乏層を見る</span></li>
+        <li><b>第1部に戻って</b> ProcessLab 第4章<span class="r">3問</span><span class="why">工程で作った1本を SemiLab に渡して素子として測る。2本が繋がる</span></li>
+        <li><b>第2部</b> 2-4〜2-5 → SemiLab 第4〜5章<span class="r">9問</span><span class="why">フォトダイオードと MOSFET。最後の課題が「NAND の中身」</span></li>
+        <li><b>第3部</b> NandLab 第1〜5章<span class="r">22問</span><span class="why">NAND だけから NOT・加算器・フリップフロップ・ALU まで</span></li>
+        <li><b>第4部</b> 参考書 00〜07 → PixelLab 第1〜3章<span class="r">11問</span><span class="why">謎のカメラを撮って測って当て、自分の画素を設計する</span></li>
+        <li><b>第4部</b> 付録 A〜D<span class="r">読む</span><span class="why">床下の物理。第2部の MOSFET と暗電流にもう一度戻る</span></li>
+      </ol>
+    </div>
+
+    <div class="route">
+      <span class="tag">SHORTEST — イメージセンサが目的</span>
+      <h3>光から像へ、最短で</h3>
+      <p class="for">画素・ノイズ・PTC を理解したい。工程と論理は飛ばし、フォトダイオードの物理だけ第2部で押さえる。</p>
+      <ol>
+        <li><b>第2部</b> 2-1・2-2 → SemiLab 第1・2章<span class="r">9問</span><span class="why">n 型／p 型と接合。空乏層が「井戸」の正体</span></li>
+        <li><b>第2部</b> 2-4 → SemiLab 第4章<span class="r">5問</span><span class="why">青は表面で消え、赤は深すぎて届かない</span></li>
+        <li><b>第4部</b> 参考書 00〜07<span class="r">読む</span></li>
+        <li><b>第4部</b> PixelLab 第1章<span class="r">6問</span><span class="why">PTC で K・読み出し雑音・飽和・暗電流・PRNU を当てる</span></li>
+        <li><b>第4部</b> ノイズの正体／センサを測る／付録 C<span class="r">読む</span><span class="why">測った数字の裏側</span></li>
+        <li><b>第4部</b> PixelLab 第2・3章 ＋ <b>第2部</b> SemiLab「暗電流を減らす」<span class="r">6問</span></li>
+      </ol>
+    </div>
+
+    <div class="route">
+      <span class="tag">PROCESS — 作り方が知りたい</span>
+      <h3>工程が素子になるまで</h3>
+      <p class="for">製造プロセスの側から入る。参考書で全体像、ラボで「何をどれだけやると何が出来るか」を数で確かめる。</p>
+      <ol>
+        <li><b>第1部</b> 参考書 全体<span class="r">読む</span></li>
+        <li><b>第1部</b> ProcessLab 第1〜3章<span class="r">10問</span><span class="why">Deal-Grove の酸化、Gibbons の飛程、フィックの拡散。教科書の式と 2% で合う</span></li>
+        <li><b>第2部</b> 2-1・2-2 → SemiLab 第1・2章<span class="r">9問</span><span class="why">ProcessLab が渡す「層の並び」を読めるようになる</span></li>
+        <li><b>第1部</b> ProcessLab 第4章<span class="r">3問</span><span class="why">フォトダイオード・MOS のしきい値・CMOS の土台を工程で作る</span></li>
+        <li><b>第1部</b> トランジスタ構造の進化 → <b>第2部</b> SemiLab 第5章<span class="r">4問</span><span class="why">なぜゲートがチャネルを何面からも掴む必要が出たか</span></li>
+      </ol>
+    </div>
+
+    <div class="route">
+      <span class="tag">LOGIC — デジタル回路が目的</span>
+      <h3>NAND から ALU、そして NAND の中身へ</h3>
+      <p class="for">論理回路を組みたい。物理は最後に1章だけ ― NAND がなぜ4石で済むのかを見に行く。</p>
+      <ol>
+        <li><b>第3部</b> NandLab 第1〜5章<span class="r">22問</span><span class="why">NOT → 加算器 → ラッチ → フリップフロップ → レジスタ → ALU</span></li>
+        <li><b>第2部</b> 2-5 → SemiLab 第5章<span class="r">4問</span><span class="why">NandLab の NAND をダブルクリックすると出る4石を、自分で作る</span></li>
+        <li><b>第4部</b> 付録 B 短チャネル効果<span class="r">読む</span><span class="why">S値 59.5 mV/桁 の壁。SemiLab「切れ味を上げる」で同じ壁に当たる</span></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 03 約束 ================= -->
+<section id="rules">
+  <div class="sec-head"><span class="sec-num">03</span><h2>参考書とラボに共通の約束</h2></div>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>数字はどこから来たかを書く</h3>
+      <p>参考書の数値は、材料そのものを測って決まる数個の定数（バンドギャップ・比誘電率・真性キャリア密度・吸収係数）を除いて、仮想の一台・一枚から計算で追える。ラボはその計算を本当にやる ― 空乏層は描いたのではなく、ポアソン方程式を解いた結果そこが空乏している。</p>
+      <h3>採点は振る舞いだけを見る</h3>
+      <p>お手本と層の並びや配線を見比べる採点は一切しない。「濃度をいくつにしろ」ではなく「電子濃度をこの範囲にしろ」と言う。そこへ辿り着く道は何本あってもいい。「お手本を見る」で出るのは正解ではなく一例。</p>
+      <h3>モデルの外に出たら黙っていない</h3>
+      <p>数値としては解けてしまう領域（降伏・絶縁破壊・大注入・縮退）に入ると赤い帯で知らせる。出ないものを出たように見せるほうが、出ないと言うより害が大きい。各 README の「どこまでが厳密で、どこからがモデルか」に境界を書いてある。</p>
+    </div>
+    <div class="body-col">
+      <h3>ブラウザだけで動く</h3>
+      <p>依存ゼロ・通信ゼロ・インストール不要。各フォルダの <code>index.html</code> を開く（<code>*.vbs</code> をダブルクリックしても同じ）。保存は <code>localStorage</code>。壊れていたら退避してから空で始める。</p>
+      <h3>画面に触るのは <code>ui.js</code> だけ</h3>
+      <p>物理・課題・採点は Node だけで検査できる。<code>tests/ui.js</code> は本物の <code>index.html</code> から DOM を組んで本物の <code>ui.js</code> を動かす。</p>
+      <pre>node ProcessLab\tests\all.js      332 件
+node SemiLab\tests\all.js       1,074 件
+node NandLab\tests\all.js         544 件
+node PixelLab\tests\all.js        271 件</pre>
+      <div class="caveat">
+        <span class="tag">配置の注意</span>
+        <p>ProcessLab と PixelLab は <code>../SemiLab/src/*.js</code> を読み込む。<b>SemiLab・ProcessLab・PixelLab は必ずこのフォルダに兄弟として置く。</b>1本だけ別の場所へ動かすと、起動はするが物理が無くて動かない。</p>
+        <p><code>*.vbs</code> は UTF-16LE(BOM)。UTF-8 で保存し直すと日本語が壊れて起動しない。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="foot">
+  <span>Labs / 半導体 ― 参考書 4 部・ラボ 4 本。ひとつの原始部品から積み上げる。</span>
+  <span class="mono">工程 → 不純物 → pn接合 → MOSFET → NAND → ALU ／ pn接合 → フォトダイオード → 画素 → 像</span>
+</div>
+
+</div>
+</body>
+</html>

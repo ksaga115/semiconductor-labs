@@ -1,0 +1,2002 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="前工程・後工程の枠組みに沿って半導体製造の全工程を、断面アニメーション・工程別の世界シェア・用語注釈・出典つきで体系的に学べる資料。">
+<style>
+  :root{color-scheme:light dark}
+  body{margin:0}
+  img{max-width:100%}
+  [hidden]{display:none!important}
+</style>
+<title>ウェーハからチップまで</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Noto+Sans+JP:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+</head>
+<body>
+<style>
+/* ============ tokens ============ */
+:root{
+  --ground:#F3F5F9;
+  --surface:#FFFFFF;
+  --surface-2:#E9EDF3;
+  --surface-3:#DFE5EE;
+  --ink:#141A26;
+  --ink-2:#394354;
+  --muted:#6C7789;
+  --rule:#DBE0E9;
+  --rule-2:#C2CAD8;
+  --amber:#9E5E00;
+  --amber-2:#E8A22B;
+  --amber-soft:#FAEFD8;
+  --si:#0F5B78;
+  --si-2:#2E8CB0;
+  --si-soft:#E1EDF4;
+
+  --d-si:#A3AEBC;
+  --d-si-dark:#8794A5;
+  --d-ink:#1B2333;
+  --d-film:#3E93B6;
+  --d-film-2:#2B7191;
+  --d-resist:#E8A22B;
+  --d-resist-exp:#F2DCAE;
+  --d-mask:#394354;
+  --d-glass:#CBD8E2;
+  --d-light:#63C4E8;
+  --d-metal:#C07A44;
+  --d-gold:#D9AC4E;
+  --d-mold:#2C3340;
+  --d-pkg:#4B7B4E;
+
+  --shadow-s:0 1px 2px rgba(20,26,38,.05);
+  --shadow-m:0 1px 2px rgba(20,26,38,.05), 0 10px 28px -16px rgba(20,26,38,.30);
+  --maxw:1220px;
+  --read:68ch;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0C1016; --surface:#141A22; --surface-2:#1B222C; --surface-3:#232B37;
+    --ink:#E9EDF4; --ink-2:#C4CCD9; --muted:#8C97A8; --rule:#262E3A; --rule-2:#39434F;
+    --amber:#F0B85C; --amber-2:#EFA83A; --amber-soft:#2B2213;
+    --si:#77C6E6; --si-2:#4FAED4; --si-soft:#10242E;
+    --d-si:#5C6675; --d-si-dark:#4A5361; --d-ink:#EDF1F7; --d-film:#3E93B6; --d-film-2:#2B7191;
+    --d-resist:#D9942A; --d-resist-exp:#6B5A38; --d-mask:#8794A5; --d-glass:#2E3946;
+    --d-light:#63C4E8; --d-metal:#B87141; --d-gold:#C99C43; --d-mold:#0B1016; --d-pkg:#4B8A50;
+    --shadow-s:0 1px 2px rgba(0,0,0,.4);
+    --shadow-m:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -16px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0C1016; --surface:#141A22; --surface-2:#1B222C; --surface-3:#232B37;
+  --ink:#E9EDF4; --ink-2:#C4CCD9; --muted:#8C97A8; --rule:#262E3A; --rule-2:#39434F;
+  --amber:#F0B85C; --amber-2:#EFA83A; --amber-soft:#2B2213;
+  --si:#77C6E6; --si-2:#4FAED4; --si-soft:#10242E;
+  --d-si:#5C6675; --d-si-dark:#4A5361; --d-ink:#EDF1F7; --d-film:#3E93B6; --d-film-2:#2B7191;
+  --d-resist:#D9942A; --d-resist-exp:#6B5A38; --d-mask:#8794A5; --d-glass:#2E3946;
+  --d-light:#63C4E8; --d-metal:#B87141; --d-gold:#C99C43; --d-mold:#0B1016; --d-pkg:#4B8A50;
+  --shadow-s:0 1px 2px rgba(0,0,0,.4);
+  --shadow-m:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -16px rgba(0,0,0,.8);
+}
+
+/* ============ base ============ */
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--ground); color:var(--ink); overflow-x:clip;
+  font-family:"Noto Sans JP","Zen Kaku Gothic New",system-ui,-apple-system,"Segoe UI","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  font-size:15.5px; line-height:1.85; -webkit-font-smoothing:antialiased;
+  font-feature-settings:"palt" 1;
+}
+h1,h2,h3,h4,h5{font-family:"Zen Kaku Gothic New","Noto Sans JP",system-ui,sans-serif;text-wrap:balance;margin:0;line-height:1.35;font-weight:700}
+p{margin:0}
+a{color:var(--si);text-decoration:none;border-bottom:1px solid color-mix(in srgb,var(--si) 35%,transparent)}
+a:hover{border-bottom-color:var(--si)}
+:focus-visible{outline:2px solid var(--amber-2);outline-offset:3px;border-radius:3px}
+.mono{font-family:"IBM Plex Mono",ui-monospace,Consolas,"Segoe UI Mono",Menlo,monospace;font-variant-numeric:tabular-nums}
+
+/* ============ 参考書からラボへ渡す箱（ProcessLab / SemiLab） ============ */
+.lab-go{margin-top:18px;border:1px solid var(--rule);border-left:3px solid var(--si-2);border-radius:6px;background:var(--surface);padding:12px 16px;max-width:var(--read)}
+.lab-go .tag{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.14em;color:var(--si);display:block;margin-bottom:6px}
+.lab-go p{font-size:13.5px;color:var(--ink-2);line-height:1.75}
+.lab-go .qs{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px;align-items:center}
+.lab-go .qs a{font-family:"IBM Plex Mono",monospace;font-size:11.5px;padding:4px 10px;border:1px solid var(--rule-2);border-radius:4px;background:var(--surface-2);color:var(--ink);white-space:nowrap}
+.lab-go .qs a:hover{border-color:var(--si-2);color:var(--si)}
+.lab-go .qs .lab{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--muted);letter-spacing:.07em;margin-left:4px}
+.lab-go .qs .lab:first-child{margin-left:0}
+.back{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.08em;color:var(--muted);border:0;display:inline-block;margin-bottom:12px}
+.back:hover{color:var(--ink);border:0}
+
+/* ============ shell ============ */
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 20px}
+.layout{display:grid;grid-template-columns:1fr}
+@media (min-width:1080px){.layout{grid-template-columns:214px minmax(0,1fr);gap:52px;align-items:start}}
+.rail{display:none}
+@media (min-width:1080px){.rail{display:block;position:sticky;top:20px;padding:26px 0 40px;font-size:12.5px}}
+.rail ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:1px}
+.rail a{display:block;padding:3px 10px;border:0;border-left:2px solid var(--rule);color:var(--ink-2);line-height:1.5;transition:.15s}
+.rail a:hover{background:var(--surface-2);color:var(--ink);border-left-color:var(--rule-2)}
+.rail a.on{border-left-color:var(--amber-2);color:var(--ink);font-weight:700;background:var(--surface-2)}
+.rail .g{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.14em;color:var(--muted);padding:14px 0 5px 10px;text-transform:uppercase}
+.rail .g:first-child{padding-top:0}
+
+/* ============ hero ============ */
+.hero{border-bottom:1px solid var(--rule);background:linear-gradient(180deg,color-mix(in srgb,var(--amber-soft) 75%,transparent) 0%,transparent 60%),var(--ground)}
+.hero .wrap{padding-top:50px;padding-bottom:42px}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.eyebrow::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--rule-2),transparent);max-width:220px}
+h1{font-size:clamp(30px,5.4vw,50px);font-weight:900;letter-spacing:-.01em;line-height:1.22}
+.hero .lead{margin-top:18px;max-width:62ch;font-size:16.5px;color:var(--ink-2)}
+.hero-stats{display:flex;flex-wrap:wrap;gap:14px 42px;margin-top:30px;padding-top:24px;border-top:1px solid var(--rule)}
+.hs{display:flex;flex-direction:column;gap:1px}
+.hs b{font-family:"IBM Plex Mono",monospace;font-size:25px;font-weight:600;letter-spacing:-.02em;line-height:1.15;color:var(--ink)}
+.hs span{font-size:12px;color:var(--muted);line-height:1.5}
+
+/* ============ sections ============ */
+section{padding:54px 0;border-bottom:1px solid var(--rule)}
+section:last-of-type{border-bottom:0;padding-bottom:70px}
+.sec-h{display:flex;align-items:baseline;gap:13px;margin-bottom:8px;flex-wrap:wrap}
+.sec-n{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.16em;color:var(--amber);border:1px solid color-mix(in srgb,var(--amber) 32%,transparent);border-radius:2px;padding:2px 7px;white-space:nowrap}
+h2{font-size:clamp(22px,3.2vw,29px);font-weight:900;letter-spacing:-.005em}
+.sec-sub{color:var(--muted);font-size:13.5px;margin-bottom:26px;max-width:var(--read);line-height:1.75}
+.prose{max-width:var(--read)}
+.prose p+p{margin-top:1em}
+h3{font-size:19px;margin-bottom:6px}
+h4{font-size:12.5px;letter-spacing:.05em;color:var(--muted);font-weight:700;margin-bottom:4px}
+
+/* ============ terms ============ */
+.tm{border-bottom:1px dashed var(--amber-2);cursor:help;position:relative;font-weight:500}
+.tm::after{content:"?";font-family:"IBM Plex Mono",monospace;font-size:8.5px;vertical-align:super;color:var(--amber);margin-left:1px;font-weight:600}
+.tm>i{
+  position:absolute;bottom:calc(100% + 9px);left:50%;transform:translateX(-50%) translateY(3px);
+  width:max-content;max-width:min(310px,68vw);
+  background:var(--surface);color:var(--ink);border:1px solid var(--rule-2);
+  font-style:normal;font-size:12.5px;line-height:1.65;font-weight:400;
+  padding:9px 12px;border-radius:5px;box-shadow:var(--shadow-m);
+  opacity:0;visibility:hidden;transition:.16s;z-index:60;pointer-events:none;text-align:left;
+}
+.tm:hover>i,.tm:focus>i,.tm:focus-within>i{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
+
+/* ============ step cards ============ */
+.steps{display:flex;flex-direction:column;gap:16px;margin-top:6px}
+.step{background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:20px 22px 18px;box-shadow:var(--shadow-s)}
+.step.fe{border-left:3px solid var(--si-2)}
+.step.be{border-left:3px solid var(--amber-2)}
+.step.pre{border-left:3px solid var(--rule-2)}
+.step-h{display:flex;gap:13px;align-items:flex-start;margin-bottom:14px}
+.step-n{font-family:"IBM Plex Mono",monospace;font-size:11.5px;font-weight:600;color:var(--muted);padding-top:6px;min-width:24px}
+.step-h h3{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+.en{font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:400;color:var(--muted)}
+.oneline{color:var(--ink-2);font-size:14.5px;margin-top:3px;max-width:64ch}
+.step-b{display:grid;gap:16px}
+@media (min-width:780px){.step-b{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:26px}}
+.blk h4{display:flex;align-items:center;gap:7px}
+.blk h4::before{content:"";width:11px;height:1px;background:var(--rule-2);flex:none}
+.blk p{font-size:14.5px}
+.blk ul{margin:5px 0 0;padding-left:1.15em;font-size:14.5px}
+.blk li{margin-bottom:4px}
+.blk li::marker{color:var(--rule-2)}
+.note{margin-top:14px;background:var(--surface-2);border-radius:6px;padding:10px 13px;font-size:13.5px;line-height:1.75;color:var(--ink-2)}
+.note b{color:var(--ink);font-weight:700}
+.note.w{background:var(--amber-soft)}
+
+/* ============ share bars ============ */
+.share{margin-top:16px;border-top:1px solid var(--rule);padding-top:13px}
+.share-t{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-bottom:9px}
+.share-grid{display:grid;gap:16px}
+@media (min-width:780px){.share-grid.two{grid-template-columns:1fr 1fr}}
+.sl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px}
+.sl>li{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(30px,1fr) auto;align-items:center;gap:9px;font-size:12.5px}
+.sl>li.hd{display:block;font-family:"IBM Plex Mono","Noto Sans JP",monospace;font-size:10px;letter-spacing:.09em;color:var(--muted);font-weight:600;margin-bottom:1px;border-bottom:1px solid var(--rule);padding-bottom:4px}
+.sl .co{font-weight:500;line-height:1.35;min-width:0}
+.sl .co small{display:block;font-size:9.5px;color:var(--muted);font-weight:400;line-height:1.3}
+.sl .bar{height:7px;border-radius:2px;background:var(--surface-3);position:relative;overflow:hidden;min-width:30px}
+.sl .bar>span{position:absolute;inset:0 auto 0 0;width:calc(var(--v)*1%);background:var(--si-2);border-radius:2px}
+.sl.be .bar>span{background:var(--amber-2)}
+.sl>li.est .bar>span{background:repeating-linear-gradient(135deg,var(--rule-2) 0 3px,transparent 3px 7px)}
+.sl .vl{font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:500;color:var(--ink);white-space:nowrap;text-align:right;min-width:52px}
+.sl>li.est .vl{color:var(--muted)}
+.src{font-size:10.5px;color:var(--muted);margin-top:9px;line-height:1.65}
+.src a{color:var(--muted);border-bottom-color:var(--rule-2)}
+.jp{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:8.5px;border:1px solid var(--rule-2);color:var(--muted);border-radius:2px;padding:0 3px;vertical-align:1.5px;margin-left:4px;letter-spacing:.06em}
+
+/* ============ figure / stepper ============ */
+.fig{background:var(--surface);border:1px solid var(--rule);border-radius:8px;overflow:hidden;box-shadow:var(--shadow-s);margin:22px 0}
+.fig-h{padding:14px 18px 0;display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.fig-h h3{font-size:16px}
+.fig-h .k{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.stage{padding:8px 12px 0;background:linear-gradient(180deg,transparent,color-mix(in srgb,var(--surface-2) 55%,transparent))}
+.stage svg{display:block;width:100%;height:auto;max-height:340px}
+.cap{padding:2px 18px 0;min-height:76px}
+.cap .ct{font-family:"Zen Kaku Gothic New",sans-serif;font-weight:700;font-size:15.5px;display:flex;align-items:baseline;gap:9px}
+.cap .ct em{font-style:normal;font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--amber);letter-spacing:.1em}
+.cap .cd{font-size:13.5px;color:var(--ink-2);margin-top:3px;line-height:1.7}
+.ctrl{display:flex;align-items:center;gap:8px;padding:12px 18px 14px;border-top:1px solid var(--rule);margin-top:12px;flex-wrap:wrap}
+.btn{font-family:"Noto Sans JP",sans-serif;font-size:12.5px;font-weight:500;border:1px solid var(--rule-2);background:var(--surface);color:var(--ink);border-radius:5px;padding:5px 12px;cursor:pointer;transition:.15s;line-height:1.6}
+.btn:hover{background:var(--surface-2);border-color:var(--muted)}
+.btn.pri{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+.btn.pri:hover{opacity:.86;background:var(--ink)}
+.dots{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap}
+.dot{width:22px;height:5px;border-radius:3px;background:var(--surface-3);border:0;padding:0;cursor:pointer;transition:.2s}
+.dot:hover{background:var(--rule-2)}
+.dot.on{background:var(--amber-2)}
+.lg{display:flex;gap:12px;flex-wrap:wrap;padding:0 18px 14px;font-size:11px;color:var(--muted)}
+.lg span{display:flex;align-items:center;gap:5px}
+.lg i{width:10px;height:10px;border-radius:2px;display:block;border:1px solid rgba(0,0,0,.12)}
+
+/* SVG element states */
+.dgm .lay{transition:opacity .45s ease, transform .45s ease}
+.dgm .hide{opacity:0}
+@media (prefers-reduced-motion: reduce){.dgm .lay{transition:none}.ray{animation:none !important}}
+.ray{stroke-dasharray:7 6;animation:flow .8s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-13}}
+.scn{opacity:0;visibility:hidden;transition:opacity .4s ease}
+.scn[data-f="0"]{opacity:1;visibility:visible}
+.dgm.js .scn{opacity:0;visibility:hidden}
+.dgm.js .scn.on{opacity:1;visibility:visible}
+.spin{transform-box:view-box;transform-origin:center;animation:spin 3.2s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion: reduce){.spin{animation:none}}
+text{font-family:"IBM Plex Mono","Noto Sans JP",monospace}
+
+/* ============ map ============ */
+.map{display:grid;gap:12px;margin:26px 0 0}
+@media (min-width:820px){.map{grid-template-columns:repeat(4,1fr)}.map.three{grid-template-columns:repeat(3,1fr)}}
+.mcard{background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:16px 17px;display:flex;flex-direction:column;gap:7px;position:relative;box-shadow:var(--shadow-s)}
+.mcard .mt{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.mcard h3{font-size:17px}
+.mcard p{font-size:13px;color:var(--ink-2);line-height:1.7}
+.mcard .who{font-size:11.5px;color:var(--muted);border-top:1px dashed var(--rule);padding-top:7px;margin-top:auto;line-height:1.6}
+.mcard.a{background:var(--si-soft);border-color:color-mix(in srgb,var(--si-2) 30%,var(--rule))}
+.mcard.b{background:var(--amber-soft);border-color:color-mix(in srgb,var(--amber-2) 34%,var(--rule))}
+
+/* ============ table ============ */
+.tw{overflow-x:auto;border:1px solid var(--rule);border-radius:8px;background:var(--surface);margin-top:20px;box-shadow:var(--shadow-s)}
+table{border-collapse:collapse;width:100%;min-width:900px;font-size:13px}
+th,td{text-align:left;padding:9px 13px;border-bottom:1px solid var(--rule);vertical-align:top;line-height:1.6}
+thead th{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:500;background:var(--surface-2);position:sticky;top:0;white-space:nowrap}
+tbody tr:last-child td{border-bottom:0}
+td.p{font-weight:700;white-space:nowrap}
+td .n{display:block;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;white-space:nowrap;font-size:11.5px;font-weight:500;color:var(--amber);margin-top:1px}
+td.p{color:var(--ink)}
+.g1{color:var(--si)}
+.g2{color:var(--amber)}
+tbody tr:hover{background:var(--surface-2)}
+
+/* ============ scale ============ */
+.scale{margin:26px 0 10px;padding:26px 4px 8px;position:relative}
+.scale-ax{height:3px;background:linear-gradient(90deg,var(--si-2),var(--amber-2));border-radius:2px;position:relative}
+.scale-mk{position:absolute;top:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;width:1px}
+.scale-mk::before{content:"";width:1px;height:14px;background:var(--rule-2);display:block}
+.scale-mk b{font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;white-space:nowrap;margin-top:4px}
+.scale-mk span{font-size:10.5px;color:var(--muted);white-space:nowrap}
+.scale-mk.up{top:auto;bottom:0;flex-direction:column-reverse}
+.scale-mk.up::before{margin-top:4px}
+.scale-lab{display:flex;justify-content:space-between;font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--muted);margin-top:2px}
+
+/* ============ toggle group ============ */
+.seg{display:inline-flex;background:var(--surface-2);border-radius:6px;padding:3px;gap:2px;flex-wrap:wrap}
+.seg button{border:0;background:transparent;font-family:"Noto Sans JP",sans-serif;font-size:12.5px;font-weight:500;color:var(--ink-2);padding:5px 13px;border-radius:4px;cursor:pointer;transition:.15s;line-height:1.6}
+.seg button:hover{color:var(--ink)}
+.seg button.on{background:var(--surface);color:var(--ink);font-weight:700;box-shadow:var(--shadow-s)}
+
+/* ============ glossary ============ */
+.gl{display:grid;gap:0;margin-top:16px;border-top:1px solid var(--rule)}
+@media (min-width:780px){.gl{grid-template-columns:1fr 1fr;column-gap:34px}}
+.gl div{border-bottom:1px solid var(--rule);padding:11px 0;display:grid;grid-template-columns:minmax(0,1fr);gap:2px}
+.gl dt,.gl b{font-weight:700;font-size:14px;font-family:"Zen Kaku Gothic New",sans-serif}
+.gl b small{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--muted);font-weight:400;margin-left:6px}
+.gl p{font-size:13px;color:var(--ink-2);line-height:1.7}
+
+/* ============ sources ============ */
+.refs{list-style:none;margin:14px 0 0;padding:0;display:flex;flex-direction:column;gap:9px;font-size:12.5px;max-width:var(--read)}
+.refs li{display:grid;grid-template-columns:26px 1fr;gap:9px;line-height:1.65;padding-bottom:9px;border-bottom:1px solid var(--rule)}
+.refs .rn{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--muted);padding-top:2px}
+.refs .rd{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--muted);display:block}
+.foot{margin-top:34px;padding-top:20px;border-top:1px solid var(--rule);font-size:11.5px;color:var(--muted);line-height:1.8;max-width:var(--read)}
+
+/* ============ yield widget ============ */
+@media (min-width:840px){.yg{grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr)}}
+input[type="range"]{-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;background:var(--surface-3);outline-offset:6px}
+input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--amber-2);border:2px solid var(--surface);box-shadow:var(--shadow-s);cursor:pointer}
+input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--amber-2);border:2px solid var(--surface);cursor:pointer}
+#svg-yield{display:block}
+
+/* ============ print / PDF ============
+   Ctrl+P →「PDFとして保存」で配布用の資料になるようにする。
+   画面専用の操作系を落とし、カードや図が途中で改ページされないようにする。 */
+@media print{
+  :root{
+    --ground:#FFFFFF; --surface:#FFFFFF; --surface-2:#F2F4F7; --surface-3:#E3E7ED;
+    --ink:#101418; --ink-2:#2C333D; --muted:#565E6A; --rule:#C8CDD5; --rule-2:#9AA2AE;
+    --amber:#8A5100; --amber-soft:#FBF2E0; --si:#0C4E66; --si-soft:#EAF2F7;
+    --shadow-s:none; --shadow-m:none;
+  }
+  @page{margin:14mm 12mm}
+  body{background:#fff;font-size:9.5pt;line-height:1.7;overflow-x:visible}
+  .wrap{max-width:none;padding:0}
+  .layout{display:block}
+  .rail,.ctrl,.dots,.seg,.btn{display:none!important}
+  .hero .wrap{padding-top:0;padding-bottom:16pt}
+  h1{font-size:24pt}
+  .hero .lead{font-size:10.5pt}
+  .hero-stats{gap:8pt 22pt}
+  .hs b{font-size:15pt}
+  section{padding:16pt 0;border-bottom:1px solid var(--rule)}
+  h2{font-size:15pt}
+  h2,h3,.sec-h{break-after:avoid;page-break-after:avoid}
+  .step,.fig,.mcard,.tw,.share,.gl div,.refs li{break-inside:avoid;page-break-inside:avoid;box-shadow:none}
+  .step-b{grid-template-columns:1fr 1fr;gap:16pt}
+  .map{grid-template-columns:1fr 1fr}
+  .stage svg{max-height:200pt}
+  .fig::after{
+    content:"この図は画面上で操作すると全ステップを順に確認できます。印刷では現在のステップのみ表示されます。";
+    display:block;padding:0 14pt 10pt;font-size:7.5pt;color:var(--muted);
+  }
+  table{min-width:0;font-size:8pt}
+  th,td{padding:5pt 7pt}
+  thead th{position:static}
+  .tw{overflow:visible}
+  .tm{border-bottom:0;font-weight:700}
+  .tm::after{content:""}
+  .tm>i{display:none!important}
+  a{color:var(--ink);border-bottom:0}
+  .gl{grid-template-columns:1fr 1fr}
+  .scale{margin-top:34pt}
+}
+</style>
+
+<header class="hero">
+  <div class="wrap">
+    <a class="back" href="index.html">&larr; Labs / 半導体 ― 第1部 どう作るか（実践: ProcessLab）</a>
+    <p class="eyebrow">半導体製造プロセス 体系マップ</p>
+    <h1>ウェーハからチップまで</h1>
+    <p class="lead">1枚のシリコン円盤に、原子数十個ぶんの幅の回路を1000工程かけて刻み込む。その一つひとつが「なんのために、なにをしているのか」を、前工程・後工程の枠組みに沿って順番にたどります。専門用語には<span class="tm">注釈<i>点線の語にカーソルを合わせる（スマホはタップ）と、この形で意味が出ます。巻末に用語集もあります。</i></span>が付き、各工程には世界シェア上位企業と出典を添えました。</p>
+    <div class="hero-stats">
+      <div class="hs"><b>約 1,000</b><span>最先端ロジックの総工程数（目安）</span></div>
+      <div class="hs"><b>約 3 か月</b><span>ウェーハ投入から完成までの期間</span></div>
+      <div class="hs"><b>2 nm</b><span>2025〜26年に量産が始まる世代の呼称</span></div>
+      <div class="hs"><b>7,956 億ドル</b><span>2025年 世界半導体市場（WSTS実績）</span></div>
+      <div class="hs"><b>1,350 億ドル</b><span>2025年 世界半導体製造装置市場（SEMI）</span></div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+<div class="layout">
+
+<nav class="rail" aria-label="目次">
+  <ol>
+    <li class="g">Orientation</li>
+    <li><a href="#why" class="on">なぜ1000工程も要るのか</a></li>
+    <li><a href="#scale">寸法の感覚をつかむ</a></li>
+    <li><a href="#map">産業の全体地図</a></li>
+    <li class="g">前工程 / Front-end</li>
+    <li><a href="#litho">リソグラフィ・サイクル</a></li>
+    <li><a href="#fe">前工程の各工程</a></li>
+    <li><a href="#tr">トランジスタ構造の進化</a></li>
+    <li class="g">後工程 / Back-end</li>
+    <li><a href="#beflow">後工程フロー</a></li>
+    <li><a href="#be">後工程の各工程</a></li>
+    <li><a href="#adv">先端パッケージ</a></li>
+    <li class="g">Reference</li>
+    <li><a href="#yield">歩留まりとコスト</a></li>
+    <li><a href="#table">工程別シェア早見表</a></li>
+    <li><a href="#glossary">用語集</a></li>
+    <li><a href="#refs">出典</a></li>
+  </ol>
+</nav>
+
+<main>
+
+<!-- ============================================================ 1 -->
+<section id="why">
+  <div class="sec-h"><span class="sec-n">01</span><h2>なぜ1000工程も要るのか</h2></div>
+  <p class="sec-sub">結論から言うと、半導体は「立体を彫る」のではなく「平らな膜を敷いて、要らない所を消す」を積み重ねて作るからです。この考え方が分かると、以降の工程がすべて同じ骨格で読めます。</p>
+  <div class="prose">
+    <p>まず、作ろうとしている物の正体から。チップの中身は、電気のオン・オフを切り替える極小のスイッチ（<b>トランジスタ</b>）が数百億個と、それらをつなぐ金属配線です。スイッチの開け閉めの組み合わせで計算も記憶も成立します。したがって製造とは、<b>「スイッチを大量に作り、正しくつなぐ」</b>という一言に尽きます。</p>
+    <p>物理的には、シリコンの土台の上に絶縁膜・金属配線・半導体領域が十数層〜数十層に重なった立体構造です。しかし製造装置には「立体を直接削り出す」手段がありません。できるのは次の2つだけです。</p>
+    <ul>
+      <li><b>ウェーハ全面に、均一な薄い膜を1層つける</b>（成膜）</li>
+      <li><b>その膜の、要らない場所だけを消す</b>（リソグラフィ＋エッチング）</li>
+    </ul>
+    <p>つまり <b>「全面につける → 場所を指定して消す」</b> の2手で1層。これを1層ぶんとして数十回積み上げ、途中に不純物の打ち込みや平坦化を挟むため、総工程数が数百〜1000に達します。<span class="tm">前工程<i>Front-end。ウェーハに回路を作り込む工程群。クリーンルーム内で行われ、期間の大半を占める。</i></span>と<span class="tm">後工程<i>Back-end。回路が完成したウェーハを切り分け、パッケージに組み立てて検査する工程群。</i></span>という業界の区切りも、この「作り込む／組み立てる」の境目に引かれています。</p>
+    <div class="note"><b>紛らわしい2組の用語。</b>日本語の「前工程／後工程」は <em>ウェーハ処理／組立</em> の区切りです。一方、英語文献の <span class="tm">FEOL / BEOL<i>Front End Of Line / Back End Of Line。どちらも前工程の中の区分で、FEOL＝トランジスタそのものを作る段階、BEOL＝その上に多層の金属配線を作る段階。間をつなぐ接続層をMOL（Middle Of Line）と呼ぶ。</i></span> は <em>どちらも前工程の中</em> の区分（トランジスタ形成／多層配線形成）で、まったく別の切り分けです。混同しやすいので注意してください。</div>
+  </div>
+</section>
+
+<!-- ============================================================ 2 -->
+<section id="scale">
+  <div class="sec-h"><span class="sec-n">02</span><h2>寸法の感覚をつかむ</h2></div>
+  <p class="sec-sub">「2nm」がどれくらい小さいのか。対数目盛で身近なものと並べると、なぜ普通の加工技術が通用しないかが見えます。</p>
+  <div class="scale" aria-hidden="false">
+    <div class="scale-ax">
+      <div class="scale-mk" style="left:1.6%"><b>80 µm</b><span>髪の毛の直径</span></div>
+      <div class="scale-mk up" style="left:18.3%"><b>8 µm</b><span>赤血球</span></div>
+      <div class="scale-mk" style="left:33.3%"><b>1 µm</b><span>大腸菌</span></div>
+      <div class="scale-mk up" style="left:50%"><b>100 nm</b><span>ウイルス</span></div>
+      <div class="scale-mk" style="left:64.5%"><b>13.5 nm</b><span>EUV光の波長</span></div>
+      <div class="scale-mk up" style="left:95%"><b>0.2 nm</b><span>シリコン原子1個</span></div>
+    </div>
+    <div class="scale-lab"><span>100 µm</span><span>1 µm</span><span>10 nm</span><span>0.1 nm</span></div>
+  </div>
+  <div class="prose" style="margin-top:56px">
+    <p>最先端世代のトランジスタでは、電流を制御するゲートの長さが十数nm、絶縁膜の厚さは原子数個ぶんしかありません。ここで効いてくるのが2つの物理的な制約です。</p>
+    <ul>
+      <li><b>光の波長より細い線は、そのままでは描けない。</b>だから露光の光源は 365nm → 248nm → 193nm → 13.5nm と短くなり続けてきました。</li>
+      <li><b>0.1µmの塵1個でチップ1個が死ぬ。</b>だから工場は <span class="tm">ISOクラス1〜3<i>クリーンルームの清浄度規格（ISO 14644-1）。クラス1は1立方メートル中に0.1µm以上の粒子が10個以下という水準。一般的な屋外の空気はこの1億倍以上の粒子を含む。</i></span> という、外気の1億分の1以下の清浄度で運転されます。</li>
+    </ul>
+    <div class="note w"><b>「2nm」はどこの寸法でもありません。</b>かつてノード名はゲート長を指しましたが、20nm世代以降は世代を区別するための<b>マーケティング名称</b>になっています。2nmノードのチップに2nmの構造物はなく、実際のゲート長は十数nm、配線ピッチは20nm台です。世代間の比較は「同じ面積に何個トランジスタが入るか（密度）」で見るのが実態に近い読み方です。</div>
+  </div>
+</section>
+
+<!-- ============================================================ 3 -->
+<section id="map">
+  <div class="sec-h"><span class="sec-n">03</span><h2>産業の全体地図</h2></div>
+  <p class="sec-sub">半導体産業は「1社が全部やる」構造から、工程ごとの水平分業へ移りました。まずどこで誰が何をしているかを押さえます。</p>
+  <div class="map">
+    <div class="mcard">
+      <span class="mt">01 — Design</span>
+      <h3>設計</h3>
+      <p>回路を論理レベルで設計し、最終的に各層のパターン図形データ（GDSII / OASIS）へ落とし込む。物理的なモノは作らない。</p>
+      <p class="who"><b>ファブレス:</b> NVIDIA・Apple・Qualcomm・AMD・Broadcom<br><b>EDAツール:</b> Synopsys / Cadence / Siemens EDA の3社寡占</p>
+    </div>
+    <div class="mcard a">
+      <span class="mt">02 — 前工程 / Front-end</span>
+      <h3>ウェーハプロセス</h3>
+      <p>直径300mmのシリコン円盤に、成膜・露光・エッチングを数百回繰り返して回路を作り込む。全体の期間・コストの大半を占める。</p>
+      <p class="who"><b>ファウンドリ:</b> TSMC・Samsung Foundry・SMIC<br><b>IDM:</b> Intel・Samsung・Micron・SK hynix・Kioxia・TI・Infineon</p>
+    </div>
+    <div class="mcard b">
+      <span class="mt">03 — 後工程 / Back-end</span>
+      <h3>組立・パッケージ</h3>
+      <p>ウェーハを薄く削って個々のチップに切り分け、基板に載せ、端子をつなぎ、樹脂で封止して「部品」の形にする。</p>
+      <p class="who"><b>OSAT（受託組立）:</b> ASE・Amkor・JCET・Tongfu・PTI<br>近年は先端パッケージをTSMCなどファウンドリも手がける</p>
+    </div>
+    <div class="mcard b">
+      <span class="mt">04 — 検査・出荷 / Test</span>
+      <h3>最終検査・出荷</h3>
+      <p>実使用に近い条件で全数の電気特性を測り、規格を満たす品だけを等級分けして出荷する。</p>
+      <p class="who"><b>テスタ:</b> アドバンテスト・Teradyne の2社で約8割<br><b>ハンドラ:</b> Cohu・TechWing・アドバンテスト</p>
+    </div>
+  </div>
+
+  <div class="note" style="margin-top:26px;display:flex;gap:18px;flex-wrap:wrap;align-items:center">
+    <span style="font-weight:700;color:var(--ink)">シェア表の読み方</span>
+    <span style="display:flex;align-items:center;gap:7px"><span class="bar" style="width:36px;height:7px;border-radius:2px;background:var(--surface-3);position:relative;display:inline-block"><span style="position:absolute;inset:0;background:var(--si-2);border-radius:2px"></span></span>実線＝調査会社・企業の公表値</span>
+    <span style="display:flex;align-items:center;gap:7px"><span class="bar" style="width:36px;height:7px;border-radius:2px;background:var(--surface-3);position:relative;display:inline-block"><span style="position:absolute;inset:0;background:repeating-linear-gradient(135deg,var(--rule-2) 0 3px,transparent 3px 7px);border-radius:2px"></span></span>斜線＝複数の業界集計からの概算値</span>
+  </div>
+
+  <div class="share" style="max-width:none">
+    <p class="share-t">製造受託（ファウンドリ）・組立受託（OSAT）世界シェア — 2025年第4四半期・売上高ベース</p>
+    <div class="share-grid two">
+      <ol class="sl"><li class="hd">ファウンドリ（製造受託）</li>
+        <li><span class="co">TSMC<small>台湾</small></span><span class="bar"><span style="--v:70.4"></span></span><span class="vl">70.4%</span></li>
+        <li><span class="co">Samsung Foundry<small>韓国</small></span><span class="bar"><span style="--v:7.1"></span></span><span class="vl">7.1%</span></li>
+        <li><span class="co">SMIC<small>中国</small></span><span class="bar"><span style="--v:5.4"></span></span><span class="vl">約5%</span></li>
+      </ol>
+      <ol class="sl be"><li class="hd">OSAT（組立・検査の受託）</li>
+        <li><span class="co">ASE Technology<small>台湾・OSAT</small></span><span class="bar"><span style="--v:44"></span></span><span class="vl">約45%</span></li>
+        <li><span class="co">Amkor<small>米国・OSAT</small></span><span class="bar"><span style="--v:15.2"></span></span><span class="vl">15.2%</span></li>
+        <li><span class="co">JCET 長電科技<small>中国・OSAT</small></span><span class="bar"><span style="--v:12"></span></span><span class="vl">12.0%</span></li>
+      </ol>
+    </div>
+    <p class="src">左：TrendForce「4Q25 Global Top 10 Foundries」2026年3月12日発表。総額462.8億ドル。／右：TrendForce「Top 10 OSAT Companies of 2024」2025年5月13日発表。上位10社合計415.6億ドルに対する構成比。<span class="mono">[R2][R4]</span></p>
+  </div>
+
+  <div class="share" style="max-width:none;margin-top:22px">
+    <p class="share-t">メモリ世界シェア — 2025年第4四半期・売上高ベース</p>
+    <div class="share-grid two">
+      <ol class="sl"><li class="hd">DRAM</li>
+        <li><span class="co">Samsung<small>DRAM</small></span><span class="bar"><span style="--v:36"></span></span><span class="vl">36.0%</span></li>
+        <li><span class="co">SK hynix<small>DRAM</small></span><span class="bar"><span style="--v:32.1"></span></span><span class="vl">32.1%</span></li>
+        <li><span class="co">Micron<small>DRAM</small></span><span class="bar"><span style="--v:22.4"></span></span><span class="vl">22.4%</span></li>
+      </ol>
+      <ol class="sl"><li class="hd">NAND型フラッシュ</li>
+        <li><span class="co">Samsung<small>NAND</small></span><span class="bar"><span style="--v:32.3"></span></span><span class="vl">32.3%</span></li>
+        <li><span class="co">SKグループ<small>NAND / SK hynix＋Solidigm</small></span><span class="bar"><span style="--v:22.1"></span></span><span class="vl">22.1%</span></li>
+        <li><span class="co">Kioxia<small><span class="jp">JP</span></small></span><span class="bar"><span style="--v:15.6"></span></span><span class="vl">15.6%</span></li>
+        <li><span class="co">Micron<small>米</small></span><span class="bar"><span style="--v:14.3"></span></span><span class="vl">14.3%</span></li>
+        <li><span class="co">SanDisk<small>米</small></span><span class="bar"><span style="--v:14.3"></span></span><span class="vl">14.3%</span></li>
+      </ol>
+    </div>
+    <p class="src">TrendForce「4Q25 DRAM Revenue」2026年2月26日発表。DRAM総額535.8億ドル、Samsungは売上193.0億ドル・シェアを3.4ポイント伸ばして36.0%とし首位を奪回（SK hynix 172.2億ドル、Micron 119.8億ドル）。／「4Q25 NAND Flash」2026年3月3日発表（上位5社合計211.7億ドル）。<span class="mono">[R3]</span></p>
+  </div>
+</section>
+
+<!-- ============================================================ 4 -->
+<section id="litho">
+  <div class="sec-h"><span class="sec-n">04</span><h2>前工程の心臓部 ― リソグラフィ・サイクル</h2></div>
+  <p class="sec-sub">前工程は、下の8ステップを配線層の数だけ繰り返す構造になっています。まずこのサイクルを断面で見てください。次章で扱う工程の多くは、この図のどこかに対応します。</p>
+
+  <figure class="fig">
+    <div class="fig-h">
+      <h3>1層ぶんのパターンができるまで</h3>
+      <span class="k">Cross-section / 断面図</span>
+    </div>
+    <div class="stage">
+      <svg id="svg-litho" class="dgm" viewBox="0 0 620 300" role="img" aria-label="リソグラフィ工程の断面アニメーション">
+        <defs>
+          <linearGradient id="glowL" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="var(--d-light)" stop-opacity="0.55"/>
+            <stop offset="100%" stop-color="var(--d-light)" stop-opacity="0.05"/>
+          </linearGradient>
+        </defs>
+
+        <!-- 露光機まわり -->
+        <g class="lay hide" data-k="mask">
+          <rect x="40" y="10" width="540" height="26" fill="url(#glowL)"/>
+          <text x="46" y="26" font-size="9.5" fill="var(--muted)" letter-spacing="1.4">EXPOSURE LIGHT</text>
+          <rect x="40" y="46" width="540" height="15" rx="1.5" fill="var(--d-glass)"/>
+          <rect x="40" y="46" width="120" height="15" fill="var(--d-mask)"/>
+          <rect x="270" y="46" width="120" height="15" fill="var(--d-mask)"/>
+          <rect x="490" y="46" width="90" height="15" fill="var(--d-mask)"/>
+          <text x="580" y="42" font-size="9.5" fill="var(--muted)" text-anchor="end">マスク（レチクル）</text>
+        </g>
+        <g class="lay hide" data-k="light" stroke="var(--d-light)" stroke-width="2" stroke-linecap="round">
+          <line class="ray" x1="180" y1="66" x2="180" y2="132"/>
+          <line class="ray" x1="215" y1="66" x2="215" y2="132"/>
+          <line class="ray" x1="250" y1="66" x2="250" y2="132"/>
+          <line class="ray" x1="410" y1="66" x2="410" y2="132"/>
+          <line class="ray" x1="445" y1="66" x2="445" y2="132"/>
+          <line class="ray" x1="475" y1="66" x2="475" y2="132"/>
+        </g>
+
+        <!-- レジスト -->
+        <g class="lay hide" data-k="resist">
+          <rect x="40"  y="134" width="120" height="30" fill="var(--d-resist)"/>
+          <rect x="270" y="134" width="120" height="30" fill="var(--d-resist)"/>
+          <rect x="490" y="134" width="90"  height="30" fill="var(--d-resist)"/>
+        </g>
+        <g class="lay hide" data-k="resistX">
+          <rect x="160" y="134" width="110" height="30" fill="var(--d-resist)"/>
+          <rect x="390" y="134" width="100" height="30" fill="var(--d-resist)"/>
+        </g>
+        <g class="lay hide" data-k="resistE">
+          <rect x="160" y="134" width="110" height="30" fill="var(--d-resist-exp)"/>
+          <rect x="390" y="134" width="100" height="30" fill="var(--d-resist-exp)"/>
+          <text x="215" y="128" font-size="9" fill="var(--amber)" text-anchor="middle">感光</text>
+          <text x="440" y="128" font-size="9" fill="var(--amber)" text-anchor="middle">感光</text>
+        </g>
+
+        <!-- 膜 -->
+        <g class="lay hide" data-k="film">
+          <rect x="40"  y="164" width="120" height="26" fill="var(--d-film)"/>
+          <rect x="270" y="164" width="120" height="26" fill="var(--d-film)"/>
+          <rect x="490" y="164" width="90"  height="26" fill="var(--d-film)"/>
+        </g>
+        <g class="lay hide" data-k="filmX">
+          <rect x="160" y="164" width="110" height="26" fill="var(--d-film)"/>
+          <rect x="390" y="164" width="100" height="26" fill="var(--d-film)"/>
+        </g>
+
+        <!-- 多層スタック（最終ステップ） -->
+        <g class="lay hide" data-k="stack">
+          <rect x="40" y="152" width="540" height="12" fill="var(--d-film-2)" opacity=".55"/>
+          <rect x="70"  y="140" width="46" height="12" fill="var(--d-metal)"/>
+          <rect x="200" y="140" width="62" height="12" fill="var(--d-metal)"/>
+          <rect x="420" y="140" width="92" height="12" fill="var(--d-metal)"/>
+          <rect x="40" y="128" width="540" height="12" fill="var(--d-film-2)" opacity=".4"/>
+          <rect x="120" y="116" width="72" height="12" fill="var(--d-metal)" opacity=".85"/>
+          <rect x="330" y="116" width="122" height="12" fill="var(--d-metal)" opacity=".85"/>
+          <rect x="40" y="104" width="540" height="12" fill="var(--d-film-2)" opacity=".28"/>
+          <text x="310" y="92" font-size="10" fill="var(--muted)" text-anchor="middle">…これを配線層の数だけ繰り返す（最先端では金属配線 15層以上）</text>
+        </g>
+
+        <!-- 基板 -->
+        <rect x="40" y="190" width="540" height="72" rx="2" fill="var(--d-si)"/>
+        <rect x="40" y="190" width="540" height="4" fill="var(--d-si-dark)"/>
+        <text x="310" y="232" font-size="11" fill="var(--d-ink)" text-anchor="middle" letter-spacing="2">SILICON  WAFER</text>
+        <text x="40" y="282" font-size="9.5" fill="var(--muted)">断面図・厚みは説明のため誇張しています</text>
+      </svg>
+    </div>
+    <div class="lg">
+      <span><i style="background:var(--d-si)"></i>シリコン基板</span>
+      <span><i style="background:var(--d-film)"></i>加工したい膜（酸化膜・金属など）</span>
+      <span><i style="background:var(--d-resist)"></i>フォトレジスト</span>
+      <span><i style="background:var(--d-resist-exp)"></i>感光したレジスト</span>
+      <span><i style="background:var(--d-mask)"></i>マスクの遮光部</span>
+    </div>
+    <figcaption class="cap" id="cap-litho">
+      <p class="ct"><em>STEP 1/8</em><span>シリコンウェーハ</span></p>
+      <p class="cd">出発点は鏡面研磨された単結晶シリコンの円盤。ここにはまだ何もありません。以降のすべてがこの上に積み上がります。</p>
+    </figcaption>
+    <div class="ctrl">
+      <button class="btn pri" data-act="play" data-for="litho">▶ 再生</button>
+      <button class="btn" data-act="prev" data-for="litho">前へ</button>
+      <button class="btn" data-act="next" data-for="litho">次へ</button>
+      <div class="dots" id="dots-litho" role="tablist" aria-label="工程ステップ"></div>
+    </div>
+  </figure>
+
+  <div class="prose">
+    <div class="note"><b>なぜ「光」で描くのか。</b>刃物で1本ずつ削れば数十年かかります。リソグラフィは<b>1回の露光でチップ1個ぶん（数十億個の図形）を一度に転写する</b>ため、写真の焼き付けと同じ「一括転写」の原理を使います。半導体が安いのは、この一括性のおかげです。</div>
+  <div class="lab-go">
+    <span class="tag">手を動かす — ProcessLab</span>
+    <p>マスクの帯を塗って開口を決め、その下だけに注入・酸化が入るのを断面で見る。LOCOS は「窒化膜で覆った所だけ酸化しない」を工程の並びとして作る ― 部品としての LOCOS は存在しない。</p>
+    <div class="qs"><a href="ProcessLab/index.html?quest=open">開けた所にだけ打つ</a><a href="ProcessLab/index.html?quest=locos">選んだ所だけ酸化する（LOCOS）</a></div>
+  </div>
+  </div>
+</section>
+
+<!-- ============================================================ 5 -->
+<section id="fe">
+  <div class="sec-h"><span class="sec-n">05</span><h2>前工程 ― 各工程の詳細</h2></div>
+  <p class="sec-sub">ここからは工程ごとに「なんのために／なにをして／誰が装置と材料を握っているか」を順に見ます。<a href="#litho">04のアニメーション</a>の8ステップは、このうち <b>02 成膜 → 03 レジスト塗布 → 04 露光 → 05 現像 → 06 エッチング → 09 洗浄</b> に対応します。数値の性格については <a href="#table">工程別シェア早見表</a> の冒頭注記を参照してください。</p>
+
+  <div class="steps">
+
+  <!-- 00 ウェーハ -->
+  <article class="step pre" id="s00">
+    <div class="step-h"><span class="step-n">00</span><div>
+      <h3>ウェーハ製造<span class="en">Wafer Manufacturing</span></h3>
+      <p class="oneline">すべての土台となる、ほぼ完全な単結晶シリコンの円盤を作る。</p>
+    </div></div>
+    <div class="step-b">
+      <div class="blk">
+        <h4>なんのために</h4>
+        <p>トランジスタは結晶の規則正しい原子配列を利用して動きます。原子の並びが1か所でも乱れると（＝<span class="tm">結晶欠陥<i>原子配列の乱れ。転位・積層欠陥など。リーク電流の原因になり、その位置のチップが不良になる。</i></span>）、そこは不良になります。だから出発材料は<b>純度11N（99.999999999%）級・欠陥のほぼない単結晶</b>である必要があります。</p>
+      </div>
+      <div class="blk">
+        <h4>なにをしている</h4>
+        <ul>
+          <li><b>多結晶シリコン</b>を石英るつぼで溶かす（約1420℃）</li>
+          <li><span class="tm">CZ法<i>チョクラルスキー法。融けたシリコンに小さな種結晶を浸し、回転させながらゆっくり引き上げると、種と同じ結晶方位のまま巨大な単結晶（インゴット）が育つ。</i></span>で直径300mm・長さ2m級の<b>インゴット</b>を引き上げる</li>
+          <li>ワイヤソーで厚さ約775µmにスライス</li>
+          <li>ラッピング → エッチング → <b>鏡面研磨</b>。平坦度はウェーハ全面でnmオーダー</li>
+          <li>用途によって表面に<span class="tm">エピタキシャル層<i>結晶方位を引き継いだまま成長させる高品質な単結晶薄膜。基板より欠陥が少なく、素子特性が安定する。</i></span>を成長させる</li>
+        </ul>
+      </div>
+    </div>
+    <div class="note">300mmが主流になったのは2000年代前半。次の450mmは投資対効果が合わず、業界として事実上棚上げされています。一方でパワー半導体向けのSiC・GaNは別系統の材料で、6→8インチ化が進行中です。</div>
+    <div class="share">
+      <p class="share-t">シリコンウェーハ 世界シェア（面積ベース・概数）</p>
+      <ol class="sl"><li class="hd">シリコンウェーハ（面積ベース）</li>
+        <li class="est"><span class="co">信越半導体<small>信越化学グループ<span class="jp">JP</span></small></span><span class="bar"><span style="--v:30"></span></span><span class="vl">約30%</span></li>
+        <li class="est"><span class="co">SUMCO<small><span class="jp">JP</span></small></span><span class="bar"><span style="--v:21"></span></span><span class="vl">約21%</span></li>
+        <li class="est"><span class="co">GlobalWafers<small>台湾</small></span><span class="bar"><span style="--v:14"></span></span><span class="vl">約14%</span></li>
+        <li class="est"><span class="co">SK Siltron<small>韓国</small></span><span class="bar"><span style="--v:12"></span></span><span class="vl">約12%</span></li>
+        <li class="est"><span class="co">Siltronic<small>ドイツ</small></span><span class="bar"><span style="--v:11"></span></span><span class="vl">約11%</span></li>
+      </ol>
+      <p class="src">上位5社で世界の約9割、うち日本2社で約5割。集計主体により面積ベース／金額ベースで数値が振れるため概数で示しています。<span class="mono">[R6][R11]</span></p>
+    </div>
+  </article>
+
+  <!-- 01 設計・マスク -->
+  <article class="step pre" id="s01">
+    <div class="step-h"><span class="step-n">01</span><div>
+      <h3>設計とフォトマスク製作<span class="en">Design &amp; Mask</span></h3>
+      <p class="oneline">回路図を「各層の図形データ」に変換し、露光用の原版を作る。</p>
+    </div></div>
+    <div class="step-b">
+      <div class="blk">
+        <h4>なんのために</h4>
+        <p>露光は「原版の像をウェーハに焼き付ける」工程なので、<b>層の数だけ原版が要ります</b>。最先端では60〜80枚以上のマスクセットになり、その費用だけで数十億円規模。少量生産では償却できないため、ここが「先端チップは大量に売れる製品しか作れない」理由になっています。</p>
+      </div>
+      <div class="blk">
+        <h4>なにをしている</h4>
+        <ul>
+          <li>論理設計 → 論理合成 → 配置配線を<span class="tm">EDA<i>Electronic Design Automation。半導体設計用ソフトウェア群。回路を物理レイアウトに変換し、タイミングや消費電力を検証する。</i></span>ツールで実施し、GDSII / OASIS形式の図形データを出力</li>
+          <li>石英ガラス基板にクロム膜を付けた<span class="tm">マスクブランクス<i>フォトマスクの素材となる、遮光膜付きの高純度合成石英基板。無欠陥かつ超平坦であることが求められる。</i></span>に、電子ビームで直接描画</li>
+          <li>実際に露光機に載せる原版は<span class="tm">レチクル<i>チップ数個ぶんのパターンを持つ原版。露光機がウェーハ上を移動しながら同じ像を繰り返し焼き付ける（ステップ＆リピート）。</i></span>と呼ばれ、通常<b>4倍の寸法</b>で作られ、レンズで1/4に縮小投影される</li>
+          <li>EUV用マスクは光を透過できないため、Mo/Si多層膜による<b>反射型</b>になる</li>
+        </ul>
+      </div>
+    </div>
+    <div class="share">
+      <p class="share-t">マスク関連 世界シェア</p>
+      <div class="share-grid two">
+        <ol class="sl"><li class="hd">マスクブランクス（マスクの素材）</li>
+          <li class="est"><span class="co">HOYA<small>マスクブランクス<span class="jp">JP</span></small></span><span class="bar"><span style="--v:55"></span></span><span class="vl">約55%</span></li>
+          <li class="est"><span class="co">AGC<small>マスクブランクス<span class="jp">JP</span></small></span><span class="bar"><span style="--v:25"></span></span><span class="vl">約25%</span></li>
+          <li class="est"><span class="co">信越化学工業<small>マスクブランクス<span class="jp">JP</span></small></span><span class="bar"><span style="--v:14"></span></span><span class="vl">約14%</span></li>
+        </ol>
+        <ol class="sl"><li class="hd">フォトマスク（商用市場・内製分を除く）</li>
+          <li class="est"><span class="co">Photronics<small>商用フォトマスク・米</small></span><span class="bar"><span style="--v:38"></span></span><span class="vl">約38%</span></li>
+          <li class="est"><span class="co">大日本印刷 (DNP)<small>商用フォトマスク<span class="jp">JP</span></small></span><span class="bar"><span style="--v:28"></span></span><span class="vl">約28%</span></li>
+          <li class="est"><span class="co">TOPPAN<small>商用フォトマスク<span class="jp">JP</span></small></span><span class="bar"><span style="--v:22"></span></span><span class="vl">約22%</span></li>
+        </ol>
+      </div>
+      <p class="src">マスクブランクスは日本3社で世界約9割。<b>EUV用ブランクスを量産できるのはHOYAとAGCの2社のみ</b>で、AGCは2025年時点でEUV用シェア50%を目標に増産を進めています。フォトマスク自体はTSMC・Intel・Samsungが自社内製する比率も高く、上記は商用（マーチャント）市場の順位です。<span class="mono">[R8]</span></p>
+    </div>
+  </article>
+
+  <!-- 02 成膜 -->
+  <article class="step fe" id="s02">
+    <div class="step-h"><span class="step-n">02</span><div>
+      <h3>成膜<span class="en">Deposition</span></h3>
+      <p class="oneline">回路の材料になる薄い膜を、ウェーハ全面に均一に敷きつめる。</p>
+    </div></div>
+    <div class="step-b">
+      <div class="blk">
+        <h4>なんのために</h4>
+        <p>絶縁したい所には絶縁膜、電流を流したい所には金属膜が要ります。しかし装置は「必要な場所にだけ置く」ことができないので、<b>まず全面に敷いてから、後で要らない所を消す</b>という手順を取ります。膜厚のばらつきは直接トランジスタ特性のばらつきになるため、300mm全面で数%以内に収めます。</p>
+      </div>
+      <div class="blk">
+        <h4>主な方式と使い分け</h4>
+        <ul>
+          <li><b>熱酸化</b>：シリコンを高温の酸素にさらし、表面自体を SiO₂ に変える。最も緻密な絶縁膜が得られる</li>
+          <li><span class="tm">CVD<i>Chemical Vapor Deposition／化学気相成長。原料ガスを反応させて膜を析出させる。プラズマを使うPECVD、低圧のLPCVDなど多数の派生がある。</i></span>：原料ガスの化学反応で膜を析出。絶縁膜の主力</li>
+          <li><span class="tm">ALD<i>Atomic Layer Deposition／原子層堆積。2種類の原料を交互に供給し、1サイクルにつき原子1層ぶんだけ成長させる。厚みを原子単位で制御でき、深い穴の側面にも均一に付く。</i></span>：<b>原子1層ずつ</b>積む。微細化と3D構造の進展で急速に重要度が上昇</li>
+          <li><span class="tm">PVD（スパッタ）<i>Physical Vapor Deposition。ターゲット材にイオンを衝突させ、弾き出された原子をウェーハに堆積させる物理的手法。金属膜に使う。</i></span>：金属をイオンで叩き出して積む。配線・バリア膜用</li>
+          <li><b>めっき</b>：銅配線の埋め込みは電解めっきで行う</li>
+        </ul>
+      </div>
+    </div>
+    <div class="share">
+      <p class="share-t">成膜装置 世界シェア</p>
+      <div class="share-grid two">
+        <ol class="sl"><li class="hd">CVD・PVD 総合</li>
+          <li class="est"><span class="co">Applied Materials<small>CVD/PVD 総合・米</small></span><span class="bar"><span style="--v:40"></span></span><span class="vl">約40%</span></li>
+          <li class="est"><span class="co">Lam Research<small>誘電体・金属CVD・米</small></span><span class="bar"><span style="--v:22"></span></span><span class="vl">約22%</span></li>
+          <li class="est"><span class="co">東京エレクトロン / ASM<small>成膜各種<span class="jp">JP</span> / 蘭</small></span><span class="bar"><span style="--v:16"></span></span><span class="vl">約16%</span></li>
+        </ol>
+        <ol class="sl"><li class="hd">特化分野別（それぞれ別の市場）</li>
+          <li class="est"><span class="co">KOKUSAI ELECTRIC<small>バッチALD<span class="jp">JP</span></small></span><span class="bar"><span style="--v:70"></span></span><span class="vl">約70%</span></li>
+          <li class="est"><span class="co">ASM International<small>枚葉ALD・蘭</small></span><span class="bar"><span style="--v:45"></span></span><span class="vl">約45%</span></li>
+          <li class="est"><span class="co">Applied Materials<small>スパッタ PVD・米</small></span><span class="bar"><span style="--v:60"></span></span><span class="vl">約60%</span></li>
+        </ol>
+      </div>
+      <p class="src">左：CVD分野の高シェア企業（モルガン・スタンレー証券調べを引用した業界集計）。右は左とは別の市場で、それぞれの分野の数値です。スパッタは経済産業省資料（2024年）でApplied Materialsが最大、2位にNAURA（中国）が急伸。<span class="mono">[R7][R12]</span></p>
+    </div>
+  <div class="lab-go">
+    <span class="tag">手を動かす — ProcessLab 第1章</span>
+    <p>熱酸化を Deal-Grove の式で育てる。ドライ酸化 1000℃ 1時間で何 nm か、ウェットに替えると何倍速いか、酸化膜 1 に対してシリコンが 0.44 食われることが、断面の目盛りで見える。</p>
+    <div class="qs"><a href="ProcessLab/index.html?quest=dryox">ゲート酸化膜を育てる</a><a href="ProcessLab/index.html?quest=wetox">厚い酸化膜を急いで</a></div>
+  </div>
+  </article>
+
+  <!-- 03 レジスト塗布 -->
+  <article class="step fe" id="s03">
+    <div class="step-h"><span class="step-n">03</span><div>
+      <h3>レジスト塗布<span class="en">Resist Coating</span></h3>
+      <p class="oneline">光で溶けやすさが変わる感光材を、均一な薄膜として塗る。</p>
+    </div></div>
+    <div class="step-b">
+      <div class="blk">
+        <h4>なんのために</h4>
+        <p>膜そのものは光に反応しません。そこで<b>光の情報を一度「溶ける／溶けない」の差に翻訳する中間材</b>を挟みます。これが<span class="tm">フォトレジスト<i>感光性樹脂。露光された部分が現像液に溶けるものをポジ型、逆をネガ型と呼ぶ。先端リソグラフィではポジ型が主流。</i></span>で、この後の現像・エッチングの精度をすべて左右します。</p>
+      </div>
+      <div class="blk">
+        <h4>なにをしている</h4>
+        <ul>
+          <li>ウェーハを高速回転させ、中心に滴下した液を遠心力で広げる（<b>スピンコート</b>）。厚さ数十〜数百nm、ばらつきは数nm</li>
+          <li><b>プリベーク</b>で溶剤を飛ばす</li>
+          <li>下地からの反射で像がぼけるのを防ぐ<span class="tm">反射防止膜（BARC）<i>Bottom Anti-Reflective Coating。レジストの下に敷き、下地で反射した光がレジストに戻って像をぼかす（定在波）のを抑える膜。</i></span>も同じ装置で塗る</li>
+          <li>レジストは短波長の光に反応するため、この一帯の照明は<b>紫外線を含まない黄色</b>にされる（イエロールーム）</li>
+        </ul>
+      </div>
+    </div>
+    <div class="share">
+      <p class="share-t">コータ／デベロッパ装置 ・ フォトレジスト材料 世界シェア</p>
+      <div class="share-grid two">
+        <ol class="sl"><li class="hd">コータ／デベロッパ装置</li>
+          <li><span class="co">東京エレクトロン<small>コータ/デベロッパ<span class="jp">JP</span></small></span><span class="bar"><span style="--v:90"></span></span><span class="vl">約90%</span></li>
+          <li class="est"><span class="co">SCREENホールディングス<small><span class="jp">JP</span></small></span><span class="bar"><span style="--v:6"></span></span><span class="vl">約6%</span></li>
+          <li class="est"><span class="co">SEMES<small>韓国・Samsung系</small></span><span class="bar"><span style="--v:3"></span></span><span class="vl">約3%</span></li>
+        </ol>
+        <ol class="sl"><li class="hd">フォトレジスト（材料）</li>
+          <li class="est"><span class="co">JSR<small>ArF・EUV向けに強み<span class="jp">JP</span></small></span><span class="bar"><span style="--v:26"></span></span><span class="vl">約26%</span></li>
+          <li class="est"><span class="co">東京応化工業 (TOK)<small><span class="jp">JP</span></small></span><span class="bar"><span style="--v:22"></span></span><span class="vl">約22%</span></li>
+          <li class="est"><span class="co">信越化学工業<small><span class="jp">JP</span></small></span><span class="bar"><span style="--v:15"></span></span><span class="vl">約15%</span></li>
+          <li class="est"><span class="co">住友化学<small><span class="jp">JP</span></small></span><span class="bar"><span style="--v:12"></span></span><span class="vl">約12%</span></li>
+          <li class="est"><span class="co">富士フイルム<small><span class="jp">JP</span></small></span><span class="bar"><span style="--v:10"></span></span><span class="vl">約10%</span></li>
+        </ol>
+      </div>
+      <p class="src">コータ／デベロッパは東京エレクトロンが約90%の寡占。レジストは<b>日本5社で世界の約9割</b>、EUV用レジストに限れば上位5社（いずれも日本企業）で約95%。さらに上流の感光剤原料では東洋合成工業が世界約7割を握っています。<span class="mono">[R9][R10][R13]</span></p>
+    </div>
+  </article>
+
+  <!-- 04 露光 -->
+  <article class="step fe" id="s04">
+    <div class="step-h"><span class="step-n">04</span><div>
+      <h3>露光<span class="en">Lithography / Exposure</span></h3>
+      <p class="oneline">マスクの像を縮小投影し、レジストに回路パターンを焼き付ける。</p>
+    </div></div>
+    <div class="step-b">
+      <div class="blk">
+        <h4>なんのために</h4>
+        <p>全工程で<b>唯一「どこに何を作るか」を決める工程</b>です。他の工程は全面に対して一様に作用するだけで、場所の情報を持っていません。だから露光機がチップの微細さの上限を決め、装置価格も突出します（EUVで1台200〜400億円規模）。</p>
+        <p style="margin-top:.7em">解像できる最小寸法は概ね <span class="mono">R = k₁ × λ / NA</span> で決まります。λ＝光の波長、NA＝レンズの<span class="tm">開口数<i>Numerical Aperture。レンズがどれだけ広い角度の光を集められるかを示す値。大きいほど細かい像を結べる。</i></span>。細くするには<b>波長を短く</b>するか<b>NAを大きく</b>するしかありません。</p>
+      </div>
+      <div class="blk">
+        <h4>光源の世代</h4>
+        <ul>
+          <li><b>i線 365nm</b> / <b>KrF 248nm</b>：現在も安価な半導体で現役</li>
+          <li><b>ArF 193nm</b>（2000年代〜）</li>
+          <li><span class="tm">ArF液浸 193nm<i>レンズとウェーハの間を純水（屈折率1.44）で満たし、実効的な波長を約134nmに縮める技術。NAを1.35まで上げられる。</i></span>：実効134nm相当。10年以上主力</li>
+          <li><b>EUV 13.5nm</b>（2019年〜量産）：スズを高出力レーザーでプラズマ化して発生。光が空気にもガラスにも吸収されるため、装置内は<b>真空</b>、光学系はすべて<b>反射ミラー</b></li>
+          <li><b>High-NA EUV</b>（NA0.55、2025年〜導入期）：1台約3.8億ドル。1枚の露光面積が半分になる代わりに、解像度が向上</li>
+        </ul>
+      </div>
+    </div>
+    <div class="note"><b>EUVが無い世代はどうしていたか。</b><span class="tm">マルチパターニング<i>1つの層のパターンを2回以上に分けて露光し、重ね合わせて細かいピッチを作る手法。LELE（露光→エッチングを2回）やSADP／SAQP（側壁を利用して線を倍増）などがある。</i></span>で、1層を2〜4回に分けて描いていました。工程数もマスク枚数も倍増するため、EUVは「1回で描けるようにしてコストを下げる」技術でもあります。</div>
+    <div class="share">
+      <p class="share-t">露光装置 世界シェア（金額ベース）</p>
+      <ol class="sl"><li class="hd">露光装置（金額ベース）</li>
+        <li><span class="co">ASML<small>オランダ・EUVは100%</small></span><span class="bar"><span style="--v:88"></span></span><span class="vl">83〜90%</span></li>
+        <li class="est"><span class="co">キヤノン<small>i線・KrF中心<span class="jp">JP</span></small></span><span class="bar"><span style="--v:8"></span></span><span class="vl">約8%</span></li>
+        <li class="est"><span class="co">ニコン<small>ArF/i線<span class="jp">JP</span></small></span><span class="bar"><span style="--v:4"></span></span><span class="vl">約4%</span></li>
+      </ol>
+      <p class="src"><b>読み方の注意：</b>金額ベースではASMLが8〜9割ですが、<b>出荷台数ベースではキヤノンが3割前後</b>を占めます。EUV1台の価格が旧世代機の10倍以上あるため、同じ市場でも指標により順位の見え方が大きく変わります。EUV露光装置はASMLの独占（100%）。<span class="mono">[R5][R14]</span></p>
+    </div>
+  </article>
+
+  <!-- 05 現像 -->
+  <article class="step fe" id="s05">
+    <div class="step-h"><span class="step-n">05</span><div>
+      <h3>現像<span class="en">Development</span></h3>
+      <p class="oneline">感光した部分を溶かし去り、レジストを立体のマスク型にする。</p>
+    </div></div>
+    <div class="step-b">
+      <div class="blk">
+        <h4>なんのために</h4>
+        <p>露光の時点では、レジストの中では化学変化が起きているだけで、形はまだ変わっていません。現像で初めて<b>「光のパターン」が「物理的な凹凸」に変わり</b>、次のエッチングで使える型になります。</p>
+      </div>
+      <div class="blk">
+        <h4>なにをしている</h4>
+        <ul>
+          <li>露光後ベーク（PEB）で化学反応を進める。<span class="tm">化学増幅型レジスト<i>露光で発生した酸が触媒として働き、加熱によって連鎖的に樹脂の性質を変える方式。少ない光量で反応するため、EUVのような弱い光源でも実用感度が得られる。</i></span>ではこの加熱が解像度を左右する</li>
+          <li><b>TMAH 2.38%水溶液</b>を主とする現像液を供給し、ポジ型なら感光部が溶ける</li>
+          <li>純水でリンス、スピン乾燥</li>
+          <li>直後に<span class="tm">寸法測定（CD-SEM）<i>Critical Dimension SEM。電子顕微鏡で線幅を実測し、露光条件にフィードバックする。日立ハイテクが高シェア。</i></span>と重ね合わせ精度の検査を行い、規格外なら<b>レジストを剥がしてやり直せる</b>（この工程までは救済可能）</li>
+        </ul>
+      </div>
+    </div>
+    <div class="note">現像装置はコータと一体の「<b>コータ／デベロッパ</b>」として露光機に直結されており、シェアは <a href="#s03">03 レジスト塗布</a> と同じ構成（東京エレクトロン 約90%）です。</div>
+  </article>
+
+  <!-- 06 エッチング -->
+  <article class="step fe" id="s06">
+    <div class="step-h"><span class="step-n">06</span><div>
+      <h3>エッチング<span class="en">Etching</span></h3>
+      <p class="oneline">レジストで覆われていない部分の膜を削り取り、形を確定させる。</p>
+    </div></div>
+    <div class="step-b">
+      <div class="blk">
+        <h4>なんのために</h4>
+        <p>ここで初めて<b>本命の膜に形が刻まれます</b>。求められるのは3つ。①真下に垂直に掘る（横に広がると線が太る）、②削りたい膜だけ削りレジストや下地は残す（<span class="tm">選択比<i>削りたい材料と、削りたくない材料の削れる速さの比。10倍あれば「10:1の選択比」と言う。高いほど下地を傷めずに済む。</i></span>）、③300mm全面で均一に。</p>
+      </div>
+      <div class="blk">
+        <h4>なにをしている</h4>
+        <ul>
+          <li><b>ドライエッチング（RIE）</b>が主力。真空中でガスをプラズマ化し、化学反応と<b>イオンの垂直な打ち込み</b>を組み合わせて真下方向にだけ削る</li>
+          <li>ガス種で選択比を作る（例：酸化膜にはフルオロカーボン系、シリコンには塩素・臭素系）</li>
+          <li><b>ウェットエッチング</b>は薬液に浸す方式。等方的に削れるため微細加工には不向きだが、犠牲層の除去などに使う</li>
+          <li>3D NANDでは深さ／幅の比（<span class="tm">アスペクト比<i>穴や溝の「深さ÷幅」。値が大きいほど加工が難しい。3D NANDのメモリホールでは60:1〜100:1を超える。</i></span>）が100:1に迫る穴を、途中で曲がらせずに掘る必要がある</li>
+        </ul>
+      </div>
+    </div>
+    <div class="share">
+      <p class="share-t">エッチング装置 世界シェア</p>
+      <ol class="sl"><li class="hd">エッチング装置</li>
+        <li><span class="co">Lam Research<small>米</small></span><span class="bar"><span style="--v:39"></span></span><span class="vl">約39%</span></li>
+        <li class="est"><span class="co">東京エレクトロン<small><span class="jp">JP</span></small></span><span class="bar"><span style="--v:26"></span></span><span class="vl">約26%</span></li>
+        <li class="est"><span class="co">Applied Materials<small>米</small></span><span class="bar"><span style="--v:18"></span></span><span class="vl">約18%</span></li>
+        <li class="est"><span class="co">NAURA / AMEC<small>中国・急伸中</small></span><span class="bar"><span style="--v:9"></span></span><span class="vl">約9%</span></li>
+      </ol>
+      <p class="src">上位3社で約8割。中国勢（NAURA・AMEC）はドライエッチングで5年間に8ポイントシェアを伸ばしたとされ、成熟ノード領域で存在感を増しています。<span class="mono">[R7][R12][R15]</span></p>
+    </div>
+  </article>
+
+  <!-- 07 イオン注入 -->
+  <article class="step fe" id="s07">
+    <div class="step-h"><span class="step-n">07</span><div>
+      <h3>不純物導入（イオン注入）と熱処理<span class="en">Ion Implantation &amp; Anneal</span></h3>
+      <p class="oneline">シリコンに別の元素を打ち込み、電気的な性格を作り分ける。</p>
+    </div></div>
+    <div class="step-b">
+      <div class="blk">
+        <h4>なんのために</h4>
+        <p>純粋なシリコンはほとんど電気を通しません。そこにリンやホウ素を微量入れると、電子が余る<b>n型</b>／電子が足りない<b>p型</b>になります。<b>トランジスタとは、このn型とp型の境界（pn接合）に電圧をかけて電流をオン・オフする素子</b>です。つまりこの工程が、シリコンを「半導体部品」にしています。</p>
+      </div>
+      <div class="blk">
+        <h4>なにをしている</h4>
+        <ul>
+          <li>不純物をイオン化し、数keV〜数MeVに加速してウェーハに撃ち込む。<b>加速電圧で深さ、ビーム電流で濃度</b>を制御</li>
+          <li>レジストのある所には入らないため、ここでも露光で決めた場所指定が効く</li>
+          <li>打ち込みで結晶は壊れ、不純物も格子の正しい位置にいない → <span class="tm">アニール<i>熱処理。高温で結晶の損傷を回復させ、不純物原子を格子位置に収めて電気的に活性化させる。</i></span>で回復・活性化させる</li>
+          <li>加熱すると不純物が拡散して接合がぼやけるため、<b>スパイクアニール（秒オーダー）</b>や<b>レーザーアニール（ミリ秒〜）</b>で「熱くするが短時間」を狙う</li>
+        </ul>
+      </div>
+    </div>
+    <div class="share">
+      <p class="share-t">イオン注入装置 世界シェア</p>
+      <ol class="sl"><li class="hd">イオン注入装置</li>
+        <li class="est"><span class="co">Applied Materials<small>米</small></span><span class="bar"><span style="--v:45"></span></span><span class="vl">約45%</span></li>
+        <li class="est"><span class="co">Axcelis Technologies<small>米・イオン注入専業</small></span><span class="bar"><span style="--v:25"></span></span><span class="vl">約25%</span></li>
+        <li class="est"><span class="co">住友重機械イオンテクノロジー<small><span class="jp">JP</span></small></span><span class="bar"><span style="--v:12"></span></span><span class="vl">約12%</span></li>
+      </ol>
+      <p class="src">上記3社で世界の70%超。市場規模は2025年で約38億ドル。Axcelisはイオン注入専業で、パワー半導体（SiC）向けの高エネルギー機に強みがあります。<span class="mono">[R16]</span></p>
+    </div>
+  <div class="lab-go">
+    <span class="tag">手を動かす — ProcessLab 第2・3章 / SemiLab 第1章</span>
+    <p>「加速電圧で深さ、ビーム電流で濃度」を Gibbons の飛程表で、「熱で広がる」をフィックの第2法則で。スパイクアニールが要る理由は「浅く、でも低抵抗に」の課題で自分で踏む。リンで n 型・ホウ素で p 型になる側は SemiLab の第1章。</p>
+    <div class="qs"><span class="lab">ProcessLab</span><a href="ProcessLab/index.html?quest=peak">深さを狙う</a><a href="ProcessLab/index.html?quest=guard">盾を厚くする</a><a href="ProcessLab/index.html?quest=xj">接合の深さを合わせる</a><a href="ProcessLab/index.html?quest=sheet">抵抗を下げる</a><a href="ProcessLab/index.html?quest=shallow">浅く、でも低抵抗に</a><a href="ProcessLab/index.html?quest=well">ウェルを掘る</a><span class="lab">SemiLab</span><a href="SemiLab/index.html?quest=ntype">n 型をつくる</a><a href="SemiLab/index.html?quest=ptype">p 型をつくる</a></div>
+  </div>
+  </article>
+
+  <!-- 08 CMP -->
+  <article class="step fe" id="s08">
+    <div class="step-h"><span class="step-n">08</span><div>
+      <h3>平坦化（CMP）<span class="en">Chemical Mechanical Planarization</span></h3>
+      <p class="oneline">積み上げて生じた凹凸を、化学と機械の合わせ技で削って平らに戻す。</p>
+    </div></div>
+    <div class="step-b">
+      <div class="blk">
+        <h4>なんのために</h4>
+        <p>理由は2つあり、どちらも決定的です。</p>
+        <ul>
+          <li><b>露光のピント。</b>最先端の露光機は<span class="tm">焦点深度<i>ピントが合う奥行きの範囲。解像度を上げるほど浅くなり、先端世代では100nm程度しかない。</i></span>が100nm程度しかありません。下の層の凹凸が残っていると、その段差だけでピントが外れて像がぼけます。</li>
+          <li><b>銅配線が作れない。</b>銅は良いエッチングガスがなく「削って形を作る」ことができません。そこで先に溝を掘り、銅を全面に埋めてから<b>余分をCMPで削り落とす</b>という逆転の発想（<span class="tm">ダマシン法<i>象嵌（ぞうがん）細工に由来する名前。溝や穴に金属を埋めてから表面を研磨し、溝の中だけに配線を残す手法。銅配線には必須。</i></span>）を使います。<b>CMPなしに銅多層配線は存在できません。</b></li>
+        </ul>
+      </div>
+      <div class="blk">
+        <h4>なにをしている</h4>
+        <ul>
+          <li>回転する研磨パッドにウェーハを押し付け、<span class="tm">スラリー<i>研磨用の懸濁液。ナノサイズのシリカやセリアの砥粒に、対象材料を化学的に軟化させる薬剤を加えたもの。</i></span>を流しながら削る</li>
+          <li>薬剤で表面を軟らかい化合物に変え（化学）、砥粒で凸部だけを擦り取る（機械）</li>
+          <li>削りすぎれば配線が消え、足りなければ短絡する。終点検出（モーター負荷や光学式）が要</li>
+          <li>削りかすと砥粒が残るため、CMP直後の洗浄は必ずセットで行う</li>
+        </ul>
+      </div>
+    </div>
+    <div class="share">
+      <p class="share-t">CMP装置 ・ CMP消耗材 世界シェア</p>
+      <div class="share-grid two">
+        <ol class="sl"><li class="hd">CMP装置</li>
+          <li class="est"><span class="co">Applied Materials<small>CMP装置・米</small></span><span class="bar"><span style="--v:60"></span></span><span class="vl">約60%</span></li>
+          <li class="est"><span class="co">荏原製作所<small>CMP装置<span class="jp">JP</span></small></span><span class="bar"><span style="--v:32"></span></span><span class="vl">約32%</span></li>
+          <li class="est"><span class="co">KCTech<small>CMP装置・韓国</small></span><span class="bar"><span style="--v:8"></span></span><span class="vl">約8%</span></li>
+        </ol>
+        <ol class="sl"><li class="hd">CMP消耗材（それぞれ別の市場）</li>
+          <li><span class="co">富士フイルム<small>スラリー<span class="jp">JP</span></small></span><span class="bar"><span style="--v:31"></span></span><span class="vl">31%</span></li>
+          <li class="est"><span class="co">Entegris<small>スラリー（旧CMC）・米</small></span><span class="bar"><span style="--v:24"></span></span><span class="vl">約24%</span></li>
+          <li><span class="co">DuPont<small>研磨パッド・米</small></span><span class="bar"><span style="--v:50"></span></span><span class="vl">50%超</span></li>
+        </ol>
+      </div>
+      <p class="src">装置はApplied Materialsと荏原製作所の実質2社寡占。スラリーは富士フイルムが31%で首位、Entegrisが2位（TECHCET調べ）。研磨パッドはDuPontが50%超を維持し、日本国内へはニッタデュポンが供給しています。<span class="mono">[R7][R17]</span></p>
+    </div>
+  </article>
+
+  <!-- 09 洗浄 -->
+  <article class="step fe" id="s09">
+    <div class="step-h"><span class="step-n">09</span><div>
+      <h3>洗浄<span class="en">Cleaning</span></h3>
+      <p class="oneline">工程の合間ごとに、パーティクル・金属・有機物を落とす。</p>
+    </div></div>
+    <div class="step-b">
+      <div class="blk">
+        <h4>なんのために</h4>
+        <p>洗浄は「工程」というより<b>全工程の間に挟まる常在作業</b>で、総工程数の2〜3割を占めるとも言われます。0.1µmの粒子1個が配線を短絡させ、鉄や銅の原子が数個シリコンに入るだけでリーク電流が跳ね上がるためです。</p>
+      </div>
+      <div class="blk">
+        <h4>なにをしている</h4>
+        <ul>
+          <li>古典的な<span class="tm">RCA洗浄<i>1970年にRCA社が確立した標準洗浄。SC-1（アンモニア＋過酸化水素）で有機物とパーティクル、SC-2（塩酸＋過酸化水素）で金属を除去する。</i></span>を基本に、薬液・純水・薬液…を順に流す</li>
+          <li><b>バッチ式</b>（数十枚を槽に浸ける／低コスト）と<b>枚葉式</b>（1枚ずつ回転させながら薬液を吹き付ける／高精度）を使い分ける</li>
+          <li>乾燥時に水滴が残ると<b>ウォーターマーク</b>になるため、IPA蒸気などで置換乾燥する</li>
+          <li>倒れやすい微細構造では、表面張力で構造がくっつく<span class="tm">パターン倒れ<i>細い柱状パターンが乾燥時の水の表面張力で引き寄せられ、倒れたり隣とくっついたりする現象。超臨界CO₂乾燥などで回避する。</i></span>が問題になる</li>
+        </ul>
+      </div>
+    </div>
+    <div class="share">
+      <p class="share-t">洗浄装置 世界シェア</p>
+      <ol class="sl"><li class="hd">洗浄装置</li>
+        <li class="est"><span class="co">SCREENホールディングス<small>枚葉洗浄で世界首位<span class="jp">JP</span></small></span><span class="bar"><span style="--v:45"></span></span><span class="vl">約45%</span></li>
+        <li class="est"><span class="co">東京エレクトロン<small>バッチ・枚葉<span class="jp">JP</span></small></span><span class="bar"><span style="--v:22"></span></span><span class="vl">約22%</span></li>
+        <li class="est"><span class="co">SEMES<small>韓国</small></span><span class="bar"><span style="--v:10"></span></span><span class="vl">約10%</span></li>
+        <li class="est"><span class="co">Lam Research<small>米</small></span><span class="bar"><span style="--v:8"></span></span><span class="vl">約8%</span></li>
+      </ol>
+      <p class="src">SCREENホールディングスは半導体洗浄装置で世界シェアNo.1。バッチ洗浄・枚葉洗浄ともに日本勢が50%超を占める分野です。<span class="mono">[R1][R7]</span></p>
+    </div>
+  </article>
+
+  <!-- 10 検査計測 -->
+  <article class="step fe" id="s10">
+    <div class="step-h"><span class="step-n">10</span><div>
+      <h3>検査・計測<span class="en">Inspection &amp; Metrology</span></h3>
+      <p class="oneline">全工程に張り付き、「今の出来」を測って製造条件に戻す。</p>
+    </div></div>
+    <div class="step-b">
+      <div class="blk">
+        <h4>なんのために</h4>
+        <p>順番に並ぶ工程ではなく、<b>各工程の後ろに常に挟まる横断機能</b>です。最終テストで初めて不良が分かるのでは3か月と数百工程が無駄になります。異常を早く見つけて条件を戻す（<span class="tm">APC<i>Advanced Process Control。計測結果を次のロットの装置条件に自動で反映させる仕組み。</i></span>）ことが歩留まりの本体です。</p>
+      </div>
+      <div class="blk">
+        <h4>なにを測っている</h4>
+        <ul>
+          <li><b>欠陥検査</b>：ウェーハ表面の異物・傷を光学式／電子ビームで検出し、座標を記録</li>
+          <li><b>寸法計測（CD-SEM）</b>：線幅を実測</li>
+          <li><b>重ね合わせ計測</b>：前の層と今の層のズレ。先端世代では許容2nm前後</li>
+          <li><b>膜厚計測</b>：分光エリプソメトリなど</li>
+          <li><b>マスク検査</b>：原版の欠陥は全チップに転写されるため、特に厳格</li>
+        </ul>
+      </div>
+    </div>
+    <div class="share">
+      <p class="share-t">検査・計測装置 世界シェア</p>
+      <div class="share-grid two">
+        <ol class="sl"><li class="hd">欠陥検査・計測装置</li>
+          <li class="est"><span class="co">KLA<small>欠陥検査・プロセス制御・米</small></span><span class="bar"><span style="--v:55"></span></span><span class="vl">約55%</span></li>
+          <li class="est"><span class="co">Applied Materials<small>米</small></span><span class="bar"><span style="--v:14"></span></span><span class="vl">約14%</span></li>
+          <li class="est"><span class="co">日立ハイテク<small>CD-SEMでは首位<span class="jp">JP</span></small></span><span class="bar"><span style="--v:11"></span></span><span class="vl">約11%</span></li>
+        </ol>
+        <ol class="sl"><li class="hd">マスク欠陥検査装置</li>
+          <li><span class="co">レーザーテック<small>マスク欠陥検査<span class="jp">JP</span></small></span><span class="bar"><span style="--v:50"></span></span><span class="vl">約50%</span></li>
+          <li class="est"><span class="co">KLA<small>マスク検査・米</small></span><span class="bar"><span style="--v:25"></span></span><span class="vl">約25%</span></li>
+          <li class="est"><span class="co">Carl Zeiss<small>マスク計測・独</small></span><span class="bar"><span style="--v:14"></span></span><span class="vl">約14%</span></li>
+        </ol>
+      </div>
+      <p class="src">右：レーザーテックはマスク欠陥検査で約50%、<b>EUVマスク検査装置では実質100%</b>を占めます（モルガン・スタンレー証券調べを引用した業界集計）。測長SEM（CD-SEM）は日立ハイテクが高シェア。<span class="mono">[R7]</span></p>
+    </div>
+  </article>
+
+  <!-- 11 ウェーハテスト -->
+  <article class="step fe" id="s11">
+    <div class="step-h"><span class="step-n">11</span><div>
+      <h3>ウェーハテスト<span class="en">Wafer Sort / Probing</span></h3>
+      <p class="oneline">切り分ける前に1個ずつ通電し、良品・不良品の地図を作る。</p>
+    </div></div>
+    <div class="step-b">
+      <div class="blk">
+        <h4>なんのために</h4>
+        <p>後工程のパッケージ代は1個あたりで見ると安くありません。<b>不良品を組み立ててから捨てるのが最も無駄</b>なので、ウェーハの段階で判定します。ここまでが一般に「前工程」に含まれます。</p>
+        <p style="margin-top:.7em">HBMやチップレットのように<b>複数のチップを1パッケージに載せる</b>構造では、1個でも不良が混じると全体が死にます。そのため事前に良品と確認済みのチップ＝<span class="tm">KGD<i>Known Good Die。単体で動作確認済みの良品チップ。積層・多チップ実装では必須の概念。</i></span>を用意することの重要性が近年跳ね上がりました。</p>
+      </div>
+      <div class="blk">
+        <h4>なにをしている</h4>
+        <ul>
+          <li><span class="tm">プローバ<i>ウェーハを微動させ、測定したいチップの電極パッドに探針を正確に接触させる装置。</i></span>がウェーハを動かし、<b>プローブカード</b>の探針を数µmの電極に当てる</li>
+          <li>テスタが電気信号を入れて応答を測り、良否を判定</li>
+          <li>不良チップの座標を<b>ウェーハマップ</b>として記録し、後工程へ渡す</li>
+          <li>不良の位置分布（縁に集中／同心円状／クラスタ）から原因工程を推定できる</li>
+        </ul>
+      </div>
+    </div>
+    <div class="share">
+      <p class="share-t">プローバ 世界シェア</p>
+      <ol class="sl"><li class="hd">プローバ</li>
+        <li class="est"><span class="co">東京エレクトロン<small><span class="jp">JP</span></small></span><span class="bar"><span style="--v:48"></span></span><span class="vl">約48%</span></li>
+        <li class="est"><span class="co">東京精密<small><span class="jp">JP</span></small></span><span class="bar"><span style="--v:30"></span></span><span class="vl">約30%</span></li>
+        <li class="est"><span class="co">SEMES<small>韓国</small></span><span class="bar"><span style="--v:9"></span></span><span class="vl">約9%</span></li>
+      </ol>
+      <p class="src">プローバは日本2社で世界の50%超。経済産業省・業界集計ともに日本勢が強い分野として挙げています。<span class="mono">[R7]</span></p>
+    </div>
+  </article>
+
+  </div>
+
+  <h3 style="margin-top:46px">同じ前工程でも、作る物で重心が変わる</h3>
+  <p class="sec-sub" style="margin-top:6px">ここまではロジック（CPU・GPU）を前提に説明しました。メモリは同じ工程を使いながら、難所の置き場所がまったく違います。ニュースで語られる「微細化競争」がどの製品の話なのかを見分ける手がかりになります。</p>
+  <div class="map three">
+    <div class="mcard a">
+      <span class="mt">Logic — ロジック</span>
+      <h3>CPU・GPU・SoC</h3>
+      <p>トランジスタの性能そのものが商品価値。露光の微細度とトランジスタ構造（FinFET→GAA）が主戦場で、金属配線も15層以上と最多。マスク枚数・工程数ともに最大になります。</p>
+      <p class="who"><b>効く工程:</b> 露光（EUV）・成膜（ALD）・CMP<br><b>担い手:</b> TSMC / Samsung / Intel</p>
+    </div>
+    <div class="mcard a">
+      <span class="mt">DRAM — 主記憶</span>
+      <h3>DRAM・HBM</h3>
+      <p>1ビット＝1トランジスタ＋1キャパシタ。<b>電荷をためるコンデンサをいかに小さく深く作るか</b>が勝負で、細く深い穴を掘るエッチングとALDが要。近年はHBM化でTSV・積層といった後工程側の比重が急上昇しています。</p>
+      <p class="who"><b>効く工程:</b> 高アスペクト比エッチング・ALD・EUV<br><b>担い手:</b> Samsung / SK hynix / Micron</p>
+    </div>
+    <div class="mcard a">
+      <span class="mt">NAND — 補助記憶</span>
+      <h3>3D NAND</h3>
+      <p>2013年頃に<b>微細化をやめて「積む」方向に転換</b>した製品。平面の細かさより、200層を超える積層をまっすぐ貫く穴を掘れるかで決まります。EUVはほぼ不要で、代わりに成膜とエッチングの回数が桁違いに増えます。</p>
+      <p class="who"><b>効く工程:</b> 多層成膜・超高アスペクト比エッチング<br><b>担い手:</b> Samsung / SK hynix / Kioxia・SanDisk / Micron</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 6 -->
+<section id="tr">
+  <div class="sec-h"><span class="sec-n">06</span><h2>トランジスタ構造の進化</h2></div>
+  <p class="sec-sub">微細化が進むと、ゲートが薄い膜1枚では電流を止めきれなくなります。この20年の構造変化は、すべて「ゲートがチャネルを何面から掴めるか」という一点の改良です。</p>
+
+  <figure class="fig">
+    <div class="fig-h">
+      <h3>ゲートがチャネルを掴む面の数</h3>
+      <span class="k">Cross-section 断面（電流の流れる方向から見た図）</span>
+    </div>
+    <div class="stage">
+      <svg id="svg-tr" class="dgm" viewBox="0 0 620 290" role="img" aria-label="トランジスタ構造の断面比較">
+        <!-- planar -->
+        <g class="scn" data-f="0">
+          <rect x="140" y="196" width="340" height="62" rx="2" fill="var(--d-si)"/>
+          <rect x="220" y="186" width="180" height="10" fill="var(--d-film-2)"/>
+          <rect x="220" y="178" width="180" height="8" fill="var(--d-film)"/>
+          <rect x="220" y="144" width="180" height="34" rx="1.5" fill="var(--d-metal)"/>
+          <text x="310" y="166" font-size="11.5" fill="#fff" text-anchor="middle" letter-spacing="1">GATE</text>
+          <rect x="140" y="178" width="80" height="18" fill="var(--d-si-dark)"/>
+          <rect x="400" y="178" width="80" height="18" fill="var(--d-si-dark)"/>
+          <text x="180" y="192" font-size="9.5" fill="var(--d-ink)" text-anchor="middle">ソース</text>
+          <text x="440" y="192" font-size="9.5" fill="var(--d-ink)" text-anchor="middle">ドレイン</text>
+          <path d="M310 118 L310 140" stroke="var(--amber-2)" stroke-width="2" marker-end="url(#ar)"/>
+          <text x="310" y="110" font-size="11" fill="var(--amber)" text-anchor="middle">制御できるのは上の 1 面だけ</text>
+          <text x="500" y="192" font-size="9.5" fill="var(--muted)">チャネル</text>
+          <text x="140" y="278" font-size="9.5" fill="var(--muted)">〜2011年 / 32nm世代まで</text>
+        </g>
+        <!-- finfet -->
+        <g class="scn" data-f="1">
+          <rect x="140" y="212" width="340" height="46" rx="2" fill="var(--d-si)"/>
+          <path d="M250 212 L250 136 L370 136 L370 212 L336 212 L336 166 L284 166 L284 212 Z" fill="var(--d-metal)"/>
+          <text x="310" y="154" font-size="11.5" fill="#fff" text-anchor="middle" letter-spacing="1">GATE</text>
+          <rect x="288" y="152" width="44" height="60" fill="none" stroke="var(--d-film)" stroke-width="5"/>
+          <rect x="292" y="156" width="36" height="56" fill="var(--d-film-2)"/>
+          <text x="310" y="196" font-size="9" fill="#fff" text-anchor="middle" transform="rotate(-90 310 196)">FIN</text>
+          <path d="M270 190 L286 190" stroke="var(--amber-2)" stroke-width="2"/>
+          <path d="M334 190 L350 190" stroke="var(--amber-2)" stroke-width="2"/>
+          <path d="M310 130 L310 148" stroke="var(--amber-2)" stroke-width="2"/>
+          <text x="310" y="118" font-size="11" fill="var(--amber)" text-anchor="middle">立てた「ヒレ」を 3 面から挟む</text>
+          <text x="140" y="278" font-size="9.5" fill="var(--muted)">2011年 Intel 22nm 〜 / 5nm世代まで主流</text>
+        </g>
+        <!-- gaa -->
+        <g class="scn" data-f="2">
+          <rect x="140" y="212" width="340" height="46" rx="2" fill="var(--d-si)"/>
+          <rect x="248" y="120" width="124" height="92" rx="2" fill="var(--d-metal)"/>
+          <g fill="var(--d-film-2)" stroke="var(--d-film)" stroke-width="3.5">
+            <rect x="272" y="130" width="76" height="15" rx="2"/>
+            <rect x="272" y="158" width="76" height="15" rx="2"/>
+            <rect x="272" y="186" width="76" height="15" rx="2"/>
+          </g>
+          <text x="392" y="140" font-size="9.5" fill="var(--muted)">ナノシート</text>
+          <path d="M388 136 L356 136" stroke="var(--rule-2)" stroke-width="1"/>
+          <text x="310" y="112" font-size="11" fill="var(--amber)" text-anchor="middle">シート全周 4 面をゲートが包む</text>
+          <text x="140" y="278" font-size="9.5" fill="var(--muted)">2022年 Samsung 3nm / 2025〜26年 TSMC N2・Intel 18A</text>
+        </g>
+        <defs><marker id="ar" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="var(--amber-2)"/></marker></defs>
+      </svg>
+    </div>
+    <figcaption class="cap" id="cap-tr">
+      <p class="ct"><em>TYPE 1/3</em><span>プレーナ型 MOSFET</span></p>
+      <p class="cd">平らなシリコンの表面にゲートを載せた最も基本的な形。ゲートはチャネルの上面1面からしか電界をかけられません。32nm世代あたりまでは、これでも十分にオフにできていました。</p>
+    </figcaption>
+    <div class="ctrl">
+      <div class="seg" id="seg-tr">
+        <button data-i="0" class="on">プレーナ型</button>
+        <button data-i="1">FinFET</button>
+        <button data-i="2">GAA（ナノシート）</button>
+      </div>
+    </div>
+  </figure>
+
+  <div class="prose">
+    <p>なぜ面の数を増やすのか。トランジスタを小さくすると、ゲートからチャネルまでの距離に対して、ソース・ドレイン間の距離が相対的に短くなります。すると<b>ゲートで「切った」つもりでも電流が漏れ続ける</b>（<span class="tm">短チャネル効果<i>チャネル長が短くなるほど、ソース・ドレインの電界がチャネルを支配してしまい、ゲートによるオフ制御が効かなくなる現象。リーク電流と待機時消費電力が増える。</i></span>）。掴む面を増やすのは、この漏れを物理的に押さえ込む最も直接的な手です。</p>
+    <div class="note">次の一手として、n型とp型を上下に重ねる<b>CFET</b>や、配線層をチップの裏面に移して表を配線だらけにしない<span class="tm">裏面給電<i>Backside Power Delivery。電源配線をウェーハの裏側に作り、表面を信号配線専用にする技術。Intel PowerVia、TSMC Super Power Railなど。</i></span>が実用化段階に入っています。「平面で細くする」時代は終わり、<b>立体に作り替える</b>時代に移りました。</div>
+  </div>
+  <div class="lab-go">
+    <span class="tag">手を動かす — SemiLab 第5章 / ProcessLab 第4章</span>
+    <p>ゲートが「電流を止めきれなくなる」手前の話 ― 酸化膜を挟むと電極がゲートになり、しきい値電圧が基板の濃度と酸化膜厚で決まる ― を1次元のポアソン方程式で解く。工程から MOS を作って SemiLab で測るのは ProcessLab の第4章。</p>
+    <div class="qs"><span class="lab">SemiLab</span><a href="SemiLab/index.html?quest=moscap">MOS キャパシタ</a><a href="SemiLab/index.html?quest=vth">しきい値電圧を合わせる</a><a href="SemiLab/index.html?quest=swing">切れ味を上げる</a><span class="lab">ProcessLab</span><a href="ProcessLab/index.html?quest=mos">MOS のしきい値を合わせる</a><a href="ProcessLab/index.html?quest=cmos">CMOS の土台</a></div>
+  </div>
+</section>
+
+<!-- ============================================================ 7 -->
+<section id="beflow">
+  <div class="sec-h"><span class="sec-n">07</span><h2>後工程 ― ウェーハを「部品」にする</h2></div>
+  <p class="sec-sub">後工程の目的は3つに集約されます。①切り分ける、②電気をチップの外へ引き出す、③壊れないよう守る。かつては地味な仕上げ工程でしたが、微細化が鈍った今は<b>性能を伸ばす主戦場</b>になりました。</p>
+
+  <figure class="fig">
+    <div class="fig-h">
+      <h3>ウェーハからパッケージ品まで</h3>
+      <span class="k">Assembly flow / 組立フロー</span>
+    </div>
+    <div class="stage">
+      <svg id="svg-be" class="dgm" viewBox="0 0 620 290" role="img" aria-label="後工程の組立フローのアニメーション">
+        <!-- f0 ウェーハ -->
+        <g class="scn" data-f="0">
+          <circle cx="310" cy="150" r="102" fill="var(--d-si)"/>
+          <path d="M310 48 L296 62 L324 62 Z" fill="var(--surface)"/>
+          <g fill="none" stroke="var(--d-ink)" stroke-width="1.4" opacity=".38">
+            <path d="M208 116 H412 M208 150 H412 M208 184 H412 M242 55 V245 M276 55 V245 M310 55 V245 M344 55 V245 M378 55 V245"/>
+          </g>
+          <rect x="277" y="117" width="32" height="32" fill="var(--d-film)"/>
+          <text x="440" y="140" font-size="11" fill="var(--ink)">1枚に数百〜数万個</text>
+          <text x="440" y="158" font-size="11" fill="var(--ink)">のチップが並ぶ</text>
+          <path d="M436 134 L316 132" stroke="var(--rule-2)" stroke-width="1"/>
+        </g>
+        <!-- f1 バックグラインド -->
+        <g class="scn" data-f="1">
+          <g class="spin" style="transform-origin:310px 92px">
+            <circle cx="310" cy="92" r="46" fill="none" stroke="var(--d-mask)" stroke-width="10"/>
+            <path d="M310 46 V138 M264 92 H356 M277 59 L343 125 M343 59 L277 125" stroke="var(--d-mask)" stroke-width="3"/>
+          </g>
+          <text x="310" y="30" font-size="10" fill="var(--muted)" text-anchor="middle">研削砥石</text>
+          <rect x="120" y="152" width="380" height="14" fill="var(--d-si)"/>
+          <rect x="120" y="152" width="380" height="4" fill="var(--d-film)"/>
+          <text x="510" y="163" font-size="10.5" fill="var(--amber)">研削後 50 µm</text>
+          <rect x="120" y="196" width="380" height="52" fill="var(--d-si)" opacity=".35"/>
+          <rect x="120" y="196" width="380" height="4" fill="var(--d-film)" opacity=".5"/>
+          <text x="510" y="226" font-size="10.5" fill="var(--muted)">研削前 775 µm</text>
+          <path d="M310 192 L310 172" stroke="var(--amber-2)" stroke-width="2" marker-end="url(#ar2)"/>
+          <text x="120" y="272" font-size="9.5" fill="var(--muted)">同じ倍率で比較。厚みの15分の1以下まで削り落とす</text>
+        </g>
+        <!-- f2 ダイシング -->
+        <g class="scn" data-f="2">
+          <g class="spin" style="transform-origin:310px 86px">
+            <circle cx="310" cy="86" r="40" fill="none" stroke="var(--d-mask)" stroke-width="7"/>
+            <circle cx="310" cy="86" r="12" fill="var(--d-mask)"/>
+          </g>
+          <text x="310" y="30" font-size="10" fill="var(--muted)" text-anchor="middle">ダイシングブレード（刃厚 20〜30 µm）</text>
+          <path d="M310 126 V172" stroke="var(--d-mask)" stroke-width="3"/>
+          <g fill="var(--d-si)">
+            <rect x="80"  y="172" width="70" height="16"/>
+            <rect x="158" y="172" width="70" height="16"/>
+            <rect x="236" y="172" width="70" height="16"/>
+            <rect x="314" y="172" width="70" height="16"/>
+            <rect x="392" y="172" width="70" height="16"/>
+            <rect x="470" y="172" width="70" height="16"/>
+          </g>
+          <g fill="var(--d-film)">
+            <rect x="80"  y="172" width="70" height="4"/><rect x="158" y="172" width="70" height="4"/>
+            <rect x="236" y="172" width="70" height="4"/><rect x="314" y="172" width="70" height="4"/>
+            <rect x="392" y="172" width="70" height="4"/><rect x="470" y="172" width="70" height="4"/>
+          </g>
+          <rect x="72" y="188" width="476" height="9" fill="var(--d-resist)" opacity=".75"/>
+          <text x="556" y="196" font-size="9.5" fill="var(--muted)">テープ</text>
+          <text x="80" y="248" font-size="10.5" fill="var(--ink)">チップ間の余白（スクライブライン）を切る。</text>
+          <text x="80" y="266" font-size="10.5" fill="var(--ink)">刃を使わないレーザー方式・ステルスダイシングもある。</text>
+        </g>
+        <!-- f3 ダイボンド -->
+        <g class="scn" data-f="3">
+          <rect x="180" y="196" width="260" height="26" rx="2" fill="var(--d-pkg)"/>
+          <text x="310" y="213" font-size="10" fill="#fff" text-anchor="middle" letter-spacing="1">SUBSTRATE / 基板</text>
+          <rect x="248" y="188" width="124" height="8" fill="var(--d-resist)"/>
+          <text x="392" y="195" font-size="9.5" fill="var(--muted)">接着フィルム(DAF)</text>
+          <rect x="248" y="164" width="124" height="24" rx="1" fill="var(--d-si)"/>
+          <rect x="248" y="164" width="124" height="4" fill="var(--d-film)"/>
+          <text x="310" y="181" font-size="10" fill="var(--d-ink)" text-anchor="middle">DIE / チップ</text>
+          <path d="M310 116 L310 156" stroke="var(--amber-2)" stroke-width="2" marker-end="url(#ar2)"/>
+          <text x="310" y="106" font-size="10.5" fill="var(--amber)" text-anchor="middle">良品だけを吸着して載せる</text>
+        </g>
+        <!-- f4 ワイヤボンド -->
+        <g class="scn" data-f="4">
+          <rect x="150" y="196" width="320" height="26" rx="2" fill="var(--d-pkg)"/>
+          <rect x="248" y="168" width="124" height="28" rx="1" fill="var(--d-si)"/>
+          <rect x="248" y="168" width="124" height="4" fill="var(--d-film)"/>
+          <g fill="var(--d-gold)">
+            <rect x="166" y="190" width="18" height="6"/><rect x="200" y="190" width="18" height="6"/>
+            <rect x="402" y="190" width="18" height="6"/><rect x="436" y="190" width="18" height="6"/>
+          </g>
+          <g stroke="var(--d-gold)" stroke-width="2.4" fill="none" stroke-linecap="round">
+            <path d="M258 168 Q212 118 175 190"/>
+            <path d="M272 168 Q240 128 209 190"/>
+            <path d="M362 168 Q408 118 445 190"/>
+            <path d="M348 168 Q380 128 411 190"/>
+          </g>
+          <g fill="var(--d-gold)"><circle cx="258" cy="168" r="4"/><circle cx="272" cy="168" r="4"/><circle cx="362" cy="168" r="4"/><circle cx="348" cy="168" r="4"/></g>
+          <text x="310" y="112" font-size="10.5" fill="var(--amber)" text-anchor="middle">直径 15〜25 µm の金線・銅線でつなぐ</text>
+          <text x="310" y="252" font-size="10.5" fill="var(--ink)" text-anchor="middle">チップの電極 → 基板の電極 へ電気の道を作る</text>
+        </g>
+        <!-- f5 モールド -->
+        <g class="scn" data-f="5">
+          <rect x="150" y="196" width="320" height="26" rx="2" fill="var(--d-pkg)"/>
+          <rect x="176" y="120" width="268" height="76" rx="4" fill="var(--d-mold)"/>
+          <text x="310" y="166" font-size="11" fill="#E9EDF4" text-anchor="middle" letter-spacing="1.5">EPOXY MOLD</text>
+          <path d="M310 78 L310 108" stroke="var(--amber-2)" stroke-width="2" marker-end="url(#ar2)"/>
+          <text x="310" y="68" font-size="10.5" fill="var(--amber)" text-anchor="middle">エポキシ樹脂を流し込んで固める</text>
+          <text x="310" y="252" font-size="10.5" fill="var(--ink)" text-anchor="middle">湿気・応力・外光・イオンからチップと細線を守る</text>
+        </g>
+        <!-- f6 完成 -->
+        <g class="scn" data-f="6">
+          <rect x="176" y="128" width="268" height="72" rx="5" fill="var(--d-mold)"/>
+          <text x="310" y="158" font-size="12" fill="#E9EDF4" text-anchor="middle" letter-spacing="2">LOGIC-2N</text>
+          <text x="310" y="176" font-size="9" fill="#8C97A8" text-anchor="middle" letter-spacing="1.5">LOT 2609A  TW</text>
+          <g fill="var(--d-gold)">
+            <circle cx="200" cy="210" r="8"/><circle cx="237" cy="210" r="8"/><circle cx="274" cy="210" r="8"/>
+            <circle cx="311" cy="210" r="8"/><circle cx="348" cy="210" r="8"/><circle cx="385" cy="210" r="8"/><circle cx="422" cy="210" r="8"/>
+          </g>
+          <text x="310" y="244" font-size="10" fill="var(--muted)" text-anchor="middle">はんだボール（BGA）</text>
+          <g transform="translate(452,92)">
+            <rect x="0" y="0" width="88" height="26" rx="13" fill="none" stroke="var(--d-pkg)" stroke-width="2"/>
+            <text x="44" y="18" font-size="12" fill="var(--d-pkg)" text-anchor="middle" letter-spacing="1.5">PASS</text>
+          </g>
+          <text x="310" y="100" font-size="10.5" fill="var(--amber)" text-anchor="middle">全数の電気特性を測り、等級を分けて出荷</text>
+        </g>
+        <defs><marker id="ar2" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="var(--amber-2)"/></marker></defs>
+      </svg>
+    </div>
+    <figcaption class="cap" id="cap-be">
+      <p class="ct"><em>STEP 1/7</em><span>回路が完成したウェーハ</span></p>
+      <p class="cd">前工程を終えた300mmウェーハ。1枚の上に、同じチップが数百〜数万個並んでいます。良品・不良品の地図（ウェーハマップ）はすでに取得済みです。</p>
+    </figcaption>
+    <div class="ctrl">
+      <button class="btn pri" data-act="play" data-for="be">▶ 再生</button>
+      <button class="btn" data-act="prev" data-for="be">前へ</button>
+      <button class="btn" data-act="next" data-for="be">次へ</button>
+      <div class="dots" id="dots-be" role="tablist" aria-label="組立ステップ"></div>
+    </div>
+  </figure>
+</section>
+
+<!-- ============================================================ 8 -->
+<section id="be">
+  <div class="sec-h"><span class="sec-n">08</span><h2>後工程 ― 各工程の詳細</h2></div>
+  <p class="sec-sub">前工程は「作り込む」ため装置も材料も欧米・日本の寡占ですが、後工程は労働集約性が高く、台湾・中国・東南アジアの受託企業（OSAT）が担う構図です。ただし先端パッケージだけは例外で、ファウンドリが自ら握りにきています。</p>
+
+  <div class="steps">
+
+  <article class="step be" id="s12">
+    <div class="step-h"><span class="step-n">12</span><div>
+      <h3>裏面研削（バックグラインド）<span class="en">Back-grinding / Thinning</span></h3>
+      <p class="oneline">回路のない裏側を削り、ウェーハを1/15以下の厚さにする。</p>
+    </div></div>
+    <div class="step-b">
+      <div class="blk">
+        <h4>なんのために</h4>
+        <p>775µmの厚みは<b>製造中にウェーハが割れないための取り回し用</b>で、回路は表面の数µmしか使っていません。薄くする理由は、①パッケージを薄くする、②熱を裏へ逃がす、③積層するため、④<span class="tm">TSV<i>Through-Silicon Via。シリコンを貫通する電極。チップを縦に積んで直結するために使う。HBMの必須技術。</i></span>を裏面に出すため。</p>
+      </div>
+      <div class="blk">
+        <h4>なにをしている</h4>
+        <ul>
+          <li>表面に保護テープを貼り、ダイヤモンド砥石で775µm → 50µm前後（積層用は20〜30µm）まで削る</li>
+          <li>研削で入った微小なキズ（<b>加工変質層</b>）は割れの起点になるため、ドライポリッシュやCMPで仕上げる</li>
+          <li>薄いウェーハは自重で反るため、キャリアに貼って搬送する</li>
+        </ul>
+      </div>
+    </div>
+    <div class="share">
+      <p class="share-t">グラインダ（研削装置）世界シェア</p>
+      <ol class="sl be"><li class="hd">グラインダ（研削装置）</li>
+        <li class="est"><span class="co">DISCO<small><span class="jp">JP</span></small></span><span class="bar"><span style="--v:70"></span></span><span class="vl">70〜80%</span></li>
+        <li class="est"><span class="co">東京精密<small><span class="jp">JP</span></small></span><span class="bar"><span style="--v:15"></span></span><span class="vl">約15%</span></li>
+        <li class="est"><span class="co">岡本工作機械製作所<small><span class="jp">JP</span></small></span><span class="bar"><span style="--v:7"></span></span><span class="vl">約7%</span></li>
+      </ol>
+      <p class="src">DISCOはIR資料で、ダイシングソー・グラインダ／ポリッシャともに世界シェアを「7〜8割」と説明しています。<span class="mono">[R18]</span></p>
+    </div>
+  </article>
+
+  <article class="step be" id="s13">
+    <div class="step-h"><span class="step-n">13</span><div>
+      <h3>ダイシング（個片化）<span class="en">Dicing</span></h3>
+      <p class="oneline">ウェーハを碁盤目に切り、1個ずつのチップに分ける。</p>
+    </div></div>
+    <div class="step-b">
+      <div class="blk">
+        <h4>なんのために</h4>
+        <p>ここが<b>前工程と後工程の境界</b>です。難しいのは「割らずに切る」こと。シリコンはガラスのように脆く、切断面に入った微小なカケ（<span class="tm">チッピング<i>切断縁の微小な欠け。これが起点になってチップが割れたり、動作中に亀裂が伸びたりする。</i></span>）が後の破壊につながります。切りしろを狭くすることも重要で、幅が広いほど取れるチップ数が減ります。</p>
+      </div>
+      <div class="blk">
+        <h4>3つの方式</h4>
+        <ul>
+          <li><b>ブレードダイシング</b>：ダイヤ砥粒の極薄ブレード（厚さ20〜30µm）を高速回転させて切る。最も一般的</li>
+          <li><b>レーザーダイシング</b>：表面をレーザーで溶断。狭い切りしろが可能</li>
+          <li><span class="tm">ステルスダイシング<i>浜松ホトニクスが開発し、DISCOなどが装置化した方式。レーザーをシリコン内部の一点に集光して改質層を作り、テープを引き伸ばして割る。表面を削らないため切りくずが出ず、極薄ウェーハに適する。</i></span>：ウェーハ<b>内部</b>にレーザーで改質層を作り、テープを広げて割る。切りくずゼロで、薄いウェーハに強い</li>
+        </ul>
+      </div>
+    </div>
+    <div class="share">
+      <p class="share-t">ダイシング装置 世界シェア</p>
+      <ol class="sl be"><li class="hd">ダイシング装置</li>
+        <li class="est"><span class="co">DISCO<small><span class="jp">JP</span></small></span><span class="bar"><span style="--v:78"></span></span><span class="vl">70〜80%</span></li>
+        <li class="est"><span class="co">東京精密<small><span class="jp">JP</span></small></span><span class="bar"><span style="--v:12"></span></span><span class="vl">約12%</span></li>
+        <li class="est"><span class="co">ASMPT ほか<small>シンガポール／香港</small></span><span class="bar"><span style="--v:5"></span></span><span class="vl">約5%</span></li>
+      </ol>
+      <p class="src">ダイシングテープはリンテック・日東電工・古河電工など日本勢が主要供給元。<span class="mono">[R18]</span></p>
+    </div>
+  </article>
+
+  <article class="step be" id="s14">
+    <div class="step-h"><span class="step-n">14</span><div>
+      <h3>ダイボンド（マウント）<span class="en">Die Bonding</span></h3>
+      <p class="oneline">良品チップだけをテープから拾い、基板やリードフレームに固定する。</p>
+    </div></div>
+    <div class="step-b">
+      <div class="blk">
+        <h4>なんのために</h4>
+        <p>チップを機械的に固定し、同時に<b>発熱を基板へ逃がす経路</b>を作ります。ウェーハテストで作った不良マップを参照し、不良チップは飛ばして良品だけを拾います。</p>
+      </div>
+      <div class="blk">
+        <h4>なにをしている</h4>
+        <ul>
+          <li>裏面にあらかじめ貼った<span class="tm">DAF<i>Die Attach Film。ウェーハ裏面に貼る接着フィルム。塗布型の銀ペーストに比べて厚みが均一で、積層に向く。</i></span>や銀ペーストで接着</li>
+          <li>高放熱が要る用途では、はんだやAgシンター（銀焼結）で接合</li>
+          <li>チップを積む場合はここで<b>複数段のスタック</b>を作る（NANDでは16段以上）</li>
+          <li>先端品では位置精度がµm以下を要求され、装置価格も跳ね上がる</li>
+        </ul>
+      </div>
+    </div>
+    <div class="share">
+      <p class="share-t">ダイボンダ 世界シェア</p>
+      <ol class="sl be"><li class="hd">ダイボンダ</li>
+        <li><span class="co">BESI<small>オランダ</small></span><span class="bar"><span style="--v:39"></span></span><span class="vl">約39%</span></li>
+        <li class="est"><span class="co">ASMPT<small>シンガポール／香港</small></span><span class="bar"><span style="--v:28"></span></span><span class="vl">約28%</span></li>
+        <li class="est"><span class="co">新川（ヤマハロボティクス）<small><span class="jp">JP</span></small></span><span class="bar"><span style="--v:11"></span></span><span class="vl">約11%</span></li>
+      </ol>
+      <p class="src">BESIはダイボンダ市場で売上ベース39%（Mordor Intelligence, 2025）。ハイブリッドボンディング装置ではBESI＋Applied Materials連合とASMPTが競合しています。<span class="mono">[R19]</span></p>
+    </div>
+  </article>
+
+  <article class="step be" id="s15">
+    <div class="step-h"><span class="step-n">15</span><div>
+      <h3>配線接続（ワイヤボンド／フリップチップ）<span class="en">Interconnect</span></h3>
+      <p class="oneline">チップの電極と外部端子を電気的につなぐ。</p>
+    </div></div>
+    <div class="step-b">
+      <div class="blk">
+        <h4>なんのために</h4>
+        <p>チップ内の配線は細すぎて外の世界とつながりません。電流を通し、信号を劣化させずに引き出す「橋渡し」が要ります。<b>この橋の本数と長さが、そのまま性能上限になる</b>のが現代の事情です。</p>
+      </div>
+      <div class="blk">
+        <h4>2つの流儀</h4>
+        <ul>
+          <li><b>ワイヤボンディング</b>：直径15〜25µmの金線・銅線を、超音波と熱で溶着する。安価で確実。端子はチップの周囲にしか置けないため本数に限りがある</li>
+          <li><span class="tm">フリップチップ<i>チップを裏返し、表面全面に並べた微小なはんだバンプで基板に直接接合する方式。ワイヤより配線が短く、端子数を大幅に増やせる。</i></span>：チップを<b>裏返して</b>面全体のバンプで直付け。数千〜数万端子が可能で、配線長も短い。高性能品はほぼこちら</li>
+          <li>フリップチップでは熱膨張差による応力を<b>アンダーフィル樹脂</b>で吸収する</li>
+        </ul>
+      </div>
+    </div>
+    <div class="share">
+      <p class="share-t">ワイヤボンダ ・ ボンディングワイヤ 世界シェア</p>
+      <div class="share-grid two">
+        <ol class="sl be"><li class="hd">ワイヤボンダ（装置）</li>
+          <li class="est"><span class="co">ASMPT<small>装置・シンガポール／香港</small></span><span class="bar"><span style="--v:40"></span></span><span class="vl">約40%</span></li>
+          <li class="est"><span class="co">Kulicke &amp; Soffa<small>装置・米</small></span><span class="bar"><span style="--v:35"></span></span><span class="vl">約35%</span></li>
+          <li class="est"><span class="co">新川<small>装置<span class="jp">JP</span></small></span><span class="bar"><span style="--v:10"></span></span><span class="vl">約10%</span></li>
+        </ol>
+        <ol class="sl be"><li class="hd">ボンディングワイヤ（材料）</li>
+          <li class="est"><span class="co">田中貴金属<small>ワイヤ材<span class="jp">JP</span></small></span><span class="bar"><span style="--v:30"></span></span><span class="vl">約30%</span></li>
+          <li class="est"><span class="co">日鉄マイクロメタル<small>ワイヤ材<span class="jp">JP</span></small></span><span class="bar"><span style="--v:25"></span></span><span class="vl">約25%</span></li>
+          <li class="est"><span class="co">Heraeus<small>ワイヤ材・独</small></span><span class="bar"><span style="--v:18"></span></span><span class="vl">約18%</span></li>
+        </ol>
+      </div>
+      <p class="src">ワイヤボンダは上位5社で市場の約90%。ASMPTとKulicke &amp; Soffaが二強で、集計年により順位が入れ替わります。<span class="mono">[R19]</span></p>
+    </div>
+  </article>
+
+  <article class="step be" id="s16">
+    <div class="step-h"><span class="step-n">16</span><div>
+      <h3>封止（モールド）と外形仕上げ<span class="en">Molding &amp; Singulation</span></h3>
+      <p class="oneline">樹脂で包んで守り、製品の外形と刻印を与える。</p>
+    </div></div>
+    <div class="step-b">
+      <div class="blk">
+        <h4>なんのために</h4>
+        <p>シリコンと金線は、湿気・光・衝撃・イオン汚染のいずれにも弱い状態です。封止材はこれらから守ると同時に、<b>熱を逃がし、外形寸法を規格どおりに決める</b>役割も持ちます。</p>
+      </div>
+      <div class="blk">
+        <h4>なにをしている</h4>
+        <ul>
+          <li>シリカ粉末を7〜9割含むエポキシ樹脂（<span class="tm">封止材<i>Encapsulant / EMC。エポキシ樹脂に大量のシリカフィラーを混ぜ、シリコンに近い熱膨張率と低吸湿性を持たせた材料。</i></span>）を加熱・加圧成形する</li>
+          <li><b>トランスファ成形</b>（金型に流し込む）と<b>コンプレッション成形</b>（樹脂の上から押し当てる／薄型・大面積向き）</li>
+          <li>レーザーマーキングで型名・ロット番号を刻印</li>
+          <li>連結された状態から切り離して個片化し、外観検査</li>
+        </ul>
+      </div>
+    </div>
+    <div class="share">
+      <p class="share-t">封止関連 世界シェア</p>
+      <div class="share-grid two">
+        <ol class="sl be"><li class="hd">モールド装置</li>
+          <li class="est"><span class="co">TOWA<small>モールド装置<span class="jp">JP</span></small></span><span class="bar"><span style="--v:60"></span></span><span class="vl">約60%</span></li>
+          <li class="est"><span class="co">ASMPT<small>モールド装置</small></span><span class="bar"><span style="--v:18"></span></span><span class="vl">約18%</span></li>
+          <li class="est"><span class="co">山田尖端科技 ほか<small>モールド装置<span class="jp">JP</span></small></span><span class="bar"><span style="--v:10"></span></span><span class="vl">約10%</span></li>
+        </ol>
+        <ol class="sl be"><li class="hd">封止材（材料）</li>
+          <li><span class="co">住友ベークライト<small>封止材<span class="jp">JP</span></small></span><span class="bar"><span style="--v:40"></span></span><span class="vl">約40%</span></li>
+          <li class="est"><span class="co">Resonac<small>封止材<span class="jp">JP</span></small></span><span class="bar"><span style="--v:20"></span></span><span class="vl">約20%</span></li>
+          <li class="est"><span class="co">京セラ / Henkel<small>封止材<span class="jp">JP</span>／独</small></span><span class="bar"><span style="--v:14"></span></span><span class="vl">約14%</span></li>
+        </ol>
+      </div>
+      <p class="src">封止材は住友ベークライトが約40%で世界首位（業界集計、2022年出典）。モールド装置は日本勢が高シェアを持つ分野として経産省資料でも挙げられています。<span class="mono">[R11][R12]</span></p>
+    </div>
+  </article>
+
+  <article class="step be" id="s17">
+    <div class="step-h"><span class="step-n">17</span><div>
+      <h3>最終テスト<span class="en">Final Test</span></h3>
+      <p class="oneline">完成品として、規格どおり動くかを全数確認し等級を分ける。</p>
+    </div></div>
+    <div class="step-b">
+      <div class="blk">
+        <h4>なんのために</h4>
+        <p>ウェーハテストは常温・低速の簡易確認です。最終テストでは<b>実使用に近い温度と速度</b>で測り直します。同じ設計でも動作可能な周波数や消費電力に個体差が出るため、ここで<span class="tm">ビニング<i>Binning。測定結果に応じて製品を等級分けすること。同じシリコンから上位モデルと下位モデルが生まれるのはこの工程による。</i></span>が行われ、上位モデルと下位モデルに振り分けられます。</p>
+      </div>
+      <div class="blk">
+        <h4>なにをしている</h4>
+        <ul>
+          <li><b>ハンドラ</b>が部品をソケットに次々と入れ、<b>テスタ</b>が電気特性を測る</li>
+          <li>−40℃〜125℃といった温度条件を振って測定</li>
+          <li>初期不良を焙り出す<span class="tm">バーンイン<i>高温・高電圧で一定時間動作させ、初期に壊れる個体を先に落とす試験。車載・産業用など高信頼が要る用途で行う。</i></span>を必要に応じて実施</li>
+          <li>テスト時間はコストに直結するため、数百個を同時に測る（並列測定）</li>
+        </ul>
+      </div>
+    </div>
+    <div class="share">
+      <p class="share-t">テスタ（ATE）世界シェア</p>
+      <ol class="sl be"><li class="hd">テスタ（ATE）</li>
+        <li class="est"><span class="co">アドバンテスト<small>メモリテスタで首位・SoCでも急伸<span class="jp">JP</span></small></span><span class="bar"><span style="--v:50"></span></span><span class="vl">約50%</span></li>
+        <li class="est"><span class="co">Teradyne<small>SoCテスタに強み・米</small></span><span class="bar"><span style="--v:30"></span></span><span class="vl">約30%</span></li>
+        <li class="est"><span class="co">Cohu / Chroma / 華峰測控<small>米／台湾／中国 ほか</small></span><span class="bar"><span style="--v:20"></span></span><span class="vl">約20%</span></li>
+      </ol>
+      <p class="src"><b>数値の幅について：</b>「ATE（テスタ本体）」で見ると2社で約8割という集計が一般的ですが、ハンドラ・プローバまで含めた「テスト装置」全体を分母にすると、アドバンテスト31%・Teradyne23%という数字になります。ここではATEを分母とした概算を示しました。AI向けチップはテスト時間が長大化しており、2025〜26年はテスタが装置市場の伸びを牽引しています。<span class="mono">[R20]</span></p>
+    </div>
+  </article>
+
+  </div>
+</section>
+
+<!-- ============================================================ 9 -->
+<section id="adv">
+  <div class="sec-h"><span class="sec-n">09</span><h2>先端パッケージ ― 後工程が主役になった理由</h2></div>
+  <p class="sec-sub">微細化の効きが鈍り、AI向けチップは1個のダイに収まらなくなりました。そこで「小さくする」代わりに「複数のチップを極限まで近づけて束ねる」方向へ舵が切られています。</p>
+
+  <div class="prose">
+    <p>背景には2つの壁があります。</p>
+    <ul>
+      <li><b>レチクル限界。</b>露光機が1回に焼ける最大面積は約858mm²。これ以上大きいチップは物理的に作れません。</li>
+      <li><b>歩留まりの壁。</b>後述のとおり、面積が大きいほど不良を踏む確率が上がり、コストが非線形に跳ね上がります。</li>
+    </ul>
+    <p>解は「大きな1個」をやめ、<b>小さな良品チップ（<span class="tm">チップレット<i>機能ごとに分割した小型ダイ。CPUコア、I/O、キャッシュなどを別々に作り、パッケージ内で接続する。歩留まりが良く、部分ごとに最適な製造世代を選べる。接続規格としてUCIeが標準化されている。</i></span>）を並べて束ねる」こと。ただし、束ねた瞬間にチップ間の配線が性能を決めるようになり、その配線を作るのが後工程になった、という構図です。</p>
+  </div>
+
+  <figure class="fig">
+    <div class="fig-h">
+      <h3>2.5D パッケージの断面（CoWoS 型）</h3>
+      <span class="k">AI accelerator / AI向けアクセラレータ</span>
+    </div>
+    <div class="stage">
+      <svg viewBox="0 0 620 258" role="img" aria-label="ロジックダイとHBMをシリコンインターポーザ上に並べた2.5Dパッケージの断面図">
+        <rect x="30" y="196" width="560" height="26" rx="2" fill="var(--d-pkg)"/>
+        <text x="310" y="213" font-size="10" fill="#fff" text-anchor="middle" letter-spacing="1.2">PACKAGE SUBSTRATE / パッケージ基板（ABF基板）</text>
+        <g fill="var(--d-gold)"><circle cx="90" cy="232" r="8"/><circle cx="150" cy="232" r="8"/><circle cx="210" cy="232" r="8"/><circle cx="270" cy="232" r="8"/><circle cx="330" cy="232" r="8"/><circle cx="390" cy="232" r="8"/><circle cx="450" cy="232" r="8"/><circle cx="510" cy="232" r="8"/></g>
+        <rect x="70" y="170" width="480" height="22" rx="1" fill="var(--d-si)"/>
+        <text x="310" y="185" font-size="9.5" fill="var(--d-ink)" text-anchor="middle" letter-spacing="1">SILICON INTERPOSER / シリコン中継基板</text>
+        <g fill="var(--d-metal)" opacity=".9">
+          <rect x="240" y="162" width="4" height="8"/><rect x="270" y="162" width="4" height="8"/><rect x="300" y="162" width="4" height="8"/>
+          <rect x="330" y="162" width="4" height="8"/><rect x="360" y="162" width="4" height="8"/>
+          <rect x="120" y="162" width="4" height="8"/><rect x="160" y="162" width="4" height="8"/>
+          <rect x="460" y="162" width="4" height="8"/><rect x="500" y="162" width="4" height="8"/>
+        </g>
+        <rect x="228" y="120" width="164" height="42" rx="2" fill="var(--d-mask)"/>
+        <text x="310" y="139" font-size="11" fill="#E9EDF4" text-anchor="middle" letter-spacing="1">LOGIC DIE</text>
+        <text x="310" y="153" font-size="8.5" fill="#8C97A8" text-anchor="middle">GPU / アクセラレータ本体</text>
+        <g>
+          <rect x="86" y="94" width="118" height="68" rx="2" fill="var(--d-film-2)"/>
+          <g stroke="var(--d-ink)" stroke-width="1" opacity=".28"><path d="M86 106 H204 M86 117 H204 M86 128 H204 M86 139 H204 M86 150 H204"/></g>
+          <g stroke="var(--d-gold)" stroke-width="2.2"><path d="M112 94 V162 M145 94 V162 M178 94 V162"/></g>
+          <text x="145" y="84" font-size="10" fill="var(--ink)" text-anchor="middle">HBM ×8〜12段</text>
+        </g>
+        <g>
+          <rect x="416" y="94" width="118" height="68" rx="2" fill="var(--d-film-2)"/>
+          <g stroke="var(--d-ink)" stroke-width="1" opacity=".28"><path d="M416 106 H534 M416 117 H534 M416 128 H534 M416 139 H534 M416 150 H534"/></g>
+          <g stroke="var(--d-gold)" stroke-width="2.2"><path d="M442 94 V162 M475 94 V162 M508 94 V162"/></g>
+          <text x="475" y="84" font-size="10" fill="var(--ink)" text-anchor="middle">HBM ×8〜12段</text>
+        </g>
+        <text x="310" y="80" font-size="9" fill="var(--muted)" text-anchor="middle">金色の縦線＝TSV（シリコン貫通電極）</text>
+        <text x="310" y="98" font-size="9" fill="var(--muted)" text-anchor="middle">オレンジの小片＝マイクロバンプ</text>
+        <text x="30" y="248" font-size="9" fill="var(--muted)">配線長が短いほどデータ転送の帯域と電力効率が上がる — だから物理的に近づける</text>
+      </svg>
+    </div>
+  </figure>
+
+  <div class="step-b" style="margin-top:6px">
+    <div class="blk">
+      <h4>押さえておきたい3つの技術</h4>
+      <ul>
+        <li><b>TSV（シリコン貫通電極）</b>：チップを縦に貫通する穴に金属を埋め、上下のチップを最短距離でつなぐ。HBMはこれでDRAMを8〜12段積んでいる</li>
+        <li><b>2.5D（CoWoS など）</b>：シリコンの「中継板」の上にロジックとHBMを横に並べる。TSMCのCoWoSが代表格で、AI向けGPUのほぼすべてが依存している</li>
+        <li><span class="tm">ハイブリッドボンディング<i>チップ同士を、はんだバンプを介さず銅と絶縁膜の直接接合でつなぐ技術。接続ピッチを10µm以下、将来は1µm以下まで詰められる。前工程のCMPと同等の平坦度が要求される。</i></span>：バンプを廃し銅同士を直接接合。接続ピッチを1桁縮められる次の主戦場</li>
+      </ul>
+    </div>
+    <div class="blk">
+      <h4>ここが今のボトルネック</h4>
+      <p>CoWoSの生産能力はAI需要に追いつかず、TSMCは2023年末比で10倍超（月産12〜13万枚規模）への増強を進めていますが、2026年末までの枠はすでに埋まっているとされます。あふれた分はASEやSPILへ外注が始まりました。</p>
+      <p style="margin-top:.7em">つまり現在、<b>最先端チップの供給量を決めているのは前工程ではなく後工程</b>です。後工程が「仕上げ」から「律速工程」に変わったことが、この10年で最も大きな構造変化と言えます。</p>
+    </div>
+  </div>
+
+  <div class="share" style="margin-top:20px">
+    <p class="share-t">パッケージ基板（FC-BGA）・封止周辺材料 世界シェア</p>
+    <div class="share-grid two">
+      <ol class="sl be"><li class="hd">パッケージ基板 FC-BGA</li>
+        <li class="est"><span class="co">Unimicron 欣興電子<small>台湾</small></span><span class="bar"><span style="--v:22"></span></span><span class="vl">約22%</span></li>
+        <li class="est"><span class="co">イビデン<small>AI向け最高難度品に強み<span class="jp">JP</span></small></span><span class="bar"><span style="--v:18"></span></span><span class="vl">約18%</span></li>
+        <li class="est"><span class="co">新光電気工業 / AT&amp;S<small><span class="jp">JP</span>／オーストリア</small></span><span class="bar"><span style="--v:15"></span></span><span class="vl">約15%</span></li>
+      </ol>
+      <ol class="sl be"><li class="hd">1社でほぼ全量を供給している周辺材料</li>
+        <li><span class="co">味の素ファインテクノ<small>絶縁フィルム ABF<span class="jp">JP</span></small></span><span class="bar"><span style="--v:95"></span></span><span class="vl">95%超</span></li>
+        <li class="est"><span class="co">三井金属鉱業<small>極薄銅箔<span class="jp">JP</span></small></span><span class="bar"><span style="--v:98"></span></span><span class="vl">ほぼ100%</span></li>
+        <li class="est"><span class="co">日東紡<small>ハイエンドガラスクロス<span class="jp">JP</span></small></span><span class="bar"><span style="--v:98"></span></span><span class="vl">ほぼ100%</span></li>
+      </ol>
+    </div>
+    <p class="src">FC-BGA基板は上位5社で約72%、上位10社で約91%（2024年、QYResearch）。右列は「1社しか作れない」タイプの材料で、いずれも日本企業。味の素のABFは高性能半導体向け絶縁フィルムで同社公表シェア95%超。<span class="mono">[R11][R21]</span></p>
+  </div>
+</section>
+
+<!-- ============================================================ 10 -->
+<section id="yield">
+  <div class="sec-h"><span class="sec-n">10</span><h2>歩留まり ― なぜ大きいチップは高いのか</h2></div>
+  <p class="sec-sub">半導体の経済性は、ほぼこの一点で説明できます。数字を動かして確かめてください。ウェーハ1枚のコストは一定なので、良品が何個取れるかが単価を決めます。</p>
+
+  <div class="fig" style="margin-top:22px">
+    <div class="fig-h">
+      <h3>300mmウェーハ 1枚あたりの取れ高</h3>
+      <span class="k">Murphy model / マーフィーの歩留まりモデル</span>
+    </div>
+    <div style="display:grid;gap:22px;padding:16px 18px 6px" id="yield-wrap">
+      <div style="display:grid;gap:20px" class="yg">
+        <div>
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <label style="display:block">
+              <span style="display:flex;justify-content:space-between;font-size:12.5px;align-items:baseline"><b style="font-weight:700">チップ1個の面積</b><span class="mono" id="v-area" style="font-size:13px">100 mm²</span></span>
+              <input type="range" id="in-area" min="25" max="850" step="25" value="100" style="width:100%;accent-color:var(--amber-2);margin-top:6px">
+              <span style="font-size:11px;color:var(--muted)">目安 — マイコン 5mm² ／ スマホSoC 100mm² ／ AI向けGPU 750mm²超</span>
+            </label>
+            <label style="display:block">
+              <span style="display:flex;justify-content:space-between;font-size:12.5px;align-items:baseline"><b style="font-weight:700">欠陥密度 D₀</b><span class="mono" id="v-d0" style="font-size:13px">0.10 /cm²</span></span>
+              <input type="range" id="in-d0" min="2" max="50" step="1" value="10" style="width:100%;accent-color:var(--amber-2);margin-top:6px">
+              <span style="font-size:11px;color:var(--muted)">成熟した量産ラインで 0.05〜0.15 ／ 立ち上げ直後は 0.3〜0.5 程度</span>
+            </label>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:22px;border-top:1px solid var(--rule);padding-top:16px">
+            <div><div style="font-size:10px;letter-spacing:.1em;color:var(--muted)" class="mono">DIES / WAFER</div><div class="mono" id="o-dies" style="font-size:24px;font-weight:600;line-height:1.2">640</div><div style="font-size:11px;color:var(--muted)">切り出せる総数</div></div>
+            <div><div style="font-size:10px;letter-spacing:.1em;color:var(--muted)" class="mono">YIELD</div><div class="mono" id="o-yield" style="font-size:24px;font-weight:600;line-height:1.2;color:var(--amber)">90.6%</div><div style="font-size:11px;color:var(--muted)">良品率</div></div>
+            <div><div style="font-size:10px;letter-spacing:.1em;color:var(--muted)" class="mono">GOOD DIES</div><div class="mono" id="o-good" style="font-size:24px;font-weight:600;line-height:1.2">579</div><div style="font-size:11px;color:var(--muted)">売れる個数</div></div>
+          </div>
+          <div class="note" id="o-cost" style="margin-top:16px">先端ロジックのウェーハ加工費を1枚300万円とすると、良品1個あたり <b>約5,181円</b>。（前工程の加工費のみの単純計算で、設計費・後工程費・検査費は含みません）</div>
+        </div>
+        <div style="display:flex;align-items:flex-start;justify-content:center">
+          <svg id="svg-yield" viewBox="0 0 320 320" style="width:100%;max-width:300px;height:auto" role="img" aria-label="ウェーハ上の良品と不良品の分布図"></svg>
+        </div>
+      </div>
+    </div>
+    <div class="lg" style="padding-top:6px">
+      <span><i style="background:var(--d-film)"></i>良品</span>
+      <span><i style="background:var(--d-si)"></i>不良（欠陥を踏んだチップ）</span>
+      <span style="color:var(--muted)">配置はランダム生成の模式図で、実際の欠陥分布は工程ごとに偏ります</span>
+    </div>
+  </div>
+
+  <div class="prose">
+    <div class="note w"><b>読み取ってほしいこと。</b>面積を2倍にすると、取れる数は半分以下になるうえ、1個が欠陥を踏む確率も上がるので、良品数は<b>半分よりずっと少なく</b>なります。だから「大きな1個」をやめてチップレットに分割する動きが起きたのです。歩留まりモデルは <span class="mono">Y = ((1−e<sup>−AD₀</sup>)/AD₀)²</span>、取れ数は円板からの縁の損失を考慮した近似式を使っています。</div>
+  </div>
+</section>
+
+<!-- ============================================================ 11 -->
+<section id="table">
+  <div class="sec-h"><span class="sec-n">11</span><h2>工程別シェア早見表</h2></div>
+  <p class="sec-sub"><b>数値の性格について。</b>半導体のシェアは、調査会社・集計年・対象範囲（金額／台数、先端のみ／全世代）で数値が変わります。ここでは各社の公表値と主要調査会社の数字を優先し、確定値のないものは概数で示しました。ページ内のバーで斜線になっているものは、単一の公表値ではなく複数の業界集計からの概算であることを表します。</p>
+  <div class="tw">
+    <table>
+      <thead><tr><th>区分</th><th>工程</th><th colspan="3">主なメーカーと世界シェア</th><th>主要材料・備考</th></tr></thead>
+      <tbody>
+        <tr><td class="p g1">前</td><td class="p">ウェーハ製造</td><td>信越半導体 <span class="jp">JP</span><span class="n">約30%</span></td><td>SUMCO <span class="jp">JP</span><span class="n">約21%</span></td><td>GlobalWafers<span class="n">約14%</span></td><td>上位5社で約9割。多結晶Si（トクヤマ <span class="jp">JP</span> ほか）、石英るつぼ</td></tr>
+        <tr><td class="p">共通</td><td class="p">マスク製作</td><td>HOYA <span class="jp">JP</span><span class="n">約50%</span></td><td>AGC <span class="jp">JP</span><span class="n">約25%</span></td><td>信越化学 <span class="jp">JP</span><span class="n">約15%</span></td><td>マスクブランクスの数値。EUV用を量産できるのはHOYAとAGCのみ。描画装置はNuFlare <span class="jp">JP</span></td></tr>
+        <tr><td class="p g1">前</td><td class="p">成膜 CVD・PVD</td><td>Applied Materials<span class="n">約40%</span></td><td>Lam Research<span class="n">約22%</span></td><td>東京エレクトロン <span class="jp">JP</span><span class="n">約16%</span></td><td>プリカーサ（Air Liquide／Merck／ADEKA <span class="jp">JP</span>）</td></tr>
+        <tr><td class="p g1">前</td><td class="p">ALD</td><td>KOKUSAI ELECTRIC <span class="jp">JP</span><span class="n">約70%（バッチ）</span></td><td>ASM International<span class="n">約45%（枚葉）</span></td><td>東京エレクトロン <span class="jp">JP</span><span class="n">—</span></td><td>バッチ式と枚葉式は別市場。高純度前駆体ガス</td></tr>
+        <tr><td class="p g1">前</td><td class="p">スパッタ PVD</td><td>Applied Materials<span class="n">約60%</span></td><td>NAURA<span class="n">2番手</span></td><td>アルバック <span class="jp">JP</span><span class="n">—</span></td><td>スパッタターゲット（JX金属 <span class="jp">JP</span>／Honeywell）</td></tr>
+        <tr><td class="p g1">前</td><td class="p">レジスト塗布・現像</td><td>東京エレクトロン <span class="jp">JP</span><span class="n">約90%</span></td><td>SCREEN <span class="jp">JP</span><span class="n">約6%</span></td><td>SEMES<span class="n">約3%</span></td><td>レジストは JSR 約25%・TOK 約22%・信越化学 約15%・住友化学 約12%・富士フイルム 約10%（すべて <span class="jp">JP</span>）</td></tr>
+        <tr><td class="p g1">前</td><td class="p">露光</td><td>ASML<span class="n">83〜90%</span></td><td>キヤノン <span class="jp">JP</span><span class="n">約8%</span></td><td>ニコン <span class="jp">JP</span><span class="n">約4%</span></td><td>金額ベース。EUVはASMLが100%。台数ベースだとキヤノンが3割前後。ペリクル（三井化学 <span class="jp">JP</span>）</td></tr>
+        <tr><td class="p g1">前</td><td class="p">エッチング</td><td>Lam Research<span class="n">約39%</span></td><td>東京エレクトロン <span class="jp">JP</span><span class="n">約25%</span></td><td>Applied Materials<span class="n">約18%</span></td><td>NAURA・AMEC（中国）が約9%まで伸長。特殊ガス（日本酸素HD <span class="jp">JP</span>／関東電化 <span class="jp">JP</span>）</td></tr>
+        <tr><td class="p g1">前</td><td class="p">イオン注入</td><td>Applied Materials<span class="n">約45%</span></td><td>Axcelis<span class="n">約25%</span></td><td>住友重機械イオンテクノロジー <span class="jp">JP</span><span class="n">約12%</span></td><td>3社で70%超。ドーパントガス（AsH₃・PH₃・BF₃）</td></tr>
+        <tr><td class="p g1">前</td><td class="p">CMP</td><td>Applied Materials<span class="n">約60%</span></td><td>荏原製作所 <span class="jp">JP</span><span class="n">約30%</span></td><td>KCTech<span class="n">約8%</span></td><td>スラリーは富士フイルム 31% <span class="jp">JP</span>、研磨パッドはDuPont 50%超</td></tr>
+        <tr><td class="p g1">前</td><td class="p">洗浄</td><td>SCREEN <span class="jp">JP</span><span class="n">約45%</span></td><td>東京エレクトロン <span class="jp">JP</span><span class="n">約22%</span></td><td>SEMES<span class="n">約10%</span></td><td>高純度薬液（関東化学 <span class="jp">JP</span>／ステラケミファ <span class="jp">JP</span>）</td></tr>
+        <tr><td class="p g1">前</td><td class="p">検査・計測</td><td>KLA<span class="n">約55%</span></td><td>Applied Materials<span class="n">約14%</span></td><td>日立ハイテク <span class="jp">JP</span><span class="n">約11%</span></td><td>測長SEMは日立ハイテク <span class="jp">JP</span> が首位。マスク欠陥検査はレーザーテック <span class="jp">JP</span> 約50%（EUV用は実質100%）</td></tr>
+        <tr><td class="p g1">前</td><td class="p">ウェーハテスト</td><td>東京エレクトロン <span class="jp">JP</span><span class="n">約48%</span></td><td>東京精密 <span class="jp">JP</span><span class="n">約30%</span></td><td>SEMES<span class="n">約9%</span></td><td>プローバの数値。プローブカード（MJC <span class="jp">JP</span>／FormFactor）</td></tr>
+        <tr><td class="p g2">後</td><td class="p">裏面研削</td><td>DISCO <span class="jp">JP</span><span class="n">70〜80%</span></td><td>東京精密 <span class="jp">JP</span><span class="n">約15%</span></td><td>岡本工作機械 <span class="jp">JP</span><span class="n">約7%</span></td><td>BGテープ（リンテック <span class="jp">JP</span>／日東電工 <span class="jp">JP</span>）</td></tr>
+        <tr><td class="p g2">後</td><td class="p">ダイシング</td><td>DISCO <span class="jp">JP</span><span class="n">70〜80%</span></td><td>東京精密 <span class="jp">JP</span><span class="n">約12%</span></td><td>ASMPT<span class="n">約5%</span></td><td>ダイシングテープ・DAF（Resonac <span class="jp">JP</span>／リンテック <span class="jp">JP</span>）</td></tr>
+        <tr><td class="p g2">後</td><td class="p">ダイボンド</td><td>BESI<span class="n">約39%</span></td><td>ASMPT<span class="n">約28%</span></td><td>新川 <span class="jp">JP</span><span class="n">約11%</span></td><td>DAF・Agペースト・Agシンター材</td></tr>
+        <tr><td class="p g2">後</td><td class="p">ワイヤボンド</td><td>ASMPT<span class="n">約40%</span></td><td>Kulicke &amp; Soffa<span class="n">約35%</span></td><td>新川 <span class="jp">JP</span><span class="n">約10%</span></td><td>ワイヤ材は田中貴金属 約30% <span class="jp">JP</span>／日鉄マイクロメタル 約25% <span class="jp">JP</span></td></tr>
+        <tr><td class="p g2">後</td><td class="p">封止（モールド）</td><td>TOWA <span class="jp">JP</span><span class="n">約60%</span></td><td>ASMPT<span class="n">約18%</span></td><td>山田尖端科技 <span class="jp">JP</span><span class="n">約10%</span></td><td>封止材は住友ベークライト 約40% <span class="jp">JP</span>／Resonac 約20% <span class="jp">JP</span></td></tr>
+        <tr><td class="p g2">後</td><td class="p">最終テスト</td><td>アドバンテスト <span class="jp">JP</span><span class="n">約50%</span></td><td>Teradyne<span class="n">約30%</span></td><td>Cohu ほか<span class="n">約20%</span></td><td>ATEを分母とした概算。ハンドラ（Cohu／TechWing）、テストソケット</td></tr>
+        <tr><td class="p g2">後</td><td class="p">パッケージ基板</td><td>Unimicron<span class="n">約22%</span></td><td>イビデン <span class="jp">JP</span><span class="n">約18%</span></td><td>新光電気工業・AT&amp;S<span class="n">約15%</span></td><td>ABF（味の素 95%超 <span class="jp">JP</span>）、極薄銅箔（三井金属 ほぼ100% <span class="jp">JP</span>）</td></tr>
+        <tr><td class="p">工場</td><td class="p">搬送（OHT）</td><td>ダイフク <span class="jp">JP</span><span class="n">約50%</span></td><td>村田機械 <span class="jp">JP</span><span class="n">約50%</span></td><td>—</td><td>日本2社で世界のほぼ全量</td></tr>
+        <tr><td class="p">製造</td><td class="p">ファウンドリ</td><td>TSMC<span class="n">70.4%</span></td><td>Samsung<span class="n">7.1%</span></td><td>SMIC<span class="n">約5%</span></td><td>2025年第4四半期・売上高ベース（TrendForce）</td></tr>
+        <tr><td class="p">製造</td><td class="p">DRAM</td><td>Samsung<span class="n">36.0%</span></td><td>SK hynix<span class="n">32.1%</span></td><td>Micron<span class="n">22.4%</span></td><td>2025年第4四半期・売上高ベース（TrendForce）</td></tr>
+        <tr><td class="p">製造</td><td class="p">NAND</td><td>Samsung<span class="n">32.3%</span></td><td>SKグループ<span class="n">22.1%</span></td><td>Kioxia <span class="jp">JP</span><span class="n">15.6%</span></td><td>2025年第4四半期。Micron 14.3%、SanDisk 14.3%と僅差</td></tr>
+        <tr><td class="p">製造</td><td class="p">OSAT（組立受託）</td><td>ASE<span class="n">約45%</span></td><td>Amkor<span class="n">15.2%</span></td><td>JCET<span class="n">12.0%</span></td><td>2024年・上位10社合計に対する構成比（TrendForce）</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="src" style="max-width:none">「前」＝前工程、「後」＝後工程、「共通」＝両者にまたがる。<span class="jp">JP</span> は日本企業。出典は各工程カードの脚注および末尾の一覧を参照してください。</p>
+</section>
+
+<!-- ============================================================ 12 -->
+<section id="glossary">
+  <div class="sec-h"><span class="sec-n">12</span><h2>用語集</h2></div>
+  <p class="sec-sub">本文中で注釈を付けた語をまとめました。読み返すときの索引としてお使いください。</p>
+  <div class="gl">
+    <div><b>前工程 <small>Front-end</small></b><p>ウェーハに回路を作り込む工程群。成膜からウェーハテストまで。期間・コストの大半を占める。</p></div>
+    <div><b>後工程 <small>Back-end</small></b><p>ウェーハを切り分け、パッケージに組み立てて検査する工程群。ダイシング以降。</p></div>
+    <div><b>FEOL / BEOL</b><p>どちらも前工程の中の区分。FEOL＝トランジスタ形成、BEOL＝多層金属配線形成。日本語の前工程／後工程とは別の切り分けなので注意。</p></div>
+    <div><b>CZ法 <small>Czochralski</small></b><p>融けたシリコンに種結晶を浸して回転させながら引き上げ、巨大な単結晶インゴットを育てる方法。</p></div>
+    <div><b>エピタキシャル層</b><p>下地の結晶方位を引き継いで成長させた高品質な単結晶薄膜。素子特性が安定する。</p></div>
+    <div><b>マスクブランクス</b><p>フォトマスクの素材となる、遮光膜付きの高純度合成石英基板。無欠陥・超平坦であることが要求される。</p></div>
+    <div><b>レチクル</b><p>露光機にセットする原版。通常4倍寸法で作り、レンズで1/4に縮小投影する。</p></div>
+    <div><b>EDA</b><p>半導体設計自動化ソフト。Synopsys／Cadence／Siemens EDAの3社寡占。</p></div>
+    <div><b>CVD</b><p>原料ガスの化学反応で薄膜を析出させる成膜法。絶縁膜の主力。</p></div>
+    <div><b>ALD <small>原子層堆積</small></b><p>2種の原料を交互に供給し、1サイクルで原子1層ぶんだけ成長させる。深い穴の側面にも均一に付く。</p></div>
+    <div><b>PVD（スパッタ）</b><p>ターゲット材にイオンを当てて弾き出した原子を堆積させる物理的成膜法。金属膜用。</p></div>
+    <div><b>フォトレジスト</b><p>感光性樹脂。露光部が溶けるポジ型、残るネガ型がある。先端ではポジ型が主流。</p></div>
+    <div><b>反射防止膜（BARC）</b><p>レジスト下に敷き、下地反射で像がぼけるのを防ぐ膜。</p></div>
+    <div><b>開口数（NA）</b><p>レンズがどれだけ広い角度の光を集められるかの指標。大きいほど細かい像を結べる。</p></div>
+    <div><b>ArF液浸</b><p>レンズとウェーハの間を純水で満たし、実効波長を193→134nm相当に縮める技術。</p></div>
+    <div><b>マルチパターニング</b><p>1層のパターンを2〜4回に分けて露光し重ねる手法。EUVが無い世代で微細化を続けるために使われた。</p></div>
+    <div><b>化学増幅型レジスト</b><p>露光で生じた酸を触媒に、加熱で連鎖的に反応を進める方式。弱い光源でも実用感度が得られる。</p></div>
+    <div><b>選択比</b><p>削りたい材料と残したい材料の削れる速さの比。高いほど下地を傷めずに済む。</p></div>
+    <div><b>アスペクト比</b><p>穴や溝の「深さ÷幅」。3D NANDでは100:1近くに達する。</p></div>
+    <div><b>アニール</b><p>熱処理。イオン注入で壊れた結晶を回復させ、不純物を電気的に活性化させる。</p></div>
+    <div><b>焦点深度</b><p>ピントが合う奥行きの範囲。解像度を上げるほど浅くなり、先端では100nm程度。CMPが必要な理由。</p></div>
+    <div><b>ダマシン法</b><p>溝に金属を埋めてから表面を研磨し、溝の中だけに配線を残す手法。エッチングできない銅配線に必須。</p></div>
+    <div><b>スラリー</b><p>CMP用の研磨液。ナノ砥粒＋化学薬剤で、化学的に軟化させながら凸部を擦り取る。</p></div>
+    <div><b>RCA洗浄</b><p>SC-1（有機物・パーティクル）とSC-2（金属）を組み合わせた標準洗浄。</p></div>
+    <div><b>パターン倒れ</b><p>乾燥時の水の表面張力で細い構造が倒れる現象。超臨界CO₂乾燥などで回避する。</p></div>
+    <div><b>APC</b><p>計測結果を次ロットの装置条件へ自動反映する仕組み。歩留まり維持の中核。</p></div>
+    <div><b>KGD</b><p>Known Good Die。単体で動作確認済みの良品チップ。積層・多チップ実装では必須。</p></div>
+    <div><b>短チャネル効果</b><p>チャネルが短くなるとゲートで電流を止めきれなくなる現象。FinFET・GAAはこの対策。</p></div>
+    <div><b>裏面給電</b><p>電源配線をウェーハ裏面に移し、表面を信号配線専用にする技術。Intel PowerViaなど。</p></div>
+    <div><b>TSV</b><p>シリコン貫通電極。チップを縦に積んで直結する。HBMの必須技術。</p></div>
+    <div><b>チッピング</b><p>ダイシング時の切断縁の微小な欠け。チップ割れの起点になる。</p></div>
+    <div><b>ステルスダイシング</b><p>ウェーハ内部にレーザーで改質層を作り、テープを広げて割る方式。浜松ホトニクスが開発。切りくずが出ず極薄ウェーハに適する。</p></div>
+    <div><b>DAF</b><p>Die Attach Film。ウェーハ裏面に貼る接着フィルム。厚みが均一で積層に向く。</p></div>
+    <div><b>フリップチップ</b><p>チップを裏返し、面全体の微小バンプで基板に直接接合する方式。端子数を大幅に増やせる。</p></div>
+    <div><b>封止材（EMC）</b><p>エポキシに大量のシリカを混ぜ、シリコンに近い熱膨張率と低吸湿性を持たせた材料。</p></div>
+    <div><b>ビニング</b><p>測定結果に応じた等級分け。同じ設計から上位・下位モデルが生まれる仕組み。</p></div>
+    <div><b>バーンイン</b><p>高温・高電圧で動作させ、初期不良を先に落とす試験。車載・産業用で実施。</p></div>
+    <div><b>チップレット</b><p>機能ごとに分割した小型ダイ。歩留まりが良く、部分ごとに最適な製造世代を選べる。接続規格はUCIe。</p></div>
+    <div><b>ハイブリッドボンディング</b><p>はんだバンプを介さず銅同士を直接接合する技術。接続ピッチを1桁縮められる。</p></div>
+    <div><b>ISOクラス1〜3</b><p>クリーンルームの清浄度規格。クラス1は1m³中に0.1µm以上の粒子が10個以下。</p></div>
+  </div>
+</section>
+
+<!-- ============================================================ 13 -->
+<section id="refs">
+  <div class="sec-h"><span class="sec-n">13</span><h2>出典</h2></div>
+  <p class="sec-sub">2026年9月時点で参照できた一次発表・調査会社リリース・業界集計です。市場データは発表時点を併記しました。</p>
+  <ol class="refs">
+    <li><span class="rn">R1</span><span>吉田SKT「半導体製造装置のシェアと最新の市場動向」<a href="https://www.y-skt.co.jp/magazine/knowledge/semiconductor_equipment_market/">y-skt.co.jp</a></span></li>
+    <li><span class="rn">R2</span><span>TrendForce「AI Demand Drives 4Q25 Global Top 10 Foundries Revenue Up 2.6% QoQ」<span class="rd">2026-03-12</span><a href="https://www.trendforce.com/presscenter/news/20260312-12965.html">trendforce.com</a></span></li>
+    <li><span class="rn">R3</span><span>TrendForce「Price Rally Drives 4Q25 DRAM Revenue Up 29.4%」<span class="rd">2026-02-26</span>／「AI Server Storage Demand Surges; Top Five NAND Flash Suppliers…4Q25」<span class="rd">2026-03-03</span><a href="https://www.trendforce.com/presscenter/news/20260226-12937.html">trendforce.com</a></span></li>
+    <li><span class="rn">R4</span><span>TrendForce「Top 10 OSAT Companies of 2024」<span class="rd">2025-05-13</span><a href="https://www.trendforce.com/presscenter/news/20250513-12577.html">trendforce.com</a></span></li>
+    <li><span class="rn">R5</span><span>TrendForce「ASML EUV Dominance &amp; China's Semiconductor Equipment Push」<a href="https://www.trendforce.com/insights/asml-euv">trendforce.com</a></span></li>
+    <li><span class="rn">R6</span><span>CREX経済データプラットフォーム「シリコンウェハ業界の世界2強」<a href="https://www.crex-data.com/industry/machinery/semiconductor-equipment/silicon-wafer">crex-data.com</a></span></li>
+    <li><span class="rn">R7</span><span>けむさん 化学情報センター「【製造装置28種】半導体製造装置メーカー約100社の世界シェアとランキング」（モルガン・スタンレー証券／経済産業省データを引用）<a href="https://chem-3.com/semiconductor-manufacturing-equipment/">chem-3.com</a></span></li>
+    <li><span class="rn">R8</span><span>TechnoProducer「EUVフォトマスク（レチクル）とは？」<a href="https://www.techno-producer.com/column/euv-photomask-reticle/">techno-producer.com</a></span></li>
+    <li><span class="rn">R9</span><span>Semirai「半導体製造装置メーカー 世界シェアランキング＆カオスマップ 2026年最新」<a href="https://semirai.com/companies/market-share">semirai.com</a></span></li>
+    <li><span class="rn">R10</span><span>CREX経済データプラットフォーム「フォトレジスト業界の世界4強」<a href="https://www.crex-data.com/industry/machinery/semiconductor-equipment/photoresist">crex-data.com</a></span></li>
+    <li><span class="rn">R11</span><span>けむさん 化学情報センター「【半導体材料17種】半導体材料メーカー約80社の世界シェアとランキング」<a href="https://chem-3.com/semiconductor-material-manufacturer/">chem-3.com</a></span></li>
+    <li><span class="rn">R12</span><span>経済産業省 半導体・デジタル産業戦略関連資料（2024年、上記業界集計が引用）</span></li>
+    <li><span class="rn">R13</span><span>東洋経済「『世界シェア7割』を独占！ 東洋合成工業が握る半導体微細化の"生命線"」<a href="https://toyokeizai.net/articles/-/913200">toyokeizai.net</a></span></li>
+    <li><span class="rn">R14</span><span>日経クロステック「ASML、次世代EUV装置の第2世代品を出荷 生産性6割高く」<a href="https://xtech.nikkei.com/atcl/nxt/column/18/00001/10863/">xtech.nikkei.com</a></span></li>
+    <li><span class="rn">R15</span><span>CSET（Georgetown University）「Inside Beijing's Chipmaking Offensive」<a href="https://cset.georgetown.edu/article/inside-beijings-chipmaking-offensive/">cset.georgetown.edu</a></span></li>
+    <li><span class="rn">R16</span><span>Fortune Business Insights / Archive Market Research「Ion Implantation Equipment Market 2025」<a href="https://www.fortunebusinessinsights.com/ion-implantation-machine-market-113022">fortunebusinessinsights.com</a></span></li>
+    <li><span class="rn">R17</span><span>TECHCET「CMP Consumables: Slurries and Pads 2025-2026」</span></li>
+    <li><span class="rn">R18</span><span>株式会社ディスコ IR「よくあるご質問」<a href="https://www.disco.co.jp/jp/ir/faq/">disco.co.jp</a></span></li>
+    <li><span class="rn">R19</span><span>Mordor Intelligence「Die Bonder Equipment Market 2025-2030」<a href="https://www.mordorintelligence.com/industry-reports/die-bonder-equipment-market">mordorintelligence.com</a></span></li>
+    <li><span class="rn">R20</span><span>アドバンテスト「Investors Guide」／Mordor Intelligence「Semiconductor Test Equipment Market」<a href="https://www.advantest.com/document/en/investors/ir-library/investors-guide/Investors_Guide_2504E.pdf">advantest.com</a></span></li>
+    <li><span class="rn">R21</span><span>QYResearch / LP Information「ABF基板（FC-BGA）世界市場シェア 2025」<a href="https://www.dreamnews.jp/press/0000328663">dreamnews.jp</a></span></li>
+    <li><span class="rn">R22</span><span>WSTS 2026年春季予測（2026-06-02発表）／JETRO ビジネス短信「世界半導体市場は2026年に1.5兆ドル超え」<span class="rd">2025年実績 7,956億ドル（+26.2%）</span><a href="https://www.jetro.go.jp/biznews/2026/06/d681cb7828ae6c7a.html">jetro.go.jp</a></span></li>
+    <li><span class="rn">R23</span><span>SEMI「世界半導体製造装置販売額は2025年に15%増の1,350億ドルへ到達」<span class="rd">2026-04-08</span><a href="https://www.semi.org/jp/news-resources/press/20260408">semi.org</a></span></li>
+  </ol>
+  <p class="foot">この資料は公開情報をもとに、半導体製造プロセスの全体像を初学者が体系的につかむことを目的に整理したものです。市場シェアは調査会社・集計年・対象範囲によって数値が異なるため、投資判断や事業判断に用いる際は必ず一次資料をあたってください。数値は2026年9月時点で参照できたものを採用しています。</p>
+  <p class="foot" style="margin-top:14px;padding-top:14px"><a href="index.html">学びの地図へ戻る</a> · この資料が「どう作るか」を説明する側で、<a href="ProcessLab/index.html">ProcessLab</a> が自分で工程を並べて断面を育て、何ができたかを計算で確かめる側です。各工程の末尾の「手を動かす」の箱から、対応する課題へ飛べます。</p>
+</section>
+
+</main>
+</div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- step diagrams ---------- */
+  var LITHO = [
+    {t:'シリコンウェーハ', s:'', d:'出発点は鏡面研磨された単結晶シリコンの円盤。ここにはまだ何もありません。以降のすべてがこの上に積み上がります。'},
+    {t:'成膜', s:'film filmX', d:'加工したい材料の膜（酸化膜・窒化膜・金属など）をウェーハ全面に均一につけます。まだ「どこに回路があるか」の情報はありません。'},
+    {t:'レジスト塗布', s:'film filmX resist resistX', d:'その上に感光材（フォトレジスト）をスピンコートで薄く塗ります。光の情報を「溶ける／溶けない」に翻訳する中間材です。'},
+    {t:'露光', s:'film filmX resist resistE mask light', d:'マスクの像を1/4に縮小してレジストに焼き付けます。マスクの遮光部の下は光が当たらず、開口部の下だけが感光します。ここで初めて「場所」が決まります。'},
+    {t:'現像', s:'film filmX resist', d:'現像液をかけると、感光した部分だけが溶けて消えます（ポジ型の場合）。光のパターンが、初めて物理的な凹凸になりました。'},
+    {t:'エッチング', s:'film resist', d:'レジストが覆っていない部分の膜を、プラズマで真下方向に削り取ります。レジストは「削られないための盾」として働いています。'},
+    {t:'レジスト剥離・洗浄', s:'film', d:'役目を終えたレジストを剥がし、残渣とパーティクルを洗い落とします。狙った形の膜だけが残りました。これで1層ぶんが完成です。'},
+    {t:'1層完成 → 次の層へ', s:'film stack', d:'あとはこの8ステップを、配線層の数だけ繰り返すだけ。最先端のロジックでは金属配線が15層以上あり、総工程数は1000近くに達します。'}
+  ];
+  var BE = [
+    {t:'回路が完成したウェーハ', d:'前工程を終えた300mmウェーハ。1枚の上に、同じチップが数百〜数万個並んでいます。良品・不良品の地図（ウェーハマップ）はすでに取得済みです。'},
+    {t:'裏面研削（バックグラインド）', d:'回路のない裏側をダイヤ砥石で削り、775µmから50µm前後まで薄くします。厚みは製造中に割れないための取り回し用で、回路は表面の数µmしか使っていません。'},
+    {t:'ダイシング（個片化）', d:'チップ間の余白（スクライブライン）を、厚さ20〜30µmのブレードで切っていきます。ここが前工程と後工程の境目です。刃を使わないレーザー方式やステルスダイシングもあります。'},
+    {t:'ダイボンド（マウント）', d:'不良マップを見ながら良品チップだけを吸着して拾い、接着フィルム（DAF）で基板やリードフレームに固定します。同時に、熱を基板へ逃がす経路もここで作られます。'},
+    {t:'ワイヤボンド', d:'直径15〜25µmの金線・銅線を、超音波と熱で溶着してチップの電極と基板の電極をつなぎます。高性能品ではこの代わりに、チップを裏返して面全体のバンプで直付けするフリップチップを使います。'},
+    {t:'封止（モールド）', d:'シリカを大量に含むエポキシ樹脂で全体を包み、湿気・応力・外光・イオン汚染からチップと細い線を守ります。同時に製品の外形寸法もここで決まります。'},
+    {t:'最終テスト・出荷', d:'実使用に近い温度と速度で全数の電気特性を測り、動作周波数や消費電力の個体差に応じて等級分け（ビニング）して出荷します。同じ設計から上位・下位モデルが生まれるのはこの工程です。'}
+  ];
+
+  function stepper(o){
+    var svg = document.getElementById(o.svg);
+    var cap = document.getElementById(o.cap);
+    var dots = document.getElementById(o.dots);
+    if(!svg || !cap || !dots) return;
+    var ct = cap.querySelector('.ct'), cd = cap.querySelector('.cd');
+    var n = o.steps.length, i = 0, timer = null;
+    var btn = document.querySelector('[data-act="play"][data-for="'+o.id+'"]');
+    var keyed = svg.querySelectorAll('[data-k]');
+    var scenes = svg.querySelectorAll('.scn');
+    if(o.mode === 'scene') svg.classList.add('js');
+
+    for(var k=0;k<n;k++){
+      (function(kk){
+        var b = document.createElement('button');
+        b.type='button'; b.className='dot';
+        b.setAttribute('aria-label', (kk+1)+'／'+n+' '+o.steps[kk].t);
+        b.addEventListener('click', function(){ stop(); go(kk); });
+        dots.appendChild(b);
+      })(k);
+    }
+
+    function render(){
+      var st = o.steps[i];
+      if(o.mode === 'state'){
+        var on = (st.s||'').split(' ');
+        for(var j=0;j<keyed.length;j++){
+          keyed[j].classList.toggle('hide', on.indexOf(keyed[j].getAttribute('data-k')) === -1);
+        }
+      } else {
+        for(var m=0;m<scenes.length;m++){
+          scenes[m].classList.toggle('on', scenes[m].getAttribute('data-f') === String(i));
+        }
+      }
+      ct.innerHTML = '<em>STEP '+(i+1)+'/'+n+'</em><span></span>';
+      ct.lastChild.textContent = st.t;
+      cd.textContent = st.d;
+      for(var q=0;q<dots.children.length;q++) dots.children[q].classList.toggle('on', q===i);
+    }
+    function go(k){ i = (k+n)%n; render(); }
+    function stop(){ if(timer){ clearInterval(timer); timer=null; } if(btn) btn.textContent='▶ 再生'; }
+    function play(){
+      if(timer){ stop(); return; }
+      if(i >= n-1) i = 0;
+      render();
+      if(btn) btn.textContent='❚❚ 停止';
+      timer = setInterval(function(){
+        if(i >= n-1){ stop(); return; }
+        go(i+1);
+      }, 2900);
+    }
+    if(btn) btn.addEventListener('click', play);
+    var pv = document.querySelector('[data-act="prev"][data-for="'+o.id+'"]');
+    var nx = document.querySelector('[data-act="next"][data-for="'+o.id+'"]');
+    if(pv) pv.addEventListener('click', function(){ stop(); go(i-1); });
+    if(nx) nx.addEventListener('click', function(){ stop(); go(i+1); });
+
+    render();
+
+    if(!reduce && 'IntersectionObserver' in window){
+      var seen = false;
+      var io = new IntersectionObserver(function(es){
+        es.forEach(function(e){
+          if(e.isIntersecting && !seen){ seen = true; io.disconnect(); setTimeout(play, 500); }
+        });
+      }, {threshold:0.45});
+      io.observe(svg);
+    }
+    return {play:play, stop:stop};
+  }
+
+  stepper({id:'litho', svg:'svg-litho', cap:'cap-litho', dots:'dots-litho', mode:'state', steps:LITHO});
+  stepper({id:'be', svg:'svg-be', cap:'cap-be', dots:'dots-be', mode:'scene', steps:BE});
+
+  /* ---------- transistor toggle ---------- */
+  var TR = [
+    {t:'プレーナ型 MOSFET', d:'平らなシリコンの表面にゲートを載せた最も基本的な形。ゲートはチャネルの上面1面からしか電界をかけられません。32nm世代あたりまでは、これでも十分にオフにできていました。'},
+    {t:'FinFET（トライゲート）', d:'チャネルを薄い「ヒレ」として立て、ゲートで左右と上の3面から挟み込みます。同じ面積でより強く電流を止められるため、微細化を10年以上延命させました。2011年にIntelが22nmで量産開始。'},
+    {t:'GAA ナノシート', d:'チャネルを水平な薄いシートに分け、ゲートが全周4面を完全に包みます。制御力が最大になり、シートの幅を変えて駆動能力を調整できる自由度も得られます。2nm世代の標準構造です。'}
+  ];
+  (function(){
+    var svg = document.getElementById('svg-tr');
+    var seg = document.getElementById('seg-tr');
+    var cap = document.getElementById('cap-tr');
+    if(!svg || !seg || !cap) return;
+    var ct = cap.querySelector('.ct'), cd = cap.querySelector('.cd');
+    var scenes = svg.querySelectorAll('.scn');
+    svg.classList.add('js');
+    var btns = seg.querySelectorAll('button');
+    function set(i){
+      for(var m=0;m<scenes.length;m++) scenes[m].classList.toggle('on', scenes[m].getAttribute('data-f') === String(i));
+      for(var b=0;b<btns.length;b++) btns[b].classList.toggle('on', b===i);
+      ct.innerHTML = '<em>TYPE '+(i+1)+'/3</em><span></span>';
+      ct.lastChild.textContent = TR[i].t;
+      cd.textContent = TR[i].d;
+    }
+    for(var b=0;b<btns.length;b++){
+      (function(bb){ btns[bb].addEventListener('click', function(){ set(bb); }); })(b);
+    }
+    set(0);
+  })();
+
+  /* ---------- yield calculator ---------- */
+  (function(){
+    var ia = document.getElementById('in-area'), id0 = document.getElementById('in-d0');
+    var svg = document.getElementById('svg-yield');
+    if(!ia || !id0 || !svg) return;
+    var WD = 300; // mm
+    function rnd(k){ var x = Math.sin(k*12.9898 + 78.233) * 43758.5453; return x - Math.floor(x); }
+    function fmt(n){ return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+
+    function update(){
+      var A = parseFloat(ia.value);           // mm^2
+      var D0 = parseFloat(id0.value) / 100;   // defects per cm^2
+      var side = Math.sqrt(A);                // mm
+      var r = WD/2;
+      // dies per wafer (edge-loss approximation)
+      var dpw = Math.floor(Math.PI*r*r/A - Math.PI*WD/Math.sqrt(2*A));
+      if(dpw < 1) dpw = 1;
+      var Acm = A/100;
+      var x = Acm*D0;
+      var Y = x < 1e-9 ? 1 : Math.pow((1-Math.exp(-x))/x, 2);
+      var good = Math.floor(dpw*Y);
+
+      document.getElementById('v-area').textContent = A + ' mm²';
+      document.getElementById('v-d0').textContent = D0.toFixed(2) + ' /cm²';
+      document.getElementById('o-dies').textContent = fmt(dpw);
+      document.getElementById('o-yield').textContent = (Y*100).toFixed(1) + '%';
+      document.getElementById('o-good').textContent = fmt(good);
+      var unit = Math.round(3000000/Math.max(good,1));
+      document.getElementById('o-cost').innerHTML = '先端ロジックのウェーハ加工費を1枚300万円とすると、良品1個あたり <b>約' + fmt(unit) + '円</b>。（前工程の加工費のみの単純計算で、設計費・後工程費・検査費は含みません）';
+
+      // draw wafer
+      var cx = 160, cy = 160, R = 148;
+      var parts = ['<circle cx="160" cy="160" r="148" fill="var(--surface-2)" stroke="var(--rule-2)" stroke-width="1"/>'];
+      var s = side * (R/r);
+      var cols = Math.ceil(2*R/s)+2;
+      var idx = 0, drawn = 0;
+      var x0 = cx - cols*s/2, y0 = cy - cols*s/2;
+      for(var gy=0; gy<cols; gy++){
+        for(var gx=0; gx<cols; gx++){
+          var px = x0 + gx*s, py = y0 + gy*s;
+          var c1 = Math.hypot(px-cx, py-cy), c2 = Math.hypot(px+s-cx, py-cy);
+          var c3 = Math.hypot(px-cx, py+s-cy), c4 = Math.hypot(px+s-cx, py+s-cy);
+          if(Math.max(c1,c2,c3,c4) > R) continue;
+          idx++;
+          var bad = rnd(idx*7+A) > Y;
+          drawn++;
+          var gap = s > 6 ? 1 : 0.4;
+          parts.push('<rect x="'+(px+gap).toFixed(1)+'" y="'+(py+gap).toFixed(1)+'" width="'+(s-gap*2).toFixed(1)+'" height="'+(s-gap*2).toFixed(1)+'" fill="'+(bad?'var(--d-si)':'var(--d-film)')+'" rx="'+(s>10?1.5:0.5)+'"/>');
+          if(drawn > 4000) break;
+        }
+      }
+      parts.push('<path d="M160 12 L150 26 L170 26 Z" fill="var(--ground)"/>');
+      svg.innerHTML = parts.join('');
+    }
+    ia.addEventListener('input', update);
+    id0.addEventListener('input', update);
+    update();
+  })();
+
+  /* ---------- 用語注釈をキーボード操作可能にする ---------- */
+  (function(){
+    var tms = document.querySelectorAll('.tm');
+    for(var i=0;i<tms.length;i++){
+      tms[i].setAttribute('tabindex','0');
+          }
+  })();
+
+  /* ---------- rail scroll-spy ---------- */
+  (function(){
+    var links = document.querySelectorAll('.rail a');
+    if(!links.length || !('IntersectionObserver' in window)) return;
+    var map = {};
+    for(var i=0;i<links.length;i++){
+      var id = links[i].getAttribute('href').slice(1);
+      var el = document.getElementById(id);
+      if(el){ map[id] = links[i]; }
+    }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          for(var k in map) map[k].classList.remove('on');
+          if(map[e.target.id]) map[e.target.id].classList.add('on');
+        }
+      });
+    }, {rootMargin:'-15% 0px -70% 0px'});
+    for(var k in map) io.observe(document.getElementById(k));
+  })();
+})();
+</script>
+
+</body>
+</html>
