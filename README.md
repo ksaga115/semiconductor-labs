@@ -4,7 +4,7 @@
 フォトダイオード・MOS・MOSFET まで、全部自分で積み上げる。
 
 ブラウザだけで動く。依存ゼロ・通信ゼロ・インストール不要。
-[NandLab](../NandLab/)（NAND だけから論理回路）と [CoinLab](../../その他/CoinLab/)（コイン1枚から確率）の3本目で、
+[NandLab](../NandLab/)（NAND だけから論理回路）と [CoinLab](../../ほか/CoinLab/)（コイン1枚から確率）の3本目で、
 **NandLab のひとつ下の階**にあたる。第5章で作る MOSFET が、そのまま NandLab の
 原始部品 NAND の中身になる。
 
