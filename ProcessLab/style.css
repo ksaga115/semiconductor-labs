@@ -1,0 +1,142 @@
+/* プロセスラボ ― 見た目（SemiLab と同じ骨組み）
+ * 色の役割: 赤系 = p 型のシリコン / 青系 = n 型のシリコン（濃いほど明るい）
+ *           膜は材料ごとに固定の色（ui.js の MATCOL）。この対応を他に使わない
+ */
+
+:root {
+  --bg: #14171c; --bg2: #1b1f26; --bg3: #232833; --line: #2f3642;
+  --fg: #dde3ec; --fg2: #93a0b4; --fg3: #66717f;
+  --accent: #5aa9e6; --ok: #4cc38a; --ng: #e5686d;
+}
+
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; height: 100%; background: var(--bg); color: var(--fg);
+  font: 13px/1.6 "Yu Gothic UI", "Meiryo", system-ui, sans-serif; overflow: hidden;
+}
+#app { display: flex; flex-direction: column; height: 100%; }
+
+#topbar {
+  display: flex; align-items: center; gap: 14px; padding: 6px 12px;
+  background: var(--bg2); border-bottom: 1px solid var(--line); flex-wrap: wrap; flex: none;
+}
+#brand { font-weight: 700; letter-spacing: .06em; white-space: nowrap; }
+.group { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.group + .group { border-left: 1px solid var(--line); padding-left: 14px; }
+#toolGroup { margin-left: auto; }
+#topbar label { display: flex; align-items: center; gap: 5px; color: var(--fg2); white-space: nowrap; }
+
+select, input.num, .ed input[type=text] {
+  background: var(--bg); color: var(--fg); border: 1px solid var(--line);
+  border-radius: 4px; padding: 1px 5px; font: inherit; font-size: 12px;
+}
+input.num { width: 64px; flex: none; text-align: right; font-variant-numeric: tabular-nums; }
+input.bad { border-color: var(--ng) !important; background: #2a1618; }
+.unit { color: var(--fg3); font-size: 12px; margin-left: -2px; }
+select:focus, input:focus { outline: none; border-color: var(--accent); }
+
+.tb {
+  background: var(--bg3); color: var(--fg); border: 1px solid var(--line);
+  border-radius: 5px; padding: 4px 10px; cursor: pointer; font: inherit;
+}
+.tb:hover { background: #2c323e; border-color: #3c4655; }
+.tb.primary { background: #21486d; border-color: #2f6699; }
+.tb.mini { padding: 1px 7px; font-size: 12px; }
+.tb.wide { width: 100%; margin-top: 6px; }
+.tb.danger { background: #5a2529; border-color: #7d3339; }
+
+main { display: flex; flex: 1; min-height: 0; }
+aside { width: 290px; flex: none; background: var(--bg2); overflow-y: auto; padding: 10px 12px; }
+#left { border-right: 1px solid var(--line); }
+#quests { border-left: 1px solid var(--line); width: 300px; }
+aside h2 { font-size: 12px; color: var(--fg3); font-weight: 600; letter-spacing: .08em; margin: 14px 0 6px; }
+aside section:first-child h2 { margin-top: 0; }
+.note { color: var(--fg3); font-size: 12px; line-height: 1.7; margin: 8px 0 0; }
+.note b { color: var(--fg2); }
+
+#addGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+
+/* ---- レシピ ---- */
+#stepList { list-style: none; margin: 0; padding: 0; counter-reset: st; }
+#stepList li { border: 1px solid var(--line); border-radius: 6px; margin-bottom: 5px; background: var(--bg3); overflow: hidden; }
+#stepList li.sel { border-color: var(--accent); }
+#stepList li.start { background: none; border-style: dashed; }
+.shead { display: flex; align-items: center; gap: 7px; padding: 5px 8px; cursor: pointer; }
+.sno { width: 20px; color: var(--fg3); font-size: 11px; flex: none; text-align: right; font-variant-numeric: tabular-nums; }
+.sico { width: 10px; height: 18px; border-radius: 2px; flex: none; }
+.stext { flex: 1; font-size: 12px; min-width: 0; }
+.swarn { color: #ffb4b4; font-size: 11px; }
+.smove { display: flex; gap: 2px; flex: none; }
+.smove button { background: none; border: none; color: var(--fg3); cursor: pointer; font-size: 12px; padding: 0 3px; }
+.smove button:hover { color: var(--fg); }
+
+.ed { padding: 6px 8px 9px; border-top: 1px solid var(--line); }
+.ed .row { display: flex; align-items: center; gap: 6px; margin-top: 5px; }
+.ed .row > span:first-child { width: 58px; flex: none; color: var(--fg3); font-size: 12px; white-space: nowrap; }
+.ed .row input[type=text] { width: 90px; flex: none; text-align: right; font-variant-numeric: tabular-nums; }
+.ed .row select { flex: none; }
+.ed .row .u { color: var(--fg3); font-size: 12px; }
+.ed .acts { display: flex; gap: 6px; margin-top: 8px; }
+.ed .acts .tb { flex: 1; font-size: 12px; padding: 3px 6px; }
+.ed canvas.maskbar { display: block; width: 100%; height: 26px; margin-top: 6px; border-radius: 3px; cursor: crosshair; }
+.ed .presets { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
+.ed .presets .tb { font-size: 11px; padding: 1px 6px; }
+.ed .hint { color: var(--fg3); font-size: 11px; margin-top: 4px; line-height: 1.6; }
+
+/* ---- 真ん中 ---- */
+#stage { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+#viewbar {
+  display: flex; align-items: center; gap: 10px; padding: 4px 12px; background: var(--bg2);
+  border-bottom: 1px solid var(--line); flex: none; font-size: 12px; flex-wrap: wrap; row-gap: 2px;
+}
+#viewbar .vlabel { color: var(--fg3); white-space: nowrap; }
+.grow { flex: 1; }
+#board { flex: 1; width: 100%; min-height: 0; display: block; cursor: crosshair; }
+#warnbar {
+  padding: 4px 12px; background: #3a2e1a; color: #ffd9a0; border-top: 1px solid #5a4525;
+  font-size: 12px; flex: none; line-height: 1.6;
+}
+#status {
+  display: flex; justify-content: space-between; gap: 16px; padding: 4px 12px; background: var(--bg2);
+  border-top: 1px solid var(--line); color: var(--fg2); font-size: 12px; flex: none;
+  font-variant-numeric: tabular-nums; flex-wrap: wrap;
+}
+#status span { white-space: nowrap; }
+#statRight { color: var(--fg3); }
+
+/* ---- 課題（SemiLab と同じ） ---- */
+.chapter { margin-bottom: 10px; }
+.chapter > .ctitle { font-size: 12px; color: var(--fg2); font-weight: 600; padding: 4px 0 2px; border-bottom: 1px solid var(--line); margin-bottom: 4px; }
+.chapter .clead { color: var(--fg3); font-size: 11px; margin: 0 0 5px; line-height: 1.6; }
+.qitem { display: flex; align-items: center; gap: 7px; padding: 3px 6px; border-radius: 5px; cursor: pointer; font-size: 12px; }
+.qitem:hover { background: var(--bg3); }
+.qitem.sel { background: #21486d; }
+.qitem .mark { width: 14px; color: var(--fg3); flex: none; text-align: center; }
+.qitem.done .mark { color: var(--ok); }
+#questBody { margin-bottom: 14px; border-bottom: 1px solid var(--line); padding-bottom: 12px; }
+#questBody h3 { margin: 0 0 6px; font-size: 14px; }
+#qDesc { margin: 0 0 8px; line-height: 1.75; }
+.why-line { color: var(--fg2); font-size: 12px; line-height: 1.75; margin: 0 0 8px; }
+#qDesc b, .why-line b { color: var(--fg); }
+details { font-size: 12px; color: var(--fg2); margin-bottom: 8px; }
+summary { cursor: pointer; color: var(--fg3); }
+details p { margin: 5px 0 0; line-height: 1.7; }
+#qResult { margin-top: 10px; font-size: 12px; }
+.verdict { font-weight: 700; padding: 5px 0; }
+.verdict.ok { color: var(--ok); } .verdict.ng { color: var(--ng); }
+.grid { display: grid; grid-template-columns: auto 1fr; gap: 2px 8px; }
+.grid .k { color: var(--fg3); }
+.grid .v.ok { color: var(--ok); } .grid .v.ng { color: var(--ng); }
+.grid .want { grid-column: 1 / -1; color: var(--fg3); font-size: 11px; margin: -2px 0 4px; padding-left: 4px; }
+.mnote { color: var(--fg3); font-size: 12px; line-height: 1.7; margin: 10px 0 0; }
+
+#overlay { position: fixed; inset: 0; background: rgba(8,10,14,.72); display: flex; align-items: center; justify-content: center; z-index: 40; }
+#modal { background: var(--bg2); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; max-width: min(900px, 94vw); max-height: 90vh; overflow: auto; }
+#modal h3 { margin: 0 0 10px; font-size: 15px; }
+#modal .mrow { display: flex; gap: 8px; align-items: center; margin-top: 10px; }
+#modal textarea { width: 100%; height: 320px; background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 6px; padding: 8px; font: 12px/1.5 Consolas, monospace; }
+
+.hidden { display: none !important; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: #333a46; border-radius: 5px; }
