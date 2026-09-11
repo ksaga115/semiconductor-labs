@@ -179,7 +179,7 @@ T('保存', () => {
 });
 
 T('ランチャと README', () => {
-  const vbs = path.join(ROOT, 'プロセスラボ.vbs');
+  const vbs = path.join(ROOT, '起動.vbs');
   ok('vbs がある', fs.existsSync(vbs));
   if (fs.existsSync(vbs)) {
     const raw = fs.readFileSync(vbs);

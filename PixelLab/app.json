@@ -1,7 +1,7 @@
 {
   "name": "PixelLab",
   "version": "1.0.0",
-  "launch": "画素ラボ.vbs",
+  "launch": "起動.vbs",
   "kind": "web",
   "description": "謎のカメラを撮って PTC で K・読み出し雑音・飽和電荷・暗電流・PRNU を当て、画素を設計して仕様を満たすラボ（ブラウザのみ・依存ゼロ）"
 }

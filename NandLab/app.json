@@ -1,7 +1,7 @@
 {
   "name": "NandLab",
   "version": "1.0.0",
-  "launch": "回路ラボ.vbs",
+  "launch": "起動.vbs",
   "kind": "web",
   "description": "NAND だけから論理回路を組み上げるサンドボックス（ブラウザのみ・依存ゼロ）"
 }

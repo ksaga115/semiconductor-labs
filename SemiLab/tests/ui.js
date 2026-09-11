@@ -614,7 +614,7 @@ T('壊れた保存', () => {
 /* ================= 7. ランチャと app.json ================= */
 
 T('ランチャ', () => {
-  const vbs = path.join(ROOT, '半導体ラボ.vbs');
+  const vbs = path.join(ROOT, '起動.vbs');
   ok('vbs がある', fs.existsSync(vbs));
 
   const raw = fs.readFileSync(vbs);

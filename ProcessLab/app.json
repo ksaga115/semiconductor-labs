@@ -1,7 +1,7 @@
 {
   "name": "ProcessLab",
   "version": "1.0.0",
-  "launch": "プロセスラボ.vbs",
+  "launch": "起動.vbs",
   "kind": "web",
   "description": "成膜・露光・エッチング・注入・熱処理の工程だけでウェーハの断面を作り、SemiLab の物理で素子として測るサンドボックス（ブラウザのみ・依存ゼロ）"
 }
