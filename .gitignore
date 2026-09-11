@@ -1,0 +1,6 @@
+# ビルド成果物は無い（ブラウザだけで動く）。念のための除外
+node_modules/
+*.log
+Thumbs.db
+desktop.ini
+.DS_Store

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>半導体ラボ</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+  <header id="topbar">
+    <div id="brand">半導体ラボ</div>
+
+    <div class="group" id="condGroup">
+      <label title="温度。ni が指数で効くので、少し動かすだけで漏れ電流が桁で変わる。数値は 150〜500 K">
+        温度 <input id="tempSlider" type="range" min="200" max="450" step="1" value="300">
+        <input id="tempVal" class="num" type="text" value="300"><span class="unit">K</span>
+      </label>
+      <label title="左の電極にかける電圧。摘みは −50〜+10V、数値なら −200〜+20V まで">
+        左 <input id="vlSlider" type="range" min="-50000" max="10000" step="10" value="0">
+        <input id="vlVal" class="num" type="text" value="0.00"><span class="unit">V</span>
+      </label>
+      <label title="右の電極にかける電圧。摘みは −50〜+10V、数値なら −200〜+20V まで">
+        右 <input id="vrSlider" type="range" min="-50000" max="10000" step="10" value="0">
+        <input id="vrVal" class="num" type="text" value="0.00"><span class="unit">V</span>
+      </label>
+      <button id="btnZeroBias" class="tb mini" title="両方 0V に戻す（平衡）">平衡へ</button>
+    </div>
+
+    <div class="group" id="lightGroup">
+      <label class="chk" title="左から光を当てる">
+        <input id="lightOn" type="checkbox"> 光
+      </label>
+      <label>
+        λ <input id="nmSlider" type="range" min="300" max="1200" step="5" value="600">
+        <input id="nmVal" class="num" type="text" value="600"><span class="unit">nm</span>
+      </label>
+      <label title="表面での反射。0% は理想的な反射防止膜。数値を空にすると裸のシリコン">
+        反射 <input id="arSlider" type="range" min="-1" max="60" step="1" value="-1">
+        <input id="arVal" class="num" type="text" value="" placeholder="裸"><span class="unit">%</span>
+      </label>
+    </div>
+
+    <div class="group" id="toolGroup">
+      <button id="btnMeasure" class="tb primary" title="I-V / C-V / 量子効率を測る">測る</button>
+      <button id="btnPath"    class="tb" title="どこまで積み上がったか">道のり</button>
+      <button id="btnSaveDev" class="tb" title="今の構造に名前を付けて残す">残す</button>
+      <button id="btnNew"     class="tb">作業台を消す</button>
+      <button id="btnExport"  class="tb">書き出し</button>
+      <button id="btnImport"  class="tb">読み込み</button>
+    </div>
+  </header>
+
+  <main>
+    <aside id="left">
+      <section>
+        <h2>一片を足す</h2>
+        <div id="addRow">
+          <button id="addSi" class="tb wide" title="シリコンの一片。不純物を塗れる">シリコン</button>
+          <button id="addOx" class="tb wide" title="酸化膜。端に置くとその電極がゲートになる">酸化膜</button>
+        </div>
+        <p class="note">端の電極は自動で決まる ―
+          シリコンに触れていれば<b>オーミック</b>、酸化膜に触れていれば<b>ゲート</b>。</p>
+      </section>
+
+      <section id="layersSection">
+        <h2>層（左から右へ）</h2>
+        <ol id="layerList"></ol>
+        <p class="note" id="layersEmpty">まだ何もない。<br>「シリコン」を押して一片を置く。</p>
+      </section>
+
+      <section id="libSection">
+        <h2>残した素子</h2>
+        <div id="libList"></div>
+        <p class="note" id="libEmpty">「残す」で名前を付けて置いておける。</p>
+      </section>
+    </aside>
+
+    <div id="stage">
+      <div id="viewbar">
+        <span class="vlabel">下の段に出すもの</span>
+        <label class="chk"><input type="radio" name="fieldView" value="E" checked> 電界</label>
+        <label class="chk"><input type="radio" name="fieldView" value="rho"> 電荷</label>
+        <label class="chk"><input type="radio" name="fieldView" value="gen"> 光の生成</label>
+        <span class="grow"></span>
+        <label title="左端からどこまでを見るか">
+          拡大 <input id="zoomSlider" type="range" min="0" max="100" step="1" value="100">
+          <span id="zoomVal" class="num"></span>
+        </label>
+      </div>
+      <canvas id="board"></canvas>
+      <div id="warnbar" class="hidden"></div>
+      <div id="status"><span id="statLeft"></span><span id="statRight"></span></div>
+    </div>
+
+    <aside id="quests">
+      <h2>課題</h2>
+      <div id="questBody" class="hidden">
+        <h3 id="qName"></h3>
+        <p id="qDesc"></p>
+        <p id="qWhy" class="why-line"></p>
+        <details id="qHintWrap"><summary>ヒント</summary><p id="qHint"></p></details>
+        <button id="btnGrade" class="tb primary wide">採点する</button>
+        <button id="btnAnswer" class="tb wide">お手本を見る</button>
+        <div id="qResult"></div>
+      </div>
+      <div id="questList"></div>
+    </aside>
+  </main>
+</div>
+
+<div id="overlay" class="hidden"><div id="modal"></div></div>
+
+<script src="src/phys.js"></script>
+<script src="src/stack.js"></script>
+<script src="src/poisson.js"></script>
+<script src="src/band.js"></script>
+<script src="src/dev.js"></script>
+<script src="src/light.js"></script>
+<script src="src/parse.js"></script>
+<script src="src/quest.js"></script>
+<script src="src/answer.js"></script>
+<script src="src/store.js"></script>
+<script src="src/ui.js"></script>
+<script src="src/chart.js"></script>
+<script src="src/main.js"></script>
+</body>
+</html>

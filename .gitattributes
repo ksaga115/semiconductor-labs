@@ -1,0 +1,2 @@
+# vbs は UTF-16LE(BOM)。改行や文字コードを git に触らせない
+*.vbs binary
