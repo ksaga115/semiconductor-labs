@@ -1,9 +1,10 @@
-# 一般的なビルド成果物・依存物（このプロジェクトでは使っていないが念のため）
+# ビルド成果物は無い（ブラウザだけで動く）。念のための除外
 node_modules/
 bin/
 obj/
 publish_output/
 dist/
+*.log
 
 # OS / エディタ
 Thumbs.db
