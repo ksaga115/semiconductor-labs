@@ -1,0 +1,7 @@
+{
+  "name": "SemiLab",
+  "version": "1.0.0",
+  "launch": "半導体ラボ.vbs",
+  "kind": "web",
+  "description": "シリコンの一片に不純物を塗るところから、pn接合・フォトダイオード・MOSFET まで積み上げるサンドボックス（ブラウザのみ・依存ゼロ）"
+}
