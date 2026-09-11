@@ -101,7 +101,8 @@
     ['prims', 'chips', 'libEmpty', 'questList', 'questBody', 'qName', 'qDesc', 'qWhy', 'qPorts', 'qHint',
       'qSpec', 'qResult', 'statLeft', 'statRight', 'overlay', 'modal', 'peek', 'peekName',
       'peekBoard', 'btnRun', 'btnStep', 'btnReset', 'clockSpeed', 'btnTruth', 'btnExpr', 'btnSlim', 'btnChip',
-      'btnTidy', 'btnPath', 'btnSaveChip', 'btnNew', 'btnExport', 'btnImport', 'btnGrade', 'btnAnswer', 'peekEdit', 'peekClose'
+      'btnTidy', 'btnPath', 'btnSaveChip', 'btnNew', 'btnExport', 'btnImport', 'btnGrade', 'btnAnswer', 'peekEdit', 'peekClose',
+      'peekVolt'
     ].forEach(function (id) { el[id] = document.getElementById(id); });
 
     cv = document.getElementById('board');
@@ -868,6 +869,13 @@
     el.btnAnswer.onclick = openAnswer;
     el.peekClose.onclick = function () { closePeek(); };
     el.peekEdit.onclick = function () { var nm = S.peek && S.peek.chip; closePeek(); if (nm) openChipForEdit(nm); };
+    el.peekVolt.onclick = function () {
+      if (!S.peek || S.peek.kind !== 'mos') return;
+      S.peek.volt = !S.peek.volt;
+      el.peekVolt.textContent = S.peek.volt ? '0 / 1 で見る' : '電圧で見る';
+      say(S.peek.volt ? '0 と 1 は、この坂をしきい値で切っただけのもの。盤面の入力を切り替えると点が動く'
+                      : 'スイッチの絵に戻した');
+    };
     el.overlay.onclick = function (e) { if (e.target === el.overlay) closeModal(); };
     syncRunButton();
   }
@@ -1156,11 +1164,12 @@
    * ここのトランジスタが開け閉めされる ― 説明を読むより速い。
    * 窓を小さくしてあるのは、盤面のスイッチを触りながら見るため。 */
   function openMos(part) {
-    S.peek = { kind: 'mos', part: part, prefix: '' };
+    S.peek = { kind: 'mos', part: part, prefix: '', volt: false };
     el.peekName.textContent = 'NAND の中身　― トランジスタ4個でできている';
     el.peek.classList.remove('hidden');
     el.peek.classList.add('small');
     el.peekEdit.classList.add('hidden');
+    el.peekVolt.textContent = '電圧で見る';
     fit(pcv, pctx);
     say('盤面の入力を切り替えると、中のトランジスタが開け閉めされる');
   }
@@ -1303,6 +1312,116 @@
     c2.restore();
   }
 
+  /* 0 と 1 の下にある連続量（analog.js）。
+   * 同じ NAND を、スイッチの絵ではなく「入力 A の電圧 → 出力の電圧」の坂で見せる。
+   * 盤面の A・B は 0 → 0V、1 → 電源 に置き換えて、今どこに居るかを点で出す。
+   * X は坂の途中の電圧のことなので、点は打たない（どこか決められない）。 */
+  function drawAnalog(c2, rect) {
+    var A = NL.analog;
+    if (!A) return drawMos(c2, rect);
+    var p = S.peek.part;
+    var a = inValueOf('', S.circuit, p, 0), b = inValueOf('', S.circuit, p, 1);
+    var s = Math.min(rect.width / MOS_W, rect.height / MOS_H);
+    var VDD = A.VDD;
+
+    c2.save();
+    c2.translate((rect.width - MOS_W * s) / 2, (rect.height - MOS_H * s) / 2);
+    c2.scale(s, s);
+
+    function line(x1, y1, x2, y2, col, w, dash) {
+      c2.strokeStyle = col; c2.lineWidth = w || 2; c2.lineCap = 'round';
+      c2.setLineDash(dash || []);
+      c2.beginPath(); c2.moveTo(x1, y1); c2.lineTo(x2, y2); c2.stroke();
+      c2.setLineDash([]);
+    }
+    function text(t, x, y, col, size, align) {
+      c2.fillStyle = col; c2.textAlign = align || 'center'; c2.textBaseline = 'middle';
+      c2.font = (size || 12) + 'px "Yu Gothic UI", Meiryo, system-ui, sans-serif';
+      c2.fillText(t, x, y);
+    }
+
+    /* B は「もう片方の入力」。X なら 1 として坂を描き、そのことを書く */
+    var vb = b === 0 ? 0 : VDD;
+    var cur = A.curve(vb, 110), m = A.margins(vb);
+
+    var gx = 70, gy = 62, gw = 440, gh = 250;
+    function PX(v) { return gx + v / VDD * gw; }
+    function PY(v) { return gy + gh - v / VDD * gh; }
+
+    text(A.FACTS[0], MOS_W / 2, 22, '#8492a6', 11);
+    text('もう片方の入力 B = ' + (b === X ? 'X（1 として描いている）' : SIM.show(b) + '（' + A.volts(vb) + '）'),
+      MOS_W / 2, 42, sigColor(b, false), 11.5);
+
+    /* 枠と目盛り */
+    c2.strokeStyle = '#3a4759'; c2.lineWidth = 1; c2.strokeRect(gx, gy, gw, gh);
+    var v;
+    for (v = 0; v <= VDD + 1e-9; v += 1) {
+      line(PX(v), gy + gh, PX(v), gy + gh + 4, '#3a4759', 1);
+      text(v.toFixed(0) + 'V', PX(v), gy + gh + 14, '#6b7688', 10.5);
+      line(gx - 4, PY(v), gx, PY(v), '#3a4759', 1);
+      text(v.toFixed(0) + 'V', gx - 8, PY(v), '#6b7688', 10.5, 'right');
+    }
+    text('入力 A の電圧', MOS_W / 2, gy + gh + 30, '#8492a6', 11);
+    text('出力 Y', gx - 8, gy - 12, '#8492a6', 11, 'right');
+
+    /* 坂の途中 ― どちらとも言えない電圧。3値の X が居る場所 */
+    if (m) {
+      c2.fillStyle = 'rgba(107,118,136,.22)';
+      c2.fillRect(PX(m.vil), gy, PX(m.vih) - PX(m.vil), gh);
+      text('X の居場所', (PX(m.vil) + PX(m.vih)) / 2, gy + 12, '#8492a6', 10.5);
+      /* 0 と読める範囲・1 と読める範囲 */
+      line(gx, PY(m.vol), PX(m.vih), PY(m.vol), netColor(0), 1, [4, 4]);
+      line(PX(m.vil), PY(m.voh), gx + gw, PY(m.voh), netColor(1), 1, [4, 4]);
+      text('0 と読める上限 ' + A.volts(m.vil), PX(m.vil) - 6, PY(0.35), netColor(0), 10.5, 'right');
+      text('1 と読める下限 ' + A.volts(m.vih), PX(m.vih) + 6, PY(VDD - 0.35), netColor(1), 10.5, 'left');
+    }
+
+    /* 坂 */
+    c2.strokeStyle = '#c7d4e4'; c2.lineWidth = 2.5; c2.lineJoin = 'round';
+    c2.beginPath();
+    var i;
+    for (i = 0; i < cur.length; i++) {
+      if (i) c2.lineTo(PX(cur[i].va), PY(cur[i].vout)); else c2.moveTo(PX(cur[i].va), PY(cur[i].vout));
+    }
+    c2.stroke();
+
+    /* 今どこに居るか */
+    var story;
+    if (a === X) {
+      story = ['A が X ― 坂の途中のどこかに居て、電圧を決められない。', '点は打たない。0 で埋めると、この絵は嘘になる。'];
+    } else {
+      var va = a === 1 ? VDD : 0;
+      var sol = A.solve(va, vb);
+      var d = A.asDigit(sol.vout, m);
+      var col = sigColor(d === null ? X : d, false);
+      line(PX(va), gy + gh, PX(va), PY(sol.vout), col, 1, [3, 4]);
+      line(gx, PY(sol.vout), PX(va), PY(sol.vout), col, 1, [3, 4]);
+      c2.beginPath(); c2.arc(PX(va), PY(sol.vout), 6, 0, Math.PI * 2); c2.fillStyle = col; c2.fill();
+      text('A = ' + SIM.show(a) + '（' + A.volts(va) + '） → Y = ' + A.volts(sol.vout) + ' ＝ ' + (d === null ? 'X' : d),
+        PX(va) + (a === 1 ? -10 : 10), PY(sol.vout) + (a === 1 ? 16 : -14), col, 12, a === 1 ? 'right' : 'left');
+      story = [
+        (a === 1 && b !== 0) ? '下の n が2つとも通じて、Y は地面へ引き下げられている。'
+                             : '上の p のどちらかが通じて、Y は電源へ引き上げられている。',
+        'p(A) ' + A.REGION_NAME[sol.region.pa] + ' · p(B) ' + A.REGION_NAME[sol.region.pb]
+          + ' · n(A) ' + A.REGION_NAME[sol.region.na] + ' · n(B) ' + A.REGION_NAME[sol.region.nb]
+          + (b !== 0 ? '　n の間の電圧 ' + A.volts(sol.vmid) : '')
+      ];
+    }
+
+    /* 雑音余裕 ― これだけ汚れても次の段は読み違えない */
+    if (m) {
+      text('雑音余裕　0 側 ' + A.volts(m.nml) + ' ／ 1 側 ' + A.volts(m.nmh)
+        + '　（坂の利得が 1 を超えるから、汚れは押し戻される）', MOS_W / 2, 356, '#d7dee8', 11.5);
+    }
+    text(story[0], MOS_W / 2, 386, '#d7dee8', 12);
+    text(story[1], MOS_W / 2, 406, '#8492a6', 11.5);
+    text(A.FACTS[2], MOS_W / 2, 436, '#6b7688', 10.5);
+    text('二乗則の一番素朴なモデル。n と p は同じ強さ、しきい値 ' + A.volts(A.VTH) + '、電源 ' + A.volts(VDD),
+      MOS_W / 2, 456, '#6b7688', 10.5);
+
+    c2.restore();
+  }
+
   /* お手本を見る。見るだけで、作業台には触らない。
    * お手本の実体は src/answer.js にあり、検査（tests/quest.js）が採点を通ることを
    * 確かめているものと同じ。画面用に別に持つと、通っていないお手本を見せてしまう */
@@ -1343,6 +1462,7 @@
     el.peek.classList.add('hidden');
     el.peek.classList.remove('small');
     el.peekEdit.classList.remove('hidden');
+    el.peekVolt.classList.add('hidden');
   }
 
   function renderPeek() {
@@ -1351,8 +1471,10 @@
     pctx.save();
     pctx.fillStyle = '#0f1218';
     pctx.fillRect(0, 0, r.width, r.height);
+    /* 「電圧で見る」は NAND の中身のときだけ意味がある */
+    el.peekVolt.classList.toggle('hidden', S.peek.kind !== 'mos');
     if (S.peek.kind === 'mos') {
-      drawMos(pctx, r);
+      if (S.peek.volt) drawAnalog(pctx, r); else drawMos(pctx, r);
     } else if (S.peek.kind === 'answer') {
       /* お手本は、盤面とは別の回路・別のチップ束・別のシミュレータで動いている。
        * 描く関数は「今の状態」を見に行くので、描くあいだだけ差し替える。

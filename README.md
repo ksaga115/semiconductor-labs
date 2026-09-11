@@ -63,7 +63,7 @@
 ```
 node ProcessLab\tests\all.js      332 件
 node SemiLab\tests\all.js       1,074 件
-node NandLab\tests\all.js         544 件
+node NandLab\tests\all.js         569 件
 node PixelLab\tests\all.js        271 件
 ```
 
@@ -73,6 +73,6 @@ node PixelLab\tests\all.js        271 件
 
 ## これから
 
-- NandLab の `analog.js`（伝達特性・雑音余裕）を画面に繋ぐ。第3部参考書 01 章の図が先に同じ計算をしている
+- NandLab「電圧で見る」のしきい値 0.7V・電源 3.3V は決め打ち。SemiLab 第5章で作った nMOS の Vth・Cox を渡せると2本が本当に地続きになる
 - NandLab に「原始部品を NOR にする」モードを足すか検討（第3部 01 章で NOR の万能性を説明しているが、ラボでは NAND からしか組めない）
 - 各ラボの「ここから先」（README）― BJT・降伏・反射防止膜の設計（SemiLab）、側壁と形状・TED（ProcessLab）、HDR・光学（PixelLab）、メモリ（NandLab）

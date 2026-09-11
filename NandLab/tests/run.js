@@ -9,7 +9,7 @@ const vm = require('vm');
 const ctx = vm.createContext({ console, Math, Date, JSON, Int8Array, Int32Array, Uint8Array, Array, Object, String, Number });
 ctx.window = ctx;
 ctx.globalThis = ctx;
-for (const f of ['netlist.js', 'lib.js', 'sim.js', 'truth.js', 'quest.js', 'expr.js', 'mos.js', 'slim.js']) {
+for (const f of ['netlist.js', 'lib.js', 'sim.js', 'truth.js', 'quest.js', 'expr.js', 'mos.js', 'analog.js', 'slim.js']) {
   vm.runInContext(fs.readFileSync(path.join(__dirname, '..', 'src', f), 'utf8'), ctx, { filename: f });
 }
 const NL = ctx.NL;
@@ -415,6 +415,46 @@ group('小さくする ― 減らす手がかり', () => {
   ok(SL.ADVICE.length >= 3, '考え方のほうも用意してある');
 });
 
+
+group('0 と 1 の下にある連続量（analog.js）', () => {
+  const A = NL.analog, VDD = A.VDD;
+  const near = (x, y, t) => Math.abs(x - y) <= (t || 1e-6);
+
+  /* NAND の表が、電圧でも出る */
+  ok(near(A.solve(0, 0).vout, VDD), 'A も B も 0 → 出力は電源いっぱい');
+  ok(near(A.solve(0, VDD).vout, VDD), 'A が 0 なら B が 1 でも 1');
+  ok(near(A.solve(VDD, 0).vout, VDD), 'B が 0 なら A が 1 でも 1');
+  ok(near(A.solve(VDD, VDD).vout, 0), '両方 1 → 出力は地面');
+
+  /* 坂は一方向。上下が同時に強く通じることは無い */
+  const c = A.curve(VDD, 80);
+  let mono = true;
+  for (let i = 1; i < c.length; i++) if (c[i].vout > c[i - 1].vout + 1e-9) mono = false;
+  ok(mono, 'A を上げると出力は下がる一方（坂が戻らない）');
+
+  /* 坂が急だから 0 と 1 で考えてよい ― 雑音余裕が電源の 1/4 以上ある */
+  const m = A.margins(VDD);
+  ok(m && m.vil < m.vih, '傾き −1 の点が2つ見つかる');
+  ok(m.nml > VDD / 4 && m.nmh > VDD / 4, '雑音余裕が 0 側・1 側とも電源の 1/4 以上');
+  let gain = 0;
+  for (let i = 1; i < c.length; i++) gain = Math.min(gain, (c[i].vout - c[i - 1].vout) / (c[i].va - c[i - 1].va));
+  ok(gain < -1, '坂の途中の利得が 1 を超える（汚れが押し戻される理由）');
+
+  /* 電圧をデジタルに読む ― 坂の途中は X */
+  eq(A.asDigit(0.2, m), 0, '低い電圧は 0');
+  eq(A.asDigit(VDD - 0.2, m), 1, '高い電圧は 1');
+  eq(A.asDigit((m.vil + m.vih) / 2, m), null, '坂の途中はどちらとも言えない（3 値の X）');
+
+  /* 3 値の NAND（mos.js / sim.js）と、電圧で解いた答えが 0/1 の全4通りで一致する */
+  for (const [a, b] of [[0, 0], [0, 1], [1, 0], [1, 1]]) {
+    eq(A.asDigit(A.solve(a ? VDD : 0, b ? VDD : 0).vout, m), NL.mos.nand(a, b).y,
+      `NAND(${a},${b}) が電圧でもスイッチでも同じ`);
+  }
+
+  /* B を弱くすると坂は右へ動く（下の n が直列だから） */
+  const m2 = A.margins(2.0);
+  ok(m2 && m2.vil > m.vil, 'B が 2.0V なら A の切り替わりは右へずれる');
+});
 
 console.log(`\n${fail ? 'NG' : 'OK'}  合格 ${pass} / 失敗 ${fail}`);
 process.exit(fail ? 1 : 0);

@@ -15,7 +15,7 @@ const ctx = vm.createContext({ console, URLSearchParams });
 ctx.globalThis = ctx;
 const dom = domStub.install(ctx);
 
-for (const f of ['netlist.js', 'lib.js', 'sim.js', 'truth.js', 'quest.js', 'expr.js', 'mos.js', 'slim.js', 'answer.js', 'layout.js', 'store.js', 'ui.js', 'main.js']) {
+for (const f of ['netlist.js', 'lib.js', 'sim.js', 'truth.js', 'quest.js', 'expr.js', 'mos.js', 'analog.js', 'slim.js', 'answer.js', 'layout.js', 'store.js', 'ui.js', 'main.js']) {
   vm.runInContext(fs.readFileSync(path.join(__dirname, '..', 'src', f), 'utf8'), ctx, { filename: f });
 }
 const NL = ctx.NL;
@@ -498,9 +498,29 @@ group('NAND の中身を覗く', () => {
   eq(now().down, M.ON, '地面側が繋がっている');
   eq(now().up, M.OFF, 'そのとき電源側は切れている');
 
+  /* 電圧で見る ― 0 と 1 の下にある連続量（analog.js を画面に繋いだ） */
+  const bv = dom.byId.get('peekVolt');
+  frames(1);
+  ok(!bv.classList.contains('hidden'), 'NAND の中身では「電圧で見る」が出ている');
+  bv.onclick();
+  eq(S.peek.volt, true, '電圧の見方に切り替わる');
+  ok(/0 \/ 1/.test(bv.textContent), 'ボタンが戻し方を示す');
+  const c2 = dom.byId.get('peekBoard').getContext()._calls.n;
+  frames(2);
+  ok(dom.byId.get('peekBoard').getContext()._calls.n > c2, '伝達特性を実際に描いている');
+  /* 今の入力（1, 1）は坂の下に居る。analog の答えと 3 値の答えが一致する */
+  const An = NL.analog, mg = An.margins(An.VDD);
+  eq(An.asDigit(An.solve(An.VDD, An.VDD).vout, mg), 0, '両方 1 → 電圧で見ても 0');
+  click(a); frames(3);
+  eq(An.asDigit(An.solve(0, An.VDD).vout, mg), 1, 'A を 0 にすると電圧で見ても 1');
+  eq(now().y, 1, '3 値の答えも 1 で一致する');
+  bv.onclick();
+  eq(S.peek.volt, false, '0 / 1 の絵に戻せる');
+
   dom.byId.get('peekClose').onclick();
   eq(S.peek, null, '閉じられる');
   ok(!dom.byId.get('peek').classList.contains('small'), '小窓の印も外れる');
+  ok(bv.classList.contains('hidden'), '閉じると「電圧で見る」も消える');
 });
 
 group('チップの上書き保存', () => {
