@@ -13,6 +13,10 @@
   ＝ここ（SemiLab）                    ＝NandLab
 ```
 
+[学びの地図](../index.html)では**第2部「なぜ動くか ― 素子の物理」の実践**にあたる。第2部の参考書
+（半導体デバイスの基礎）はまだ書いていないので、それまでは この README の「仕組み」「どこまでが厳密で、
+どこからがモデルか」と、各課題のヒントが説明の役を担う。
+
 ---
 
 ## 起動
@@ -384,11 +388,8 @@ node tests/quest.js      課題とお手本
 node tests/ui.js         画面（最小の DOM 模型で ui.js・chart.js を Node で動かす）
 ```
 
-数え方・比べ方（`tests/check.js`）と DOM の模型（`tests/dom.js`）は ProcessLab と共用している。
+数え方・比べ方（`tests/check.js`）と DOM の模型（`tests/dom.js`）は ProcessLab・PixelLab と共用している。
 以前は両方に同じものを書いていて、片方だけ直す事故が3回あった。
-
-```
-```
 
 ### 何を見ているか
 
@@ -445,4 +446,3 @@ NandLab 側には `analog.js`（伝達特性・雑音余裕）が書けていて
 
 積み上がりの数え方は NandLab / CoinLab と揃えてある:
 **大きさ＝一片を何枚重ねたか、深さ＝接合を何段作ったか。**
-```
