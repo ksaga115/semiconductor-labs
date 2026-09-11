@@ -162,7 +162,8 @@ svg{display:block;max-width:100%;height:auto}
 .route li .r{font-family:var(--mono);font-size:10px;color:var(--ink-3);margin-left:6px}
 .route li .why{display:block;font-size:12.5px;color:var(--ink-3)}
 
-/* promises */
+/* promises / prep */
+.body-col table{font-size:12.5px;margin-top:8px}
 .two{display:grid;grid-template-columns:minmax(0,1fr);gap:22px;margin-top:22px}
 @media(min-width:860px){.two{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:34px;align-items:start}}
 .body-col{max-width:42em}
@@ -336,6 +337,36 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
     </div>
     <figcaption>箱はクリックで開く（ラボは該当の課題を選んだ状態で開く）。ProcessLab の「SemiLab で開く」は、作ったウェーハの縦の1本を層の並びに直して SemiLab に渡す。PixelLab の量子効率と暗電流の温度依存は SemiLab の物理を呼んで計算している ― だから <b>3本は同じフォルダに兄弟として置く</b>必要がある。</figcaption>
   </figure>
+</section>
+
+<!-- ================= 序 前提 ================= -->
+<section id="prep">
+  <div class="sec-head"><span class="sec-num">序</span><h2>読みはじめる前に ― 4部で使う5つの目盛り</h2></div>
+  <p class="lede">高校物理の範囲で足ります。ただし4部を通して<b>桁で変わる量</b>が主役なので、対数の目盛りの読み方だけは先に慣れておくと楽になる。</p>
+  <div class="two">
+    <div class="body-col">
+      <h3>電圧・電流・抵抗・容量</h3>
+      <p><b>電圧 V [V]</b> は電荷を押す高さの差。<b>電流 I [A]</b> は 1 秒に通る電荷（1 A = 6.2×10¹⁸ 個の電子）。<b>抵抗 R = V/I [Ω]</b>、半導体では単位面積・単位長さで測る<b>抵抗率 ρ [Ω·cm]</b> を使う。<b>容量 C = Q/V [F]</b> は「電荷を溜めたときにどれだけ電圧が上がるか」の逆数で、平行板なら ε·面積/距離。画素の浮遊拡散 2 fF に電子 1 個（1.6×10⁻¹⁹ C）が落ちると 80 µV 上がる ― 第4部の「変換ゲイン」はこれ。</p>
+      <h3>熱電圧 kT/q = 25.9 mV</h3>
+      <p>室温の熱エネルギーを電圧に直した値。半導体の式に出てくる指数関数 exp(V/V<sub>t</sub>) の V<sub>t</sub> がこれで、<b>電圧が 59.5 mV 変わると exp が 10 倍</b>。第2部のダイオードの傾き、MOS の S 値の下限、第4部の暗電流の温度依存、全部この一つの数から出る。</p>
+    </div>
+    <div class="body-col">
+      <h3>対数の目盛り</h3>
+      <p>キャリア濃度は 10¹⁰ から 10²⁰ まで、電流は 10⁻¹² から 10 A/cm² まで動く。だから縦軸は<b>1 目盛りが 10 倍</b>の対数で描く。対数軸で直線 ＝ 指数関数、傾きが「1 桁あたり何 mV」。両対数で直線 ＝ べき乗、傾き 1/2 なら √（第4部の PTC のショットノイズ、第2部の空乏層幅 ∝ √V）。</p>
+      <h3>単位の接頭辞と、この場所での典型値</h3>
+      <div class="scroll-x"><table>
+        <thead><tr><th>量</th><th>典型値</th><th>どこで</th></tr></thead>
+        <tbody>
+          <tr><td>長さ</td><td>酸化膜 5 nm · 空乏層 0.4 µm · ウェーハ 775 µm</td><td>第2部 / 第1部</td></tr>
+          <tr><td>濃度</td><td>n<sub>i</sub> 10¹⁰ · 基板 10¹⁵〜10¹⁷ · n⁺ 10¹⁹ /cm³</td><td>第2部</td></tr>
+          <tr><td>電流密度</td><td>暗電流 nA/cm² · 順方向 mA〜A/cm²</td><td>第2部 03</td></tr>
+          <tr><td>容量</td><td>接合 25 nF/cm² · 画素の FD 2〜3.5 fF</td><td>第2部 02 / 第4部 05</td></tr>
+          <tr><td>電荷</td><td>電子 1 個 = 1.6×10⁻¹⁹ C · 井戸 12,000 e⁻</td><td>第4部</td></tr>
+          <tr><td>電圧</td><td>kT/q 26 mV · V<sub>th</sub> 0.5 V · 電源 3.3 V</td><td>第2部 / 第3部</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
 </section>
 
 <!-- ================= 01 目次 ================= -->
