@@ -347,13 +347,24 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
 }
 </style>
 
+<style>
+/* ===== 第8部 追加分: 図解アニメーションの共通部品（reduced-motion では自動停止） ===== */
+@keyframes p8flow { to { stroke-dashoffset: -60; } }
+.flow{stroke-dasharray:7 5;animation:p8flow 1.6s linear infinite}
+.flow.slow{animation-duration:3s}
+@keyframes p8blink { 0%,100%{opacity:.15} 50%{opacity:1} }
+.blink{animation:p8blink 1.8s ease-in-out infinite}
+@keyframes p8draw { 0%{stroke-dashoffset:var(--len,600)} 55%{stroke-dashoffset:0} 100%{stroke-dashoffset:0} }
+.draw{stroke-dasharray:var(--len,600);animation:p8draw 4s linear infinite}
+</style>
+
 <header class="wrap hero">
   <div class="hero-grid">
     <div>
       <a class="back" href="index.html">&larr; Labs / 半導体 ― 第8部 信頼性と品質（実践: QALab）</a><br>
       <span class="eyebrow">FIT &rarr; Arrhenius &rarr; Weibull &rarr; Cpk</span>
       <h1>信頼性と品質 ― <span class="lit">壊れ方</span>を数える</h1>
-      <p class="sub">作った物はいつか壊れ、作るたびに数字はばらつきます。第1部〜第7部で作ってきたデバイスたちが<strong>客先で10年生きる</strong>ことと、<strong>工場で百万個そろう</strong>こと ― その2つを祈りではなく数字で請求するのが、この部の言葉（FIT・アレニウス・ワイブル・θ・Cpk）です。保証書を書く人も、放熱器を選ぶ人も、工程能力を報告する人も、同じ式の別の窓口に座っています。</p>
+      <p class="sub">作った物はいつか壊れ、作るたびに数字はばらつきます。第1部〜第7部で作ってきたデバイスたちが<strong>客先で10年生きる</strong>ことと、<strong>工場で百万個そろう</strong>こと ― その2つを祈りではなく数字で請求するのが、この部の言葉（FIT・アレニウス・ワイブル・θ・Cpk）です。保証書を書く人も、放熱器を選ぶ人も、工程能力を報告する人も、同じ式の別の窓口に座っています。章の並びも仕事の順です: <strong>壊れ方の言葉</strong>（01 バスタブ・FIT）→ <strong>時間の早送り</strong>（02 加速）→ <strong>壊れ方の診断</strong>（03 ワイブル）→ <strong>温度という原因</strong>（04 熱・05 TEC）→ <strong>そろわない方の品質</strong>（06 Cpk・07 誤差）→ <strong>書類と規格の現場</strong>（08）。</p>
       <div class="depth-row">
         <div class="depth" role="group" aria-label="説明の深さ">
           <button id="dSimple" aria-pressed="true">かんたん</button>
@@ -363,7 +374,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       </div>
 
       <div class="guide">
-        <div class="guide-h"><span>読み方（役割別）</span><span>全部で 35〜55 分</span></div>
+        <div class="guide-h"><span>読み方（役割別）</span><span>全部で 55〜100 分</span></div>
         <div class="guide-b">
           <div><b>営業・企画なら</b><span>01 FIT → 02 加速 → 08 規格。保証年数と FIT と MTTF の関係、そして客先に出す信頼性報告書が読める数字になります。</span><em>12 〜 18 分</em></div>
           <div><b>設計・開発なら</b><span>04 熱 → 05 TEC → 03 ワイブルを足す。温度は寿命の為替レート ― 放熱器ひとつで寿命が6倍変わる勘定を自分で回せます。</span><em>25 〜 40 分</em></div>
@@ -431,6 +442,34 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <h2>壊れ方の地図 — バスタブ・FIT・MTTF</h2></div>
   <p class="lede">故障率をひとつの曲線に描くと、浴槽の断面になります。左の壁が<strong>初期不良</strong>、平らな底が<strong>偶発故障</strong>、右の壁が<strong>摩耗</strong>。信頼性の言葉はまず、この底の高さを数える単位 ― FIT ― から始まります。</p>
 
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">BATHTUB — 故障率の一生は浴槽の形</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 240" role="img" aria-label="バスタブ曲線。横軸は時間、縦軸は故障率。左の初期不良（下り坂、m<1）、中央の偶発故障（平らな底、m=1）、右の摩耗（上り坂、m>1）の3区間。それぞれの対策も記されている。" style="min-width:700px;width:100%;display:block">
+        <g stroke="var(--line)" stroke-width="1" opacity="0.6">
+          <path d="M70 20 V180"/><path d="M70 180 H700"/>
+        </g>
+        <text x="385" y="206" font-size="10" fill="var(--ink-3)" text-anchor="middle">時間 →</text>
+        <text x="40" y="100" font-size="10" fill="var(--ink-3)" text-anchor="middle" transform="rotate(-90 40 100)">故障率 λ(t)</text>
+        <path d="M85 34 C 130 90, 170 118, 230 124 L 500 124 C 560 120, 620 90, 670 36"
+              stroke="var(--electron)" stroke-width="2.4" fill="none" class="draw" style="--len:800"/>
+        <path d="M230 20 V180 M500 20 V180" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="4 4"/>
+        <g font-size="10" text-anchor="middle">
+          <text x="155" y="44" fill="var(--warn)" font-weight="600">初期不良（m&lt;1）</text>
+          <text x="155" y="60" fill="var(--ink-3)" font-size="9">個体の欠陥が原因</text>
+          <text x="155" y="74" fill="var(--ink-2)" font-size="9">→ バーンインで選別（08）</text>
+          <text x="365" y="100" fill="var(--si)" font-weight="600">偶発（m=1）― この部の FIT</text>
+          <text x="365" y="116" fill="var(--ink-3)" font-size="9">λ 一定 ― MTTF=1/λ が成り立つ区間</text>
+          <text x="365" y="150" fill="var(--ink-2)" font-size="9">→ ディレーティングと冗長化（04）</text>
+          <text x="590" y="44" fill="var(--volt)" font-weight="600">摩耗（m&gt;1）</text>
+          <text x="590" y="60" fill="var(--ink-3)" font-size="9">はんだ疲労・可動部</text>
+          <text x="590" y="74" fill="var(--ink-2)" font-size="9">→ 設計・材料の変更（03）</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption><span class="key">どの壁の話かで、対策が真逆になる</span>（03で m として定量化）。この部の FIT・MTTF の算数は「平らな底」の区間の言葉です ― だから使う前に、いま浴槽のどこにいるかを確かめるのが作法。</figcaption>
+  </figure>
+
   <div class="two">
     <div class="body-col">
       <h3>FIT — 底の高さの単位</h3>
@@ -474,6 +513,35 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     </div>
   </div>
 
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">SLOPE — アレニウスの坂は 1/T の直線、傾きが Ea</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 230" role="img" aria-label="横軸1/T（右ほど低温）、縦軸log AFのアレニウスプロット。Ea=0.4、0.7、1.0eVの3本の直線。Eaが大きいほど傾きが急で、同じ温度差で買える加速が大きい。55℃と125℃の位置が示される。" style="min-width:700px;width:100%;display:block">
+        <g stroke="var(--line)" stroke-width="1" opacity="0.6">
+          <path d="M70 20 V180"/><path d="M70 180 H700"/>
+          <path d="M70 140 H700"/><path d="M70 100 H700"/><path d="M70 60 H700"/>
+        </g>
+        <g font-size="9" fill="var(--ink-3)">
+          <text x="62" y="184" text-anchor="end">×1</text><text x="62" y="144" text-anchor="end">×10</text>
+          <text x="62" y="104" text-anchor="end">×100</text><text x="62" y="64" text-anchor="end">×1000</text>
+          <text x="180" y="198" text-anchor="middle">150℃</text><text x="320" y="198" text-anchor="middle">125℃</text><text x="660" y="198" text-anchor="middle">55℃（使用）</text>
+        </g>
+        <text x="385" y="220" font-size="10" fill="var(--ink-3)" text-anchor="middle">1/T →（右ほど低温）</text>
+        <path d="M660 176 L320 118 L120 84" stroke="var(--si)" stroke-width="2.2" fill="none" class="draw" style="--len:600"/>
+        <path d="M660 176 L320 86 L160 44" stroke="var(--warn)" stroke-width="2.2" fill="none" class="draw" style="--len:640;animation-delay:.4s"/>
+        <path d="M660 176 L400 150 L120 122" stroke="var(--volt)" stroke-width="2" fill="none" class="draw" style="--len:600;animation-delay:.8s"/>
+        <g font-size="10">
+          <text x="130" y="76" fill="var(--warn)">Ea = 1.0 eV（急 ― よく加速する）</text>
+          <text x="130" y="106" fill="var(--si)">Ea = 0.7 eV（定番: 125℃で ×78）</text>
+          <text x="130" y="136" fill="var(--volt)">Ea = 0.4 eV（緩 ― 温度で稼げない）</text>
+        </g>
+        <circle cx="320" cy="118" r="4" fill="var(--si)"/>
+        <text x="332" y="132" font-size="9" fill="var(--ink-2)">HTOL 125℃ の位置</text>
+      </svg>
+    </div>
+    <figcaption>片対数×逆数温度で描くと<span class="key">直線になり、傾きがそのまま Ea</span>。故障モードごとに直線が違う ― 報告書の Ea を JEP122 と突き合わせるとは、この傾きの妥当性を確かめることです。10℃則（下の「くわしく」）はこの直線の局所の読みにすぎません。</figcaption>
+  </figure>
+
   <div class="deep deep-note">
     <span class="tag">くわしく — 温度以外の早送り: 湿度（Peck）と温度サイクル（Coffin-Manson）</span>
     <p>アレニウスが早送りするのは「時間」ですが、湿気と熱膨張の故障には別の為替レートがあります。湿気（腐食・マイグレーション）は <span class="key">Peck の式: AF = (RH比)ⁿ × アレニウス</span>（古典値 n≈3・Ea≈0.79 eV）― 定番の <strong>85℃/85%RH</strong> は使用 40℃/60%RH に対し湿度で2.8倍×温度で40倍 ≒ <strong>113倍</strong>で、「85/85 を1,000時間 ≒ 10年の湿気保証」という業界の相場の出自がこの掛け算です。はんだやワイヤの熱膨張差疲労は回数で数え、<span class="key">Coffin-Manson: 寿命サイクル数 ∝ ΔT⁻ⁿ</span>（はんだで n≈2）― 温度サイクル試験 −40〜125℃（ΔT165K）は日常のΔT30Kに対し (165/30)² ≒ <strong>30倍の回数早送り</strong>。どちらも QALab で数値にできます。</p>
@@ -509,6 +577,29 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     </div>
   </div>
 
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">SHAPES — 同じ「壊れた」でも、時間の顔が違う</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 230" role="img" aria-label="ワイブル分布の故障率の時間変化。m=0.5は下がり続け、m=1は水平、m=3は上がり続ける3本の曲線。バスタブの左壁・底・右壁に対応。" style="min-width:700px;width:100%;display:block">
+        <g stroke="var(--line)" stroke-width="1" opacity="0.6">
+          <path d="M70 20 V180"/><path d="M70 180 H700"/>
+        </g>
+        <text x="385" y="206" font-size="10" fill="var(--ink-3)" text-anchor="middle">時間 →</text>
+        <text x="40" y="100" font-size="10" fill="var(--ink-3)" text-anchor="middle" transform="rotate(-90 40 100)">故障率 λ(t)</text>
+        <path d="M90 30 C 160 110, 300 150, 690 166" stroke="var(--warn)" stroke-width="2.2" fill="none" class="draw" style="--len:700"/>
+        <path d="M70 120 H700" stroke="var(--si)" stroke-width="2.2" class="draw" style="--len:640;animation-delay:.4s"/>
+        <path d="M90 176 C 300 172, 480 120, 640 30" stroke="var(--volt)" stroke-width="2.2" fill="none" class="draw" style="--len:700;animation-delay:.8s"/>
+        <g font-size="10">
+          <text x="200" y="52" fill="var(--warn)">m = 0.5（初期不良: 生き残るほど強い）</text>
+          <text x="540" y="110" fill="var(--si)">m = 1（偶発: 記憶がない ― 指数分布）</text>
+          <text x="430" y="60" fill="var(--volt)">m = 3（摩耗: そろって寿命が来る）</text>
+        </g>
+        <text x="385" y="226" font-size="9.5" fill="var(--ink-3)" text-anchor="middle">3本を足し合わせたものが 01 のバスタブ ― m は「いまどの壁か」を1数字で言う道具</text>
+      </svg>
+    </div>
+    <figcaption>同じ &eta; でも B10 は m=1 で 0.105&eta;、m=2 で 0.325&eta; ― <span class="key">形がそろっているほど最初の10%は遅い</span>。寿命試験の一番の収穫が平均値ではなく m である理由が、この3本の顔の違いです。</figcaption>
+  </figure>
+
   <div class="deep deep-note">
     <span class="tag">くわしく — ワイブルプロットが直線になる理由</span>
     <p>F(t) の式を2回対数を取って整理すると <span class="key">ln[&minus;ln(1&minus;F)] = m·ln t &minus; m·ln &eta;</span> ― 縦軸に ln(&minus;ln(1&minus;F))、横軸に ln t を取れば<strong>傾き m の直線</strong>になります。ワイブル確率紙（いまはソフトの1クリック）はこの座標変換のこと。故障データを打点して直線に乗れば単一メカニズム、<strong>折れ線になったら故障モードが混ざっている</strong>合図で、折れ点の前後を別々に解析します。打点には順序統計のメディアンランク（i&minus;0.3)/(n+0.4) を使うのが定石です。</p>
@@ -538,6 +629,44 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <p>Tj 104℃ を、放熱器を良くして（&theta;sa 30→15 K/W）74℃ に下げると、Ea 0.7eV のアレニウスで<span class="key">寿命は約6.4倍</span>。放熱器ひとつでこの差です。定格より軽く使う（ディレーティング）のも同じ理屈 ― 発熱 P が下がれば Tj が下がり、02の式が寿命を返してくれる。<strong>「Tj を85℃以下に」という社内ルールの正体は、寿命の為替レート表</strong>なのです。MPPC や APD の増倍率が温度で動く話（<a href="第5部_光検出デバイス.html#s3">第5部03</a>）も、この Tj の会計の上に乗っています。</p>
     </div>
   </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">THERMAL OHM — 熱の回路図（電圧=温度・電流=熱・抵抗=θ）</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 200" role="img" aria-label="熱抵抗の直列回路。発熱Pの電流源からθjc、θcs、θsaの3つの抵抗を通って周囲温度のグラウンドへ。各ノードの温度Tj、Tc、Tsが降りていく。" style="min-width:700px;width:100%;display:block">
+        <circle cx="100" cy="90" r="20" stroke="var(--warn)" fill="none" stroke-width="1.8"/>
+        <path d="M100 78 v24 M95 86 l5 -8 l5 8" stroke="var(--warn)" stroke-width="1.5" fill="none"/>
+        <text x="100" y="134" font-size="10" fill="var(--warn)" text-anchor="middle">発熱 P [W]</text>
+        <text x="100" y="148" font-size="8.5" fill="var(--ink-3)" text-anchor="middle">（電流源）</text>
+        <path d="M120 90 H180" stroke="var(--ink-2)" stroke-width="1.6" class="flow"/>
+        <circle cx="184" cy="90" r="4" fill="var(--warn)"/>
+        <text x="184" y="72" font-size="10.5" fill="var(--warn)" text-anchor="middle" font-weight="600">Tj</text>
+        <path d="M188 90 h10 l4 -7 l8 14 l8 -14 l8 14 l8 -14 l4 7 h10" stroke="var(--ink-2)" stroke-width="1.5" fill="none"/>
+        <text x="230" y="118" font-size="9.5" fill="var(--ink-2)" text-anchor="middle">θjc（パッケージ）</text>
+        <path d="M248 90 H288" stroke="var(--ink-2)" stroke-width="1.6" class="flow"/>
+        <circle cx="292" cy="90" r="4" fill="var(--volt)"/>
+        <text x="292" y="72" font-size="10" fill="var(--volt)" text-anchor="middle">Tc</text>
+        <path d="M296 90 h10 l4 -7 l8 14 l8 -14 l8 14 l8 -14 l4 7 h10" stroke="var(--ink-2)" stroke-width="1.5" fill="none"/>
+        <text x="338" y="118" font-size="9.5" fill="var(--ink-2)" text-anchor="middle">θcs（グリス/シート）</text>
+        <path d="M356 90 H396" stroke="var(--ink-2)" stroke-width="1.6" class="flow"/>
+        <circle cx="400" cy="90" r="4" fill="var(--si)"/>
+        <text x="400" y="72" font-size="10" fill="var(--si)" text-anchor="middle">Ts</text>
+        <path d="M404 90 h10 l4 -7 l8 14 l8 -14 l8 14 l8 -14 l4 7 h10" stroke="var(--ink-2)" stroke-width="1.5" fill="none"/>
+        <text x="446" y="118" font-size="9.5" fill="var(--ink-2)" text-anchor="middle">θsa（放熱器 ― 設計の主戦場）</text>
+        <path d="M464 90 H520" stroke="var(--ink-2)" stroke-width="1.6" class="flow"/>
+        <path d="M520 90 V120 M506 120 h28 M511 126 h18 M516 132 h8" stroke="var(--ink-2)" stroke-width="1.6"/>
+        <text x="520" y="150" font-size="10" fill="var(--ink-2)" text-anchor="middle">T<tspan font-size="7" dy="2">amb</tspan>（周囲 ― グラウンド）</text>
+        <g font-size="10.5" fill="var(--ink)">
+          <text x="580" y="52">Tj = T<tspan font-size="8" dy="3">amb</tspan><tspan dy="-3"> + P·Σθ</tspan></text>
+          <text x="580" y="78" font-size="9.5" fill="var(--ink-2)">例: 40 + 2×(1.5+0.5+30)</text>
+          <text x="580" y="94" font-size="9.5" fill="var(--warn)">　= 104 ℃（既定の設計）</text>
+          <text x="580" y="120" font-size="9.5" fill="var(--ink-2)">θsa を 15 にすると 74 ℃</text>
+          <text x="580" y="136" font-size="9.5" fill="var(--si)">　→ 寿命 約6.4 倍（02の坂）</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>オームの法則そのままに、<span class="key">温度は抵抗を通るたびに P×θ ずつ降りていく</span>。ノードの温度を左から読めば、どの区間が支配的か（＝どこを直せば効くか）が一目で分かります。</figcaption>
+  </figure>
 
   <div class="deep deep-note">
     <span class="tag">くわしく — カタログの θja を信じすぎない</span>
@@ -569,6 +698,40 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     </div>
   </div>
 
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">TEC LINE — 冷却の請求書は1本の直線</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 230" role="img" aria-label="TECの性能直線。横軸ΔT、縦軸吸熱Qc。ΔT=0でQmax、ΔT=ΔTmaxでゼロの直線。熱負荷の水平線と交わる範囲だけが成立領域。右側に高温側へQc+Pが出る絵。" style="min-width:700px;width:100%;display:block">
+        <g stroke="var(--line)" stroke-width="1" opacity="0.6">
+          <path d="M70 20 V180"/><path d="M70 180 H460"/>
+        </g>
+        <g font-size="9" fill="var(--ink-3)">
+          <text x="62" y="34" text-anchor="end">Qmax</text><text x="62" y="184" text-anchor="end">0</text>
+          <text x="70" y="196" text-anchor="middle">0</text><text x="440" y="196" text-anchor="middle">ΔTmax（70K級）</text>
+        </g>
+        <text x="255" y="216" font-size="10" fill="var(--ink-3)" text-anchor="middle">作る温度差 ΔT →</text>
+        <path d="M70 30 L440 180" stroke="var(--si)" stroke-width="2.4" class="draw" style="--len:420"/>
+        <path d="M70 128 H460" stroke="var(--warn)" stroke-width="1.6" stroke-dasharray="6 4"/>
+        <text x="452" y="122" font-size="9.5" fill="var(--warn)" text-anchor="end">熱負荷（吸ってほしい量）</text>
+        <circle cx="199" cy="82" r="4" fill="var(--electron)"/>
+        <path d="M199 82 V128" stroke="var(--electron)" stroke-width="1.2" stroke-dasharray="3 3"/>
+        <text x="206" y="72" font-size="9.5" fill="var(--electron-2)">成立するのは直線が負荷より上の範囲だけ</text>
+        <g>
+          <rect x="560" y="60" width="90" height="34" rx="4" fill="var(--surface-2)" stroke="var(--electron)"/>
+          <text x="605" y="81" font-size="10" fill="var(--electron-2)" text-anchor="middle">冷たい側 Qc</text>
+          <rect x="545" y="120" width="120" height="34" rx="4" fill="var(--surface-2)" stroke="var(--warn)"/>
+          <text x="605" y="141" font-size="10" fill="var(--warn)" text-anchor="middle">熱い側 Qc + P<tspan font-size="7" dy="2">TEC</tspan></text>
+          <path d="M605 94 V116" stroke="var(--ink-2)" stroke-width="2" class="flow"/>
+          <path d="M665 137 H710" stroke="var(--warn)" stroke-width="2" class="flow"/>
+          <text x="688" y="126" font-size="9" fill="var(--ink-3)">04 の θ の回路へ</text>
+          <text x="605" y="180" font-size="9.5" fill="var(--ink-3)" text-anchor="middle">移すだけで消えない ―</text>
+          <text x="605" y="194" font-size="9.5" fill="var(--ink-3)" text-anchor="middle">高温側は冷やした熱の2〜3倍</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>QALab の右の盤面と同じ直線。<span class="key">「何度」と「何ワット」は直線の上でしか両立しない</span> ― そして払った熱は倍付けで高温側に現れ、04 の会計に戻ってきます。</figcaption>
+  </figure>
+
   <div class="lab-go">
     <span class="tag">手を動かす — QALab 第2章</span>
     <p>Qmax・ΔTmax・熱負荷を固定して、「50K 以上冷やし、かつ負荷を吸い切る」ΔT の窓を探す。窓は 50〜53K しかない ― 直線のトレードオフが両側から挟んでくる。</p>
@@ -593,6 +756,40 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <p>Cpk→ppm の換算表は<span class="key">分布が正規である前提</span>で正規分布の裾 &Phi; を積分しただけのものです。実工程の裾はしばしば正規より厚い（外れ値・混入ロット・測定ミス）ので、Cpk 1.33 を測ったからと 63 ppm を<strong>保証する</strong>のは踏み込みすぎ。それでも共通言語としての価値は大きく、「Cpk が 1 を切った工程は規格内に収まる根拠がない」という警報としては強力に機能します。センサの画素ごとの感度ばらつき（PRNU、<a href="第4部_イメージセンサ.html#sptc">第4部 PTC</a>）も、まったく同じ言葉で報告されます。</p>
     </div>
   </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">CPK — 分布と規格の距離を σ で測る</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 240" role="img" aria-label="正規分布の山と、両側の規格限界LSL・USL。山の中心が規格中心から少しずれており、近い側の規格までの距離を3σで割ったものがCpk。はみ出しの裾がppm。" style="min-width:700px;width:100%;display:block">
+        <path d="M70 190 H700" stroke="var(--line)" stroke-width="1"/>
+        <path d="M110 189 C 200 187, 260 180, 310 150 C 360 112, 380 54, 410 54 C 440 54, 460 112, 510 150 C 560 180, 620 187, 700 189"
+              stroke="var(--si)" stroke-width="2.2" fill="none" class="draw" style="--len:800"/>
+        <path d="M170 30 V190 M650 30 V190" stroke="var(--warn)" stroke-width="1.8"/>
+        <text x="170" y="22" font-size="10" fill="var(--warn)" text-anchor="middle">LSL（下限）</text>
+        <text x="650" y="22" font-size="10" fill="var(--warn)" text-anchor="middle">USL（上限）</text>
+        <path d="M410 54 V190" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="3 3"/>
+        <text x="410" y="210" font-size="9.5" fill="var(--ink-2)" text-anchor="middle">工程の平均 µ</text>
+        <path d="M410 200 H426" stroke="none"/>
+        <path d="M410 176 H448" stroke="var(--electron)" stroke-width="2"/>
+        <text x="430" y="170" font-size="9" fill="var(--electron-2)" text-anchor="middle">σ</text>
+        <path d="M410 40 H650" stroke="var(--warn)" stroke-width="1.2" stroke-dasharray="5 3"/>
+        <text x="530" y="34" font-size="9.5" fill="var(--warn)" text-anchor="middle">近い側の距離 ÷ 3σ ＝ Cpk</text>
+        <path d="M652 186 C 668 184, 684 183, 698 183" stroke="var(--warn)" stroke-width="0" fill="none"/>
+        <g fill="var(--warn)" opacity="0.5">
+          <path d="M650 189 C 664 188, 680 187, 700 187 L 700 190 L 650 190 Z"/>
+        </g>
+        <text x="686" y="176" font-size="9" fill="var(--warn)" text-anchor="end">はみ出し = ppm</text>
+        <g font-size="9.5" fill="var(--ink-2)">
+          <text x="90" y="60">Cpk 1.00 = 端まで3σ → 2,700 ppm</text>
+          <text x="90" y="78">Cpk 1.33 = 端まで4σ → 63 ppm</text>
+          <text x="90" y="96">Cpk 1.67 = 端まで5σ → 0.6 ppm</text>
+          <text x="90" y="122" fill="var(--ink-3)" font-size="9">ずれ（µ の偏り）は分子から</text>
+          <text x="90" y="136" fill="var(--ink-3)" font-size="9">直接引かれる ― σ と同罪</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>Cpk は<span class="key">「山の端から規格の壁までの距離」を σ 単位で測った数</span>。中心がずれるほど近い側の壁が迫る ― 中心合わせとばらつき削減が同じ価値を持つ理由が、この絵の中にあります。</figcaption>
+  </figure>
 
   <div class="deep deep-note">
     <span class="tag">くわしく — 「6σ = 3.4ppm」の 1.5σ</span>
@@ -624,6 +821,41 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     </div>
   </div>
 
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">3-4-5 — 二乗和の直角三角形と、支配項の会計</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 220" role="img" aria-label="左は辺0.3と0.4の直角三角形の斜辺が0.5になる図。右は誤差予算の棒グラフで、大きい項がほぼ全部を決め、小さい項を磨いても合成が動かないことを示す。" style="min-width:700px;width:100%;display:block">
+        <g>
+          <path d="M80 170 H260 L80 50 Z" fill="var(--surface-2)" stroke="var(--ink-2)" stroke-width="1.5"/>
+          <rect x="80" y="156" width="14" height="14" fill="none" stroke="var(--ink-3)" stroke-width="1"/>
+          <text x="170" y="188" font-size="10.5" fill="var(--si)" text-anchor="middle">σ₁ = 0.3</text>
+          <text x="62" y="112" font-size="10.5" fill="var(--volt)" text-anchor="middle">σ₂=0.4</text>
+          <text x="192 " y="100" font-size="11" fill="var(--warn)">合成 = 0.5</text>
+          <text x="170" y="212" font-size="9.5" fill="var(--ink-3)" text-anchor="middle">足し算の 0.7 ではなく、直角三角形の斜辺</text>
+        </g>
+        <g>
+          <text x="530" y="36" font-size="10.5" fill="var(--ink)" text-anchor="middle" font-weight="600">誤差予算 ― 支配項しか効かない</text>
+          <g font-size="9" fill="var(--ink-3)" text-anchor="end">
+            <text x="416" y="72">A=0.3, B=0.6</text>
+            <text x="416" y="108">B を半分に磨く</text>
+            <text x="416" y="144">A（大きい方）を 0.4 に</text>
+          </g>
+          <g>
+            <rect x="424" y="60" width="134" height="16" fill="var(--warn)" opacity="0.85"/>
+            <text x="564" y="72" font-size="9.5" fill="var(--warn)">0.67</text>
+            <rect x="424" y="96" width="124" height="16" fill="var(--warn)" opacity="0.55"/>
+            <text x="554" y="108" font-size="9.5" fill="var(--ink-2)">0.62 ― ほぼ動かない</text>
+            <rect x="424" y="132" width="100" height="16" fill="var(--si)" opacity="0.85"/>
+            <text x="530" y="144" font-size="9.5" fill="var(--si)">0.50 ― 効いた</text>
+          </g>
+          <text x="530" y="180" font-size="9.5" fill="var(--ink-3)" text-anchor="middle">校正・GR&amp;R・NEP（第5部）・低雑音設計（第6部）―</text>
+          <text x="530" y="196" font-size="9.5" fill="var(--ink-3)" text-anchor="middle">「まず最大の積み木を特定する」は全部この会計</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>二乗和の平方根は<span class="key">大きい項の一人勝ち</span>。予算表を書いたら最大の項に全資源 ― どの部でも繰り返し現れた原則の、これが本籍地です。</figcaption>
+  </figure>
+
   <div class="lab-go">
     <span class="tag">手を動かす — QALab 第3章</span>
     <p>誤差Aを 0.3% に固定して、合成 0.51% 以下の予算を誤差Bで払う。B ≤ 0.41% ― 二乗和は「両方半分ずつ」を許してくれない。</p>
@@ -647,6 +879,44 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <p>信頼性データの読み方は3点セットです: <span class="key">①仮定（Ea・加速式・使用条件）②標本（何ロット・何台・何時間）③信頼水準（0故障の上限計算）</span>。「FIT いくつ」という結論の数字は、この3つを差し替えれば大きく動きます（01・02の「くわしく」参照）。営業の席でこの3つを聞けること、設計の席でこの3つを書けること ― それがこの部の実務的なゴールです。</p>
     </div>
   </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">MAP — どの試験が、浴槽のどの壁を攻めるか</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 250" role="img" aria-label="バスタブ曲線の上に、各信頼性試験の担当が矢印で示される。バーンインは左壁、HTOLは底、温度サイクルとTHB/HASTは右壁と湿気の故障を攻める。" style="min-width:700px;width:100%;display:block">
+        <path d="M85 64 C 130 110, 170 132, 230 137 L 500 137 C 560 133, 620 110, 670 66"
+              stroke="var(--electron)" stroke-width="2.2" fill="none"/>
+        <path d="M70 180 H700" stroke="var(--line)" stroke-width="1"/>
+        <g font-size="10" text-anchor="middle">
+          <rect x="90" y="18" width="130" height="30" rx="5" fill="var(--surface-2)" stroke="var(--warn)"/>
+          <text x="155" y="37" fill="var(--warn)">バーンイン（選別）</text>
+          <rect x="300" y="18" width="160" height="30" rx="5" fill="var(--surface-2)" stroke="var(--si)"/>
+          <text x="380" y="37" fill="var(--si)">HTOL 125℃/1000h</text>
+          <rect x="520" y="18" width="180" height="30" rx="5" fill="var(--surface-2)" stroke="var(--volt)"/>
+          <text x="610" y="37" fill="var(--volt)">温度サイクル −40〜125℃</text>
+        </g>
+        <g stroke-width="1.6" fill="none">
+          <path d="M155 48 L140 92" stroke="var(--warn)" class="flow"/>
+          <path d="M380 48 L370 128" stroke="var(--si)" class="flow"/>
+          <path d="M610 48 L622 100" stroke="var(--volt)" class="flow"/>
+        </g>
+        <g font-size="9" fill="var(--ink-3)" text-anchor="middle">
+          <text x="140" y="106">左壁: 弱い個体を</text>
+          <text x="140" y="118">工場で使い切る</text>
+          <text x="370" y="152">底: 偶発の λ を 02 の加速で実証</text>
+          <text x="622" y="114">右壁: はんだ疲労を</text>
+          <text x="622" y="126">回数で早送り（C-M）</text>
+        </g>
+        <g font-size="10">
+          <rect x="90" y="196" width="240" height="30" rx="5" fill="var(--surface-2)" stroke="var(--photon)"/>
+          <text x="210" y="215" fill="var(--photon-2)" text-anchor="middle">THB 85/85・HAST 130℃/85%</text>
+          <text x="500" y="215" font-size="9.5" fill="var(--ink-3)">→ 湿気の故障（腐食・マイグレーション）を</text>
+          <text x="500" y="229" font-size="9.5" fill="var(--ink-3)">　Peck の式で早送り ― 壁とは別の敵</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>試験の名前を見たら<span class="key">「浴槽のどこ（または湿気）を攻めているか」に翻訳する</span> ― それだけで認定計画書の目次が読めます。それぞれの早送りの倍率は 02 の3本柱（アレニウス・Peck・Coffin-Manson）です。</figcaption>
+  </figure>
 
   <div class="deep deep-note">
     <span class="tag">くわしく — スクリーニングとバーンイン</span>
