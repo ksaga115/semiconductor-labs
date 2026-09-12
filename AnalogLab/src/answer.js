@@ -44,6 +44,10 @@
     sc: {
       note: 'クロック 0.1 MHz・C=0.6 pF。Req = 16.7 MΩ、√(kT/C) = 83 µV ― 窓の真ん中。',
       design: function () { var d = A.defaults(); d.fsmhz = 0.1; d.cscpf = 0.6; return d; }
+    },
+    ota2: {
+      note: '第2段 500µA・W/L36（gm2 2.7mS = gm1 の3倍）・Cc 3pF。GBW 47MHz・PM 65°・1.08mW。',
+      design: function () { var d = A.defaults(); d.idua2 = 500; d.wl2 = 36; d.ccpf = 3; return d; }
     }
   };
 

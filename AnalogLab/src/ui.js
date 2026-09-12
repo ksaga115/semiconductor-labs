@@ -26,7 +26,10 @@
     ['cffF', 'チャージアンプの Cf', 'fF', 0.5, 50],
     ['qe', '入力電荷', 'e−', 100, 100000, true],
     ['fsmhz', 'SC のクロック', 'MHz', 0.01, 100],
-    ['cscpf', 'SC の容量', 'pF', 0.05, 50]
+    ['cscpf', 'SC の容量', 'pF', 0.05, 50],
+    ['idua2', '第2段の電流', 'µA', 1, 2000],
+    ['wl2', '第2段の W/L', '', 1, 2000],
+    ['ccpf', 'ミラー補償 Cc', 'pF', 0.1, 50]
   ];
 
   function num(t) {
@@ -193,7 +196,8 @@
       ['入力換算の熱雑音', (ev.vnmos * 1e9).toFixed(2) + ' nV/√Hz'],
       ['TIA: 帯域 / Rf 雑音', (ev.btia / 1e6).toFixed(2) + ' MHz / ' + (ev.irf * 1e12).toFixed(2) + ' pA/√Hz'],
       ['チャージアンプ: Q/Cf', (ev.vq * 1000).toFixed(1) + ' mV（kTC ' + ev.ktc.toFixed(1) + ' e−）'],
-      ['SC: 等価抵抗 1/(fC)', (ev.reqsc / 1e6).toFixed(2) + ' MΩ（√(kT/C) ' + (ev.vktcsc * 1e6).toFixed(1) + ' µV）']
+      ['SC: 等価抵抗 1/(fC)', (ev.reqsc / 1e6).toFixed(2) + ' MΩ（√(kT/C) ' + (ev.vktcsc * 1e6).toFixed(1) + ' µV）'],
+      ['2段OTA: GBW / PM', (ev.gbw2 / 1e6).toFixed(1) + ' MHz / ' + ev.pm.toFixed(1) + '°（全体 ' + (ev.ptot * 1000).toFixed(2) + ' mW）', ev.pm < 45]
     ];
     document.getElementById('derived').innerHTML = '<div class="dv">' + rows.map(function (r) {
       return '<span class="k">' + esc(r[0]) + '</span><span class="v' + (r[2] ? ' warn' : '') + '">' + esc(r[1]) + '</span>';

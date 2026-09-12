@@ -20,6 +20,9 @@
  *   qe     入力電荷 [e−]
  *   fsmhz  SC のクロック [MHz]          スイッチトキャパシタの等価抵抗 R = 1/(f·C)
  *   cscpf  SC の容量 [pF]              1サンプルごとの雑音 √(kT/C)
+ *   idua2  第2段の電流 [µA]            2段OTA。gm2 も同じ二乗則から
+ *   wl2    第2段の W/L
+ *   ccpf   ミラー補償 Cc [pF]          GBW = gm1/2πCc、第2極 gm2/2πCL、右半面ゼロ gm2/2πCc
  *
  * 仮想プロセス: µCox = 200 µA/V²（0.18µm 級 nMOS の代表値）、γ = 2/3（長チャネルの熱雑音係数）。
  * 【モデルの外】ボディ効果・1/f 雑音・速度飽和・ミラー効果・ループの安定性は入れていない。
@@ -37,7 +40,8 @@
     return {
       vdd: 1.8, lam: 0.1, wl: 20, idua: 100,
       rdk: 12, clpf: 1, rfk: 20, cpdpf: 2, cffF: 10, qe: 1000,
-      fsmhz: 1, cscpf: 1
+      fsmhz: 1, cscpf: 1,
+      idua2: 100, wl2: 20, ccpf: 1
     };
   }
 
@@ -88,13 +92,26 @@
     var reqsc = (fsc > 0 && Csc > 0) ? 1 / (fsc * Csc) : Infinity;
     var vktcsc = Csc > 0 ? Math.sqrt(KB * TK / Csc) : Infinity;
 
+    /* 2段OTA（ミラー補償）: GBW は gm1 と Cc で決まり、第2極 gm2/CL と
+       右半面ゼロ gm2/Cc（打ち消し抵抗なし）が位相を削る */
+    var Id2 = (d.idua2 || 0) * 1e-6;
+    var vov2 = Id2 > 0 ? Math.sqrt(2 * Id2 / (KP * (d.wl2 || 1))) : 0;
+    var gm2v = Id2 > 0 ? 2 * Id2 / vov2 : 0;
+    var Cc = (d.ccpf || 0) * 1e-12;
+    var gbw2 = Cc > 0 ? gm / (2 * Math.PI * Cc) : Infinity;
+    var fp2 = gm2v / (2 * Math.PI * CL);
+    var fz = Cc > 0 ? gm2v / (2 * Math.PI * Cc) : Infinity;
+    var pm = 90 - Math.atan(gbw2 / fp2) * 180 / Math.PI - Math.atan(gbw2 / fz) * 180 / Math.PI;
+    var ptot = d.vdd * (Id + Id2);
+
     return {
       Id: Id, Vov: Vov, gm: gm, gmid: gmid, ro: ro,
       rout: rout, avr: avr, voutdc: voutdc, headLo: headLo, headHi: headHi,
       avint: avint, adm: adm,
       gbw: gbw, p: p, vnmos: vnmos,
       btia: btia, irf: irf, vq: vq, ktc: ktc,
-      reqsc: reqsc, vktcsc: vktcsc
+      reqsc: reqsc, vktcsc: vktcsc,
+      gm2v: gm2v, vov2: vov2, gbw2: gbw2, fp2: fp2, fz: fz, pm: pm, ptot: ptot
     };
   }
 

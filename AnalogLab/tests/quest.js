@@ -66,6 +66,16 @@ T('落ちるべきもの', () => {
   ok('sc: C 1.5pF は等価抵抗で落ちる', !Q.grade('sc', { design: s2 }).ok);
   const s3 = Object.assign({}, A.get('sc').design(), { fsmhz: 0.01 });
   ok('sc: クロックを下限より遅くするのは反則', !Q.grade('sc', { design: s3 }).ok);
+
+  /* 2段OTA: Cc の両側と電力破り */
+  const o1 = Object.assign({}, A.get('ota2').design(), { ccpf: 1 });
+  ok('ota2: Cc 1pF は PM 53° で落ちる', !Q.grade('ota2', { design: o1 }).ok);
+  const o2 = Object.assign({}, A.get('ota2').design(), { ccpf: 6 });
+  ok('ota2: Cc 6pF は GBW 24MHz で落ちる', !Q.grade('ota2', { design: o2 }).ok);
+  const o3 = Object.assign({}, A.get('ota2').design(), { idua2: 800 });
+  ok('ota2: 電流で殴ると電力で落ちる', !Q.grade('ota2', { design: o3 }).ok);
+  const o4 = Object.assign({}, A.get('ota2').design(), { clpf: 0.3 });
+  ok('ota2: CL を勝手に軽くするのは反則', !Q.grade('ota2', { design: o4 }).ok);
 });
 
 report();

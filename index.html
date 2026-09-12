@@ -196,11 +196,11 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       <dl class="spec">
         <div><dt>参考書</dt><dd>8<small>部</small></dd></div>
         <div><dt>ラボ</dt><dd>8<small>本</small></dd></div>
-        <div><dt>採点つき課題</dt><dd>114<small>問</small></dd></div>
+        <div><dt>採点つき課題</dt><dd>115<small>問</small></dd></div>
         <div><dt>依存</dt><dd>0<small>ブラウザのみ</small></dd></div>
         <div><dt>通信</dt><dd>0<small>手元で完結</small></dd></div>
-        <div><dt>自動検査</dt><dd>3,190<small>件 (Node)</small></dd></div>
-        <div class="spec-cap">課題数は ProcessLab 13 ＋ SemiLab 22 ＋ NandLab 25 ＋ PixelLab 12 ＋ PhotonLab 11 ＋ AnalogLab 10 ＋ OptoLab 11 ＋ QALab 10。検査は8本の <code>node tests/all.js</code> の合計（2026-09-13 時点）。</div>
+        <div><dt>自動検査</dt><dd>3,213<small>件 (Node)</small></dd></div>
+        <div class="spec-cap">課題数は ProcessLab 13 ＋ SemiLab 22 ＋ NandLab 25 ＋ PixelLab 12 ＋ PhotonLab 11 ＋ AnalogLab 11 ＋ OptoLab 11 ＋ QALab 10。検査は8本の <code>node tests/all.js</code> の合計（2026-09-13 時点）。</div>
       </dl>
     </div>
   </div>
@@ -583,12 +583,12 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       </div>
       <div class="pair">
         <div><span class="kind read">参考書</span><a href="第6部_アナログ回路.html">アナログ回路 ― 坂に住む設計</a><small>Vov → gm → Gain → Feedback · 8章</small></div>
-        <div><span class="kind lab">ラボ</span><a href="AnalogLab/index.html">AnalogLab</a><small>原始部品 ＝ 二乗則のMOS 1個 · 3章 10問 · <a href="AnalogLab/README.md">README</a></small></div>
+        <div><span class="kind lab">ラボ</span><a href="AnalogLab/index.html">AnalogLab</a><small>原始部品 ＝ 二乗則のMOS 1個 · 3章 11問 · <a href="AnalogLab/README.md">README</a></small></div>
       </div>
     </div>
     <div class="chap">
       <div><span class="cn">01-02</span><div class="ct"><a href="第6部_アナログ回路.html#s1">gm と ro / 一段で増やす</a></div><div class="cd">Vov=√(2Id/µCox·W/L)、gm=2Id/Vov、ro=1/(λId)。利得・スイング・帯域が同じ電圧予算を取り合う。gm/Id設計法。</div></div>
-      <div class="do"><span class="lbl">AnalogLab 第1-2章</span><a class="q" href="AnalogLab/index.html?quest=bias">Vovを狙って置く</a><a class="q" href="AnalogLab/index.html?quest=eff">電力でgmを買う</a><a class="q" href="AnalogLab/index.html?quest=gain">ソース接地で10倍</a><a class="q" href="AnalogLab/index.html?quest=gbw">GBWを電力で買う</a><a class="q" href="AnalogLab/index.html?quest=gain2">roの壁</a></div>
+      <div class="do"><span class="lbl">AnalogLab 第1-2章</span><a class="q" href="AnalogLab/index.html?quest=bias">Vovを狙って置く</a><a class="q" href="AnalogLab/index.html?quest=eff">電力でgmを買う</a><a class="q" href="AnalogLab/index.html?quest=gain">ソース接地で10倍</a><a class="q" href="AnalogLab/index.html?quest=gbw">GBWを電力で買う</a><a class="q" href="AnalogLab/index.html?quest=gain2">roの壁</a><a class="q" href="AnalogLab/index.html?quest=ota2">2段OTA</a></div>
     </div>
     <div class="chap">
       <div><span class="cn">03-06</span><div class="ct"><a href="第6部_アナログ回路.html#s3">ミラー / 差動対 / 帰還 / OTA</a></div><div class="cd">電流のコピーとカスコード。差だけを増やして同相を捨てる。仮想接地と位相余裕。2段OTAとミラー補償（GBW=gm/2πCc）。</div></div>
@@ -674,7 +674,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
         <li><b>センサ本体:</b> 第4部 00〜07 → PixelLab 第1〜3章<span class="r">12問</span><span class="why">光子→電子→電圧→数値→像の一本道。謎のカメラを測って当て、自分の画素を設計する</span></li>
         <li><b>床下:</b> 第4部 付録 A〜D とむすび<span class="r">読む</span><span class="why">トンネル・短チャネル・暗電流・ノイズ。すべて同じ欠陥と電界に戻る</span></li>
         <li><b>センサの外へ:</b> 第5部 → PhotonLab<span class="r">11問</span><span class="why">像を結ばず数える一族（PMT・APD・MPPC）と共通の物差し。SNRの「最適な M」を自分で探す</span></li>
-        <li><b>読み出しの中身:</b> 第6部 → AnalogLab<span class="r">10問</span><span class="why">列アンプ・TIA・チャージアンプの正体。gm と Vov の九九から差動対と帰還まで</span></li>
+        <li><b>読み出しの中身:</b> 第6部 → AnalogLab<span class="r">11問</span><span class="why">列アンプ・TIA・チャージアンプの正体。gm と Vov の九九から差動対と帰還まで</span></li>
         <li><b>光の入り口:</b> 第7部 → OptoLab<span class="r">11問</span><span class="why">センサに届く光を自分で出す。第4部の 0.52%・190光子/px/s の出どころ</span></li>
         <li><b>出荷まで:</b> 第8部 → QALab<span class="r">10問</span><span class="why">10年もつか・百万個そろうか。FIT・アレニウス・θ・Cpk ― 保証書の中身</span></li>
       </ol>
@@ -692,7 +692,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
         <li><b>第3部</b> NandLab 第1〜5章<span class="r">25問</span><span class="why">NAND だけから NOT・加算器・フリップフロップ・ALU まで</span></li>
         <li><b>第4部</b> 参考書 00〜07 → PixelLab 第1〜3章<span class="r">12問</span><span class="why">光子→電子→電圧→数値→像。付録 A〜D で床下の物理へ</span></li>
         <li><b>第5部</b> 参考書 01〜08 → PhotonLab<span class="r">11問</span><span class="why">センサの外へ。PMT から光る半導体まで、検出器の系統樹を一巡</span></li>
-        <li><b>第6部</b> 参考書 01〜08 → AnalogLab<span class="r">10問</span><span class="why">最後にアナログ。読み出し回路の中身を、ラザビーの道順で</span></li>
+        <li><b>第6部</b> 参考書 01〜08 → AnalogLab<span class="r">11問</span><span class="why">最後にアナログ。読み出し回路の中身を、ラザビーの道順で</span></li>
         <li><b>第7部</b> 参考書 01〜08 → OptoLab<span class="r">11問</span><span class="why">検出器の相手側。lx と W の換算からファイバとARコートまで</span></li>
         <li><b>第8部</b> 参考書 01〜08 → QALab<span class="r">10問</span><span class="why">仕上げは信頼性と品質。作った物を10年・百万個の側から見直す</span></li>
       </ol>
@@ -760,7 +760,7 @@ node SemiLab\tests\all.js       1,074 件
 node NandLab\tests\all.js         642 件
 node PixelLab\tests\all.js        281 件
 node PhotonLab\tests\all.js       234 件
-node AnalogLab\tests\all.js       200 件
+node AnalogLab\tests\all.js       223 件
 node OptoLab\tests\all.js         221 件
 node QALab\tests\all.js           206 件</pre>
       <div class="caveat">

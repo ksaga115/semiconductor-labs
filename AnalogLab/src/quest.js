@@ -116,6 +116,27 @@
         };
       }
     },
+    {
+      id: 'ota2', ch: 2, kind: 'design',
+      name: '2段OTA ― 速さと安定の綱引き',
+      desc: '初段 **100 µA・W/L 20**・負荷 **CL 1 pF**・電源 **1.8 V** のまま、第2段（電流・W/L）とミラー補償 Cc で、**GBW 30 MHz 以上・位相余裕 60° 以上・電力 1.2 mW 以下**にする。',
+      why: '2段OTA の GBW は gm1/2πCc ― Cc を小さくすれば速い。でも位相は第2極 gm2/CL と'
+         + '**右半面ゼロ gm2/Cc** に削られる（ミラー補償の有名な代償）。ゼロの分 GBW/fz = gm1/gm2 は Cc に依らないので、'
+         + '**まず gm2 を gm1 の3倍ほどに**してから、Cc の窓（速すぎず遅すぎず）を探す ― ラザビー10章の設計手順そのもの。',
+      hint: '第2段 500µA・W/L 36（gm2=2.7mS）で Cc = 1.7〜4.7 pF の窓。Cc=3pF で GBW 47MHz・PM 65°。',
+      check: function (ev, d) {
+        var lock = d.idua === 100 && d.wl === 20 && near(d.clpf, 1) && d.vdd === 1.8;
+        return {
+          ok: lock && ev.gbw2 >= 30e6 && ev.pm >= 60 && ev.ptot <= 1.2e-3,
+          rows: [
+            row('GBW = gm1/2πCc', f(ev.gbw2 / 1e6, 1) + ' MHz', '30.0 以上', ev.gbw2 >= 30e6),
+            row('位相余裕', f(ev.pm, 1) + '°（第2極 ' + f(ev.fp2 / 1e6, 0) + ' / ゼロ ' + f(ev.fz / 1e6, 0) + ' MHz）', '60.0 以上', ev.pm >= 60),
+            row('電力', f(ev.ptot * 1000, 2) + ' mW', '1.20 以下', ev.ptot <= 1.2e-3),
+            row('条件固定', lock ? '守っている（初段100µA/20・CL1pF・1.8V）' : '課題の条件に戻す', '', lock)
+          ]
+        };
+      }
+    },
 
     /* ===== 第3章 ===== */
     {

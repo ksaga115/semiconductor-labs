@@ -84,4 +84,21 @@ T('スイッチトキャパシタ ― 抵抗を時間で作る', () => {
   ok('16.7MΩ・83µV の窓', a.reqsc > 1e7 && a.vktcsc < 1e-4);
 });
 
+T('2段OTA ― ミラー補償と位相余裕', () => {
+  /* お手本: gm1 0.894mS・gm2 2.68mS・Cc 3pF */
+  const { ev } = evalWith({ idua2: 500, wl2: 36, ccpf: 3, clpf: 1 });
+  near('gm2（二乗則）', ev.gm2v, 2.683e-3, 2e-6);
+  near('GBW = gm1/2πCc ≒ 47.4MHz', ev.gbw2, 4.745e7, 5e4);
+  near('第2極 = gm2/2πCL ≒ 427MHz', ev.fp2, 4.27e8, 1e6);
+  near('ゼロ = gm2/2πCc ≒ 142MHz', ev.fz, 1.423e8, 5e5);
+  near('PM ≒ 65°', ev.pm, 65.2, 0.2);
+  /* Cc を小さくすると速いが崩れる ― GBW/fz は Cc に依らない */
+  const fast = evalWith({ idua2: 500, wl2: 36, ccpf: 1, clpf: 1 }).ev;
+  ok('Cc 1pF は速い（142MHz）が PM 53° に崩れる', fast.gbw2 > 1.4e8 && fast.pm < 55);
+  near('GBW/fz = gm1/gm2 は Cc に依らない', fast.gbw2 / fast.fz, ev.gbw2 / ev.fz, 1e-9);
+  /* gm2 = gm1 の対称構成は PM 0°（極とゼロが GBW に重なる） */
+  const sym = evalWith({ idua2: 100, wl2: 20, ccpf: 1, clpf: 1 }).ev;
+  near('gm2=gm1・Cc=CL なら PM = 0°', sym.pm, 0, 0.01);
+});
+
 report();
