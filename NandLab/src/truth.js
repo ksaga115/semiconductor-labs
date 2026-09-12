@@ -60,6 +60,12 @@
 
   function hasFeedback(flat) { return cycles(flat).length > 0; }
 
+  /** ram16（実装部品）を含むか。ループが無くても状態を持つので、順序回路として扱う */
+  function hasRam(flat) {
+    for (var i = 0; i < flat.gates.length; i++) if (flat.gates[i].kind === 'ram16') return true;
+    return false;
+  }
+
   /**
    * 真理値表を作る。
    * 戻り値 { inNames, outNames, rows:[{in:[],out:[],settled}], sequential, error }
@@ -89,7 +95,7 @@
     }
     return {
       inNames: inNames, outNames: outNames, rows: rows,
-      sequential: loops.length > 0, loops: loops, gates: flat.gates.length, error: null
+      sequential: loops.length > 0 || hasRam(flat), loops: loops, gates: flat.gates.length, error: null
     };
   }
 
@@ -154,7 +160,7 @@
 
   NL.truth = {
     MAX_INPUTS: MAX_INPUTS,
-    cycles: cycles, hasFeedback: hasFeedback,
+    cycles: cycles, hasFeedback: hasFeedback, hasRam: hasRam,
     table: table, gateCount: gateCount, check: check
   };
 })(typeof window !== 'undefined' ? window : globalThis);

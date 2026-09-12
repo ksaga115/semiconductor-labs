@@ -52,8 +52,16 @@
   Sim.prototype.reset = function () {
     var g = this.flat.gates, i;
     this.q = [];
+    /* ram16（実装部品）の中身。flat は複数の Sim で共有されるので、状態は Sim 側に持つ。
+     * reset ＝ 電源投入。セルは全部 X から始まる（書くまで読めない、が本当の挙動） */
+    this.mem = {};
     for (i = 0; i < g.length; i++) {
       this.v[i] = (g[i].kind === 'src') ? g[i].init : X;
+      if (g[i].kind === 'ram16') {
+        var cells = new Int8Array(16);
+        cells.fill(X);
+        this.mem[i] = { cells: cells, prevC: X };
+      }
       this.queued[i] = 1;
       this.q.push(i);
     }
@@ -69,7 +77,44 @@
     var g = this.flat.gates[i];
     if (g.kind === 'src') return this.v[i];             /* 源は外から書かれるまで動かない */
     if (g.kind === 'buf') return this.val(g.ins[0]);
+    if (g.kind === 'ram16') return this.evalRam(i, g);
     return nand3(this.val(g.ins[0]), this.val(g.ins[1]));
+  };
+
+  /* ram16 ―【実装部品】16語×1bit。端子は A0..A3（ins 0..3）, D(4), W(5), C(6) → Q。
+   *
+   * 書き込みは C の立ち上がりで。W=1 かつ番地が全部確定していれば cells[番地] = D。
+   * X が絡むときは「書いたかもしれない」ので、書かれたかもしれないセルは
+   * いまの値と書かれる値が違えば X にする（NAND の3値表と同じで、嘘をつかないため）:
+   *   - C が 0→X や X→1 …… 立ち上がったかもしれない
+   *   - W が X            …… 書き込みが有効だったかもしれない
+   *   - 番地に X          …… 16 セルのどれに書いたか分からない → 全セルが対象
+   * 読み出しは組み合わせ（遅延1歩）。番地に X があるときは、全セルが同じ値の
+   * ときだけその値、そうでなければ X */
+  Sim.prototype.evalRam = function (i, g) {
+    var m = this.mem[i], k;
+    var a0 = this.val(g.ins[0]), a1 = this.val(g.ins[1]);
+    var a2 = this.val(g.ins[2]), a3 = this.val(g.ins[3]);
+    var d = this.val(g.ins[4]), w = this.val(g.ins[5]), c = this.val(g.ins[6]);
+    var addrOk = (a0 !== X && a1 !== X && a2 !== X && a3 !== X);
+    var addr = addrOk ? (a0 | (a1 << 1) | (a2 << 2) | (a3 << 3)) : -1;
+
+    var was = m.prevC;
+    m.prevC = c;
+    if (c !== was) {
+      var sure = (was === 0 && c === 1);
+      var maybe = (was === 0 && c === X) || (was === X && c === 1);
+      if ((sure || maybe) && w !== 0) {
+        if (sure && w === 1 && addrOk) m.cells[addr] = d;
+        else if (addrOk) { if (m.cells[addr] !== d) m.cells[addr] = X; }
+        else { for (k = 0; k < 16; k++) if (m.cells[k] !== d) m.cells[k] = X; }
+      }
+    }
+
+    if (addrOk) return m.cells[addr];
+    var v0 = m.cells[0];
+    for (k = 1; k < 16; k++) if (m.cells[k] !== v0) return X;
+    return v0;
   };
 
   /** 時間を1歩進める。値が変わった素子の番号を返す */

@@ -41,7 +41,8 @@
     return {
       pitch: 3.0, pdFrac: 0.5, ml: true, epi: 3.0, nm: 550,
       fwd: 1500, cfd: 2.0, sf: 120, cds: true,
-      jd: 50, T: 25, bits: 12, prnu: 1.0, offset: 64
+      jd: 50, T: 25, bits: 12, prnu: 1.0, offset: 64,
+      hdrR: 1                      /* 長短合成の露光比（1 = 合成なし）。第4部「ダイナミックレンジを広げる」 */
     };
   }
 
@@ -109,11 +110,19 @@
     var noiseFloor = Math.sqrt(read * read + quant * quant);
     var dr = 20 * Math.log10(fw / noiseFloor);
 
+    /* 長短2枚の合成（第4部「ダイナミックレンジを広げる」①）。
+     * 短い露光は比 R のぶん同じ照度で電子が少ない ＝ 実効の天井が R 倍。
+     * 床（読み出し雑音）は動かないので、合成の DR は単発 + 20log10(R)。
+     * つなぎ目の SNR 段差・動体は入れていない（参考書の caveat と同じ）。 */
+    var hdrR = Math.max(1, Math.min(32, d.hdrR || 1));
+    var drH = dr + 20 * Math.log10(hdrR);
+
     return {
       area: area, pdArea: pdArea, fill: fill, qeSi: qeSi, qe: qe,
       fwPd: fwPd, fwFd: fwFd, fw: fw, limit: fwPd <= fwFd ? 'PD' : '浮遊拡散',
       cg: cg, readSf: readSf, kTC: kTC, read: read, K: K, quant: quant,
       dark: dark, floor: noiseFloor, dr: dr, snrMax: Math.sqrt(fw),
+      hdrR: hdrR, drH: drH,
       prnu: d.prnu / 100, offset: d.offset, bits: d.bits, T: d.T
     };
   }

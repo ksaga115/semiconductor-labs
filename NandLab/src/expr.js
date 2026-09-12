@@ -202,6 +202,7 @@
     var flat = NL.lib.flatten(circuit, lib);
     if (flat.error) return { error: flat.error };
     if (!flat.outputs.length) return { error: '出力部品がありません' };
+    if (NL.truth.hasRam(flat)) return { error: 'RAM16（記憶を持つ実装部品）を含む回路は、論理式にできません' };
 
     var loops = NL.truth.cycles(flat);
     if (loops.length) return { sequential: true, loops: loops, error: null };

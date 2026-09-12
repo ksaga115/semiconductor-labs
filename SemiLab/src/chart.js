@@ -118,7 +118,7 @@
 
     opt.series.forEach(function (s, k) {
       g.strokeStyle = s.color || ['#5aa9e6', '#4cc38a', '#ffcc66', '#e5686d', '#ce93d8'][k % 5];
-      g.lineWidth = 2; g.beginPath();
+      g.lineWidth = 2; g.setLineDash(s.dash || []); g.beginPath();
       var started = false;
       s.pts.forEach(function (p) {
         if (logY && p[1] <= 0) { started = false; return; }
@@ -126,7 +126,7 @@
         if (!isFinite(yy)) { started = false; return; }
         if (!started) { g.moveTo(xx, yy); started = true; } else g.lineTo(xx, yy);
       });
-      g.stroke();
+      g.stroke(); g.setLineDash([]);
       if (s.name) {
         g.fillStyle = g.strokeStyle; g.textAlign = 'left';
         g.fillText(s.name, L + 8, T + 14 + k * 15);
@@ -149,9 +149,35 @@
     var fwd = [], rev = [], v;
     for (v = 0; v <= 0.95; v += 0.01) fwd.push([v, Math.abs(d.iv(v).j)]);
     for (v = 0; v >= -5; v -= 0.05) rev.push([-v, Math.abs(d.iv(v).j)]);
+
+    /* ---- 降伏の目安（表示だけ。モデルの電流・採点には入れない） ----
+     * 薄い側の濃度で Sze の臨界電界（ui.js の赤帯と同じ式）→ 片側階段接合の
+     * BV = ε·Ec²/(2qN) − Vbi。Miller の経験式 M = 1/(1−(V/BV)^4) を逆方向の
+     * 生成電流に掛けた破線を重ねる。指数 4 は Si の代表値（2〜6 で振れる）。 */
+    var Nthin = Math.min(d.Na, d.Nd);
+    var Ec = 4e5 / (1 - Math.log10(Nthin / 1e16) / 3);
+    var eps = 11.7 * P.EPS0;
+    var BV = eps * Ec * Ec / (2 * P.Q * Nthin) - d.Vbi;
+    var series = [{ name: '順方向', pts: fwd, color: '#4cc38a' }, { name: '逆方向', pts: rev, color: '#e5686d' }];
+    var bvText;
+    if (BV > 0 && BV <= 40) {
+      var brk = [], MMAX = 1e4;
+      for (v = 0; v <= BV * 0.9999; v += BV / 400) {
+        var M = 1 / (1 - Math.pow(v / BV, 4));
+        if (M > MMAX) break;
+        brk.push([v, Math.abs(d.iv(-v).j) * M]);
+      }
+      series.push({ name: '逆方向 ＋ なだれ増倍（目安）', pts: brk, color: '#ffab40', dash: [6, 5] });
+      bvText = '<br><b>降伏の目安 BV ≈ ' + BV.toFixed(1) + ' V</b>（薄い側 N = ' + Nthin.toExponential(1)
+        + '、Sze の臨界電界 ' + Ec.toExponential(1) + ' V/cm）。破線は Miller の経験式 M = 1/(1−(V/BV)⁴) を'
+        + '<b>表示だけ</b>重ねたもの ― モデルの電流にも採点にも入れていない（「どこまでがモデルか」）。';
+    } else {
+      bvText = '<br>降伏の目安 BV ≈ ' + (BV > 0 ? BV.toFixed(0) + ' V' : '—')
+        + '（薄い側 N = ' + Nthin.toExponential(1) + '。この掃引範囲では見えない）。';
+    }
     plot(g, cvs, {
       logY: true, xlabel: '順方向は V、逆方向は |V| [V]', ylabel: '|J| [A/cm²]',
-      series: [{ name: '順方向', pts: fwd, color: '#4cc38a' }, { name: '逆方向', pts: rev, color: '#e5686d' }]
+      series: series
     });
     var n1 = ideality(d, 0.35), n2 = ideality(d, 0.15);
     note.innerHTML = '飽和電流 J₀ = ' + d.j0.toExponential(3) + ' A/cm²　'
@@ -160,7 +186,8 @@
       + '理想係数 n は 0.15V で ' + n2.toFixed(2) + '、0.35V で ' + n1.toFixed(2) + ' ― '
       + '低い電圧では空乏層の再結合（n=2 に近づく）、中ほどでは拡散（n=1）、'
       + '高い電流では直列抵抗で曲がる。3つの領域が別々の理由で出ている。'
-      + (d.edge ? '<br>（なだらかな接合なので、Vbi と J₀ は空乏層の端の外の濃度で出している）' : '');
+      + (d.edge ? '<br>（なだらかな接合なので、Vbi と J₀ は空乏層の端の外の濃度で出している）' : '')
+      + bvText;
   }
 
   function ideality(d, v) {

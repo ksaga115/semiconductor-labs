@@ -358,6 +358,12 @@
    * bad は最初に食い違った場所（組み合わせなら行、順序なら手順）
    */
   function grade(quest, circuit, lib) {
+    /* ram16 は NAND から組んでいない実装部品。課題は「NAND から組み上げる」ことが
+     * 主題なので、含まれていたら振る舞いを見る前に正直に断る */
+    var f0 = NL.lib.flatten(circuit, lib);
+    if (!f0.error && NL.truth.hasRam(f0)) {
+      return { ok: false, error: 'RAM16 は実装部品（NAND から組んでいない）なので、課題の採点では使えません。NAND から組んでください' };
+    }
     if (quest.kind === 'seq') return gradeSeq(quest, circuit, lib);
     var r = NL.truth.check(circuit, lib, quest);
     if (!r.ok) return r;

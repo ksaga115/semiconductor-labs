@@ -196,11 +196,11 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       <dl class="spec">
         <div><dt>参考書</dt><dd>4<small>部</small></dd></div>
         <div><dt>ラボ</dt><dd>4<small>本</small></dd></div>
-        <div><dt>採点つき課題</dt><dd>68<small>問</small></dd></div>
+        <div><dt>採点つき課題</dt><dd>69<small>問</small></dd></div>
         <div><dt>依存</dt><dd>0<small>ブラウザのみ</small></dd></div>
         <div><dt>通信</dt><dd>0<small>手元で完結</small></dd></div>
-        <div><dt>自動検査</dt><dd>2,246<small>件 (Node)</small></dd></div>
-        <div class="spec-cap">課題数は ProcessLab 13 ＋ SemiLab 22 ＋ NandLab 22 ＋ PixelLab 11。検査は4本の <code>node tests/all.js</code> の合計（2026-09-11 時点）。</div>
+        <div><dt>自動検査</dt><dd>2,288<small>件 (Node)</small></dd></div>
+        <div class="spec-cap">課題数は ProcessLab 13 ＋ SemiLab 22 ＋ NandLab 22 ＋ PixelLab 12。検査は4本の <code>node tests/all.js</code> の合計（2026-09-11 時点）。</div>
       </dl>
     </div>
   </div>
@@ -493,7 +493,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       </div>
       <div class="pair">
         <div><span class="kind read">参考書</span><a href="第4部_イメージセンサ.html">イメージセンサ解剖ラボ</a><small>光子が像になるまでの7つの段 · 22節</small></div>
-        <div><span class="kind lab">ラボ</span><a href="PixelLab/index.html">PixelLab</a><small>原始部品 ＝ 光子と電子を数えること · 3章 11問 · <a href="PixelLab/README.md">README</a></small></div>
+        <div><span class="kind lab">ラボ</span><a href="PixelLab/index.html">PixelLab</a><small>原始部品 ＝ 光子と電子を数えること · 3章 12問 · <a href="PixelLab/README.md">README</a></small></div>
       </div>
     </div>
     <div class="chap">
@@ -514,7 +514,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
     </div>
     <div class="chap">
       <div><span class="cn">05–06</span><div class="ct"><a href="第4部_イメージセンサ.html#s5">電荷を電圧に / 読み出しと AD / ダイナミックレンジ</a></div><div class="cd">小さい容量ほど大きな電圧。kTC は容量だけで決まる。飽和は井戸か AD か。</div></div>
-      <div class="do"><span class="lbl">PixelLab 第2章 · 第1章</span><a class="q" href="PixelLab/index.html?quest=dr">ダイナミックレンジ 75dB</a><a class="q" href="PixelLab/index.html?quest=dim">暗い所で S/N 5.5</a><a class="q" href="PixelLab/index.html?quest=adc">AD の桁</a><a class="q" href="PixelLab/index.html?quest=limit">飽和を決めているのは井戸か AD か</a></div>
+      <div class="do"><span class="lbl">PixelLab 第2章 · 第1章</span><a class="q" href="PixelLab/index.html?quest=dr">ダイナミックレンジ 75dB</a><a class="q" href="PixelLab/index.html?quest=dim">暗い所で S/N 5.5</a><a class="q" href="PixelLab/index.html?quest=adc">AD の桁</a><a class="q" href="PixelLab/index.html?quest=limit">飽和を決めているのは井戸か AD か</a><a class="q" href="PixelLab/index.html?quest=hdr">長短合成で 100 dB</a></div>
     </div>
     <div class="chap">
       <div><span class="cn">—</span><div class="ct"><a href="第4部_イメージセンサ.html#sptc">ノイズの正体 / センサを測る（PTC）</a></div><div class="cd">分散と平均から電子が数えられる。合わせ込む係数がひとつも無い物差し。</div></div>
@@ -547,7 +547,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
         <li><b>デバイス層:</b> 第2部 2-3・2-4 → SemiLab 第3・4章<span class="r">9問</span><span class="why">暗電流の正体（生成電流）と、波長で決まる量子効率。両方そのまま第4部の性能表になる</span></li>
         <li><b>スイッチ:</b> 第2部 2-5 → SemiLab 第5章<span class="r">4問</span><span class="why">画素の中の4個のトランジスタ（転送・リセット・SF・選択）の物理</span></li>
         <li><b>回路層:</b> 第3部 → NandLab<span class="r">22問</span><span class="why">列並列ADCのカウンタも制御ロジックも、この部の部品でできている</span></li>
-        <li><b>センサ本体:</b> 第4部 00〜07 → PixelLab 第1〜3章<span class="r">11問</span><span class="why">光子→電子→電圧→数値→像の一本道。謎のカメラを測って当て、自分の画素を設計する</span></li>
+        <li><b>センサ本体:</b> 第4部 00〜07 → PixelLab 第1〜3章<span class="r">12問</span><span class="why">光子→電子→電圧→数値→像の一本道。謎のカメラを測って当て、自分の画素を設計する</span></li>
         <li><b>床下:</b> 第4部 付録 A〜D とむすび<span class="r">読む</span><span class="why">トンネル・短チャネル・暗電流・ノイズ。すべて同じ欠陥と電界に戻る</span></li>
       </ol>
     </div>
@@ -562,7 +562,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
         <li><b>第1部に戻って</b> ProcessLab 第4章<span class="r">3問</span><span class="why">工程で作った1本を SemiLab に渡して素子として測る。2本が繋がる</span></li>
         <li><b>第2部</b> 2-4〜2-5 → SemiLab 第4〜5章<span class="r">9問</span><span class="why">フォトダイオードと MOSFET。最後の課題が「NAND の中身」</span></li>
         <li><b>第3部</b> NandLab 第1〜5章<span class="r">22問</span><span class="why">NAND だけから NOT・加算器・フリップフロップ・ALU まで</span></li>
-        <li><b>第4部</b> 参考書 00〜07 → PixelLab 第1〜3章<span class="r">11問</span><span class="why">光子→電子→電圧→数値→像。付録 A〜D で床下の物理へ</span></li>
+        <li><b>第4部</b> 参考書 00〜07 → PixelLab 第1〜3章<span class="r">12問</span><span class="why">光子→電子→電圧→数値→像。付録 A〜D で床下の物理へ</span></li>
       </ol>
     </div>
 
@@ -612,8 +612,8 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       <p>物理・課題・採点は Node だけで検査できる。<code>tests/ui.js</code> は本物の <code>index.html</code> から DOM を組んで本物の <code>ui.js</code> を動かす。</p>
       <pre>node ProcessLab\tests\all.js      332 件
 node SemiLab\tests\all.js       1,074 件
-node NandLab\tests\all.js         569 件
-node PixelLab\tests\all.js        271 件</pre>
+node NandLab\tests\all.js         601 件
+node PixelLab\tests\all.js        281 件</pre>
       <div class="caveat">
         <span class="tag">配置の注意</span>
         <p>ProcessLab と PixelLab は <code>../SemiLab/src/*.js</code> を読み込む。<b>SemiLab・ProcessLab・PixelLab は必ずこのフォルダに兄弟として置く。</b>1本だけ別の場所へ動かすと、起動はするが物理が無くて動かない。</p>

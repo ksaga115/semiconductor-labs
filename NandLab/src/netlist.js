@@ -8,6 +8,9 @@
  *   out    入力1 出力0   ― 外部出力。同上
  *   const  入力0 出力1   ― 0 か 1 を出しっぱなし
  *   clock  入力0 出力1   ― 進めるたびに反転する
+ *   ram16  入力7 出力1   ― 16語×1bit の RAM。【実装部品】NAND からは組んでいない
+ *                          （A0..A3 番地, D 書く値, W 書き込み許可, C クロック → Q 読み出し。
+ *                           README「メモリ」の節を参照。課題の採点では使えない）
  *   chip   ライブラリの定義しだい ― ユーザーが作った部品
  *
  * 配線は「出力ポート → 入力ポート」の有向。入力ポートに繋がる線は高々1本
@@ -30,8 +33,12 @@
     in:    { in: 0, out: 1 },
     out:   { in: 1, out: 0 },
     'const': { in: 0, out: 1 },
-    clock: { in: 0, out: 1 }
+    clock: { in: 0, out: 1 },
+    ram16: { in: 7, out: 1 }          /* A0,A1,A2,A3,D,W,C → Q（実装部品） */
   };
+
+  /* ram16 の端子の並び。lib.js の展開・ui.js の描画・README が全部これに従う */
+  var RAM_PORTS = ['A0', 'A1', 'A2', 'A3', 'D', 'W', 'C'];
 
   function create() {
     return { parts: {}, wires: {}, seq: 1 };
@@ -164,7 +171,7 @@
   }
 
   NL.netlist = {
-    PRIM: PRIM,
+    PRIM: PRIM, RAM_PORTS: RAM_PORTS,
     create: create, clone: clone,
     portsOf: portsOf, natCmp: natCmp, labelOf: labelOf,
     partsOfKind: partsOfKind, externalInputs: externalInputs, externalOutputs: externalOutputs,

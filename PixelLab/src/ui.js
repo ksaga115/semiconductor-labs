@@ -34,7 +34,8 @@
     ['T', '温度', '℃', -60, 80],
     ['bits', 'AD の桁', 'bit', 8, 16],
     ['prnu', '感度のむら', '%', 0, 10],
-    ['offset', 'オフセット', 'DN', 0, 1000]
+    ['offset', 'オフセット', 'DN', 0, 1000],
+    ['hdrR', '長短の露光比（HDR）', '：1（1＝合成なし）', 1, 32]
   ];
 
   /* ================= 起動 ================= */
@@ -324,7 +325,8 @@
       ['量子化雑音', ev.quant.toFixed(2) + ' e⁻'],
       ['暗電流', ev.dark.toPrecision(3) + ' e⁻/s'],
       ['暗電流が倍になる幅', PIX.doublingK(S.design.T).toFixed(1) + ' K'],
-      ['ダイナミックレンジ', ev.dr.toFixed(1) + ' dB']
+      ['ダイナミックレンジ', ev.dr.toFixed(1) + ' dB'],
+      ['HDR 合成（' + ev.hdrR.toFixed(0) + ':1）', ev.hdrR > 1 ? ev.drH.toFixed(1) + ' dB（+' + (20 * Math.log10(ev.hdrR)).toFixed(1) + '）' : '合成なし']
     ];
     document.getElementById('derived').innerHTML = '<div class="dv">' + rows.map(function (r) {
       return '<span class="k">' + esc(r[0]) + '</span><span class="v' + (r[2] ? ' warn' : '') + '">' + esc(r[1]) + '</span>';

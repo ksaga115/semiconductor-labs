@@ -69,6 +69,10 @@
       note: '13 bit にした。K が半分になり、量子化雑音も半分になる。',
       design: function () { var d = PIX.defaults(); d.bits = 13; return d; }
     },
+    hdr: {
+      note: '浮遊拡散を 1.2fF にして単発の DR を 76.3dB まで伸ばし、露光比 16:1（+24.1dB）で合成 100.4dB。床（読み出し雑音）は合成では動かない ― 天井だけが伸びる。',
+      design: function () { var d = PIX.defaults(); d.cfd = 1.2; d.hdrR = 16; return d; }
+    },
     nir: {
       note: '850nm で見て、光を集める層を 10µm に厚くした（SemiLab で量子効率 32%、マイクロレンズで 9 割が届いて 29%）。',
       design: function () { var d = PIX.defaults(); d.nm = 850; d.epi = 10; return d; }

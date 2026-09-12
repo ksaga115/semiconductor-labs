@@ -34,13 +34,14 @@
     return out;
   }
 
-  /** 中に輪があるチップ（記憶を持つ）は、入力が同じでもまとめてはいけない */
+  /** 中に輪があるチップ（記憶を持つ）は、入力が同じでもまとめてはいけない。
+   * ram16（実装部品）は輪が無くても記憶そのものなので、含んでいたら同じ扱い */
   function remembers(name, lib, memo) {
     if (memo[name] !== undefined) return memo[name];
     var def = lib[name];
     if (!def) return (memo[name] = false);
     var flat = NL.lib.flatten(def.circuit, lib);
-    return (memo[name] = !flat.error && NL.truth.hasFeedback(flat));
+    return (memo[name] = !flat.error && (NL.truth.hasFeedback(flat) || NL.truth.hasRam(flat)));
   }
 
   /** その部品を消したら NAND が何個減るか */

@@ -9,9 +9,10 @@
  * 【展開】シミュレータは階層を知らない。回す前にチップを再帰的に潰して、
  * nand と値の源（src）と中継（buf）だけの平らなゲート配列にする。
  *
- *   src  値を自分で持つ（トップの入力スイッチ・定数・クロック）
- *   buf  入力をそのまま出す中継（チップの内側の in / out 部品、全階層の out 部品）
- *   nand 唯一の論理素子
+ *   src   値を自分で持つ（トップの入力スイッチ・定数・クロック）
+ *   buf   入力をそのまま出す中継（チップの内側の in / out 部品、全階層の out 部品）
+ *   nand  唯一の論理素子
+ *   ram16 16語×1bit の RAM。【実装部品】NAND からは組んでいない（sim.js が状態を持つ）
  *
  * チップの境界を buf として残すのがミソ。境界のネットを消して両側を直結する
  * （union-find で同一視する）方が速いが、そうすると「このチップのこの端子には
@@ -104,7 +105,7 @@
   /**
    * 回路を平らなゲート配列にする。
    * 戻り値 { gates, inputs, inNames, outputs, outNames, clocks, fanout }
-   * gates[i] = { kind:'nand'|'src'|'buf', ins:[gate番号 or -1], init, path, part, kindOf }
+   * gates[i] = { kind:'nand'|'src'|'buf'|'ram16', ins:[gate番号 or -1], init, path, part, kindOf }
    */
   function flatten(circuit, lib) {
     var flat = {
@@ -175,6 +176,12 @@
         flat.gates[gi].init = (p.value ? 1 : 0);
         flat.clocks.push(gi);
         slot[p.id] = { outs: [gi], inTargets: [] };
+
+      } else if (p.kind === 'ram16') {
+        gi = gate(flat, 'ram16', 7, path, p);
+        var rt = [];
+        for (var rk = 0; rk < 7; rk++) rt.push([gi, rk]);
+        slot[p.id] = { outs: [gi], inTargets: rt };
 
       } else if (p.kind === 'chip') {
         var def = lib[p.chip];

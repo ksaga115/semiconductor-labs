@@ -40,7 +40,8 @@
     'in':  { w: 60, h: heightFor(1) },
     out:   { w: 60, h: heightFor(1) },
     'const': { w: 40, h: heightFor(1) },
-    clock: { w: 60, h: heightFor(1) }
+    clock: { w: 60, h: heightFor(1) },
+    ram16: { w: 100, h: heightFor(7) }   /* 実装部品。入力7（A0..A3,D,W,C）→ 出力 Q */
   };
   var GRID = 10;
   var PORT_R = 5;
@@ -85,7 +86,7 @@
     peek: null,           /* { chip, prefix, view } */
     undo: [], redo: [],
     msg: '', msgAt: 0, editing: null, showBus: true,   /* 作業台に取り出しているチップの名前 */
-    saveTimer: null, nandCount: 0
+    saveTimer: null, nandCount: 0, ramCount: 0
   };
 
   var el = {}, cv, ctx, pcv, pctx;
@@ -128,8 +129,11 @@
     S.flat = L.flatten(S.circuit, S.lib);
     /* 素子数はここで数えて覚えておく。ステータス行のために毎フレーム
      * T.gateCount を呼ぶと、そのたびに回路を展開し直すことになる */
-    S.nandCount = 0;
-    for (var i = 0; i < S.flat.gates.length; i++) if (S.flat.gates[i].kind === 'nand') S.nandCount++;
+    S.nandCount = 0; S.ramCount = 0;
+    for (var i = 0; i < S.flat.gates.length; i++) {
+      if (S.flat.gates[i].kind === 'nand') S.nandCount++;
+      else if (S.flat.gates[i].kind === 'ram16') S.ramCount++;
+    }
     S.sim = new SIM.Sim(S.flat);
     if (S.running) S.sim.settle();
     refreshQuestPorts();
@@ -593,6 +597,29 @@
       c2.textAlign = 'right';
       c2.fillText('CLK', p.x + s.w - 5, p.y + s.h - 8);
 
+    } else if (p.kind === 'ram16') {
+      /* 実装部品。チップと違う色にして「NAND から組んだものではない」ことを見た目でも示す */
+      roundRect(c2, p.x, p.y, s.w, s.h, 5);
+      c2.fillStyle = '#332b1d';
+      c2.fill();
+      c2.strokeStyle = selected ? '#4ea1ff' : '#a8823f';
+      c2.stroke();
+      c2.fillStyle = '#e8c880';
+      c2.fillText('RAM16', p.x + s.w / 2, p.y + 16);
+      c2.font = '9px sans-serif';
+      c2.fillStyle = '#b09a6a';
+      c2.fillText('16語×1bit', p.x + s.w / 2, p.y + 30);
+      c2.fillText('実装部品', p.x + s.w / 2, p.y + s.h - 12);
+      c2.font = '10px sans-serif';
+      c2.fillStyle = '#c9b586';
+      c2.textAlign = 'left';
+      N.RAM_PORTS.forEach(function (nm, i) {
+        var q = portXY(p, S.lib, 'in', i);
+        c2.fillText(nm, p.x + 6, q.y);
+      });
+      c2.textAlign = 'right';
+      c2.fillText('Q', p.x + s.w - 6, portXY(p, S.lib, 'out', 0).y);
+
     } else if (p.kind === 'chip') {
       var def = S.lib[p.chip];
       roundRect(c2, p.x, p.y, s.w, s.h, 5);
@@ -675,7 +702,7 @@
   function updateStatus() {
     var left = [];
     if (S.flat && S.flat.error) left.push('⚠ ' + S.flat.error);
-    else left.push('NAND ' + S.nandCount + '個');
+    else left.push('NAND ' + S.nandCount + '個' + (S.ramCount ? '＋RAM16 ' + S.ramCount + '個（実装部品）' : ''));
     var selN = Object.keys(S.sel.parts).length;
     if (selN) left.push(selN + '個 選択中');
     if (S.place) left.push('配置: ' + (S.place.chip || kindLabel(S.place.kind)) + '（Esc でやめる）');
@@ -693,7 +720,7 @@
   }
 
   function kindLabel(k) {
-    return { nand: 'NAND', 'in': '入力', out: '出力', 'const': '定数', clock: 'クロック' }[k] || k;
+    return { nand: 'NAND', 'in': '入力', out: '出力', 'const': '定数', clock: 'クロック', ram16: 'RAM16（実装部品）' }[k] || k;
   }
 
   /* ---------------- パレット ---------------- */
@@ -704,7 +731,8 @@
      ['in', '入力', 'スイッチ'],
      ['out', '出力', 'ランプ'],
      ['const', '定数', '0 / 1'],
-     ['clock', 'クロック', '反転し続ける']
+     ['clock', 'クロック', '反転し続ける'],
+     ['ram16', 'RAM16', '実装部品。NAND からは組んでいない']
     ].forEach(function (row) {
       var d = document.createElement('div');
       d.className = 'pitem';
@@ -712,6 +740,13 @@
       d.innerHTML = '<span class="k"></span><span class="d"></span>';
       d.querySelector('.k').textContent = row[1];
       d.querySelector('.d').textContent = row[2];
+      if (row[0] === 'ram16') {
+        d.title = '16語×1bit の RAM。ここだけは実装部品（NAND からは組んでいない）。\n'
+                + 'A0..A3 番地, D 書く値, W 書き込み許可, C クロック → Q 読み出し。\n'
+                + 'C の立ち上がりで W=1 なら書き込む。電源投入直後は全セル X。\n'
+                + '課題の採点では使えない（課題は NAND から組むのが主題）。\n'
+                + 'ダブルクリックで中身の16セルを見られる。';
+      }
       d.onclick = function () { setPlace({ kind: row[0] }); };
       el.prims.appendChild(d);
     });
@@ -1025,7 +1060,18 @@
     if (!p) return;
     if (p.kind === 'chip') { openPeek(p); return; }
     if (p.kind === 'nand') { openMos(p); return; }
+    if (p.kind === 'ram16') { showRamCells(p); return; }
     if (p.kind === 'in' || p.kind === 'out') say('名前を変えるには、選んでから F2');
+  }
+
+  /** RAM16 の16セルをステータス行に出す。X＝まだ書かれていない（読めない） */
+  function showRamCells(p) {
+    var gi = S.flat && S.flat.byPath[String(p.id)];
+    var m = (gi !== undefined && S.sim && S.sim.mem) ? S.sim.mem[gi] : null;
+    if (!m) { say('RAM16 の中身がまだ読めない（回路を組み直した直後かもしれない）'); return; }
+    var cells = [];
+    for (var k = 0; k < 16; k++) cells.push(k + ':' + SIM.show(m.cells[k]));
+    say('RAM16 の中身 ― ' + cells.join(' '));
   }
 
   /** 選んでいるものの名前を変える（F2 / Enter）。入力・出力のほか、配線にも付けられる */
