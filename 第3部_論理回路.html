@@ -506,7 +506,7 @@ table.tt td.x{color:var(--ink-3)}
   <div class="lab-go">
     <span class="tag">手を動かす — NandLab 第2章</span>
     <p>第1章で作った NOT・AND・OR・XNOR のチップを部品として使う。セレクタは4個で組めるが、AND と OR のチップで素直に組めば8個 ― 通ればどちらでもよい。右の「論理式」で自分の回路が S̄·A + S·B まで戻るのを見ると、積和形が回路の中にそのまま居るのが分かる。</p>
-    <div class="qs"><span class="lab">NandLab</span><a href="NandLab/index.html?quest=mux">2:1 セレクタ</a><a href="NandLab/index.html?quest=dec24">2→4 デコーダ</a><a href="NandLab/index.html?quest=mux4">4:1 セレクタ</a><a href="NandLab/index.html?quest=eq4">4ビット比較器</a></div>
+    <div class="qs"><span class="lab">NandLab</span><a href="NandLab/index.html?quest=mux">2:1 セレクタ</a><a href="NandLab/index.html?quest=dec24">2→4 デコーダ</a><a href="NandLab/index.html?quest=mux4">4:1 セレクタ</a><a href="NandLab/index.html?quest=eq4">4ビット比較器</a><a href="NandLab/index.html?quest=parity4">4ビットパリティ</a><a href="NandLab/index.html?quest=ham74">ハミング符号器</a><a href="NandLab/index.html?quest=hamfix">ハミング訂正器</a></div>
   </div>
 </section>
 
@@ -869,7 +869,7 @@ table.tt td.x{color:var(--ink-3)}
   <div class="caveat">
     <span class="tag">この節が単純化していること</span>
     <p><strong>書き込み方式は FN トンネルで代表させました。</strong>NOR型の書き込みは伝統的にホットエレクトロン注入（チャネルで加速した電子が障壁を飛び越える ― トンネルではなく「上を越える」）です。消去はどちらも FN。</p>
-    <p><strong>数値（10年・10³〜10⁵回・十数V・8nm）はいずれも桁の代表値</strong>で、世代と方式で動きます。誤り訂正（ECC）やウェアレベリングなど、システム側の延命策には踏み込みません。</p>
+    <p><strong>数値（10年・10³〜10⁵回・十数V・8nm）はいずれも桁の代表値</strong>で、世代と方式で動きます。ウェアレベリングなど、システム側の延命策には踏み込みません。誤り訂正（ECC）の中身のほうは、NandLab 第2章の<a href="NandLab/index.html?quest=parity4">パリティ</a>→<a href="NandLab/index.html?quest=ham74">ハミング符号器</a>→<a href="NandLab/index.html?quest=hamfix">訂正器</a>で、NAND から実際に組んで採点にかけられます。</p>
   </div>
 
   <div class="qs"><span class="lab">NandLab</span><a href="NandLab/index.html">RAM を使って自由制作（パレットの RAM16。「実装部品」― NAND からは組んでおらず、課題の採点では使えない）</a></div>

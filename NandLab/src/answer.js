@@ -139,6 +139,35 @@
       var t2 = b.chipn('AND', { A: same[2], B: same[3] }).Y;
       b.output('Y', b.chipn('AND', { A: t1, B: t2 }).Y);
     } },
+    { id: 'parity4', chip: 'PAR4', build: function (b) {
+      var A = four(b, 'A');
+      var t1 = b.chipn('XOR', { A: A[0], B: A[1] }).Y;
+      var t2 = b.chipn('XOR', { A: A[2], B: A[3] }).Y;
+      b.output('Y', b.chipn('XOR', { A: t1, B: t2 }).Y);
+    } },
+    { id: 'ham74', chip: 'HENC74', build: function (b) {
+      var d1 = b.input('D1'), d2 = b.input('D2'), d3 = b.input('D3'), d4 = b.input('D4');
+      /* 3入力のパリティ。見る部分集合が違うだけで形は同じ */
+      function x3(p, q, r) { return b.chipn('XOR', { A: b.chipn('XOR', { A: p, B: q }).Y, B: r }).Y; }
+      b.output('P1', x3(d1, d2, d4));
+      b.output('P2', x3(d1, d3, d4));
+      b.output('P3', x3(d2, d3, d4));
+    } },
+    { id: 'hamfix', chip: 'HFIX74', build: function (b) {
+      var R = [1, 2, 3, 4, 5, 6, 7].map(function (i) { return b.input('R' + i); });
+      function x2(p, q) { return b.chipn('XOR', { A: p, B: q }).Y; }
+      function and3(p, q, r) { return b.chipn('AND', { A: b.chipn('AND', { A: p, B: q }).Y, B: r }).Y; }
+      /* シンドローム: 作った4ビットパリティをそのまま使う */
+      var s1 = b.chipn('PAR4', { A0: R[0], A1: R[2], A2: R[4], A3: R[6] }).Y;
+      var s2 = b.chipn('PAR4', { A0: R[1], A1: R[2], A2: R[5], A3: R[6] }).Y;
+      var s4 = b.chipn('PAR4', { A0: R[3], A1: R[4], A2: R[5], A3: R[6] }).Y;
+      var n1 = b.chip('NOT', [s1])[0], n2 = b.chip('NOT', [s2])[0], n4 = b.chip('NOT', [s4])[0];
+      /* (S4S2S1) がデータの位置 3,5,6,7 を指したときだけ、その1本を反転する */
+      b.output('D1', x2(R[2], and3(n4, s2, s1)));
+      b.output('D2', x2(R[4], and3(s4, n2, s1)));
+      b.output('D3', x2(R[5], and3(s4, s2, n1)));
+      b.output('D4', x2(R[6], and3(s4, s2, s1)));
+    } },
     { id: 'half', chip: 'HALF', build: function (b) {
       var a = b.input('A'), c = b.input('B');
       /* XOR の途中で作る NAND(A,B) が、そのまま桁上げの元にもなる */

@@ -28,7 +28,7 @@
   第4部_イメージセンサ.html         第4部 参考書 ― 光子 → 電子 → 電圧 → 数値 → 像
   ProcessLab\                    第1部 ラボ ― 原始部品 ＝ 工程（4章 13問）
   SemiLab\                       第2部 ラボ ― 原始部品 ＝ 不純物（5章 22問）
-  NandLab\                       第3部 ラボ ― 原始部品 ＝ NAND（5章 22問）
+  NandLab\                       第3部 ラボ ― 原始部品 ＝ NAND（5章 25問）
   PixelLab\                      第4部 ラボ ― 原始部品 ＝ 光子と電子を数えること（3章 12問）
 ```
 
@@ -63,7 +63,7 @@
 ```
 node ProcessLab\tests\all.js      332 件
 node SemiLab\tests\all.js       1,074 件
-node NandLab\tests\all.js         601 件
+node NandLab\tests\all.js         634 件
 node PixelLab\tests\all.js        281 件
 ```
 

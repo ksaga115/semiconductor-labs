@@ -196,11 +196,11 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       <dl class="spec">
         <div><dt>参考書</dt><dd>4<small>部</small></dd></div>
         <div><dt>ラボ</dt><dd>4<small>本</small></dd></div>
-        <div><dt>採点つき課題</dt><dd>69<small>問</small></dd></div>
+        <div><dt>採点つき課題</dt><dd>72<small>問</small></dd></div>
         <div><dt>依存</dt><dd>0<small>ブラウザのみ</small></dd></div>
         <div><dt>通信</dt><dd>0<small>手元で完結</small></dd></div>
-        <div><dt>自動検査</dt><dd>2,288<small>件 (Node)</small></dd></div>
-        <div class="spec-cap">課題数は ProcessLab 13 ＋ SemiLab 22 ＋ NandLab 22 ＋ PixelLab 12。検査は4本の <code>node tests/all.js</code> の合計（2026-09-12 時点）。</div>
+        <div><dt>自動検査</dt><dd>2,321<small>件 (Node)</small></dd></div>
+        <div class="spec-cap">課題数は ProcessLab 13 ＋ SemiLab 22 ＋ NandLab 25 ＋ PixelLab 12。検査は4本の <code>node tests/all.js</code> の合計（2026-09-12 時点）。</div>
       </dl>
     </div>
   </div>
@@ -462,7 +462,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       </div>
       <div class="pair">
         <div><span class="kind read">参考書</span><a href="第3部_論理回路.html">論理回路の基礎</a><small>スイッチ4個から、計算機ができるまで · 5章＋付録</small></div>
-        <div><span class="kind lab">ラボ</span><a href="NandLab/index.html">NandLab</a><small>原始部品 ＝ NAND · 5章 22問</small></div>
+        <div><span class="kind lab">ラボ</span><a href="NandLab/index.html">NandLab</a><small>原始部品 ＝ NAND · 5章 25問</small></div>
       </div>
     </div>
     <div class="chap">
@@ -471,7 +471,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
     </div>
     <div class="chap">
       <div><span class="cn">3-2</span><div class="ct"><a href="第3部_論理回路.html#s2">選ぶ・見分ける ― 真理値表から回路へ</a></div><div class="cd">積和形と二段 NAND。セレクタ、デコーダ、比較器。</div></div>
-      <div class="do"><span class="lbl">NandLab 第2章</span><a class="q" href="NandLab/index.html?quest=mux">2:1 セレクタ</a><a class="q" href="NandLab/index.html?quest=dec24">2→4 デコーダ</a><a class="q" href="NandLab/index.html?quest=mux4">4:1 セレクタ</a><a class="q" href="NandLab/index.html?quest=eq4">4ビット比較器</a></div>
+      <div class="do"><span class="lbl">NandLab 第2章</span><a class="q" href="NandLab/index.html?quest=mux">2:1 セレクタ</a><a class="q" href="NandLab/index.html?quest=dec24">2→4 デコーダ</a><a class="q" href="NandLab/index.html?quest=mux4">4:1 セレクタ</a><a class="q" href="NandLab/index.html?quest=eq4">4ビット比較器</a><a class="q" href="NandLab/index.html?quest=parity4">4ビットパリティ</a><a class="q" href="NandLab/index.html?quest=ham74">ハミング符号器</a><a class="q" href="NandLab/index.html?quest=hamfix">ハミング訂正器</a></div>
     </div>
     <div class="chap">
       <div><span class="cn">3-3</span><div class="ct"><a href="第3部_論理回路.html#s3">数として扱う ― 加算器と2の補数</a></div><div class="cd">半加算器 → 全加算器 → 4ビット。桁上げの遅延。引き算は足し算で。</div></div>
@@ -562,7 +562,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
         <li><b>作り方:</b> 第1部 参考書 01〜05 → ProcessLab 第1〜4章<span class="r">13問</span><span class="why">その接合を工場はどう刻むか。第4章「フォトダイオードを作る」は工程で作った1本を SemiLab に渡して採点する ― 2つの部が繋がる</span></li>
         <li><b>デバイス層:</b> 第2部 2-3・2-4 → SemiLab 第3・4章<span class="r">9問</span><span class="why">暗電流の正体（生成電流）と、波長で決まる量子効率。両方そのまま第4部の性能表になる</span></li>
         <li><b>スイッチ:</b> 第2部 2-5 → SemiLab 第5章<span class="r">4問</span><span class="why">画素の中の4個のトランジスタ（転送・リセット・SF・選択）の物理</span></li>
-        <li><b>回路層:</b> 第3部 → NandLab<span class="r">22問</span><span class="why">列並列ADCのカウンタも制御ロジックも、この部の部品でできている</span></li>
+        <li><b>回路層:</b> 第3部 → NandLab<span class="r">25問</span><span class="why">列並列ADCのカウンタも制御ロジックも、この部の部品でできている</span></li>
         <li><b>センサ本体:</b> 第4部 00〜07 → PixelLab 第1〜3章<span class="r">12問</span><span class="why">光子→電子→電圧→数値→像の一本道。謎のカメラを測って当て、自分の画素を設計する</span></li>
         <li><b>床下:</b> 第4部 付録 A〜D とむすび<span class="r">読む</span><span class="why">トンネル・短チャネル・暗電流・ノイズ。すべて同じ欠陥と電界に戻る</span></li>
       </ol>
@@ -577,7 +577,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
         <li><b>第2部</b> 2-1〜2-3 → SemiLab 第1〜3章<span class="r">13問</span><span class="why">不純物を塗った一片を隣に置くと接合が立つ。ポアソン方程式が解いた空乏層を見る</span></li>
         <li><b>第1部に戻って</b> ProcessLab 第4章<span class="r">3問</span><span class="why">工程で作った1本を SemiLab に渡して素子として測る。2本が繋がる</span></li>
         <li><b>第2部</b> 2-4〜2-5 → SemiLab 第4〜5章<span class="r">9問</span><span class="why">フォトダイオードと MOSFET。最後の課題が「NAND の中身」</span></li>
-        <li><b>第3部</b> NandLab 第1〜5章<span class="r">22問</span><span class="why">NAND だけから NOT・加算器・フリップフロップ・ALU まで</span></li>
+        <li><b>第3部</b> NandLab 第1〜5章<span class="r">25問</span><span class="why">NAND だけから NOT・加算器・フリップフロップ・ALU まで</span></li>
         <li><b>第4部</b> 参考書 00〜07 → PixelLab 第1〜3章<span class="r">12問</span><span class="why">光子→電子→電圧→数値→像。付録 A〜D で床下の物理へ</span></li>
       </ol>
     </div>
@@ -600,7 +600,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       <h3>NAND から ALU、そして NAND の中身へ</h3>
       <p class="for">論理回路を組みたい。物理は最後に1章だけ ― NAND がなぜ4石で済むのかを見に行く。</p>
       <ol>
-        <li><b>第3部</b> NandLab 第1〜5章<span class="r">22問</span><span class="why">NOT → 加算器 → ラッチ → フリップフロップ → レジスタ → ALU</span></li>
+        <li><b>第3部</b> NandLab 第1〜5章<span class="r">25問</span><span class="why">NOT → 加算器 → ラッチ → フリップフロップ → レジスタ → ALU</span></li>
         <li><b>第2部</b> 2-5 → SemiLab 第5章<span class="r">4問</span><span class="why">NandLab の NAND をダブルクリックすると出る4石を、自分で作る</span></li>
         <li><b>第4部</b> 付録 B 短チャネル効果<span class="r">読む</span><span class="why">S値 59.5 mV/桁 の壁。SemiLab「切れ味を上げる」で同じ壁に当たる</span></li>
       </ol>
@@ -628,7 +628,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       <p>物理・課題・採点は Node だけで検査できる。<code>tests/ui.js</code> は本物の <code>index.html</code> から DOM を組んで本物の <code>ui.js</code> を動かす。</p>
       <pre>node ProcessLab\tests\all.js      332 件
 node SemiLab\tests\all.js       1,074 件
-node NandLab\tests\all.js         601 件
+node NandLab\tests\all.js         634 件
 node PixelLab\tests\all.js        281 件</pre>
       <div class="caveat">
         <span class="tag">配置の注意</span>
