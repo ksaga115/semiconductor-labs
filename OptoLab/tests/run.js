@@ -84,4 +84,19 @@ T('エテンデュ ― 増やせない会計', () => {
   near('受けが余れば上限 100%', big.etaMax, 1, 1e-12);
 });
 
+T('cos⁴則 ― 隅は4回割引', () => {
+  /* 軸上は減光なし */
+  near('像高 0 で 100%', evalWith({ hmm: 0, fmm: 50 }).ev.cos4, 1, 1e-12);
+  /* 50mm・フルサイズの隅: θ=23.4°、cos⁴=71% */
+  const { ev } = evalWith({ hmm: 21.6, fmm: 50 });
+  near('θ = atan(21.6/50)', ev.thetaDeg, Math.atan(21.6 / 50) * 180 / Math.PI, 1e-9);
+  near('50mm の隅は 71%', ev.cos4, 0.710, 0.002);
+  /* 35mm では 52% 台 ― 広角ほど暗い */
+  const w35 = evalWith({ hmm: 21.6, fmm: 35 }).ev;
+  near('35mm の隅は 52%', w35.cos4, 0.525, 0.002);
+  ok('広角ほど隅が暗い', w35.cos4 < ev.cos4);
+  /* 定義どおり cos⁴ */
+  near('cos⁴ の定義', ev.cos4, Math.pow(Math.cos(Math.atan(21.6 / 50)), 4), 1e-12);
+});
+
 report();

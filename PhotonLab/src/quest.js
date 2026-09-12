@@ -220,6 +220,27 @@
           ]
         };
       }
+    },
+    {
+      id: 'transit', ch: 3, kind: 'design',
+      name: '厚さの綱引き ― 走行と RC',
+      desc: '受光径 **30 µm** のまま、空乏層の厚さで、走行と RC の合成帯域を **25 GHz 以上**にする（50Ω 受け・Si の v_sat = 10⁷ cm/s）。',
+      why: '厚さ w は両側から引っぱられる ― 薄いと容量 C = εA/w が太って **RC が遅く**、'
+         + '厚いと電子が走り切る時間 w/v_sat が伸びて **走行が遅い**（f_tr = 0.44·v_sat/w）。'
+         + '合成 1/f² = 1/f_RC² + 1/f_tr² が最大になるのは2つが等しい w ≈ 1 µm ― 第5部07の「三すくみ」の2辺を自分で釣り合わせる課題。'
+         + '（3辺目の QE も本当は w に依るが、この模型では独立 ― 薄くすると吸収が減る分は第2部の吸収長で読み替える。）',
+      hint: 'w = 0.7〜1.7 µm の窓。w=3µm は走行 14.7 GHz が、w=0.5µm は RC 21.8 GHz が足を引く。',
+      check: function (ev, d) {
+        var lock = near(d.diamum, 30);
+        return {
+          ok: lock && ev.ftot >= 25e9,
+          rows: [
+            row('合成帯域', f(ev.ftot / 1e9, 1) + ' GHz', '25.0 以上', ev.ftot >= 25e9),
+            row('走行 / RC', f(ev.ftr / 1e9, 1) + ' / ' + f(ev.fRCw / 1e9, 1) + ' GHz（C ' + f(ev.cw * 1e15, 1) + ' fF）', '', true),
+            row('受光径', f(d.diamum, 0) + ' µm', '30 のまま', lock)
+          ]
+        };
+      }
     }
   ];
 

@@ -102,6 +102,24 @@ T('背景光 ― ショット床と BLIP', () => {
   near('BLIP の NEP = √(2q·Ibg)/R', blip, Math.sqrt(2 * Q * ev.Ibg) / ev.R, 1e-15);
 });
 
+T('走行と RC の綱引き', () => {
+  /* w=1µm・φ30µm: C = εA/w ≒ 73 fF、f_RC ≒ 44 GHz、f_tr = 0.44v/w = 44 GHz */
+  const { ev } = evalWith({ wum: 1, diamum: 30 });
+  const A = Math.PI * (15e-6) ** 2, eps = 11.7 * 8.854e-12;
+  near('C = εA/w', ev.cw, eps * A / 1e-6, 1e-18);
+  near('f_tr = 0.44·v/w', ev.ftr, 0.44 * 1e5 / 1e-6, 1);
+  ok('釣り合いの近く（走行≒RC）', Math.abs(ev.ftr / ev.fRCw - 1) < 0.05);
+  near('合成は 1/√2 側', ev.ftot, ev.ftr / Math.sqrt(1 + (ev.ftr / ev.fRCw) ** 2), 1);
+  /* 両側で落ちる形 */
+  const thick = evalWith({ wum: 3, diamum: 30 }).ev;
+  ok('厚いと走行が足を引く', thick.ftr < thick.fRCw && thick.ftot < ev.ftot);
+  const thin = evalWith({ wum: 0.4, diamum: 30 }).ev;
+  ok('薄いと RC が足を引く', thin.fRCw < thin.ftr && thin.ftot < ev.ftot);
+  /* 径を倍にすると C は4倍 → RC 帯域 1/4 */
+  const big = evalWith({ wum: 1, diamum: 60 }).ev;
+  near('径 ×2 で f_RC ×1/4', big.fRCw / ev.fRCw, 0.25, 1e-9);
+});
+
 T('計数モード ― √t で買う', () => {
   const base = { nm: 550, eta: 0.5, pw: -16, dkcps: 500, bgnw: 0 };
   const { ev } = evalWith(Object.assign({ tsec: 5 }, base));

@@ -23,6 +23,7 @@
  *   blk    ロックインの帯域 [Hz]
  *   srcum  面光源（LED など）の径 [µm]  エテンデュ G = (πD²/4)·(π·NA²)
  *   srcna  面光源の放射 NA             ランベルト光源の投影立体角 π·sin²θ = π·NA²
+ *   hmm    像高（光軸からの距離）[mm]    cos⁴則: 周辺照度 = 中心 × cos⁴θ、tanθ = h/f
  *
  * 【約束】数値はすべてこの式から導出できる。乱数は使わない。
  * 【モデルの外】収差・ケラレ・cos⁴則・偏光・多層膜・モードフィールド整合は入れていない。
@@ -44,7 +45,8 @@
       ncoat: 1.38, nsub: 3.9,
       coreu: 10, naf: 0.14,
       bin: 1000, blk: 10,
-      srcum: 100, srcna: 0.9
+      srcum: 100, srcna: 0.9,
+      hmm: 5
     };
   }
 
@@ -94,13 +96,18 @@
     var gfib = Math.PI * Math.PI * d.coreu * d.coreu * d.naf * d.naf / 4;
     var etaMax = gsrc > 0 ? Math.min(1, gfib / gsrc) : 1;
 
+    /* cos⁴則: 像高 h の主光線角 θ = atan(h/f)。薄肉・自然な周辺減光のみ（ケラレは別勘定） */
+    var theta = Math.atan((d.hmm || 0) / d.fmm);
+    var cos4 = Math.pow(Math.cos(theta), 4);
+
     return {
       Ew: Ew, L: L, Eimg: Eimg, EimgW: EimgW, phiUm: phiUm, Einv: Einv,
       bmm: bmm, mag: mag, airyUm: airyUm, resUm: resUm,
       w0um: w0um, spotUm: spotUm, naBeam: naBeam,
       Rfres: Rfres, Rar: Rar, nIdeal: nIdeal,
       fibOk: fibOk, snrGain: snrGain,
-      gsrc: gsrc, gfib: gfib, etaMax: etaMax
+      gsrc: gsrc, gfib: gfib, etaMax: etaMax,
+      thetaDeg: theta * 180 / Math.PI, cos4: cos4
     };
   }
 

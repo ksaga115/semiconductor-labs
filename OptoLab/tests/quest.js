@@ -66,6 +66,14 @@ T('落ちるべきもの', () => {
   ok('etd: NA 0.3（上限 25%）では落ちる', !Q.grade('etd', { design: e2 }).ok);
   const e3 = Object.assign({}, A.get('etd').design(), { srcum: 50 });
   ok('etd: 光源を勝手に小さくするのは反則', !Q.grade('etd', { design: e3 }).ok);
+
+  /* cos⁴: 広角では暗く、望遠に逃げるのは上限破り、像高をずらすのは反則 */
+  const q1 = Object.assign({}, A.get('cos4').design(), { fmm: 35 });
+  ok('cos4: 35mm（53%）は落ちる', !Q.grade('cos4', { design: q1 }).ok);
+  const q2 = Object.assign({}, A.get('cos4').design(), { fmm: 85 });
+  ok('cos4: 85mm は望遠逃げで落ちる', !Q.grade('cos4', { design: q2 }).ok);
+  const q3 = Object.assign({}, A.get('cos4').design(), { hmm: 10 });
+  ok('cos4: 像高を内側にずらすのは反則', !Q.grade('cos4', { design: q3 }).ok);
 });
 
 report();

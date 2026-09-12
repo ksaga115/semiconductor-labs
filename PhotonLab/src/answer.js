@@ -69,6 +69,10 @@
         d.tsec = 5;
         return d;
       }
+    },
+    transit: {
+      note: 'w = 1.0 µm ― 走行 44 GHz と RC 44 GHz がほぼ釣り合い、合成 31 GHz。',
+      design: function () { var d = PHO.defaults(); d.diamum = 30; d.wum = 1.0; return d; }
     }
   };
 

@@ -33,7 +33,9 @@
     ['nph', 'パルスの光子数', '個', 1, 1e6, true],
     ['bgnw', '背景光', 'nW（0 = 暗室）', 0, 1e6],
     ['dkcps', 'ダークカウント', 'counts/s', 0, 1e7],
-    ['tsec', '積分時間（計数）', 's', 1e-4, 1000]
+    ['tsec', '積分時間（計数）', 's', 1e-4, 1000],
+    ['wum', '空乏層の厚さ', 'µm', 0.1, 50],
+    ['diamum', '受光部の直径', 'µm', 5, 1000]
   ];
 
   function num(t) {
@@ -222,6 +224,7 @@
       ['RC 帯域（50Ω）', (ev.fRC / 1e9).toFixed(2) + ' GHz'],
       ['数えるなら', ev.cps.toExponential(2) + ' counts/s']
     ];
+    rows.push(['走行×RC の合成帯域', (ev.ftot / 1e9).toFixed(1) + ' GHz（走行 ' + (ev.ftr / 1e9).toFixed(1) + ' / RC ' + (ev.fRCw / 1e9).toFixed(1) + '）']);
     if (S.design.bgnw > 0) rows.push(['背景光の電流', ev.Ibg.toExponential(2) + ' A（ショット床の主）', ev.Ibg > ev.Iph]);
     if (S.design.dkcps > 0 || S.design.bgnw > 0) rows.push(['計数 SNR（' + S.design.tsec + ' s）', ev.snrCount >= 100 ? ev.snrCount.toFixed(0) : ev.snrCount.toFixed(2)]);
     if (ev.pmtM !== undefined) rows.push(['PMT 換算 δⁿ / F', ev.pmtM.toExponential(2) + ' / ' + ev.pmtF.toFixed(3)]);

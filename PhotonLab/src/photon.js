@@ -20,6 +20,8 @@
  *   bgnw   背景光 [nW]               信号と同じ R で電流になり、ショット床 2q·Ibg·F を作る（0 = 暗室）
  *   dkcps  ダークカウント [counts/s]   計数モードの床。光ゼロでも数えてしまう分
  *   tsec   積分時間 [s]              計数の SNR = s·√t / √(s+b)（ポアソン。背景の平均は既知として引く）
+ *   wum    空乏層の厚さ [µm]          走行 f_tr = 0.44·v_sat/w、容量 C = ε·A/w ― 綱引きの両端
+ *   diamum 受光部の直径 [µm]          C = εA/w の A（円）
  *
  * 【約束】数値はすべてこの式から導出できる。乱数は使わない（採点が毎回同じになるように）。
  * 【モデルの外】1/f 雑音・APD の暗電流の非増倍成分・MPPC のクロストーク／アフターパルス・
@@ -31,6 +33,8 @@
 
   var Q = 1.602176634e-19;
   var RLOAD = 50;                  /* RC 帯域の受け側 [Ω]（光通信の定番の値） */
+  var EPS_SI = 11.7 * 8.854e-12;   /* Si の誘電率 [F/m] */
+  var VSAT = 1e5;                  /* Si の飽和速度 [m/s]（= 10⁷ cm/s） */
 
   function defaults() {
     return {
@@ -38,7 +42,8 @@
       M: 1, k: 0.02, delta: 0, nstg: 10,
       idpa: 10, ifa: 5, bmhz: 1, amm2: 1, cpf: 1,
       ncell: 0, nph: 1000,
-      bgnw: 0, dkcps: 0, tsec: 0.001
+      bgnw: 0, dkcps: 0, tsec: 0.001,
+      wum: 3, diamum: 30
     };
   }
 
@@ -92,11 +97,21 @@
     var t = Math.max(0, d.tsec || 0);
     var snrCount = (cps + bcps) > 0 ? cps * Math.sqrt(t) / Math.sqrt(cps + bcps) : 0;
 
+    /* 厚さの綱引き: 薄いと C=εA/w が太って RC が遅く、厚いと走行 w/v_sat が遅い */
+    var w = (d.wum || 0) * 1e-6;
+    var Apd = Math.PI * Math.pow(((d.diamum || 0) * 1e-6) / 2, 2);
+    var cw = (w > 0 && Apd > 0) ? EPS_SI * Apd / w : 0;
+    var fRCw = cw > 0 ? 1 / (2 * Math.PI * RLOAD * cw) : Infinity;
+    var ftr = w > 0 ? 0.44 * VSAT / w : Infinity;
+    var ftot = (isFinite(fRCw) && isFinite(ftr))
+      ? 1 / Math.sqrt(1 / (fRCw * fRCw) + 1 / (ftr * ftr)) : 0;
+
     var out = {
       P: P, Eph: Eph, phi: phi, R: R, Iph: Iph, Ibg: Ibg,
       F: F, ishot: ishot, iamp: iamp, itot: itot, SNR: SNR,
       NEP: NEP, Dstar: Dstar, Pmin: Pmin, fRC: fRC,
-      cps: cps, bcps: bcps, snrCount: snrCount
+      cps: cps, bcps: bcps, snrCount: snrCount,
+      cw: cw, fRCw: fRCw, ftr: ftr, ftot: ftot
     };
 
     if (d.delta >= 2) {

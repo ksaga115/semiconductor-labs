@@ -79,6 +79,14 @@ T('落ちるべきもの', () => {
   ok('count: 20 秒は時間の縛りで落ちる', !Q.grade('count', { design: cLong }).ok);
   const cCheat = Object.assign({}, A.get('count').design(), { eta: 0.9 });
   ok('count: PDE を勝手に盛るのは反則', !Q.grade('count', { design: cCheat }).ok);
+
+  /* 走行×RC: 両側で落ち、径を小さくするのは反則 */
+  const tr1 = Object.assign({}, A.get('transit').design(), { wum: 3 });
+  ok('transit: 厚い（走行 14.7GHz）と落ちる', !Q.grade('transit', { design: tr1 }).ok);
+  const tr2 = Object.assign({}, A.get('transit').design(), { wum: 0.4 });
+  ok('transit: 薄い（RC 17.5GHz）と落ちる', !Q.grade('transit', { design: tr2 }).ok);
+  const tr3 = Object.assign({}, A.get('transit').design(), { diamum: 10 });
+  ok('transit: 受光径を勝手に小さくするのは反則', !Q.grade('transit', { design: tr3 }).ok);
 });
 
 report();

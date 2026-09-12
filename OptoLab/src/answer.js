@@ -44,6 +44,10 @@
     etd: {
       note: 'コア 150 µm・NA 0.45。コア×NA = 67.5 ≥ 63.6 で上限 (67.5/90)² = 56%。',
       design: function () { var d = O.defaults(); d.coreu = 150; d.naf = 0.45; return d; }
+    },
+    cos4: {
+      note: 'f = 50 mm。θ = atan(21.6/50) = 23.4°、cos⁴ = 71%。',
+      design: function () { var d = O.defaults(); d.hmm = 21.6; d.fmm = 50; return d; }
     }
   };
 
