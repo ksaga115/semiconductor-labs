@@ -343,6 +343,61 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
   </div>
 
   <figure class="full">
+    <div class="fig-head"><span class="fig-title">BAND GRAMMAR — バンド図の文法（この5行で、以降の図が全部読める）</span><span class="fig-title">絵は p（左）/ n（右）接合の平衡そのもの</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 1120 330" role="img" aria-label="バンド図の読み方。縦軸は電子のエネルギー、EcとEvが平行に曲がり、傾いた区間が電界。電子はEcの坂を下り、正孔はEvの坂を上る。平衡ではフェルミ準位EFは1本の水平線。" style="min-width:900px">
+        <style>
+          @keyframes bgE{from{transform:translate(0,0);opacity:0}8%{opacity:1}92%{opacity:1}to{transform:translate(310px,78px);opacity:0}}
+          @keyframes bgH{from{transform:translate(0,0);opacity:0}8%{opacity:1}92%{opacity:1}to{transform:translate(-310px,-78px);opacity:0}}
+          .bgE{animation:bgE 3.2s linear infinite}
+          .bgH{animation:bgH 3.2s linear infinite}
+          .bgE.d2{animation-delay:-1.6s}
+          .bgH.d2{animation-delay:-1.6s}
+          @media (prefers-reduced-motion:reduce){.bgE,.bgH{animation:none}}
+        </style>
+        <!-- 軸 -->
+        <g font-family="var(--mono)" font-size="10.5" fill="var(--ink-3)">
+          <text x="30" y="170" transform="rotate(-90 30 170)" text-anchor="middle" letter-spacing="3">電子のエネルギー（上ほど高い）</text>
+          <text x="1050" y="300">場所 x →</text>
+        </g>
+        <!-- 電界のある区間 -->
+        <rect x="430" y="46" width="330" height="240" fill="var(--photon-soft)" opacity=".5"/>
+        <text x="595" y="306" text-anchor="middle" font-family="var(--sans)" font-size="12" fill="var(--photon-2)">傾いている区間だけ、電界がある</text>
+        <line x1="700" y1="38" x2="500" y2="38" stroke="var(--photon-2)" stroke-width="2" marker-end="url(#bgar)"/>
+        <text x="710" y="42" font-family="var(--mono)" font-size="11" fill="var(--photon-2)">電界 E（E<tspan font-size="8" baseline-shift="sub">c</tspan> の高い側を向く）</text>
+        <defs><marker id="bgar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--photon-2)"/></marker></defs>
+        <!-- Ec / Ev -->
+        <path d="M70,78 L430,78 L760,156 L1060,156" fill="none" stroke="var(--electron)" stroke-width="2.5"/>
+        <path d="M70,178 L430,178 L760,256 L1060,256" fill="none" stroke="var(--hole)" stroke-width="2.5"/>
+        <!-- Ei / EF -->
+        <path d="M70,128 L430,128 L760,206 L1060,206" fill="none" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="3 4"/>
+        <line x1="70" y1="168" x2="1060" y2="168" stroke="var(--ink)" stroke-width="1.6" stroke-dasharray="7 4"/>
+        <!-- Eg -->
+        <g stroke="var(--ink-3)" stroke-width="1"><line x1="120" y1="82" x2="120" y2="174"/><line x1="116" y1="82" x2="124" y2="82"/><line x1="116" y1="174" x2="124" y2="174"/></g>
+        <text x="132" y="152" font-family="var(--mono)" font-size="10.5" fill="var(--ink-2)">E<tspan font-size="8" baseline-shift="sub">g</tspan> は一定 → 2本は平行に曲がる</text>
+        <!-- ラベル -->
+        <g font-family="var(--mono)" font-size="11.5" font-weight="600" text-anchor="end">
+          <text x="1112" y="148" fill="var(--electron-2)">E<tspan font-size="8" baseline-shift="sub">c</tspan> 伝導帯の底</text>
+          <text x="1112" y="274" fill="var(--hole)">E<tspan font-size="8" baseline-shift="sub">v</tspan> 価電子帯の天井</text>
+          <text x="1058" y="200" fill="var(--ink-3)" font-weight="400">E<tspan font-size="8" baseline-shift="sub">i</tspan></text>
+          <text x="1112" y="184" fill="var(--ink)">E<tspan font-size="8" baseline-shift="sub">F</tspan> 平衡では水平1本</text>
+        </g>
+        <text x="250" y="66" text-anchor="middle" font-family="var(--sans)" font-size="12" fill="var(--ink-2)">p 側: E<tspan font-size="9" baseline-shift="sub">F</tspan> が E<tspan font-size="9" baseline-shift="sub">v</tspan> 寄り</text>
+        <text x="910" y="144" text-anchor="middle" font-family="var(--sans)" font-size="12" fill="var(--ink-2)">n 側: E<tspan font-size="9" baseline-shift="sub">F</tspan> が E<tspan font-size="9" baseline-shift="sub">c</tspan> 寄り</text>
+        <!-- 動く電子（Ec の坂を下る） -->
+        <g class="bgE"><circle cx="438" cy="72" r="6" fill="var(--electron)"/></g>
+        <g class="bgE d2"><circle cx="438" cy="72" r="6" fill="var(--electron)"/></g>
+        <text x="470" y="100" font-family="var(--sans)" font-size="12" fill="var(--electron-2)">電子は坂を<tspan font-weight="700">下る</tspan></text>
+        <!-- 動く正孔（Ev の坂を上る＝泡） -->
+        <g class="bgH"><circle cx="752" cy="262" r="6" fill="var(--surface)" stroke="var(--hole)" stroke-width="2.5"/></g>
+        <g class="bgH d2"><circle cx="752" cy="262" r="6" fill="var(--surface)" stroke="var(--hole)" stroke-width="2.5"/></g>
+        <text x="640" y="282" font-family="var(--sans)" font-size="12" fill="var(--hole)">正孔は泡 ― 坂を<tspan font-weight="700">上る</tspan></text>
+      </svg>
+    </div>
+    <figcaption>バンド図の約束は5行で尽きます。<b>① 縦軸は「電子の」エネルギー</b>（上ほど高い。正孔はすべて逆さに読む）。<b>② E<sub>c</sub>・E<sub>v</sub> の傾きが電界</b>そのもの（E = (1/q)·dE<sub>c</sub>/dx。平らな所に電界は無い）。<b>③ 電子は坂を下り、正孔は泡のように坂を上る</b> ― 同じ電界から受ける力が逆向きだから。<b>④ 平衡では E<sub>F</sub> はどこでも1本の水平線</b>（高低差があれば電流が流れてしまい、平衡ではない）。<b>⑤ 同じ材料なら E<sub>g</sub> は一定</b>で、2本は必ず平行に曲がる。― この絵自体が p/n 接合の平衡で、第2章のバンド図も、第5章の MOS も、全部この文法で読めます。</figcaption>
+  </figure>
+
+  <figure class="full">
     <div class="fig-head"><span class="fig-title">CARRIERS — 不純物を塗ると、キャリアと抵抗率がどう決まるか</span><span class="fig-title">300 K</span></div>
     <div class="fig-body">
       <canvas id="cvCarrier" width="1100" height="300" aria-label="ドナーとアクセプタの濃度に対する電子・正孔濃度と、バンド図の中のフェルミ準位の位置"></canvas>
@@ -556,6 +611,13 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
     </div>
   </div>
 
+  <div class="deep-note">
+    <span class="tag">くわしく — D と µ はひとつのもの（アインシュタインの関係）</span>
+    <p>ここで初めて拡散係数 D が出てきましたが、新しい定数ではありません。平衡の接合の中では、拡散流とドリフト流が場所ごとにぴったり打ち消し合っています。n = n<sub>i</sub>e<sup>ψ/V<sub>t</sub></sup> をその釣り合いの式 qµnE + qD·dn/dx = 0 に入れると、n も E も消えて係数だけが残る:</p>
+    <div class="eq">D = µ &middot; kT/q = µ &middot; V<sub>t</sub>　　（電子: 1164 × 0.0259 ≈ 30 cm²/s、正孔: 386 × 0.0259 ≈ 10 cm²/s @10¹⁶）</div>
+    <p>散乱されながら流される速さ（µ）と、散乱されながら広がる速さ（D）は、<span class="key">同じ「ぶつかりやすさ」の2つの顔</span>なので、比が熱電圧という普遍定数になる ― これがアインシュタインの関係です。SemiLab の <code>dev.js</code> も D を持たず、µ から毎回この式で作っています。</p>
+  </div>
+
   <figure class="full">
     <div class="fig-head"><span class="fig-title">I-V — 対数で見る整流。拡散（n=1）と生成・再結合（n=2）の2本立て</span><span class="fig-title">両側の濃度が同じ接合</span></div>
     <div class="fig-body">
@@ -604,6 +666,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
       <p><b>9 ℃で 2.06 倍。</b>これは決め打ちではなく、生成電流が n<sub>i</sub> ∝ exp(−E<sub>g</sub>/2kT) に比例することから出ています（見かけの活性化エネルギー 0.6 eV）。拡散電流が支配すれば n<sub>i</sub>² で <b>4.8 ℃で倍</b>になる。「何℃で倍か」を測ると、どちらが支配しているか分かる ― 第4部 付録 C がこれを診断に使います。PixelLab の暗電流の温度依存も、同じ n<sub>i</sub>(T) を呼んでいます。</p>
       <p>暗電流を減らす手は、W を狭くする（濃くする）か、τ を伸ばす（欠陥を減らす）か、冷やすか。<b>感度のために空乏層を広げると暗電流も増える</b> ― センサ設計の綱引きはここにあります。</p>
     </div>
+  </div>
+
+  <div class="deep-note">
+    <span class="tag">くわしく — 金属を付けた所で何が起きているか（ショットキーとオーミック）</span>
+    <p>この部はずっと「電極」を、電位を与えるだけの無色の存在として扱ってきました。実物では、金属を半導体に付けると<b>そこにも障壁ができます</b>。金属と半導体で電子の脱出しにくさ（仕事関数）が違うぶん、界面のバンドが曲がり、pn接合と似た空乏層と障壁高さ φ<sub>B</sub> が立つ ― これが<b>ショットキー接合</b>で、それ自体が整流します。多数キャリアだけで動くので少数キャリアの蓄積がなく、切り替えが速い。高速の整流やクランプに使うショットキーバリアダイオードはこれです。</p>
+    <p>では配線の接点はなぜ整流しないのか。<span class="key">接点の直下だけ 10¹⁹〜10²⁰ 級に濃くドープする</span>からです。濃くすると空乏層が数nmまで潰れ、電子は障壁を越えるのではなく<b>トンネルで素通り</b>する（第4部 付録 A の「薄ければ抜ける」そのもの）。障壁は残っているのに、実効的にただの抵抗に見える ― これが<b>オーミック接点</b>で、この参考書とSemiLabの「電極」は全部これ（＋無限の再結合という境界条件）を仮定しています。n⁺ や p⁺ が素子のあちこちに顔を出す理由の半分は、この「接点を作るため」です。</p>
   </div>
 
   <div class="deep-note">
@@ -741,6 +809,65 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
       <p>動かせる摘みは3つ。<b>基板を濃く</b>すると φ<sub>F</sub> と Q<sub>dep</sub> が上がる。<b>酸化膜を厚く</b>すると C<sub>ox</sub> が下がって Q<sub>dep</sub>/C<sub>ox</sub> が効く。<b>ゲートの材料</b>で V<sub>FB</sub> が動く（p⁺ ポリなら +1.1 V）。</p>
     </div>
   </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">THREE STATES — 蓄積・空乏・反転を、断面で見る</span><span class="fig-title">黄土 ＝ 酸化膜 · 赤 ＝ 正孔 · 青 ＝ 電子 · ⊖ ＝ 動けないアクセプタイオン</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 1120 300" role="img" aria-label="MOSの3状態の断面図。蓄積では正孔が界面に密集、空乏では動けないイオンだけの層、反転では界面に電子の薄い層とその下の空乏層。" style="min-width:900px">
+        <g font-family="var(--mono)" font-size="11" font-weight="600">
+          <text x="190" y="24" text-anchor="middle" fill="var(--ink)">① 蓄積　V<tspan font-size="8" baseline-shift="sub">G</tspan> &lt; 0</text>
+          <text x="560" y="24" text-anchor="middle" fill="var(--ink)">② 空乏　0 &lt; V<tspan font-size="8" baseline-shift="sub">G</tspan> &lt; V<tspan font-size="8" baseline-shift="sub">th</tspan></text>
+          <text x="930" y="24" text-anchor="middle" fill="var(--ink)">③ 反転　V<tspan font-size="8" baseline-shift="sub">G</tspan> &gt; V<tspan font-size="8" baseline-shift="sub">th</tspan></text>
+        </g>
+        <!-- 共通構造を3回 -->
+        <g id="mosA">
+          <!-- ① 蓄積 -->
+          <rect x="90" y="36" width="200" height="30" fill="var(--metal)"/>
+          <text x="190" y="56" text-anchor="middle" font-family="var(--mono)" font-size="12" fill="var(--surface)">ゲート（−）</text>
+          <text x="190" y="78" text-anchor="middle" font-family="var(--mono)" font-size="12" fill="var(--ink-2)">− − − − − − −</text>
+          <rect x="90" y="84" width="200" height="14" fill="var(--ox-soft)" stroke="var(--ox)"/>
+          <rect x="40" y="98" width="300" height="150" fill="var(--hole-soft)"/>
+          <g fill="var(--hole)"><circle cx="110" cy="110" r="6"/><circle cx="140" cy="110" r="6"/><circle cx="170" cy="110" r="6"/><circle cx="200" cy="110" r="6"/><circle cx="230" cy="110" r="6"/><circle cx="260" cy="110" r="6"/></g>
+          <text x="190" y="136" text-anchor="middle" font-family="var(--sans)" font-size="12" fill="var(--hole)">正孔が界面に引き寄せられ、密集する</text>
+          <text x="190" y="200" text-anchor="middle" font-family="var(--sans)" font-size="12" fill="var(--ink-2)">中は普通の p 型のまま</text>
+          <text x="190" y="266" text-anchor="middle" font-family="var(--sans)" font-size="12" fill="var(--ink-2)">表面は<tspan font-weight="700">より p 型</tspan>に</text>
+        </g>
+        <g id="mosB">
+          <!-- ② 空乏 -->
+          <rect x="460" y="36" width="200" height="30" fill="var(--metal)"/>
+          <text x="560" y="56" text-anchor="middle" font-family="var(--mono)" font-size="12" fill="var(--surface)">ゲート（＋）</text>
+          <text x="560" y="78" text-anchor="middle" font-family="var(--mono)" font-size="12" fill="var(--ink-2)">＋ ＋ ＋ ＋ ＋ ＋</text>
+          <rect x="460" y="84" width="200" height="14" fill="var(--ox-soft)" stroke="var(--ox)"/>
+          <rect x="410" y="98" width="300" height="150" fill="var(--hole-soft)"/>
+          <rect x="460" y="98" width="200" height="64" fill="var(--surface-3)"/>
+          <g font-family="var(--mono)" font-size="13" fill="var(--ink-2)">
+            <text x="490" y="120">⊖</text><text x="530" y="120">⊖</text><text x="570" y="120">⊖</text><text x="610" y="120">⊖</text><text x="646" y="120">⊖</text>
+            <text x="510" y="146">⊖</text><text x="550" y="146">⊖</text><text x="590" y="146">⊖</text><text x="628" y="146">⊖</text>
+          </g>
+          <text x="560" y="180" text-anchor="middle" font-family="var(--sans)" font-size="12" fill="var(--ink-2)">正孔が押しのけられ、<tspan font-weight="700">動けないイオンだけ</tspan>が残る（空乏層 W）</text>
+          <text x="560" y="266" text-anchor="middle" font-family="var(--sans)" font-size="12" fill="var(--ink-2)">キャリアのいない層が<tspan font-weight="700">電界で</tspan>できる ― 第2章と同じもの</text>
+        </g>
+        <g id="mosC">
+          <!-- ③ 反転 -->
+          <rect x="830" y="36" width="200" height="30" fill="var(--metal)"/>
+          <text x="930" y="56" text-anchor="middle" font-family="var(--mono)" font-size="12" fill="var(--surface)">ゲート（＋＋）</text>
+          <text x="930" y="78" text-anchor="middle" font-family="var(--mono)" font-size="12" fill="var(--ink-2)">＋＋＋＋＋＋＋＋</text>
+          <rect x="830" y="84" width="200" height="14" fill="var(--ox-soft)" stroke="var(--ox)"/>
+          <rect x="780" y="98" width="300" height="150" fill="var(--hole-soft)"/>
+          <rect x="830" y="98" width="200" height="76" fill="var(--surface-3)"/>
+          <g fill="var(--electron)"><circle cx="850" cy="104" r="5"/><circle cx="874" cy="104" r="5"/><circle cx="898" cy="104" r="5"/><circle cx="922" cy="104" r="5"/><circle cx="946" cy="104" r="5"/><circle cx="970" cy="104" r="5"/><circle cx="994" cy="104" r="5"/><circle cx="1014" cy="104" r="5"/></g>
+          <g font-family="var(--mono)" font-size="13" fill="var(--ink-2)">
+            <text x="860" y="132">⊖</text><text x="900" y="132">⊖</text><text x="940" y="132">⊖</text><text x="980" y="132">⊖</text><text x="1012" y="132">⊖</text>
+            <text x="880" y="158">⊖</text><text x="920" y="158">⊖</text><text x="958" y="158">⊖</text><text x="996" y="158">⊖</text>
+          </g>
+          <text x="930" y="192" text-anchor="middle" font-family="var(--sans)" font-size="12" fill="var(--electron-2)"><tspan font-weight="700">電子の薄い層（反転層）</tspan>が界面に現れる</text>
+          <text x="930" y="212" text-anchor="middle" font-family="var(--sans)" font-size="12" fill="var(--ink-2)">空乏層はここで打ち止め（W<tspan font-size="8" baseline-shift="sub">max</tspan>）</text>
+          <text x="930" y="266" text-anchor="middle" font-family="var(--sans)" font-size="12" fill="var(--ink-2)">p 型の表面が、触れずに <tspan font-weight="700" fill="var(--electron-2)">n 型</tspan>になった</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>ゲート電圧を負 → 正へ上げたときの3つの顔。<b>電荷の帳尻は必ず合っています</b> ― ③でゲートに載っている＋の電荷は、反転層の電子と空乏層のイオンの−でちょうど支えられていて、その配分が本文の V<sub>th</sub> の3つの足し算（2φ<sub>F</sub> と Q<sub>dep</sub>/C<sub>ox</sub>）に対応します。反転のあと空乏層が広がらないのは、追加のゲート電荷を電子（指数で増える）が全部引き受けるからです。</figcaption>
+  </figure>
 
   <figure class="full">
     <div class="fig-head"><span class="fig-title">MOS — しきい値の内訳と、反転電荷の立ち上がり（S 値）</span><span class="fig-title">p 基板 · 300 K</span></div>

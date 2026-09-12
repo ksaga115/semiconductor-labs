@@ -441,9 +441,65 @@ table.tt td.x{color:var(--ink-3)}
   </div>
 
   <div class="deep-note">
+    <span class="tag">くわしく — 目で縮める（カルノー図）</span>
+    <p>「共有と木で小さくする」を、紙の上で機械的にやる古典の道具がカルノー図です。種はひとつ: <b>表の行を、隣どうしが1ビットしか違わない順（グレイ順）に並べ替えて地図にする</b>。すると「1 の長方形の島」がそのまま<b>変わらない変数だけの積項</b>になります ― 島の中で 0↔1 の両方を取る変数は、式から消えるからです。2:1 セレクタでやってみると:</p>
+    <div class="scroll-x" style="margin-top:12px">
+      <svg viewBox="0 0 900 220" role="img" aria-label="2:1セレクタのカルノー図。2行4列の地図に1が4つ。縦の島がB・S、左右の端でつながる島がA・S-barで、合わせてY=S-bar A + S Bになる。" style="min-width:720px">
+        <g font-family="var(--mono)" font-size="11" fill="var(--ink-3)">
+          <text x="150" y="40">B S →</text>
+          <text x="185" y="56" text-anchor="middle">00</text><text x="255" y="56" text-anchor="middle">01</text><text x="325" y="56" text-anchor="middle">11</text><text x="395" y="56" text-anchor="middle">10</text>
+          <text x="140" y="90" text-anchor="end">A=0</text><text x="140" y="136" text-anchor="end">A=1</text>
+          <text x="430" y="40">（グレイ順: 隣は1ビット差、右端と左端も隣）</text>
+        </g>
+        <g stroke="var(--line)" fill="var(--surface)">
+          <rect x="150" y="64" width="70" height="46"/><rect x="220" y="64" width="70" height="46"/><rect x="290" y="64" width="70" height="46"/><rect x="360" y="64" width="70" height="46"/>
+          <rect x="150" y="110" width="70" height="46"/><rect x="220" y="110" width="70" height="46"/><rect x="290" y="110" width="70" height="46"/><rect x="360" y="110" width="70" height="46"/>
+        </g>
+        <g font-family="var(--mono)" font-size="15" text-anchor="middle" font-weight="700">
+          <text x="185" y="93" fill="var(--ink-3)">0</text><text x="255" y="93" fill="var(--ink-3)">0</text><text x="325" y="93" fill="var(--one)">1</text><text x="395" y="93" fill="var(--ink-3)">0</text>
+          <text x="185" y="139" fill="var(--one)">1</text><text x="255" y="139" fill="var(--ink-3)">0</text><text x="325" y="139" fill="var(--one)">1</text><text x="395" y="139" fill="var(--one)">1</text>
+        </g>
+        <rect x="296" y="68" width="58" height="84" rx="10" fill="none" stroke="var(--volt)" stroke-width="2.5"/>
+        <rect x="140" y="114" width="66" height="38" rx="10" fill="none" stroke="var(--digital)" stroke-width="2.5" stroke-dasharray="7 4"/>
+        <rect x="354" y="114" width="84" height="38" rx="10" fill="none" stroke="var(--digital)" stroke-width="2.5" stroke-dasharray="7 4"/>
+        <text x="292" y="176" text-anchor="middle" font-family="var(--sans)" font-size="11" fill="var(--digital)">破線の2つは、端を回って<tspan font-weight="700">ひとつの島</tspan></text>
+        <g font-family="var(--sans)" font-size="13.5" fill="var(--ink-2)">
+          <text x="490" y="84"><tspan fill="var(--volt)" font-weight="700">縦の島</tspan>: 中で A が 0 も 1 も取る → A が消えて <tspan font-family="var(--mono)" font-weight="700">B·S</tspan></text>
+          <text x="490" y="116"><tspan fill="var(--digital)" font-weight="700">端でつながる島</tspan>: 中で B が 0 も 1 も取る → B が消えて <tspan font-family="var(--mono)" font-weight="700">A·S̄</tspan></text>
+          <text x="490" y="152" font-weight="700" fill="var(--ink)">Y ＝ S̄·A ＋ S·B ― セレクタの式が浮かび上がる</text>
+          <text x="490" y="182">島は 1・2・4…マスの長方形だけ。大きい島ほど短い項になる。</text>
+        </g>
+      </svg>
+    </div>
+    <p>4変数までは紙で実用になり、5変数を超えると人間には見えなくなる ― そこから先が論理合成ツールの仕事です。NandLab の「小さくする」で自分の回路を睨むとき、頭の中でやっているのはこの島探しと同じことです。</p>
+  </div>
+
+  <div class="deep-note">
     <span class="tag">くわしく — 落ち着くまでの一瞬（グリッチ）</span>
     <p>「入力が決まれば出力が決まる」は、<b>落ち着いたあと</b>の話です。入力から出力まで、段数の違う経路が2本あって合流すると、切り替わりの途中に一瞬だけ嘘の値が出ることがあります。たとえば Y = A + Ā を作る回路 ― 論理的には常に1のはずですが、A が 1→0 に変わった瞬間、Ā が 1 になるのは NOT の1段ぶん遅れてからなので、<span class="key">その1歩だけ両方が 0 になり、Y に 0 のパルスが漏れます</span>。これが<b>グリッチ（ハザード）</b>で、NandLab でも「時間を1歩ずつ進める」と自分の回路で観測できます。</p>
     <p>同期設計がクロックで拍を刻む（第4章）理由の半分はこれです。組合せ回路の途中経過は信用せず、<b>グリッチが収まりきったあとの値だけをフリップフロップが取り込む</b>。1拍の長さは「最長経路の遅延＋余裕」で決める ― 途中で何が暴れても、拍の終わりに正しければよい、という約束にするわけです。</p>
+    <div class="scroll-x" style="margin-top:14px">
+      <svg viewBox="0 0 790 240" role="img" aria-label="グリッチのタイミング図。Aが1から0へ変わると、NOTを通ったA-barは1歩遅れて0から1へ変わる。その1歩のあいだ両方が0になり、Y=A OR A-barに幅1歩の偽の0が出る。" style="min-width:640px">
+        <g font-family="var(--mono)" font-size="11" fill="var(--ink-3)">
+          <text x="16" y="44">A</text>
+          <text x="16" y="106">Ā</text>
+          <text x="16" y="176">Y</text>
+          <text x="60" y="230">0</text><text x="170" y="230">1</text><text x="280" y="230">2</text><text x="390" y="230">3</text><text x="500" y="230">4</text><text x="610" y="230">5</text><text x="700" y="230">時間（単位遅延）</text>
+        </g>
+        <g stroke="var(--line-2)" stroke-width="1"><line x1="170" y1="20" x2="170" y2="216"/><line x1="280" y1="20" x2="280" y2="216"/><line x1="390" y1="20" x2="390" y2="216"/><line x1="500" y1="20" x2="500" y2="216"/><line x1="610" y1="20" x2="610" y2="216"/></g>
+        <text x="284" y="20" font-family="var(--sans)" font-size="11" fill="var(--ink-2)">ここで A を 1→0</text>
+        <path d="M60,28 L280,28 L280,50 L720,50" fill="none" stroke="var(--one)" stroke-width="2.5"/>
+        <text x="726" y="54" font-family="var(--mono)" font-size="10" fill="var(--ink-3)">＝0</text>
+        <path d="M60,112 L390,112 L390,90 L720,90" fill="none" stroke="var(--zero)" stroke-width="2.5"/>
+        <text x="440" y="84" font-family="var(--sans)" font-size="11" fill="var(--ink-2)">NOT の1歩ぶん、遅れて 0→1</text>
+        <rect x="390" y="158" width="110" height="24" fill="var(--warn)" opacity=".16"/>
+        <line x1="60" y1="150" x2="720" y2="150" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="3 4"/>
+        <text x="66" y="146" font-family="var(--sans)" font-size="10.5" fill="var(--ink-3)">理論（遅延ゼロ）なら Y = A + Ā は常に 1</text>
+        <path d="M60,158 L390,158 L390,182 L500,182 L500,158 L720,158" fill="none" stroke="var(--volt)" stroke-width="2.5"/>
+        <text x="445" y="206" text-anchor="middle" font-family="var(--sans)" font-size="11.5" fill="var(--warn)" font-weight="700">幅1歩の嘘の 0（グリッチ）</text>
+        <text x="512" y="176" font-family="var(--sans)" font-size="10.5" fill="var(--ink-2)">← 両方が 0 の一瞬</text>
+      </svg>
+    </div>
   </div>
 
   <div class="lab-go">
@@ -500,6 +556,46 @@ table.tt td.x{color:var(--ink-3)}
       </div>
     </div>
   </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">MOD-16 RING — 2の補数は「時計の文字盤」で読む</span><span class="fig-title">外側 ＝ 符号なし · 内側 ＝ 2の補数</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 900 372" role="img" aria-label="4ビットの値16個を時計の文字盤のように円に並べた図。外側は符号なしの0から15、内側は2の補数の読み方で8から15が-8から-1になる。+1は一目盛りの時計回りで、16進むと一周して元に戻る。" style="min-width:700px">
+        <defs><marker id="rgar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--volt)"/></marker></defs>
+        <circle cx="200" cy="186" r="120" fill="none" stroke="var(--line)" stroke-width="2"/>
+        <!-- 目盛り -->
+        <g stroke="var(--ink-3)" stroke-width="1.4">
+          <line x1="200" y1="66" x2="200" y2="78"/><line x1="245.9" y1="75.1" x2="241.3" y2="86.2"/><line x1="284.9" y1="101.1" x2="276.4" y2="109.6"/><line x1="310.9" y1="140.1" x2="299.8" y2="144.7"/><line x1="320" y1="186" x2="308" y2="186"/><line x1="310.9" y1="231.9" x2="299.8" y2="227.3"/><line x1="284.9" y1="270.9" x2="276.4" y2="262.4"/><line x1="245.9" y1="296.9" x2="241.3" y2="285.8"/><line x1="200" y1="306" x2="200" y2="294"/><line x1="154.1" y1="296.9" x2="158.7" y2="285.8"/><line x1="115.1" y1="270.9" x2="123.6" y2="262.4"/><line x1="89.1" y1="231.9" x2="100.2" y2="227.3"/><line x1="80" y1="186" x2="92" y2="186"/><line x1="89.1" y1="140.1" x2="100.2" y2="144.7"/><line x1="115.1" y1="101.1" x2="123.6" y2="109.6"/><line x1="154.1" y1="75.1" x2="158.7" y2="86.2"/>
+        </g>
+        <!-- 外側: 符号なし -->
+        <g font-family="var(--mono)" font-size="13" fill="var(--ink-2)" text-anchor="middle">
+          <text x="200" y="48">0</text><text x="256" y="59">1</text><text x="303" y="91">2</text><text x="335" y="138">3</text><text x="350" y="190">4</text><text x="335" y="248">5</text><text x="303" y="295">6</text><text x="256" y="327">7</text><text x="200" y="340">8</text><text x="144" y="327">9</text><text x="97" y="295">10</text><text x="65" y="248">11</text><text x="50" y="190">12</text><text x="65" y="138">13</text><text x="97" y="91">14</text><text x="144" y="59">15</text>
+        </g>
+        <!-- 内側: 2の補数 -->
+        <g font-family="var(--mono)" font-size="13" text-anchor="middle">
+          <text x="200" y="99" fill="var(--ink-3)">0</text><text x="236" y="106" fill="var(--ink-3)">1</text><text x="267" y="127" fill="var(--ink-3)">2</text><text x="288" y="157" fill="var(--ink-3)">3</text><text x="295" y="190" fill="var(--ink-3)">4</text><text x="288" y="226" fill="var(--ink-3)">5</text><text x="267" y="257" fill="var(--ink-3)">6</text><text x="236" y="278" fill="var(--ink-3)">7</text>
+          <text x="200" y="285" fill="var(--hole)" font-weight="700">−8</text><text x="164" y="278" fill="var(--hole)" font-weight="700">−7</text><text x="133" y="257" fill="var(--hole)" font-weight="700">−6</text><text x="112" y="226" fill="var(--hole)" font-weight="700">−5</text><text x="105" y="190" fill="var(--hole)" font-weight="700">−4</text><text x="112" y="157" fill="var(--hole)" font-weight="700">−3</text><text x="133" y="127" fill="var(--hole)" font-weight="700">−2</text><text x="164" y="106" fill="var(--hole)" font-weight="700">−1</text>
+        </g>
+        <text x="164" y="92" text-anchor="middle" font-family="var(--mono)" font-size="9" fill="var(--ink-3)">1111</text>
+        <text x="200" y="299" text-anchor="middle" font-family="var(--mono)" font-size="9" fill="var(--ink-3)">1000</text>
+        <!-- +1 の矢印 -->
+        <path d="M 214 32 A 156 156 0 0 1 296 66" fill="none" stroke="var(--volt)" stroke-width="2.5" marker-end="url(#rgar)"/>
+        <text x="268" y="34" font-family="var(--mono)" font-size="11.5" fill="var(--volt)" font-weight="600">+1 ＝ 一目盛り時計回り</text>
+        <!-- 説明 -->
+        <g font-family="var(--sans)" font-size="13.5" fill="var(--ink-2)">
+          <text x="420" y="92" font-weight="700" fill="var(--ink)">同じ盤面を、2通りに読んでいるだけ</text>
+          <text x="420" y="122">・16目盛りで一周 ＝ <tspan font-family="var(--mono)">16</tspan> を足しても位置は同じ</text>
+          <text x="420" y="150">・だから「<tspan font-family="var(--mono)">B</tspan> を引く」＝「<tspan font-family="var(--mono)">16 − B</tspan> を足す」＝ 逆回りは順回りで作れる</text>
+          <text x="420" y="178">・<tspan font-family="var(--mono)">16 − B</tspan> ＝ 全ビット反転 + 1（それが 2 の補数）</text>
+          <text x="420" y="216">・<tspan font-family="var(--mono)" fill="var(--hole)" font-weight="700">1111</tspan> の位置は、外の読みで 15、内の読みで −1</text>
+          <text x="420" y="244">　<tspan font-family="var(--mono)">0001 + 1111</tspan> ＝ 一周して <tspan font-family="var(--mono)">0000</tspan> → たしかに 1 + (−1) = 0</text>
+          <text x="420" y="282">・境目は <tspan font-family="var(--mono)">0111</tspan>(+7) と <tspan font-family="var(--mono)">1000</tspan>(−8) のあいだ ―</text>
+          <text x="420" y="310">　+7 に 1 を足すと −8 へ落ちる（オーバーフロー）のも、盤面では隣どうし</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>回路の中に「引き算」も「マイナス」も実在しません。あるのは16目盛りの盤面を時計回りに進む足し算だけで、<b>内側の読み方（2の補数）を約束した瞬間に、同じ回路が正負を扱えるようになる</b> ― 上の ADD/SUB の図でやっていることの、種明かしです。</figcaption>
+  </figure>
 
   <div class="deep-note">
     <span class="tag">くわしく — 桁上げを待たない（桁上げ先読みの原理）</span>
@@ -559,9 +655,46 @@ table.tt td.x{color:var(--ink-3)}
       <div class="caveat">
         <span class="tag">断定していないこと</span>
         <p><b>セットアップ／ホールド時間と準安定は扱いません。</b>実物のフリップフロップはクロックの直前直後に D が動くとどちらとも言えない中間電位に留まることがあります（第1章の坂の途中）。NandLab は単位遅延の理想化なので、それは出ません。</p>
+        <div class="scroll-x" style="margin-top:12px">
+          <svg viewBox="0 0 520 210" role="img" aria-label="二つの谷を持つポテンシャルの概念図。左の谷が0、右の谷が1で、あいだの丘の頂に準安定状態がある。頂に置かれたボールは、どちらへいつ落ちるか決まらない。" style="min-width:420px">
+            <path d="M30,36 C90,180 120,180 150,150 C200,100 240,58 260,58 C280,58 320,100 370,150 C400,180 430,180 490,36" fill="none" stroke="var(--ink-2)" stroke-width="2.5"/>
+            <circle cx="128" cy="152" r="11" fill="var(--zero)"/>
+            <text x="128" y="157" text-anchor="middle" font-family="var(--mono)" font-size="12" font-weight="700" fill="var(--surface)">0</text>
+            <circle cx="392" cy="152" r="11" fill="var(--one)"/>
+            <text x="392" y="157" text-anchor="middle" font-family="var(--mono)" font-size="12" font-weight="700" fill="var(--surface)">1</text>
+            <circle cx="260" cy="47" r="11" fill="var(--unk)" stroke="var(--ink-2)" stroke-width="1.5" stroke-dasharray="3 2"/>
+            <text x="260" y="30" text-anchor="middle" font-family="var(--sans)" font-size="11.5" fill="var(--warn)" font-weight="700">準安定（丘の頂）</text>
+            <g stroke="var(--ink-3)" stroke-width="1.4" fill="none">
+              <path d="M244,62 C220,80 200,100 186,118" marker-end="url(#msar)"/>
+              <path d="M276,62 C300,80 320,100 334,118" marker-end="url(#msar)"/>
+            </g>
+            <defs><marker id="msar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink-3)"/></marker></defs>
+            <text x="260" y="132" text-anchor="middle" font-family="var(--sans)" font-size="11" fill="var(--ink-2)">どちらへ落ちるかも、いつ落ちるかも決まらない</text>
+            <text x="30" y="200" font-family="var(--mono)" font-size="10" fill="var(--ink-3)">出力電圧 →</text>
+            <text x="490" y="200" text-anchor="end" font-family="var(--sans)" font-size="10.5" fill="var(--ink-3)">縦軸は回路の「落ち着きにくさ」の概念図</text>
+          </svg>
+        </div>
+        <p style="margin-top:10px">絵にするとこうなります。ラッチは<b>二つの谷</b>を持つ系で、0 と 1 はそれぞれの谷底。セットアップ違反は、ボールを<b>丘の頂に置いてしまう</b>行為です。頂は釣り合ってはいるが不安定 ― 第1章の伝達特性でいえば、利得が 1 を超える坂のちょうど真ん中に居座った状態で、熱雑音程度のきっかけでどちらかへ転がり落ちる。<b>確率的にしか語れない</b>のが準安定の本質で、だから実物の設計は「頂に置いてしまう確率」を平均故障間隔（MTBF）として管理します。</p>
       </div>
     </div>
   </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">MASTER–SLAVE — D-FF の中で、値が1段ずつしか進めない理由</span>
+      <div class="btns">
+        <button class="btn" data-df="0" aria-pressed="true">① C = 0</button>
+        <button class="btn" data-df="1" aria-pressed="false">② ↑ エッジ</button>
+        <button class="btn" data-df="2" aria-pressed="false">③ C = 1</button>
+        <button class="btn" data-df="3" aria-pressed="false">④ ↓ エッジ</button>
+        <button class="btn" id="bDffPlay" aria-pressed="true">再生中</button>
+      </div>
+    </div>
+    <div class="fig-body scroll-x">
+      <svg id="svgDff" viewBox="0 0 900 310" role="img" aria-label="主従構成のDフリップフロップ。前段ラッチのイネーブルはクロックの否定、後段はクロック。クロックの4つの局面で、どちらか片方だけが開き、値が1段ずつ進む。" style="min-width:720px"></svg>
+      <p id="tDff" style="font-size:12.5px;color:var(--ink-2);margin-top:8px;min-height:3.2em"></p>
+    </div>
+    <figcaption>前段（主）の E には <b>NOT C</b>、後段（従）の E には <b>C</b> が入っているので、<b>2つの門が同時に開くことはありません</b>。C が 0 のあいだ前段だけが D を追いかけ、立ち上がりで前段が閉じて後段が開く ― その瞬間に前段が持っていた値だけが外へ出ます。C が 1 のあいだに D がどれだけ暴れても、閉じた前段が受け止めて出力には届かない。「エッジの瞬間だけ取り込む」の中身は、この<b>閉じてから開く</b>のリレーです。</figcaption>
+  </figure>
 
   <div class="lab-go">
     <span class="tag">手を動かす — NandLab 第4章</span>
@@ -926,6 +1059,69 @@ $('bSrStep').addEventListener('click',function(){var ch=step();push();draw(ch?'�
 $('bSrRun').addEventListener('click',function(){var n=0;while(n<20&&step()){push();n++}if(n>=20){draw('20 歩進めても落ち着かない ― 発振している（S=R=0 から両方 1 に戻したときに起きる）。')}else{push();draw(n?n+' 歩で落ち着いた。Q = '+sigName(q)+'。':'すでに落ち着いていた。Q = '+sigName(q)+'。')}});
 $('bSrReset').addEventListener('click',function(){q=X;qb=X;t=0;hist=[];draw('電源を入れ直した。Q も Q̄ も X ― どちらに転ぶか分からない。S か R を 0 にして進める。')});
 draw('電源を入れた直後。Q も Q̄ も X。');
+})();
+
+/* ================= 04 D-FF 主従 ================= */
+(function(){
+var svg=$('svgDff');if(!svg)return;
+/* 4局面: C, D, M(前段の中身), Q(後段の中身), 前段が開いているか, 後段が開いているか */
+var ST=[
+ {c:0,d:1,m:1,q:0,fo:true, bo:false, ph:0,
+  t:'C = 0。前段の E は NOT C = 1 なので開いていて、M は D をそのまま追いかける（いま D = 1 → M = 1）。後段は閉じていて、Q は前の値 0 を保持したまま。'},
+ {c:1,d:1,m:1,q:1,fo:false,bo:true, ph:1,
+  t:'C が 0 → 1。前段が先に閉じて「その瞬間の D」= 1 を確定し、入れ替わりに後段が開く。前段が持っていた 1 が Q に出る ― これが「立ち上がりで取り込む」の正体。'},
+ {c:1,d:0,m:1,q:1,fo:false,bo:true, ph:2,
+  t:'C = 1 のあいだに D を 0 に変えてみる。前段は閉じているので M は 1 のまま動かず、Q も 1 のまま。閉じた前段が、D の暴れを全部受け止めている。'},
+ {c:0,d:0,m:0,q:1,fo:true, bo:false, ph:3,
+  t:'C が 1 → 0。こんどは後段が先に閉じて Q = 1 を守り、前段が開いて次の D = 0 を追いかけ始める（M = 0）。次の立ち上がりで、この 0 が Q に進む。'}
+];
+var cur=0, timer=null;
+function box(x,label,open,val){
+  el(svg,'rect',{x:x,y:80,width:170,height:90,rx:4,fill:C('surface'),stroke:open?C('digital'):C('ink-3'),'stroke-width':open?3:1.6,'stroke-dasharray':open?'':'6 4'});
+  el(svg,'text',{x:x+85,y:70,'text-anchor':'middle','font-family':MONO,'font-size':11,fill:C('ink-2')},label);
+  el(svg,'text',{x:x+85,y:132,'text-anchor':'middle','font-family':MONO,'font-size':30,'font-weight':700,fill:sigColor(val)},String(val));
+  el(svg,'text',{x:x+85,y:158,'text-anchor':'middle','font-family':MONO,'font-size':11,fill:open?C('digital'):C('ink-3')},open?'透過（Eが1）':'保持（Eが0）');
+}
+function wire(x1,x2,val,label,lx){
+  el(svg,'line',{x1:x1,y1:112,x2:x2,y2:112,stroke:sigColor(val),'stroke-width':3});
+  if(label)el(svg,'text',{x:lx,y:104,'text-anchor':'middle','font-family':MONO,'font-size':12,'font-weight':700,fill:sigColor(val)},label+' = '+val);
+}
+function draw(){
+  var s=ST[cur];clear(svg);
+  wire(30,150,s.d,'D',80);
+  box(150,'前段（主）　E = NOT C',s.fo,s.m);
+  wire(320,450,s.m,'M',385);
+  box(450,'後段（従）　E = C',s.bo,s.q);
+  wire(620,740,s.q,'Q',690);
+  /* C の配線 */
+  el(svg,'text',{x:30,y:212,'font-family':MONO,'font-size':12,'font-weight':700,fill:sigColor(s.c)},'C = '+s.c);
+  el(svg,'line',{x1:80,y1:208,x2:535,y2:208,stroke:sigColor(s.c),'stroke-width':2});
+  el(svg,'line',{x1:535,y1:208,x2:535,y2:170,stroke:sigColor(s.c),'stroke-width':2});
+  el(svg,'line',{x1:200,y1:208,x2:200,y2:186,stroke:sigColor(s.c),'stroke-width':2});
+  el(svg,'circle',{cx:200,cy:180,r:5,fill:C('surface'),stroke:C('ink-2'),'stroke-width':1.6});
+  el(svg,'text',{x:216,y:198,'font-family':MONO,'font-size':10,fill:C('ink-3')},'NOT');
+  /* クロック波形と現在位置 */
+  var y0=252,hi=y0-22,lo=y0, xs=[80,230,380,530,680,830];
+  var pts=[[80,lo],[230,lo],[230,hi],[380,hi],[380,lo],[530,lo],[530,hi],[680,hi],[680,lo],[830,lo]];
+  var pl='';for(var i=0;i<pts.length;i++){pl+=(i?'L':'M')+pts[i][0]+','+pts[i][1]}
+  el(svg,'path',{d:pl,fill:'none',stroke:C('ink-2'),'stroke-width':2});
+  el(svg,'text',{x:44,y:y0-6,'font-family':MONO,'font-size':11,fill:C('ink-3')},'C');
+  var mx=[155,230,305,380][s.ph];
+  el(svg,'line',{x1:mx,y1:hi-10,x2:mx,y2:lo+10,stroke:C('volt'),'stroke-width':2.5});
+  el(svg,'text',{x:mx,y:lo+26,'text-anchor':'middle','font-family':MONO,'font-size':10.5,fill:C('volt')},'いまここ');
+  el(svg,'text',{x:830,y:lo+26,'text-anchor':'end','font-family':MONO,'font-size':10,fill:C('ink-3')},'時間 →');
+  $('tDff').textContent=s.t;
+  var bs=document.querySelectorAll('[data-df]');
+  for(var b=0;b<bs.length;b++)bs[b].setAttribute('aria-pressed',String(+bs[b].getAttribute('data-df')===cur));
+}
+function go(i){cur=(i+ST.length)%ST.length;draw()}
+function stop(){if(timer){clearInterval(timer);timer=null}var p=$('bDffPlay');if(p){p.textContent='自動再生';p.setAttribute('aria-pressed','false')}}
+function play(){var p=$('bDffPlay');if(timer){stop();return}p.textContent='再生中';p.setAttribute('aria-pressed','true');timer=setInterval(function(){go(cur+1)},2400)}
+Array.prototype.forEach.call(document.querySelectorAll('[data-df]'),function(b){b.addEventListener('click',function(){stop();go(+b.getAttribute('data-df'))})});
+var pb=$('bDffPlay');if(pb)pb.addEventListener('click',play);
+draw();
+var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(!reduce){timer=setInterval(function(){go(cur+1)},2400)}else{stop()}
 })();
 
 /* ================= レール ================= */

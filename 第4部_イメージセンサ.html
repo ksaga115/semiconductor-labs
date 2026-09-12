@@ -363,11 +363,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       </div>
 
       <div class="guide">
-        <div class="guide-h"><span>読み方</span><span>図25点・全部で 70〜90 分（下の「かんたん / くわしい」でも変わります）</span></div>
+        <div class="guide-h"><span>読み方</span><span>図25点＋補助図・全部で 75〜100 分（下の「かんたん / くわしい」でも変わります）</span></div>
         <div class="guide-b">
           <div><b>一本道だけ追う</b><span>00 から 07 まで、番号のついた段を順に。光が数値になるまでが繋がります。</span><em>16 〜 22 分</em></div>
           <div><b>限界の理由まで</b><span>番号のない節（解像の限界／CCD という別解／ノイズの正体／センサを測る）を足す。「なぜそこまでしかできないか」が入ります。</span><em>30 〜 41 分</em></div>
-          <div><b>床下まで開ける</b><span>付録 A〜D とむすび。トンネル効果・短チャネル効果・暗電流・ノイズの起源。半導体物理に踏み込みます。</span><em>69 〜 88 分</em></div>
+          <div><b>床下まで開ける</b><span>付録 A〜D とむすび。トンネル効果・短チャネル効果・暗電流・ノイズの起源。半導体物理に踏み込みます。</span><em>75 〜 100 分</em></div>
         </div>
       </div>
     </div>
@@ -1219,6 +1219,53 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p>04 で「SF＝FDの電位を電流に変えて列線を駆動する増幅器」と書きましたが、実はソースフォロワの電圧ゲインは <strong>1 より小さい</strong>（典型的に 0.8〜0.9 倍）。電圧はむしろ少し目減りします。では何のためにいるのか。</p>
     <p>役割は<span class="key">インピーダンス変換</span>です。FD は数 fF しかない繊細な容量で、そこに載っている信号電荷は数百〜数千個の電子。いっぽう読み出し先の列信号線は、何千画素ぶんもぶら下がった pF 級の重い配線です。直結したら電荷は一瞬で薄まって消えます。ソースフォロワは<strong>ゲート入力にほぼ電流を取らない</strong>ので、FD の電荷を1個も減らさずに電位だけを「見て」、その電位に追従する出力で重い列線を駆動する ― <span class="key">読んでも減らない（非破壊読み出し）</span>。CDS が同じ電荷を基準と信号で2回読めるのは、この性質のおかげです。</p>
     <p>ゲインが 0.8〜0.9 倍であることは、実用上は変換ゲインに折り込まれます。PTC（「センサを測る」）で測る K は FD 単体ではなく<strong>SF と列回路まで含めた経路全体の値</strong>で、だからこそ「箱を開けずに測る」やり方が成立しています。</p>
+    <div class="scroll-x" style="margin-top:12px">
+      <svg viewBox="0 0 780 240" role="img" aria-label="ソースフォロワの役割の回路図。数fFのFDがゲートにつながり、ゲートには電流が流れないので電荷は留まる。ソースフォロワが数pFの重い列線を駆動し、電位だけが写る。" style="min-width:620px">
+        <g font-family="var(--mono)" font-size="10.5" fill="var(--ink-3)">
+          <text x="330" y="26">VDD</text>
+        </g>
+        <line x1="260" y1="32" x2="480" y2="32" stroke="var(--ink-2)" stroke-width="2"/>
+        <!-- SF トランジスタ -->
+        <line x1="360" y1="32" x2="360" y2="74" stroke="var(--ink-2)" stroke-width="2"/>
+        <rect x="352" y="74" width="16" height="44" fill="var(--metal)"/>
+        <line x1="340" y1="70" x2="340" y2="122" stroke="var(--volt)" stroke-width="3"/>
+        <line x1="360" y1="118" x2="360" y2="150" stroke="var(--ink-2)" stroke-width="2"/>
+        <text x="376" y="100" font-family="var(--mono)" font-size="11" fill="var(--ink-2)">SF</text>
+        <!-- FD 側 -->
+        <line x1="120" y1="96" x2="340" y2="96" stroke="var(--volt)" stroke-width="2.5"/>
+        <circle cx="120" cy="96" r="5" fill="var(--volt)"/>
+        <text x="112" y="82" font-family="var(--mono)" font-size="11.5" font-weight="700" fill="var(--volt)">FD ≈ 3.5 fF</text>
+        <g stroke="var(--volt)" stroke-width="2.5"><line x1="104" y1="118" x2="136" y2="118"/><line x1="104" y1="128" x2="136" y2="128"/></g>
+        <line x1="120" y1="96" x2="120" y2="118" stroke="var(--volt)" stroke-width="2"/>
+        <line x1="120" y1="128" x2="120" y2="146" stroke="var(--volt)" stroke-width="2"/>
+        <g fill="var(--electron)"><circle cx="108" cy="108" r="3.4"/><circle cx="120" cy="106" r="3.4"/><circle cx="132" cy="108" r="3.4"/></g>
+        <text x="150" y="130" font-family="var(--sans)" font-size="12" fill="var(--electron-2)">電子はここに<tspan font-weight="700">留まったまま</tspan></text>
+        <text x="150" y="150" font-family="var(--sans)" font-size="12" fill="var(--ink-2)">ゲートに電流は流れない（非破壊）</text>
+        <!-- 出力・列線 -->
+        <circle cx="360" cy="150" r="4" fill="var(--ink-2)"/>
+        <line x1="360" y1="150" x2="640" y2="150" stroke="var(--ink-2)" stroke-width="2.5"/>
+        <text x="500" y="140" text-anchor="middle" font-family="var(--sans)" font-size="12" fill="var(--ink-2)">列信号線（何千画素ぶんもぶら下がる）</text>
+        <g stroke="var(--ink-2)" stroke-width="2.5"><line x1="624" y1="172" x2="656" y2="172"/><line x1="624" y1="182" x2="656" y2="182"/></g>
+        <line x1="640" y1="150" x2="640" y2="172" stroke="var(--ink-2)" stroke-width="2"/>
+        <line x1="640" y1="182" x2="640" y2="200" stroke="var(--ink-2)" stroke-width="2"/>
+        <text x="664" y="182" font-family="var(--mono)" font-size="11" fill="var(--ink-2)">数 pF（FD の千倍）</text>
+        <!-- 電流源 -->
+        <line x1="360" y1="150" x2="360" y2="168" stroke="var(--ink-2)" stroke-width="2"/>
+        <circle cx="360" cy="182" r="14" fill="none" stroke="var(--ink-2)" stroke-width="2"/>
+        <line x1="360" y1="174" x2="360" y2="190" stroke="var(--ink-2)" stroke-width="2" marker-end="url(#sfar)"/>
+        <defs><marker id="sfar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink-2)"/></marker></defs>
+        <line x1="360" y1="196" x2="360" y2="214" stroke="var(--ink-2)" stroke-width="2"/>
+        <text x="382" y="190" font-family="var(--sans)" font-size="11" fill="var(--ink-3)">列共通の電流源</text>
+        <!-- 接地記号 -->
+        <g stroke="var(--ink-3)" stroke-width="2"><line x1="106" y1="146" x2="134" y2="146"/><line x1="112" y1="151" x2="128" y2="151"/><line x1="117" y1="156" x2="123" y2="156"/></g>
+        <g stroke="var(--ink-3)" stroke-width="2"><line x1="346" y1="214" x2="374" y2="214"/><line x1="352" y1="219" x2="368" y2="219"/><line x1="357" y1="224" x2="363" y2="224"/></g>
+        <g stroke="var(--ink-3)" stroke-width="2"><line x1="626" y1="200" x2="654" y2="200"/><line x1="632" y1="205" x2="648" y2="205"/><line x1="637" y1="210" x2="643" y2="210"/></g>
+        <!-- 電位が写る矢印 -->
+        <path d="M232,96 C300,60 360,110 380,146" fill="none" stroke="var(--photon-2)" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#sfar2)"/>
+        <defs><marker id="sfar2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--photon-2)"/></marker></defs>
+        <text x="404" y="70" font-family="var(--sans)" font-size="12" fill="var(--photon-2)"><tspan font-weight="700">電位だけが写る</tspan>（×0.8〜0.9）― 電荷は運ばない</text>
+      </svg>
+    </div>
   </div>
 
   <div class="deep deep-note">
