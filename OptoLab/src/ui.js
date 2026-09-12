@@ -33,7 +33,9 @@
     ['coreu', 'ファイバのコア径', 'µm', 3, 400, true],
     ['naf', 'ファイバの NA', '', 0.05, 0.5],
     ['bin', '信号の元の帯域', 'Hz', 1, 1000000],
-    ['blk', 'ロックインの帯域', 'Hz', 0.01, 1000]
+    ['blk', 'ロックインの帯域', 'Hz', 0.01, 1000],
+    ['srcum', '面光源の径', 'µm（LED など）', 1, 10000],
+    ['srcna', '面光源の NA', '（ランベルトなら〜1）', 0.05, 1]
   ];
 
   function num(t) {
@@ -210,7 +212,8 @@
       ['集光径 2w₀', ev.spotUm.toFixed(1) + ' µm（ビームNA ' + ev.naBeam.toFixed(3) + '）'],
       ['ファイバ結合', ev.fibOk ? '入る（場所も角度も）' : '入らない', !ev.fibOk],
       ['素の反射 / λ/4 後', (ev.Rfres * 100).toFixed(1) + ' % / ' + (ev.Rar * 100).toFixed(2) + ' %（理想 n=' + ev.nIdeal.toFixed(2) + '）'],
-      ['ロックインの改善', ev.snrGain.toFixed(1) + ' 倍']
+      ['ロックインの改善', ev.snrGain.toFixed(1) + ' 倍'],
+      ['エテンデュ結合の上限', (ev.etaMax * 100).toFixed(ev.etaMax < 0.01 ? 3 : 1) + ' %（面光源→ファイバ）', ev.etaMax < 0.01]
     ];
     document.getElementById('derived').innerHTML = '<div class="dv">' + rows.map(function (r) {
       return '<span class="k">' + esc(r[0]) + '</span><span class="v' + (r[2] ? ' warn' : '') + '">' + esc(r[1]) + '</span>';

@@ -193,6 +193,26 @@
           ]
         };
       }
+    },
+    {
+      id: 'sc', ch: 3, kind: 'design',
+      name: '抵抗を時間で作る ― SC',
+      desc: 'SC のクロック **0.1〜10 MHz**・容量 **2 pF 以下**の範囲で、等価抵抗 1/(fC) を **10 MΩ 以上**、かつ 1 サンプルの雑音 √(kT/C) を **100 µV 以下**にする。',
+      why: 'スイッチトキャパシタは 1 クロックで q = CV を運ぶ ― 平均電流 fCV、つまり**抵抗 1/(fC) と同じ**。'
+         + 'シリコンで 10 MΩ の抵抗は巨大だが、SC なら小さな C と遅いクロックで作れて、しかも比精度は容量比で決まる（CMOSフィルタ・ADC の芯）。'
+         + '代金は kT/C: スイッチが開くたび √(kT/C) の雑音が刻まれるので、**C は小さくしすぎられない** ― 窓は両側から閉じる。',
+      hint: 'クロック 0.1 MHz・C 0.5〜0.9 pF。C 0.3 pF は雑音 117 µV で落ち、C 1.5 pF は 6.7 MΩ で落ちる。',
+      check: function (ev, d) {
+        var lim = d.fsmhz >= 0.1 && d.fsmhz <= 10 && d.cscpf <= 2 && d.cscpf > 0;
+        return {
+          ok: lim && ev.reqsc >= 1e7 && ev.vktcsc <= 1e-4,
+          rows: [
+            row('等価抵抗 1/(fC)', f(ev.reqsc / 1e6, 2) + ' MΩ', '10.00 以上', ev.reqsc >= 1e7),
+            row('kT/C 雑音', f(ev.vktcsc * 1e6, 1) + ' µV', '100.0 以下', ev.vktcsc <= 1e-4),
+            row('クロック / 容量', f(d.fsmhz, 2) + ' MHz / ' + f(d.cscpf, 2) + ' pF', '0.1〜10 MHz・2 pF 以下', lim)
+          ]
+        };
+      }
     }
   ];
 

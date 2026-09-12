@@ -51,6 +51,24 @@
         d.M = 50;
         return d;
       }
+    },
+    bg: {
+      note: '課題の条件を入れて M=1・帯域 0.015 MHz。背景ショット床 4.6×10⁻¹³ A/√Hz に対し SNR = 11.3。',
+      design: function () {
+        var d = PHO.defaults();
+        d.nm = 900; d.eta = 0.9; d.pw = -9; d.bgnw = 1000; d.idpa = 10; d.ifa = 100; d.k = 0.02;
+        d.M = 1; d.bmhz = 0.015;
+        return d;
+      }
+    },
+    count: {
+      note: '課題の条件を入れて t=5 秒。s=138・b=500 c/s で SNR = 138×√5/√638 ≒ 12.3。',
+      design: function () {
+        var d = PHO.defaults();
+        d.nm = 550; d.eta = 0.5; d.pw = -16; d.dkcps = 500; d.bgnw = 0;
+        d.tsec = 5;
+        return d;
+      }
     }
   };
 

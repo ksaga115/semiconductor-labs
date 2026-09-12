@@ -84,4 +84,37 @@ T('RC 帯域', () => {
   near('C を半分にすると帯域は倍', evalWith({ cpf: 0.225 }).ev.fRC / ev.fRC, 2, 1e-9);
 });
 
+T('背景光 ― ショット床と BLIP', () => {
+  const base = { nm: 900, eta: 0.9, pw: -9, bgnw: 1000, idpa: 10, ifa: 100, k: 0.02, M: 1 };
+  const { ev } = evalWith(Object.assign({ bmhz: 0.015 }, base));
+  near('背景光の電流 = R×Pbg', ev.Ibg, 0.9 * 900 / 1240 * 1e-6, 1e-12);
+  near('SNR（15kHz）≒ 11.38', ev.SNR, 11.38, 0.02);
+  /* SNR は 1/√B */
+  const w = evalWith(Object.assign({}, base, { bmhz: 0.06 })).ev;
+  near('帯域 ×4 で SNR は半分', ev.SNR / w.SNR, 2, 1e-6);
+  /* 背景があると M は損（F のぶん） */
+  const m = evalWith(Object.assign({}, base, { bmhz: 0.015, M: 100 })).ev;
+  ok('背景光律速では M=100 が M=1 に負ける', m.SNR < ev.SNR);
+  /* NEP も背景の床まで上がる（BLIP。アンプ律速でない条件で見る） */
+  const dark = evalWith({ nm: 900, eta: 0.9, idpa: 10, ifa: 1, M: 1 }).ev.NEP;
+  const blip = evalWith({ nm: 900, eta: 0.9, idpa: 10, ifa: 1, M: 1, bgnw: 1000 }).ev.NEP;
+  ok('背景光で NEP が2桁上がる', blip > dark * 100);
+  near('BLIP の NEP = √(2q·Ibg)/R', blip, Math.sqrt(2 * Q * ev.Ibg) / ev.R, 1e-15);
+});
+
+T('計数モード ― √t で買う', () => {
+  const base = { nm: 550, eta: 0.5, pw: -16, dkcps: 500, bgnw: 0 };
+  const { ev } = evalWith(Object.assign({ tsec: 5 }, base));
+  near('0.1fW・550nm は 277 光子/s', ev.phi, 276.8, 0.5);
+  near('信号 138 c/s', ev.cps, 138.4, 0.3);
+  near('床はダークカウントだけ', ev.bcps, 500, 1e-9);
+  near('SNR(5s) ≒ 12.25', ev.snrCount, 12.25, 0.02);
+  /* √t 則 */
+  const t20 = evalWith(Object.assign({}, base, { tsec: 20 })).ev;
+  near('t ×4 で SNR ×2', t20.snrCount / ev.snrCount, 2, 1e-9);
+  /* 背景光も床に乗る（1e-6 nW = 1fW → 1384 counts/s） */
+  const bg = evalWith(Object.assign({}, base, { tsec: 5, bgnw: 1e-6 })).ev;
+  ok('背景光の光子も counts の床になる', bg.bcps > 1500 && bg.snrCount < ev.snrCount);
+});
+
 report();

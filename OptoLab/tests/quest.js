@@ -58,6 +58,14 @@ T('落ちるべきもの', () => {
   ok('ar: 高すぎる屈折率も落ちる', !Q.grade('ar', { design: a2 }).ok);
   const l1 = Object.assign({}, A.get('lens').design(), { amm: 130 });
   ok('lens: 2f から外れると等倍でない', !Q.grade('lens', { design: l1 }).ok);
+
+  /* エテンデュ: 実用の上限を破るのは反則、積が足りないと落ちる、光源を小さくするのは反則 */
+  const e1 = Object.assign({}, A.get('etd').design(), { coreu: 300 });
+  ok('etd: コア 300µm は上限破りで落ちる', !Q.grade('etd', { design: e1 }).ok);
+  const e2 = Object.assign({}, A.get('etd').design(), { naf: 0.3 });
+  ok('etd: NA 0.3（上限 25%）では落ちる', !Q.grade('etd', { design: e2 }).ok);
+  const e3 = Object.assign({}, A.get('etd').design(), { srcum: 50 });
+  ok('etd: 光源を勝手に小さくするのは反則', !Q.grade('etd', { design: e3 }).ok);
 });
 
 report();

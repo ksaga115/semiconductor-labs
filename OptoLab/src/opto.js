@@ -21,9 +21,12 @@
  *   naf    ファイバの NA
  *   bin    信号の元の帯域 [Hz]         ロックイン: SNR 改善 = √(B_in/B_lock)
  *   blk    ロックインの帯域 [Hz]
+ *   srcum  面光源（LED など）の径 [µm]  エテンデュ G = (πD²/4)·(π·NA²)
+ *   srcna  面光源の放射 NA             ランベルト光源の投影立体角 π·sin²θ = π·NA²
  *
  * 【約束】数値はすべてこの式から導出できる。乱数は使わない。
  * 【モデルの外】収差・ケラレ・cos⁴則・偏光・多層膜・モードフィールド整合は入れていない。
+ * エテンデュの結合上限は「面も角度も一様に埋まる」理想の光学系での値 ― 実物はここからさらに下がる。
  */
 (function (global) {
   'use strict';
@@ -40,7 +43,8 @@
       winmm: 1, m2: 1,
       ncoat: 1.38, nsub: 3.9,
       coreu: 10, naf: 0.14,
-      bin: 1000, blk: 10
+      bin: 1000, blk: 10,
+      srcum: 100, srcna: 0.9
     };
   }
 
@@ -85,12 +89,18 @@
     var fibOk = spotUm <= d.coreu && naBeam <= d.naf;
     var snrGain = Math.sqrt(d.bin / d.blk);
 
+    /* エテンデュ（面積 × 投影立体角）。受け側/光源の比が結合効率の上限 ― 光学系では増やせない */
+    var gsrc = Math.PI * Math.PI * (d.srcum || 0) * (d.srcum || 0) * (d.srcna || 0) * (d.srcna || 0) / 4;
+    var gfib = Math.PI * Math.PI * d.coreu * d.coreu * d.naf * d.naf / 4;
+    var etaMax = gsrc > 0 ? Math.min(1, gfib / gsrc) : 1;
+
     return {
       Ew: Ew, L: L, Eimg: Eimg, EimgW: EimgW, phiUm: phiUm, Einv: Einv,
       bmm: bmm, mag: mag, airyUm: airyUm, resUm: resUm,
       w0um: w0um, spotUm: spotUm, naBeam: naBeam,
       Rfres: Rfres, Rar: Rar, nIdeal: nIdeal,
-      fibOk: fibOk, snrGain: snrGain
+      fibOk: fibOk, snrGain: snrGain,
+      gsrc: gsrc, gfib: gfib, etaMax: etaMax
     };
   }
 

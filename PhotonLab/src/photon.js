@@ -17,10 +17,13 @@
  *   cpf    容量 [pF]                 50Ω 受けの RC 帯域 1/(2πRC)
  *   ncell  MPPC のセル数（0=なし）    パルス計測の飽和 fired = N(1−e^(−μ/N))
  *   nph    パルスあたりの光子数        μ = nph·η
+ *   bgnw   背景光 [nW]               信号と同じ R で電流になり、ショット床 2q·Ibg·F を作る（0 = 暗室）
+ *   dkcps  ダークカウント [counts/s]   計数モードの床。光ゼロでも数えてしまう分
+ *   tsec   積分時間 [s]              計数の SNR = s·√t / √(s+b)（ポアソン。背景の平均は既知として引く）
  *
  * 【約束】数値はすべてこの式から導出できる。乱数は使わない（採点が毎回同じになるように）。
- * 【モデルの外】1/f 雑音・背景光・APD の暗電流の非増倍成分・MPPC のクロストークは入れていない。
- * 第5部の caveat と同じで、実素子の設計はデータシートから。
+ * 【モデルの外】1/f 雑音・APD の暗電流の非増倍成分・MPPC のクロストーク／アフターパルス・
+ * 計数のパイルアップ（不感時間）は入れていない。第5部の caveat と同じで、実素子の設計はデータシートから。
  */
 (function (global) {
   'use strict';
@@ -34,7 +37,8 @@
       nm: 550, pw: -12, eta: 0.8,
       M: 1, k: 0.02, delta: 0, nstg: 10,
       idpa: 10, ifa: 5, bmhz: 1, amm2: 1, cpf: 1,
-      ncell: 0, nph: 1000
+      ncell: 0, nph: 1000,
+      bgnw: 0, dkcps: 0, tsec: 0.001
     };
   }
 
@@ -65,24 +69,34 @@
     var iamp = d.ifa * 1e-15;
     var B = d.bmhz * 1e6;
 
+    var Pbg = (d.bgnw || 0) * 1e-9;                 /* 背景光は信号と同じ R で電流になる */
+    var Ibg = R * Pbg;
+
     var M = Math.max(1, d.M);
     var F = excess(M, d.k);
-    var ishot = Math.sqrt(2 * Q * (Iph + Id) * F) * M;      /* A/√Hz（出力換算） */
+    var ishot = Math.sqrt(2 * Q * (Iph + Id + Ibg) * F) * M; /* A/√Hz（出力換算） */
     var itot = Math.sqrt(ishot * ishot + iamp * iamp);
     var SNR = M * Iph / (itot * Math.sqrt(B));
 
-    /* NEP は入力換算: 出力のノイズを利得 M·R で光に戻す */
-    var NEP = Math.sqrt(2 * Q * Id * F + (iamp / M) * (iamp / M)) / R;
+    /* NEP は入力換算: 出力のノイズを利得 M·R で光に戻す。背景光があればその場の NEP（BLIP側） */
+    var NEP = Math.sqrt(2 * Q * (Id + Ibg) * F + (iamp / M) * (iamp / M)) / R;
     var Dstar = Math.sqrt(d.amm2 * 0.01) / NEP;             /* A[cm²] = mm² × 0.01 */
     var Pmin = NEP * Math.sqrt(B);
 
     var fRC = 1 / (2 * Math.PI * RLOAD * d.cpf * 1e-12);
     var cps = phi * d.eta;                                  /* 単一光子検出として数えたとき */
 
+    /* 計数モード: 信号 s [c/s]、床 b = 背景光の分 + ダークカウント。
+       時間 t で S=s·t 個。総カウントのポアソン揺らぎ √((s+b)t) が雑音（b の平均は既知として引く） */
+    var bcps = (Pbg / (Eph * Q)) * d.eta + (d.dkcps || 0);
+    var t = Math.max(0, d.tsec || 0);
+    var snrCount = (cps + bcps) > 0 ? cps * Math.sqrt(t) / Math.sqrt(cps + bcps) : 0;
+
     var out = {
-      P: P, Eph: Eph, phi: phi, R: R, Iph: Iph,
+      P: P, Eph: Eph, phi: phi, R: R, Iph: Iph, Ibg: Ibg,
       F: F, ishot: ishot, iamp: iamp, itot: itot, SNR: SNR,
-      NEP: NEP, Dstar: Dstar, Pmin: Pmin, fRC: fRC, cps: cps
+      NEP: NEP, Dstar: Dstar, Pmin: Pmin, fRC: fRC,
+      cps: cps, bcps: bcps, snrCount: snrCount
     };
 
     if (d.delta >= 2) {

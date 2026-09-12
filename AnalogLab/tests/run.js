@@ -68,4 +68,20 @@ T('TIA とチャージアンプ ― 第4部・第5部と同じ算数', () => {
   within('kTC @2fF ≒ 18e−', k.ktc, 18, 1.03);
 });
 
+T('スイッチトキャパシタ ― 抵抗を時間で作る', () => {
+  /* R = 1/(fC): 1MHz・1pF は 1MΩ */
+  const s = evalWith({ fsmhz: 1, cscpf: 1 }).ev;
+  near('1MHz・1pF = 1MΩ', s.reqsc, 1e6, 1);
+  /* f を1桁下げると R は1桁上がる */
+  const slow = evalWith({ fsmhz: 0.1, cscpf: 1 }).ev;
+  near('f 1/10 で R ×10', slow.reqsc / s.reqsc, 10, 1e-9);
+  /* kT/C: 1pF は 64µV、0.25pF で倍 */
+  within('√(kT/C) @1pF ≒ 64µV', s.vktcsc, 64.4e-6, 1.01);
+  const q = evalWith({ fsmhz: 1, cscpf: 0.25 }).ev;
+  near('C 1/4 で雑音 2 倍', q.vktcsc / s.vktcsc, 2, 1e-9);
+  /* お手本の窓: 0.1MHz・0.6pF */
+  const a = evalWith({ fsmhz: 0.1, cscpf: 0.6 }).ev;
+  ok('16.7MΩ・83µV の窓', a.reqsc > 1e7 && a.vktcsc < 1e-4);
+});
+
 report();

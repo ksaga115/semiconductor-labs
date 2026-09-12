@@ -58,6 +58,14 @@ T('落ちるべきもの', () => {
   ok('lownoise: 電流で殴ると電力で落ちる', !Q.grade('lownoise', { design: n1 }).ok);
   const d1 = Object.assign({}, A.get('diff').design(), { rdk: 30 });
   ok('diff: RD を上げすぎると動作点が沈んで落ちる', !Q.grade('diff', { design: d1 }).ok);
+
+  /* SC: 窓の両側と、クロック下限破り */
+  const s1 = Object.assign({}, A.get('sc').design(), { cscpf: 0.3 });
+  ok('sc: C 0.3pF は kT/C 雑音で落ちる', !Q.grade('sc', { design: s1 }).ok);
+  const s2 = Object.assign({}, A.get('sc').design(), { cscpf: 1.5 });
+  ok('sc: C 1.5pF は等価抵抗で落ちる', !Q.grade('sc', { design: s2 }).ok);
+  const s3 = Object.assign({}, A.get('sc').design(), { fsmhz: 0.01 });
+  ok('sc: クロックを下限より遅くするのは反則', !Q.grade('sc', { design: s3 }).ok);
 });
 
 report();

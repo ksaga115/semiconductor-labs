@@ -40,6 +40,10 @@
     lownoise: {
       note: 'W/L=200・Id=400µA。Vov=0.141V で gm=5.7mS → 1.4nV/√Hz、0.72mW。',
       design: function () { var d = A.defaults(); d.wl = 200; d.idua = 400; return d; }
+    },
+    sc: {
+      note: 'クロック 0.1 MHz・C=0.6 pF。Req = 16.7 MΩ、√(kT/C) = 83 µV ― 窓の真ん中。',
+      design: function () { var d = A.defaults(); d.fsmhz = 0.1; d.cscpf = 0.6; return d; }
     }
   };
 

@@ -24,7 +24,9 @@
     ['rfk', 'TIA の帰還抵抗 Rf', 'kΩ', 0.1, 100000],
     ['cpdpf', 'PD の容量', 'pF', 0.1, 50],
     ['cffF', 'チャージアンプの Cf', 'fF', 0.5, 50],
-    ['qe', '入力電荷', 'e−', 100, 100000, true]
+    ['qe', '入力電荷', 'e−', 100, 100000, true],
+    ['fsmhz', 'SC のクロック', 'MHz', 0.01, 100],
+    ['cscpf', 'SC の容量', 'pF', 0.05, 50]
   ];
 
   function num(t) {
@@ -190,7 +192,8 @@
       ['消費電力', (ev.p * 1000).toFixed(3) + ' mW'],
       ['入力換算の熱雑音', (ev.vnmos * 1e9).toFixed(2) + ' nV/√Hz'],
       ['TIA: 帯域 / Rf 雑音', (ev.btia / 1e6).toFixed(2) + ' MHz / ' + (ev.irf * 1e12).toFixed(2) + ' pA/√Hz'],
-      ['チャージアンプ: Q/Cf', (ev.vq * 1000).toFixed(1) + ' mV（kTC ' + ev.ktc.toFixed(1) + ' e−）']
+      ['チャージアンプ: Q/Cf', (ev.vq * 1000).toFixed(1) + ' mV（kTC ' + ev.ktc.toFixed(1) + ' e−）'],
+      ['SC: 等価抵抗 1/(fC)', (ev.reqsc / 1e6).toFixed(2) + ' MΩ（√(kT/C) ' + (ev.vktcsc * 1e6).toFixed(1) + ' µV）']
     ];
     document.getElementById('derived').innerHTML = '<div class="dv">' + rows.map(function (r) {
       return '<span class="k">' + esc(r[0]) + '</span><span class="v' + (r[2] ? ' warn' : '') + '">' + esc(r[1]) + '</span>';

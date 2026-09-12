@@ -63,6 +63,22 @@ T('落ちるべきもの', () => {
   ok('fast: 0.5pF（6.4GHz）は落ちる', !Q.grade('fast', { design: fastLow }).ok);
   const nepmHi = Object.assign({}, A.get('nepm').design(), { M: 300 });
   ok('nepm: M=300（Fが伸びる）は落ちる', !Q.grade('nepm', { design: nepmHi }).ok);
+
+  /* 背景光: M では逃げられず、帯域を広げすぎても落ちる。背景を消すのは反則 */
+  const bgWide = Object.assign({}, A.get('bg').design(), { bmhz: 0.05 });
+  ok('bg: 帯域 50kHz（SNR 6.2）は落ちる', !Q.grade('bg', { design: bgWide }).ok);
+  const bgM = Object.assign({}, A.get('bg').design(), { M: 100 });
+  ok('bg: M=100（F=3.95 で損）は落ちる', !Q.grade('bg', { design: bgM }).ok);
+  const bgCheat = Object.assign({}, A.get('bg').design(), { bgnw: 0 });
+  ok('bg: 背景光を消すのは反則', !Q.grade('bg', { design: bgCheat }).ok);
+
+  /* 計数: 待たなければ届かず、待ちすぎは時間の縛りに当たる。PDE を盛るのは反則 */
+  const cShort = Object.assign({}, A.get('count').design(), { tsec: 1 });
+  ok('count: 1 秒（SNR 5.5）は落ちる', !Q.grade('count', { design: cShort }).ok);
+  const cLong = Object.assign({}, A.get('count').design(), { tsec: 20 });
+  ok('count: 20 秒は時間の縛りで落ちる', !Q.grade('count', { design: cLong }).ok);
+  const cCheat = Object.assign({}, A.get('count').design(), { eta: 0.9 });
+  ok('count: PDE を勝手に盛るのは反則', !Q.grade('count', { design: cCheat }).ok);
 });
 
 report();

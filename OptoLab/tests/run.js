@@ -67,4 +67,21 @@ T('反射とロックイン', () => {
   near('ロックイン √(B/B)', l.snrGain, 100, 1e-9);
 });
 
+T('エテンデュ ― 増やせない会計', () => {
+  /* G = (πD²/4)(πNA²)。LED 100µm・NA0.9 → 2.0×10⁴ µm²·sr */
+  const { ev } = evalWith({ srcum: 100, srcna: 0.9, coreu: 150, naf: 0.45 });
+  near('光源の G', ev.gsrc, Math.PI * Math.PI * 100 * 100 * 0.81 / 4, 1e-6);
+  near('上限 = (コアNA/光源NA·径比)²', ev.etaMax, Math.pow(150 * 0.45 / (100 * 0.9), 2), 1e-12);
+  near('56% の検算', ev.etaMax, 0.5625, 1e-9);
+  /* コア×NA 積が同じなら上限も同じ */
+  const same = evalWith({ srcum: 100, srcna: 0.9, coreu: 300, naf: 0.225 }).ev;
+  near('コア×NA が同じなら上限は同じ', same.etaMax, ev.etaMax, 1e-12);
+  /* シングルモード級には桁で入らない */
+  const sm = evalWith({ srcum: 100, srcna: 0.9, coreu: 10, naf: 0.14 }).ev;
+  ok('LED は SM ファイバにほぼ入らない（0.03% 未満）', sm.etaMax < 3e-4);
+  /* 受けが光源より大きければ上限 1 で頭打ち */
+  const big = evalWith({ srcum: 10, srcna: 0.1, coreu: 400, naf: 0.5 }).ev;
+  near('受けが余れば上限 100%', big.etaMax, 1, 1e-12);
+});
+
 report();

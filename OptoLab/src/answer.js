@@ -40,6 +40,10 @@
     ar: {
       note: 'n = 1.97（= √3.9）。残留反射はほぼゼロ。31% がひと塗りで消える。',
       design: function () { var d = O.defaults(); d.ncoat = 1.97; return d; }
+    },
+    etd: {
+      note: 'コア 150 µm・NA 0.45。コア×NA = 67.5 ≥ 63.6 で上限 (67.5/90)² = 56%。',
+      design: function () { var d = O.defaults(); d.coreu = 150; d.naf = 0.45; return d; }
     }
   };
 

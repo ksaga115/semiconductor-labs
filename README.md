@@ -36,9 +36,9 @@
   SemiLab\                       第2部 ラボ ― 原始部品 ＝ 不純物（5章 22問）
   NandLab\                       第3部 ラボ ― 原始部品 ＝ NAND（5章 25問）
   PixelLab\                      第4部 ラボ ― 原始部品 ＝ 光子と電子を数えること（3章 12問）
-  PhotonLab\                     第5部 ラボ ― 原始部品 ＝ 光子とη（3章 8問。R・NEP・D*・最適なM・MPPCの飽和）
-  AnalogLab\                     第6部 ラボ ― 原始部品 ＝ 二乗則のMOS 1個（3章 9問。Vov・gm・利得・GBW・TIA・kTC）
-  OptoLab\                       第7部 ラボ ― 原始部品 ＝ 光線とその会計（3章 9問。カメラ方程式・回折・ガウス・ファイバ・λ/4）
+  PhotonLab\                     第5部 ラボ ― 原始部品 ＝ 光子とη（3章 10問。R・NEP・D*・最適なM・MPPCの飽和・背景光・計数）
+  AnalogLab\                     第6部 ラボ ― 原始部品 ＝ 二乗則のMOS 1個（3章 10問。Vov・gm・利得・GBW・TIA・kTC・SC）
+  OptoLab\                       第7部 ラボ ― 原始部品 ＝ 光線とその会計（3章 10問。カメラ方程式・回折・ガウス・ファイバ・λ/4・エテンデュ）
   QALab\                         第8部 ラボ ― 原始部品 ＝ 故障率と分布（3章 8問。MTTF・加速試験・B10・Tj・TEC・Cpk・誤差の合成）
 ```
 
@@ -76,9 +76,9 @@ node ProcessLab\tests\all.js      332 件
 node SemiLab\tests\all.js       1,074 件
 node NandLab\tests\all.js         642 件
 node PixelLab\tests\all.js        281 件
-node PhotonLab\tests\all.js       173 件
-node AnalogLab\tests\all.js       180 件
-node OptoLab\tests\all.js         181 件
+node PhotonLab\tests\all.js       213 件
+node AnalogLab\tests\all.js       200 件
+node OptoLab\tests\all.js         201 件
 node QALab\tests\all.js           170 件
 ```
 
@@ -90,4 +90,4 @@ node QALab\tests\all.js           170 件
 
 - ~~NandLab「電圧で見る」のしきい値 0.7V は決め打ち~~ → **SemiLab 第5章「NAND の中身へ」の採点を通すと、その nMOS の Vth が NandLab「電圧で見る」に渡る**ようになった（localStorage 経由・出どころを画面に明記）。渡るのは Vth だけ ― この素朴なモデルでは n と p の強さの比しか効かず比は 1 固定なので、Cox は坂の形を変えない。電源 3.3V は決め打ちのまま
 - NandLab に「原始部品を NOR にする」モードを足すか検討（第3部 01 章で NOR の万能性を説明しているが、ラボでは NAND からしか組めない）
-- 各ラボの「ここから先」（README）― BJT・降伏・反射防止膜の設計・pMOS（SemiLab。ただし dev.js の MOS 解は p 基板＋n+poly ゲート前提で、n 基板に対しては正しい Vth を返さないことを確認済み ― pMOS 課題はソルバの n 基板対応が先）、側壁と形状・TED（ProcessLab）、光学（PixelLab。HDR 合成は「長短合成で 100 dB」として課題化済み）、メモリ（NandLab。RAM16 を「実装部品」として追加済み ― 課題の採点では使えない）、背景光・計数モード・走行時間（PhotonLab）、多段OTA・SC回路（AnalogLab）、エテンデュ・cos⁴・モード結合（OptoLab）、湿度加速 Peck・温度サイクル Coffin-Manson・GR&R の分散分析（QALab）。さらに先の候補: デバイス特性ラボ（C-V/I-V の実測練習）
+- 各ラボの「ここから先」（README）― BJT・降伏・反射防止膜の設計・pMOS（SemiLab。ただし dev.js の MOS 解は p 基板＋n+poly ゲート前提で、n 基板に対しては正しい Vth を返さないことを確認済み ― pMOS 課題はソルバの n 基板対応が先）、側壁と形状・TED（ProcessLab）、光学（PixelLab。HDR 合成は「長短合成で 100 dB」として課題化済み）、メモリ（NandLab。RAM16 を「実装部品」として追加済み ― 課題の採点では使えない）、走行時間（PhotonLab。背景光と計数モードは課題化済み）、多段OTA（AnalogLab。SCは課題化済み）、cos⁴・モード結合（OptoLab。エテンデュは課題化済み）、湿度加速 Peck・温度サイクル Coffin-Manson・GR&R の分散分析（QALab）。さらに先の候補: デバイス特性ラボ（C-V/I-V の実測練習）

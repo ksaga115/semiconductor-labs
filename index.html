@@ -196,11 +196,11 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       <dl class="spec">
         <div><dt>参考書</dt><dd>8<small>部</small></dd></div>
         <div><dt>ラボ</dt><dd>8<small>本</small></dd></div>
-        <div><dt>採点つき課題</dt><dd>106<small>問</small></dd></div>
+        <div><dt>採点つき課題</dt><dd>110<small>問</small></dd></div>
         <div><dt>依存</dt><dd>0<small>ブラウザのみ</small></dd></div>
         <div><dt>通信</dt><dd>0<small>手元で完結</small></dd></div>
-        <div><dt>自動検査</dt><dd>3,033<small>件 (Node)</small></dd></div>
-        <div class="spec-cap">課題数は ProcessLab 13 ＋ SemiLab 22 ＋ NandLab 25 ＋ PixelLab 12 ＋ PhotonLab 8 ＋ AnalogLab 9 ＋ OptoLab 9 ＋ QALab 8。検査は8本の <code>node tests/all.js</code> の合計（2026-09-13 時点）。</div>
+        <div><dt>自動検査</dt><dd>3,113<small>件 (Node)</small></dd></div>
+        <div class="spec-cap">課題数は ProcessLab 13 ＋ SemiLab 22 ＋ NandLab 25 ＋ PixelLab 12 ＋ PhotonLab 10 ＋ AnalogLab 10 ＋ OptoLab 10 ＋ QALab 8。検査は8本の <code>node tests/all.js</code> の合計（2026-09-13 時点）。</div>
       </dl>
     </div>
   </div>
@@ -556,7 +556,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       </div>
       <div class="pair">
         <div><span class="kind read">参考書</span><a href="第5部_光検出デバイス.html">光検出デバイスの系統</a><small>光子 → 電子 → 増やす → 数える · 8章</small></div>
-        <div><span class="kind lab">ラボ</span><a href="PhotonLab/index.html">PhotonLab</a><small>原始部品 ＝ 光子とη · 3章 8問 · <a href="PhotonLab/README.md">README</a></small></div>
+        <div><span class="kind lab">ラボ</span><a href="PhotonLab/index.html">PhotonLab</a><small>原始部品 ＝ 光子とη · 3章 10問 · <a href="PhotonLab/README.md">README</a></small></div>
       </div>
     </div>
     <div class="chap">
@@ -569,7 +569,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
     </div>
     <div class="chap">
       <div><span class="cn">07-08</span><div class="ct"><a href="第5部_光検出デバイス.html#s7">現場の道具箱 / 光る半導体</a></div><div class="cd">光通信のPDとTIA、TDIと分光器、PSD、EMMI。相手役のLED・LD・VCSEL・QCLと「Siが光らない理由」。</div></div>
-      <div class="do"><span class="lbl">PhotonLab 第3章</span><a class="q" href="PhotonLab/index.html?quest=fast">速さの敵は容量</a><a class="q" href="PhotonLab/index.html?quest=nepm">増やして床を沈める</a></div>
+      <div class="do"><span class="lbl">PhotonLab 第3章</span><a class="q" href="PhotonLab/index.html?quest=fast">速さの敵は容量</a><a class="q" href="PhotonLab/index.html?quest=nepm">増やして床を沈める</a><a class="q" href="PhotonLab/index.html?quest=bg">背景光の中で</a><a class="q" href="PhotonLab/index.html?quest=count">数えて待つ</a></div>
     </div>
   </article>
 
@@ -583,7 +583,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       </div>
       <div class="pair">
         <div><span class="kind read">参考書</span><a href="第6部_アナログ回路.html">アナログ回路 ― 坂に住む設計</a><small>Vov → gm → Gain → Feedback · 8章</small></div>
-        <div><span class="kind lab">ラボ</span><a href="AnalogLab/index.html">AnalogLab</a><small>原始部品 ＝ 二乗則のMOS 1個 · 3章 9問 · <a href="AnalogLab/README.md">README</a></small></div>
+        <div><span class="kind lab">ラボ</span><a href="AnalogLab/index.html">AnalogLab</a><small>原始部品 ＝ 二乗則のMOS 1個 · 3章 10問 · <a href="AnalogLab/README.md">README</a></small></div>
       </div>
     </div>
     <div class="chap">
@@ -596,7 +596,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
     </div>
     <div class="chap">
       <div><span class="cn">07-08</span><div class="ct"><a href="第6部_アナログ回路.html#s7">雑音 / 基準を作る</a></div><div class="cd">√(4kTγ/gm)と1/f、チョッパとCDS、kT/C。CTATとPTATを足して1.2V ― バンドギャップ。</div></div>
-      <div class="do"><span class="lbl">AnalogLab 第3章</span><a class="q" href="AnalogLab/index.html?quest=tia">TIAのRfを選ぶ</a><a class="q" href="AnalogLab/index.html?quest=charge">チャージアンプ</a><a class="q" href="AnalogLab/index.html?quest=lownoise">2nV/√Hzの初段</a></div>
+      <div class="do"><span class="lbl">AnalogLab 第3章</span><a class="q" href="AnalogLab/index.html?quest=tia">TIAのRfを選ぶ</a><a class="q" href="AnalogLab/index.html?quest=charge">チャージアンプ</a><a class="q" href="AnalogLab/index.html?quest=lownoise">2nV/√Hzの初段</a><a class="q" href="AnalogLab/index.html?quest=sc">抵抗を時間で作る</a></div>
     </div>
   </article>
 
@@ -610,7 +610,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       </div>
       <div class="pair">
         <div><span class="kind read">参考書</span><a href="第7部_光学.html">光学 ― 検出器の相手側</a><small>Lux → Watt → Photon → Image · 8章</small></div>
-        <div><span class="kind lab">ラボ</span><a href="OptoLab/index.html">OptoLab</a><small>原始部品 ＝ 光線とその会計 · 3章 9問 · <a href="OptoLab/README.md">README</a></small></div>
+        <div><span class="kind lab">ラボ</span><a href="OptoLab/index.html">OptoLab</a><small>原始部品 ＝ 光線とその会計 · 3章 10問 · <a href="OptoLab/README.md">README</a></small></div>
       </div>
     </div>
     <div class="chap">
@@ -619,7 +619,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
     </div>
     <div class="chap">
       <div><span class="cn">04-06</span><div class="ct"><a href="第7部_光学.html#s4">回折 / ガウスビーム / ファイバ</a></div><div class="cd">2.44λN と 0.61λ/NA、焦点深度±2λN²。w₀=M²λf/πw ― 太いほど絞れる。場所と角度の2重の門とエテンデュ。</div></div>
-      <div class="do"><span class="lbl">OptoLab 第2-3章</span><a class="q" href="OptoLab/index.html?quest=lens">等倍で結ぶ</a><a class="q" href="OptoLab/index.html?quest=airy">絞りすぎない</a><a class="q" href="OptoLab/index.html?quest=res">0.5µmを見分ける</a><a class="q" href="OptoLab/index.html?quest=gauss">20µmに絞る</a><a class="q" href="OptoLab/index.html?quest=fiber">ファイバに入れる</a></div>
+      <div class="do"><span class="lbl">OptoLab 第2-3章</span><a class="q" href="OptoLab/index.html?quest=lens">等倍で結ぶ</a><a class="q" href="OptoLab/index.html?quest=airy">絞りすぎない</a><a class="q" href="OptoLab/index.html?quest=res">0.5µmを見分ける</a><a class="q" href="OptoLab/index.html?quest=gauss">20µmに絞る</a><a class="q" href="OptoLab/index.html?quest=fiber">ファイバに入れる</a><a class="q" href="OptoLab/index.html?quest=etd">エテンデュの会計</a></div>
     </div>
     <div class="chap">
       <div><span class="cn">07-08</span><div class="ct"><a href="第7部_光学.html#s7">反射と膜 / 測る現場</a></div><div class="cd">ガラス4%・シリコン35%、λ/4 と √(n₁n₃)、迷光とゴースト。パワーメータ・積分球・ロックインの√B則。</div></div>
@@ -673,9 +673,9 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
         <li><b>回路層:</b> 第3部 → NandLab<span class="r">25問</span><span class="why">列並列ADCのカウンタも制御ロジックも、この部の部品でできている</span></li>
         <li><b>センサ本体:</b> 第4部 00〜07 → PixelLab 第1〜3章<span class="r">12問</span><span class="why">光子→電子→電圧→数値→像の一本道。謎のカメラを測って当て、自分の画素を設計する</span></li>
         <li><b>床下:</b> 第4部 付録 A〜D とむすび<span class="r">読む</span><span class="why">トンネル・短チャネル・暗電流・ノイズ。すべて同じ欠陥と電界に戻る</span></li>
-        <li><b>センサの外へ:</b> 第5部 → PhotonLab<span class="r">8問</span><span class="why">像を結ばず数える一族（PMT・APD・MPPC）と共通の物差し。SNRの「最適な M」を自分で探す</span></li>
-        <li><b>読み出しの中身:</b> 第6部 → AnalogLab<span class="r">9問</span><span class="why">列アンプ・TIA・チャージアンプの正体。gm と Vov の九九から差動対と帰還まで</span></li>
-        <li><b>光の入り口:</b> 第7部 → OptoLab<span class="r">9問</span><span class="why">センサに届く光を自分で出す。第4部の 0.52%・190光子/px/s の出どころ</span></li>
+        <li><b>センサの外へ:</b> 第5部 → PhotonLab<span class="r">10問</span><span class="why">像を結ばず数える一族（PMT・APD・MPPC）と共通の物差し。SNRの「最適な M」を自分で探す</span></li>
+        <li><b>読み出しの中身:</b> 第6部 → AnalogLab<span class="r">10問</span><span class="why">列アンプ・TIA・チャージアンプの正体。gm と Vov の九九から差動対と帰還まで</span></li>
+        <li><b>光の入り口:</b> 第7部 → OptoLab<span class="r">10問</span><span class="why">センサに届く光を自分で出す。第4部の 0.52%・190光子/px/s の出どころ</span></li>
         <li><b>出荷まで:</b> 第8部 → QALab<span class="r">8問</span><span class="why">10年もつか・百万個そろうか。FIT・アレニウス・θ・Cpk ― 保証書の中身</span></li>
       </ol>
     </div>
@@ -691,9 +691,9 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
         <li><b>第2部</b> 2-4〜2-5 → SemiLab 第4〜5章<span class="r">9問</span><span class="why">フォトダイオードと MOSFET。最後の課題が「NAND の中身」</span></li>
         <li><b>第3部</b> NandLab 第1〜5章<span class="r">25問</span><span class="why">NAND だけから NOT・加算器・フリップフロップ・ALU まで</span></li>
         <li><b>第4部</b> 参考書 00〜07 → PixelLab 第1〜3章<span class="r">12問</span><span class="why">光子→電子→電圧→数値→像。付録 A〜D で床下の物理へ</span></li>
-        <li><b>第5部</b> 参考書 01〜08 → PhotonLab<span class="r">8問</span><span class="why">センサの外へ。PMT から光る半導体まで、検出器の系統樹を一巡</span></li>
-        <li><b>第6部</b> 参考書 01〜08 → AnalogLab<span class="r">9問</span><span class="why">最後にアナログ。読み出し回路の中身を、ラザビーの道順で</span></li>
-        <li><b>第7部</b> 参考書 01〜08 → OptoLab<span class="r">9問</span><span class="why">検出器の相手側。lx と W の換算からファイバとARコートまで</span></li>
+        <li><b>第5部</b> 参考書 01〜08 → PhotonLab<span class="r">10問</span><span class="why">センサの外へ。PMT から光る半導体まで、検出器の系統樹を一巡</span></li>
+        <li><b>第6部</b> 参考書 01〜08 → AnalogLab<span class="r">10問</span><span class="why">最後にアナログ。読み出し回路の中身を、ラザビーの道順で</span></li>
+        <li><b>第7部</b> 参考書 01〜08 → OptoLab<span class="r">10問</span><span class="why">検出器の相手側。lx と W の換算からファイバとARコートまで</span></li>
         <li><b>第8部</b> 参考書 01〜08 → QALab<span class="r">8問</span><span class="why">仕上げは信頼性と品質。作った物を10年・百万個の側から見直す</span></li>
       </ol>
     </div>
@@ -759,9 +759,9 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
 node SemiLab\tests\all.js       1,074 件
 node NandLab\tests\all.js         642 件
 node PixelLab\tests\all.js        281 件
-node PhotonLab\tests\all.js       173 件
-node AnalogLab\tests\all.js       180 件
-node OptoLab\tests\all.js         181 件
+node PhotonLab\tests\all.js       213 件
+node AnalogLab\tests\all.js       200 件
+node OptoLab\tests\all.js         201 件
 node QALab\tests\all.js           170 件</pre>
       <div class="caveat">
         <span class="tag">配置の注意</span>

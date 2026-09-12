@@ -18,6 +18,8 @@
  *   cpdpf  PD の容量 [pF]
  *   cffF   チャージアンプの帰還容量 Cf [fF]
  *   qe     入力電荷 [e−]
+ *   fsmhz  SC のクロック [MHz]          スイッチトキャパシタの等価抵抗 R = 1/(f·C)
+ *   cscpf  SC の容量 [pF]              1サンプルごとの雑音 √(kT/C)
  *
  * 仮想プロセス: µCox = 200 µA/V²（0.18µm 級 nMOS の代表値）、γ = 2/3（長チャネルの熱雑音係数）。
  * 【モデルの外】ボディ効果・1/f 雑音・速度飽和・ミラー効果・ループの安定性は入れていない。
@@ -34,7 +36,8 @@
   function defaults() {
     return {
       vdd: 1.8, lam: 0.1, wl: 20, idua: 100,
-      rdk: 12, clpf: 1, rfk: 20, cpdpf: 2, cffF: 10, qe: 1000
+      rdk: 12, clpf: 1, rfk: 20, cpdpf: 2, cffF: 10, qe: 1000,
+      fsmhz: 1, cscpf: 1
     };
   }
 
@@ -79,12 +82,19 @@
     var vq = d.qe * QEL / Cf;
     var ktc = Math.sqrt(KB * TK * Cf) / QEL;
 
+    /* スイッチトキャパシタ: 1クロックで q=C·V を運ぶ → 平均電流 fCV → 等価抵抗 1/(fC)。
+       スイッチが開くたびに √(kT/C) の雑音が1回サンプルされる */
+    var fsc = (d.fsmhz || 0) * 1e6, Csc = (d.cscpf || 0) * 1e-12;
+    var reqsc = (fsc > 0 && Csc > 0) ? 1 / (fsc * Csc) : Infinity;
+    var vktcsc = Csc > 0 ? Math.sqrt(KB * TK / Csc) : Infinity;
+
     return {
       Id: Id, Vov: Vov, gm: gm, gmid: gmid, ro: ro,
       rout: rout, avr: avr, voutdc: voutdc, headLo: headLo, headHi: headHi,
       avint: avint, adm: adm,
       gbw: gbw, p: p, vnmos: vnmos,
-      btia: btia, irf: irf, vq: vq, ktc: ktc
+      btia: btia, irf: irf, vq: vq, ktc: ktc,
+      reqsc: reqsc, vktcsc: vktcsc
     };
   }
 
