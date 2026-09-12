@@ -200,7 +200,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
         <div><dt>依存</dt><dd>0<small>ブラウザのみ</small></dd></div>
         <div><dt>通信</dt><dd>0<small>手元で完結</small></dd></div>
         <div><dt>自動検査</dt><dd>2,288<small>件 (Node)</small></dd></div>
-        <div class="spec-cap">課題数は ProcessLab 13 ＋ SemiLab 22 ＋ NandLab 22 ＋ PixelLab 12。検査は4本の <code>node tests/all.js</code> の合計（2026-09-11 時点）。</div>
+        <div class="spec-cap">課題数は ProcessLab 13 ＋ SemiLab 22 ＋ NandLab 22 ＋ PixelLab 12。検査は4本の <code>node tests/all.js</code> の合計（2026-09-12 時点）。</div>
       </dl>
     </div>
   </div>
@@ -446,6 +446,10 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       <div><span class="cn">2-5</span><div class="ct"><a href="第2部_デバイスの基礎.html#s5">MOS、そして MOSFET ― NAND の中身へ</a></div><div class="cd">酸化膜を挟むとゲートになる。表面ポテンシャル、しきい値電圧、S値の 60mV/桁 の壁、Id-Vd。第3部の入口。</div></div>
       <div class="do"><span class="lbl">SemiLab 第5章</span><a class="q" href="SemiLab/index.html?quest=moscap">MOS キャパシタ</a><a class="q" href="SemiLab/index.html?quest=vth">しきい値電圧を合わせる</a><a class="q" href="SemiLab/index.html?quest=swing">切れ味を上げる</a><a class="q" href="SemiLab/index.html?quest=nand">NAND の中身へ</a></div>
     </div>
+    <div class="chap">
+      <div><span class="cn">—</span><div class="ct"><a href="第2部_デバイスの基礎.html#spow">電力を切る ― パワーデバイス</a></div><div class="cd">同じ MOSFET で数百 V を切る。耐圧とオン抵抗の綱引きを、片側接合の空乏層と臨界電界だけで読む。縦型 MOSFET・IGBT・SiC/GaN。</div></div>
+      <div class="do"><span class="lbl">読むだけ</span><span class="none">第2章・第3章の式を再利用する応用章（新しい物理はほぼ無い）</span></div>
+    </div>
   </article>
 
   <!-- 第3部 -->
@@ -480,6 +484,10 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
     <div class="chap">
       <div><span class="cn">3-5</span><div class="ct"><a href="第3部_論理回路.html#s5">組み上げる ― レジスタ・カウンタ・ALU</a></div><div class="cd">覚えるとは書き戻し続けること。ここまで揃うと、CPU に足りないのはメモリと制御だけ。</div></div>
       <div class="do"><span class="lbl">NandLab 第5章</span><a class="q" href="NandLab/index.html?quest=reg4">4ビットレジスタ</a><a class="q" href="NandLab/index.html?quest=shift4">シフトレジスタ</a><a class="q" href="NandLab/index.html?quest=count4">カウンタ</a><a class="q" href="NandLab/index.html?quest=alu4">4ビット ALU</a></div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">—</span><div class="ct"><a href="第3部_論理回路.html#smem">メモリの物理 ― 輪で覚える、電荷で覚える、閉じ込めて覚える</a></div><div class="cd">SRAM は輪、DRAM はむき出しの電荷、Flash は絶縁体に閉じ込めた電荷。記憶の実体は V<sub>th</sub> のシフト。</div></div>
+      <div class="do"><span class="lbl">NandLab 自由制作</span><a class="q" href="NandLab/index.html">RAM16 で CPU の骨格へ（実装部品 ― 課題の採点では使えない）</a></div>
     </div>
   </article>
 
@@ -517,6 +525,10 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       <div class="do"><span class="lbl">PixelLab 第2章 · 第1章</span><a class="q" href="PixelLab/index.html?quest=dr">ダイナミックレンジ 75dB</a><a class="q" href="PixelLab/index.html?quest=dim">暗い所で S/N 5.5</a><a class="q" href="PixelLab/index.html?quest=adc">AD の桁</a><a class="q" href="PixelLab/index.html?quest=limit">飽和を決めているのは井戸か AD か</a><a class="q" href="PixelLab/index.html?quest=hdr">長短合成で 100 dB</a></div>
     </div>
     <div class="chap">
+      <div><span class="cn">—</span><div class="ct"><a href="第4部_イメージセンサ.html#saf">像面位相差AF / 列の回路</a></div><div class="cd">センサ自身が「どっちに、どれだけ」を知る（遮光式と Dual Pixel）。列アンプと比較器 ― 差を増やし、比で決めるアナログの最小限。</div></div>
+      <div class="do"><span class="lbl">読むだけ</span><span class="none">どちらも仮想センサ1台の数値で通した応用節</span></div>
+    </div>
+    <div class="chap">
       <div><span class="cn">—</span><div class="ct"><a href="第4部_イメージセンサ.html#sptc">ノイズの正体 / センサを測る（PTC）</a></div><div class="cd">分散と平均から電子が数えられる。合わせ込む係数がひとつも無い物差し。</div></div>
       <div class="do"><span class="lbl">PixelLab 第1章</span><a class="q" href="PixelLab/index.html?quest=k">K を当てる</a><a class="q" href="PixelLab/index.html?quest=read">読み出し雑音</a><a class="q" href="PixelLab/index.html?quest=fw">飽和電荷</a><a class="q" href="PixelLab/index.html?quest=dark">暗電流</a><a class="q" href="PixelLab/index.html?quest=prnu">PRNU</a></div>
     </div>
@@ -527,6 +539,10 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
     <div class="chap">
       <div><span class="cn">C–D</span><div class="ct"><a href="第4部_イメージセンサ.html#sc">暗電流の出どころ / ばらつきの起源</a></div><div class="cd">「約 9℃ で倍」は定数ではなく、何が支配しているかを表す量。</div></div>
       <div class="do"><span class="lbl">SemiLab 第3章 · PixelLab 第2章</span><a class="q" href="SemiLab/index.html?quest=dark">暗電流を減らす</a><a class="q" href="PixelLab/index.html?quest=cool">冷やして 60 秒</a></div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">—</span><div class="ct"><a href="第4部_イメージセンサ.html#sspad">降伏の先 ― SPAD / イベントベースセンサ</a></div><div class="cd">雪崩を「壊れ」ではなく検出器にすると光子1個が数えられる。フレームを捨てると変化だけが µs で届く。</div></div>
+      <div class="do"><span class="lbl">読むだけ</span><a class="q" href="SemiLab/index.html">SemiLab の I-V に降伏の目安を表示（表示のみ・採点外）</a></div>
     </div>
   </article>
 </section>
