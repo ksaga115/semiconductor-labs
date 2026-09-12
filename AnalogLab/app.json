@@ -1,0 +1,7 @@
+{
+  "name": "AnalogLab",
+  "version": "1.0.0",
+  "launch": "起動.vbs",
+  "kind": "web",
+  "description": "二乗則の MOS で Vov・gm・利得・GBW・雑音・TIA・チャージアンプを設計して採点にかけるラボ（ブラウザのみ・依存ゼロ）"
+}

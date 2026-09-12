@@ -189,18 +189,18 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
     <div>
       <span class="eyebrow">Labs / 半導体 ― 参考書と実践</span>
       <h1>工程から<span class="lit">像</span>まで、<br>読んで、作って、確かめる</h1>
-      <p class="sub">半導体を、製造工程 → 素子の物理 → 論理回路 → イメージセンサ → 光検出デバイスの5部で通して学ぶための場所。各部は<b>参考書</b>（読んで理解する）と<b>ラボ</b>（自分の手で作って、機械に採点させる）の二層になっていて、参考書の節から対応するラボの課題へその場で飛べる。</p>
+      <p class="sub">半導体を、製造工程 → 素子の物理 → 論理回路 → イメージセンサ → 光検出デバイス → アナログ回路の6部で通して学ぶための場所。各部は<b>参考書</b>（読んで理解する）と<b>ラボ</b>（自分の手で作って、機械に採点させる）の二層になっていて、参考書の節から対応するラボの課題へその場で飛べる。</p>
       <p class="sub">4部は地続き。工程が不純物の分布を作り、不純物が接合を立て、接合が MOSFET とフォトダイオードになり、MOSFET は NAND に、フォトダイオードは画素になる。<b>背骨はイメージセンサ</b> ― 結晶と接合という物理層から、画素・読み出し回路をへて、現像・画像というアプリ層まで、1本の信号がどう登っていくかを全部の部で追いかけられるようにしてある。</p>
     </div>
     <div>
       <dl class="spec">
-        <div><dt>参考書</dt><dd>5<small>部</small></dd></div>
-        <div><dt>ラボ</dt><dd>5<small>本</small></dd></div>
-        <div><dt>採点つき課題</dt><dd>80<small>問</small></dd></div>
+        <div><dt>参考書</dt><dd>6<small>部</small></dd></div>
+        <div><dt>ラボ</dt><dd>6<small>本</small></dd></div>
+        <div><dt>採点つき課題</dt><dd>89<small>問</small></dd></div>
         <div><dt>依存</dt><dd>0<small>ブラウザのみ</small></dd></div>
         <div><dt>通信</dt><dd>0<small>手元で完結</small></dd></div>
-        <div><dt>自動検査</dt><dd>2,502<small>件 (Node)</small></dd></div>
-        <div class="spec-cap">課題数は ProcessLab 13 ＋ SemiLab 22 ＋ NandLab 25 ＋ PixelLab 12 ＋ PhotonLab 8。検査は5本の <code>node tests/all.js</code> の合計（2026-09-12 時点）。</div>
+        <div><dt>自動検査</dt><dd>2,682<small>件 (Node)</small></dd></div>
+        <div class="spec-cap">課題数は ProcessLab 13 ＋ SemiLab 22 ＋ NandLab 25 ＋ PixelLab 12 ＋ PhotonLab 8 ＋ AnalogLab 9。検査は6本の <code>node tests/all.js</code> の合計（2026-09-13 時点）。</div>
       </dl>
     </div>
   </div>
@@ -572,6 +572,33 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       <div class="do"><span class="lbl">PhotonLab 第3章</span><a class="q" href="PhotonLab/index.html?quest=fast">速さの敵は容量</a><a class="q" href="PhotonLab/index.html?quest=nepm">増やして床を沈める</a></div>
     </div>
   </article>
+
+  <!-- 第6部 -->
+  <article class="part" id="p6">
+    <div class="part-h">
+      <div>
+        <span class="pn">第6部</span>
+        <h3>坂に住む ― アナログ回路</h3>
+        <p class="desc">デジタルが捨てた「坂」に住む設計。第2部のMOSFETを増幅器として読み直し、gm と ro からソース接地・ミラー・差動対・帰還・OTA・雑音・バンドギャップまで、ラザビーの道順で登る。第5部の検出器の後段（TIA・チャージアンプ）がこの部の出口。</p>
+      </div>
+      <div class="pair">
+        <div><span class="kind read">参考書</span><a href="第6部_アナログ回路.html">アナログ回路 ― 坂に住む設計</a><small>Vov → gm → Gain → Feedback · 8章</small></div>
+        <div><span class="kind lab">ラボ</span><a href="AnalogLab/index.html">AnalogLab</a><small>原始部品 ＝ 二乗則のMOS 1個 · 3章 9問 · <a href="AnalogLab/README.md">README</a></small></div>
+      </div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">01-02</span><div class="ct"><a href="第6部_アナログ回路.html#s1">gm と ro / 一段で増やす</a></div><div class="cd">Vov=√(2Id/µCox·W/L)、gm=2Id/Vov、ro=1/(λId)。利得・スイング・帯域が同じ電圧予算を取り合う。gm/Id設計法。</div></div>
+      <div class="do"><span class="lbl">AnalogLab 第1-2章</span><a class="q" href="AnalogLab/index.html?quest=bias">Vovを狙って置く</a><a class="q" href="AnalogLab/index.html?quest=eff">電力でgmを買う</a><a class="q" href="AnalogLab/index.html?quest=gain">ソース接地で10倍</a><a class="q" href="AnalogLab/index.html?quest=gbw">GBWを電力で買う</a><a class="q" href="AnalogLab/index.html?quest=gain2">roの壁</a></div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">03-06</span><div class="ct"><a href="第6部_アナログ回路.html#s3">ミラー / 差動対 / 帰還 / OTA</a></div><div class="cd">電流のコピーとカスコード。差だけを増やして同相を捨てる。仮想接地と位相余裕。2段OTAとミラー補償（GBW=gm/2πCc）。</div></div>
+      <div class="do"><span class="lbl">AnalogLab 第3章</span><a class="q" href="AnalogLab/index.html?quest=diff">差動対で20倍</a></div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">07-08</span><div class="ct"><a href="第6部_アナログ回路.html#s7">雑音 / 基準を作る</a></div><div class="cd">√(4kTγ/gm)と1/f、チョッパとCDS、kT/C。CTATとPTATを足して1.2V ― バンドギャップ。</div></div>
+      <div class="do"><span class="lbl">AnalogLab 第3章</span><a class="q" href="AnalogLab/index.html?quest=tia">TIAのRfを選ぶ</a><a class="q" href="AnalogLab/index.html?quest=charge">チャージアンプ</a><a class="q" href="AnalogLab/index.html?quest=lownoise">2nV/√Hzの初段</a></div>
+    </div>
+  </article>
 </section>
 
 <!-- ================= 02 進み方 ================= -->
@@ -593,6 +620,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
         <li><b>センサ本体:</b> 第4部 00〜07 → PixelLab 第1〜3章<span class="r">12問</span><span class="why">光子→電子→電圧→数値→像の一本道。謎のカメラを測って当て、自分の画素を設計する</span></li>
         <li><b>床下:</b> 第4部 付録 A〜D とむすび<span class="r">読む</span><span class="why">トンネル・短チャネル・暗電流・ノイズ。すべて同じ欠陥と電界に戻る</span></li>
         <li><b>センサの外へ:</b> 第5部 → PhotonLab<span class="r">8問</span><span class="why">像を結ばず数える一族（PMT・APD・MPPC）と共通の物差し。SNRの「最適な M」を自分で探す</span></li>
+        <li><b>読み出しの中身:</b> 第6部 → AnalogLab<span class="r">9問</span><span class="why">列アンプ・TIA・チャージアンプの正体。gm と Vov の九九から差動対と帰還まで</span></li>
       </ol>
     </div>
 
@@ -607,7 +635,8 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
         <li><b>第2部</b> 2-4〜2-5 → SemiLab 第4〜5章<span class="r">9問</span><span class="why">フォトダイオードと MOSFET。最後の課題が「NAND の中身」</span></li>
         <li><b>第3部</b> NandLab 第1〜5章<span class="r">25問</span><span class="why">NAND だけから NOT・加算器・フリップフロップ・ALU まで</span></li>
         <li><b>第4部</b> 参考書 00〜07 → PixelLab 第1〜3章<span class="r">12問</span><span class="why">光子→電子→電圧→数値→像。付録 A〜D で床下の物理へ</span></li>
-        <li><b>第5部</b> 参考書 01〜08 → PhotonLab<span class="r">8問</span><span class="why">最後にセンサの外へ。PMT から光る半導体まで、検出器の系統樹を一巡</span></li>
+        <li><b>第5部</b> 参考書 01〜08 → PhotonLab<span class="r">8問</span><span class="why">センサの外へ。PMT から光る半導体まで、検出器の系統樹を一巡</span></li>
+        <li><b>第6部</b> 参考書 01〜08 → AnalogLab<span class="r">9問</span><span class="why">最後にアナログ。読み出し回路の中身を、ラザビーの道順で</span></li>
       </ol>
     </div>
 
@@ -659,7 +688,8 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
 node SemiLab\tests\all.js       1,074 件
 node NandLab\tests\all.js         642 件
 node PixelLab\tests\all.js        281 件
-node PhotonLab\tests\all.js       173 件</pre>
+node PhotonLab\tests\all.js       173 件
+node AnalogLab\tests\all.js       180 件</pre>
       <div class="caveat">
         <span class="tag">配置の注意</span>
         <p>ProcessLab と PixelLab は <code>../SemiLab/src/*.js</code> を読み込む。<b>SemiLab・ProcessLab・PixelLab は必ずこのフォルダに兄弟として置く。</b>1本だけ別の場所へ動かすと、起動はするが物理が無くて動かない。</p>

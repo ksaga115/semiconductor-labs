@@ -1,0 +1,780 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>html{color-scheme:light dark}body{margin:0;font:14px system-ui;background:#fafaf9}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>アナログ回路 ― 坂に住む設計</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ground:#EDEEF2; --surface:#FFFFFF; --surface-2:#F5F6F9; --surface-3:#E2E5ED;
+  --ink:#14161E; --ink-2:#4A5061; --ink-3:#787F92;
+  --line:#D3D7E1; --line-2:#E5E7EF;
+  --photon:#D98803; --photon-2:#A96504; --photon-soft:#FAEBCD;
+  --electron:#1D74B8; --electron-2:#155A91; --electron-soft:#D6E7F5;
+  --si:#8A8FA3; --si-soft:#DEE0E8;
+  --cfr:#CF4437; --cfg:#33955A; --cfb:#2E6DC4;
+  --volt:#7047B5; --volt-soft:#E7DEF7;
+  --digital:#0F766E; --digital-soft:#D3EAE6;
+  --warn:#B4400C; --ok:#2C7A55;
+  --shadow:0 1px 2px rgba(20,22,30,.06), 0 8px 24px -12px rgba(20,22,30,.18);
+  --mono:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;
+  --sans:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic UI","Yu Gothic",Meiryo,sans-serif;
+  --disp:"Zen Old Mincho","Hiragino Mincho ProN","Yu Mincho",serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#0F1117; --surface:#171A22; --surface-2:#1D212B; --surface-3:#2B3140;
+    --ink:#E8EAF1; --ink-2:#AAB1C3; --ink-3:#7C8397;
+    --line:#2D323F; --line-2:#232833;
+    --photon:#F0B444; --photon-2:#F7C766; --photon-soft:#3A2C10;
+    --electron:#5FB0E8; --electron-2:#8ACAF3; --electron-soft:#12293C;
+    --si:#767C92; --si-soft:#242938;
+    --cfr:#E56E60; --cfg:#57BE80; --cfb:#5F97E2;
+    --volt:#A98AE0; --volt-soft:#2A2140;
+    --digital:#4FBFAE; --digital-soft:#0F2E2B;
+    --warn:#E8875A; --ok:#5CBF8E;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0F1117; --surface:#171A22; --surface-2:#1D212B; --surface-3:#2B3140;
+  --ink:#E8EAF1; --ink-2:#AAB1C3; --ink-3:#7C8397;
+  --line:#2D323F; --line-2:#232833;
+  --photon:#F0B444; --photon-2:#F7C766; --photon-soft:#3A2C10;
+  --electron:#5FB0E8; --electron-2:#8ACAF3; --electron-soft:#12293C;
+  --si:#767C92; --si-soft:#242938;
+  --cfr:#E56E60; --cfg:#57BE80; --cfb:#5F97E2;
+  --volt:#A98AE0; --volt-soft:#2A2140;
+  --digital:#4FBFAE; --digital-soft:#0F2E2B;
+  --warn:#E8875A; --ok:#5CBF8E;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.7);
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font-family:var(--sans);
+  font-size:16px;line-height:1.8;-webkit-font-smoothing:antialiased;
+  font-feature-settings:"palt" 1;}
+h1,h2,h3,h4{margin:0;text-wrap:balance;line-height:1.35}
+p{margin:0}
+a{color:var(--electron)}
+
+.wrap{max-width:1180px;margin:0 auto;padding:0 22px 90px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-3);font-weight:500}
+
+/* hero */
+.hero{padding:52px 0 34px;border-bottom:1px solid var(--line)}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:28px}
+@media(min-width:900px){.hero-grid{grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);gap:48px;align-items:end}}
+.hero h1{font-family:var(--disp);font-weight:700;font-size:clamp(33px,5.2vw,56px);
+  letter-spacing:.02em;line-height:1.2;margin:12px 0 0}
+.hero h1 .lit{color:var(--photon)}
+.hero .sub{margin-top:18px;color:var(--ink-2);font-size:17px;max-width:36em}
+.spec{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--line);
+  border-radius:3px;background:var(--surface);overflow:hidden}
+.spec div{flex:1 1 30%;padding:11px 13px;border-right:1px solid var(--line-2);
+  border-bottom:1px solid var(--line-2)}
+.spec dt{font-size:10px;font-family:var(--mono);letter-spacing:.07em;color:var(--ink-3);margin:0}
+.spec dd{margin:2px 0 0;font-family:var(--mono);font-size:14.5px;font-weight:600;
+  color:var(--ink);font-variant-numeric:tabular-nums}
+.spec dd small{font-size:10.5px;color:var(--ink-3);font-weight:400;margin-left:2px}
+.spec-cap{padding:9px 13px;font-size:11.5px;color:var(--ink-3);flex:1 1 100%;
+  border-right:0;border-bottom:0;background:var(--surface-2)}
+
+.depth{display:inline-flex;border:1px solid var(--line);border-radius:2px;
+  background:var(--surface);overflow:hidden;font-family:var(--mono);font-size:12px}
+.depth button{appearance:none;border:0;background:transparent;color:var(--ink-2);
+  padding:7px 15px;cursor:pointer;font:inherit;letter-spacing:.05em;transition:.15s}
+.depth button[aria-pressed="true"]{background:var(--ink);color:var(--ground)}
+.depth button:focus-visible{outline:2px solid var(--electron);outline-offset:-2px}
+.depth-row{display:flex;align-items:center;gap:13px;flex-wrap:wrap;margin-top:26px}
+.depth-row span{font-size:12.5px;color:var(--ink-3)}
+
+/* condition bar */
+.bar{position:sticky;top:0;z-index:40;background:var(--surface);
+  border-bottom:1px solid var(--line);box-shadow:var(--shadow)}
+.bar-in{max-width:1180px;margin:0 auto;padding:11px 22px;
+  display:grid;grid-template-columns:minmax(0,1fr);gap:13px}
+@media(min-width:940px){.bar-in{grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:28px;align-items:center}}
+.ctrls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.ctrl label{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.07em;
+  color:var(--ink-3);margin-bottom:1px}
+.ctrl .val{font-family:var(--mono);font-size:13.5px;font-weight:600;color:var(--ink);
+  font-variant-numeric:tabular-nums;display:block;margin-bottom:2px;white-space:nowrap}
+.ctrl .val em{font-style:normal;font-size:10.5px;color:var(--ink-3);font-weight:400;margin-left:3px}
+input[type=range]{width:100%;appearance:none;background:transparent;margin:0;height:15px;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:3px;background:var(--surface-3);border-radius:2px}
+input[type=range]::-moz-range-track{height:3px;background:var(--surface-3);border-radius:2px}
+input[type=range]::-webkit-slider-thumb{appearance:none;width:14px;height:14px;border-radius:50%;
+  background:var(--ink);margin-top:-5.5px;border:2px solid var(--surface)}
+input[type=range]::-moz-range-thumb{width:11px;height:11px;border-radius:50%;background:var(--ink);border:2px solid var(--surface)}
+input[type=range]:focus-visible{outline:2px solid var(--electron);outline-offset:3px;border-radius:2px}
+
+.chain{display:flex;align-items:stretch;border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.chain div{flex:1 1 0;padding:6px 9px;border-right:1px solid var(--line-2);min-width:0}
+.chain div:last-child{border-right:0}
+.chain dt{margin:0;font-family:var(--mono);font-size:9px;letter-spacing:.05em;color:var(--ink-3);white-space:nowrap}
+.chain dd{margin:1px 0 0;font-family:var(--mono);font-size:13.5px;font-weight:600;
+  font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chain .c-ph dd{color:var(--photon-2)} .chain .c-e dd{color:var(--electron)}
+.chain .c-v dd{color:var(--volt)} .chain .c-d dd{color:var(--digital)}
+.chain dd small{font-size:9.5px;font-weight:400;color:var(--ink-3);margin-left:2px}
+.flag{font-family:var(--mono);font-size:9px;letter-spacing:.03em;color:var(--warn);
+  display:block;height:12px;line-height:12px}
+
+/* layout */
+.main{display:grid;grid-template-columns:minmax(0,1fr)}
+@media(min-width:1080px){.main{grid-template-columns:180px minmax(0,1fr);gap:46px}}
+.rail{display:none}
+@media(min-width:1080px){.rail{display:block;position:sticky;top:104px;align-self:start;
+  padding-top:58px;
+  /* 節が増えて画面より高くなったので、はみ出したぶんはレールの中でスクロールさせる */
+  max-height:calc(100vh - 118px);overflow-y:auto;overscroll-behavior:contain;
+  scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.rail::-webkit-scrollbar{width:6px}
+.rail::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+.rail::-webkit-scrollbar-track{background:transparent}}
+.rail ol{list-style:none;margin:0;padding:0;border-left:1px solid var(--line)}
+.rail a{display:grid;grid-template-columns:24px 1fr;gap:5px;padding:6px 0 6px 13px;
+  text-decoration:none;color:var(--ink-3);font-size:12.5px;line-height:1.45;
+  border-left:2px solid transparent;margin-left:-1px;transition:.15s}
+.rail a .n{font-family:var(--mono);font-size:10.5px;padding-top:2px}
+.rail a:hover{color:var(--ink-2)}
+.rail a.on{color:var(--ink);border-left-color:var(--photon);font-weight:500}
+.rail a.on .n{color:var(--photon)}
+.rail .dom{font-family:var(--mono);font-size:9px;letter-spacing:.11em;color:var(--ink-3);
+  padding:15px 0 4px 15px;text-transform:uppercase}
+.rail .dom.first{padding-top:2px}
+
+/* stage */
+.stage{padding:58px 0 6px;scroll-margin-top:112px}
+.stage + .stage{border-top:1px solid var(--line)}
+.stage-head{display:flex;gap:15px;align-items:baseline}
+.stage-num{font-family:var(--mono);font-size:11.5px;font-weight:600;color:var(--photon);
+  letter-spacing:.06em;flex:0 0 auto;padding-top:5px}
+.stage h2{font-family:var(--disp);font-weight:700;font-size:clamp(23px,3.1vw,32px);letter-spacing:.02em}
+.lede{color:var(--ink-2);font-size:16.5px;max-width:40em;margin-top:12px}
+.stage h3{font-size:15px;font-weight:700;margin-top:28px;letter-spacing:.02em}
+.stage h3 + p{margin-top:8px}
+.stage p + p{margin-top:14px}
+/* 日本語は1em＝1文字。35字は狭すぎて右に空白が残るので、42字を上限にする */
+.body-col{max-width:42em}
+.two .body-col{max-width:none}
+.two{display:grid;grid-template-columns:minmax(0,1fr);gap:26px;margin-top:26px}
+@media(min-width:880px){.two{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:34px;align-items:start}}
+.two.wide-l{grid-template-columns:minmax(0,1fr)}
+@media(min-width:980px){.two.wide-l{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}}
+.full{margin-top:26px}
+
+/* figure */
+figure{margin:0;background:var(--surface);border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.fig-head{display:flex;justify-content:space-between;align-items:center;gap:12px;
+  padding:8px 13px;border-bottom:1px solid var(--line-2);background:var(--surface-2);flex-wrap:wrap}
+.fig-title{font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;color:var(--ink-2);font-weight:500}
+.fig-body{padding:14px 13px}
+figcaption{padding:10px 13px 12px;border-top:1px solid var(--line-2);
+  font-size:12.5px;line-height:1.65;color:var(--ink-3)}
+canvas{display:block;width:100%;height:auto}
+svg{display:block;max-width:100%;height:auto}
+.scroll-x{overflow-x:auto}
+
+.btns{display:flex;gap:5px;flex-wrap:wrap}
+.btn{appearance:none;font-family:var(--mono);font-size:11px;letter-spacing:.03em;
+  padding:5px 11px;border:1px solid var(--line);background:var(--surface);color:var(--ink-2);
+  border-radius:2px;cursor:pointer;transition:.15s;white-space:nowrap;line-height:1.5}
+.btn:hover{border-color:var(--ink-3);color:var(--ink)}
+.btn[aria-pressed="true"]{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+.btn:focus-visible{outline:2px solid var(--electron);outline-offset:2px}
+.slider-row{display:grid;gap:3px;margin-top:12px}
+.slider-row .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.slider-row .lab{font-family:var(--mono);font-size:10px;letter-spacing:.07em;color:var(--ink-3)}
+.slider-row .num{font-family:var(--mono);font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
+.readouts{display:flex;flex-wrap:wrap;border-top:1px solid var(--line-2)}
+.readouts div{flex:1 1 auto;min-width:92px;padding:8px 12px;border-right:1px solid var(--line-2)}
+.readouts div:last-child{border-right:0}
+.readouts dt{margin:0;font-family:var(--mono);font-size:9px;letter-spacing:.05em;color:var(--ink-3);white-space:nowrap}
+.readouts dd{margin:1px 0 0;font-family:var(--mono);font-size:13.5px;font-weight:600;font-variant-numeric:tabular-nums}
+
+/* deep layer */
+.deep{display:none}
+[data-depth="deep"] .deep{display:block}
+.deep-note{margin-top:20px;border-left:2px solid var(--electron);padding:1px 0 1px 16px;
+  max-width:46em}
+/* 「くわしい」を閉じると片側が空になる2列組みは、1列に戻して
+   本文が理由もなく半分の幅で折り返さないようにする */
+[data-depth="simple"] .two:has(> .deep:nth-child(2):last-child){
+  grid-template-columns:minmax(0,1fr)
+}
+/* 片方だけ deep にした2列組みは、かんたん時に1列へ畳む。
+   deep が左右どちらにあっても、残った側が半分幅で折り返さないようにする */
+[data-depth="simple"] .two:has(> .deep:first-child:not(:last-child)),
+[data-depth="simple"] .two:has(> .deep:last-child:not(:first-child)){
+  grid-template-columns:minmax(0,1fr)
+}
+[data-depth="deep"] .body-col.deep{display:block}
+.deep-note .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;color:var(--electron);
+  display:block;margin-bottom:5px}
+.deep-note p + p{margin-top:12px}
+.eq{font-family:var(--mono);font-size:13px;background:var(--surface-2);border:1px solid var(--line-2);
+  border-radius:2px;padding:10px 13px;margin-top:12px;overflow-x:auto;white-space:nowrap;color:var(--ink)}
+.eq b{color:var(--photon-2);font-weight:600}
+.eq i{font-style:normal;color:var(--electron);font-weight:600}
+.eq u{text-decoration:none;color:var(--volt);font-weight:600}
+
+.tag-inline{font-family:var(--mono);font-size:11px;padding:0 5px;border-radius:2px;
+  border:1px solid currentColor;white-space:nowrap}
+.t-ph{color:var(--photon-2)} .t-e{color:var(--electron)} .t-v{color:var(--volt)} .t-d{color:var(--digital)}
+.key{font-weight:700;background:linear-gradient(transparent 62%, var(--photon-soft) 62%);padding:0 1px}
+code{font-family:var(--mono);font-size:.9em;background:var(--surface-2);padding:1px 5px;
+  border-radius:2px;border:1px solid var(--line-2)}
+.qa{margin-top:26px;border:1px solid var(--line);border-radius:3px;background:var(--surface);overflow:hidden}
+.qa > div{padding:13px 16px;border-bottom:1px solid var(--line-2)}
+.qa > div:last-child{border-bottom:0}
+#imgNote em{font-style:normal;color:var(--ink-3)}
+#imgNote strong{color:var(--ink)}
+.qa h4{font-size:14px;margin-bottom:4px;color:var(--ink)}
+.qa p{font-size:14px;color:var(--ink-2)}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line-2);vertical-align:top}
+th{font-family:var(--mono);font-size:10px;letter-spacing:.07em;color:var(--ink-3);font-weight:500;
+  border-bottom:1px solid var(--line)}
+td:first-child{font-family:var(--mono);font-weight:600;white-space:nowrap;color:var(--ink)}
+td.num{font-variant-numeric:tabular-nums;font-family:var(--mono);text-align:right;white-space:nowrap}
+tbody tr:last-child td{border-bottom:0}
+/* 長い表を主題ごとに区切る見出し行 */
+tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
+  letter-spacing:.09em;color:var(--ink-3);font-weight:500;white-space:normal;
+  padding:9px 12px;border-bottom:1px solid var(--line)}
+.foot{margin-top:54px;padding-top:22px;border-top:1px solid var(--line);
+  font-size:12.5px;color:var(--ink-3);display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+/* 冒頭の読み方の案内 */
+.guide{margin-top:26px;border:1px solid var(--line);border-radius:3px;background:var(--surface);
+  overflow:hidden}
+.guide-h{padding:9px 15px;border-bottom:1px solid var(--line-2);background:var(--surface-2);
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;color:var(--ink-2);
+  display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.guide-b{display:grid;grid-template-columns:minmax(0,1fr);gap:0}
+@media(min-width:760px){.guide-b{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.guide-b > div{padding:12px 15px;border-bottom:1px solid var(--line-2)}
+@media(min-width:760px){.guide-b > div{border-bottom:0;border-right:1px solid var(--line-2)}
+  .guide-b > div:last-child{border-right:0}}
+.guide-b b{display:block;font-size:13px;color:var(--ink);margin-bottom:3px}
+.guide-b span{font-size:12.5px;color:var(--ink-2);line-height:1.65}
+.guide-b em{font-style:normal;font-family:var(--mono);font-size:10.5px;color:var(--ink-3);
+  display:block;margin-top:5px}
+
+/* 狭い画面用の目次。レールが出ない幅で、右下に浮かせる。
+   ページのどこからでも開けて、リストは中でスクロールする */
+.toc{display:none}
+@media(max-width:1079px){.toc{display:block;position:fixed;right:14px;bottom:14px;z-index:60}}
+.toc details{position:relative}
+.toc summary{list-style:none;cursor:pointer;display:flex;align-items:baseline;gap:8px;
+  max-width:min(76vw,300px);padding:9px 15px;border:1px solid var(--line);border-radius:999px;
+  background:var(--surface);box-shadow:var(--shadow);color:var(--ink)}
+.toc summary::-webkit-details-marker{display:none}
+.toc summary .tl{font-family:var(--mono);font-size:10px;letter-spacing:.09em;color:var(--ink-3);flex:0 0 auto}
+.toc summary .tc{font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.toc details[open] summary{border-color:var(--ink-3)}
+.toc .panel{position:absolute;right:0;bottom:calc(100% + 8px);width:min(80vw,320px);
+  max-height:min(64vh,520px);overflow-y:auto;overscroll-behavior:contain;
+  background:var(--surface);border:1px solid var(--line);border-radius:4px;
+  box-shadow:var(--shadow);padding:6px 0 10px;
+  scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.toc .panel::-webkit-scrollbar{width:6px}
+.toc .panel::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+.toc ol{list-style:none;margin:0;padding:0}
+.toc li.dom{font-family:var(--mono);font-size:9px;letter-spacing:.11em;color:var(--ink-3);
+  padding:11px 16px 3px;text-transform:uppercase}
+.toc a{display:grid;grid-template-columns:26px 1fr;gap:6px;padding:7px 16px;
+  text-decoration:none;color:var(--ink-2);font-size:13.5px;line-height:1.4}
+.toc a .n{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);padding-top:2px}
+.toc a:hover,.toc a:focus-visible{background:var(--surface-2);color:var(--ink)}
+.toc a.on{background:var(--surface-2);color:var(--ink);font-weight:500}
+.toc a.on .n{color:var(--photon)}
+
+/* 断定していないことを明示する箱 */
+.caveat{margin-top:18px;border:1px solid var(--line);border-left:2px solid var(--warn);
+  border-radius:2px;background:var(--surface);padding:12px 16px;max-width:46em}
+.caveat .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;color:var(--warn);
+  display:block;margin-bottom:6px}
+.caveat p{font-size:13.5px;color:var(--ink-2);line-height:1.72}
+.caveat p + p{margin-top:10px}
+/* 参考書からラボへ渡す箱。読んだことを、隣のラボ（SemiLab / PixelLab）で自分の手で確かめる */
+.lab-go{margin-top:22px;border:1px solid var(--line);border-left:2px solid var(--digital);
+  border-radius:2px;background:var(--surface);padding:12px 16px;max-width:46em}
+.lab-go .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;color:var(--digital);
+  display:block;margin-bottom:6px}
+.lab-go p{font-size:13.5px;color:var(--ink-2);line-height:1.72}
+.lab-go .qs{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px;align-items:center}
+.lab-go .qs a{font-family:var(--mono);font-size:11.5px;padding:4px 10px;border:1px solid var(--line);
+  border-radius:2px;background:var(--surface-2);color:var(--ink);text-decoration:none;white-space:nowrap}
+.lab-go .qs a:hover{border-color:var(--digital);color:var(--digital)}
+.lab-go .qs .lab{font-family:var(--mono);font-size:10px;color:var(--ink-3);letter-spacing:.07em;margin-left:4px}
+.lab-go .qs .lab:first-child{margin-left:0}
+.back{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--ink-3);text-decoration:none;
+  display:inline-block;margin-bottom:14px}
+.back:hover{color:var(--ink)}
+/* 3本スライダの図 */
+.sl3{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;margin-top:14px}
+@media(min-width:760px){.sl3{grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}}
+.sl3 .slider-row{margin-top:0}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+
+/* 印刷。画面用の仕掛け（固定バー・レール・目次）を外し、
+   図が改ページで割れないようにして、「くわしい」の中身も出す */
+@media print{
+  .bar,.rail,.toc,.depth-row,.guide,.lab-go,.back{display:none!important}
+  .main{display:block!important}
+  .wrap{max-width:none;padding:0}
+  body{background:#fff;font-size:10.5pt;line-height:1.65}
+  /* 画面では隠している式や補足も、紙では出す */
+  .deep{display:revert!important}
+  figure,.qa,.qa>div,.caveat,.deep-note,.eq,.foot{break-inside:avoid;page-break-inside:avoid}
+  tr,thead{break-inside:avoid;page-break-inside:avoid}
+  .stage{padding:16pt 0 0;break-before:auto}
+  .stage h2,.stage h3,.stage-head{break-after:avoid;page-break-after:avoid}
+  /* 画面では横スクロールさせている広い図を、紙幅に収める */
+  .scroll-x{overflow:visible!important}
+  canvas{min-width:0!important;max-width:100%!important}
+  svg{max-width:100%!important}
+  a{color:inherit;text-decoration:none}
+  .hero{padding-top:0}
+}
+</style>
+<header class="wrap hero">
+  <div class="hero-grid">
+    <div>
+      <a class="back" href="index.html">&larr; Labs / 半導体 ― 第6部 アナログ回路（実践: AnalogLab）</a><br>
+      <span class="eyebrow">Vov &rarr; gm &rarr; Gain &rarr; Feedback</span>
+      <h1>アナログ回路 ―<br><span class="lit">坂</span>に住む設計</h1>
+      <p class="sub"><a href="第3部_論理回路.html">第3部</a>のデジタルは、トランジスタの坂を「しきい値で切って」捨てました。アナログはその坂に住みます。<a href="第2部_デバイスの基礎.html">第2部</a>で作った MOSFET を増幅器として読み直し、利得・帯域・雑音・スイングが同じ電圧予算を取り合う世界を、ラザビーの道順で登ります。<a href="第5部_光検出デバイス.html">第5部</a>の検出器の後段 ― TIA・チャージアンプ・差動対 ― がこの部の出口です。</p>
+      <div class="depth-row">
+        <div class="depth" role="group" aria-label="説明の深さ">
+          <button id="dSimple" aria-pressed="true">かんたん</button>
+          <button id="dDeep" aria-pressed="false">くわしい</button>
+        </div>
+        <span>「くわしい」で gm/Id 設計・カスコード・補償・チョッパの話が開きます</span>
+      </div>
+
+      <div class="guide">
+        <div class="guide-h"><span>読み方</span><span>全部で 35〜55 分（「かんたん / くわしい」で変わります）</span></div>
+        <div class="guide-b">
+          <div><b>一段まで</b><span>01 gm と ro → 02 一段で増やす。増幅の九九が入ります。</span><em>10 〜 15 分</em></div>
+          <div><b>回路の形まで</b><span>03 ミラー・04 差動対・05 帰還。実用回路の3点セット。</span><em>20 〜 30 分</em></div>
+          <div><b>設計の現場まで</b><span>06 OTA・07 雑音・08 基準、「くわしく」全部。</span><em>35 〜 55 分</em></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <dl class="spec">
+        <div><dt>仮想プロセス</dt><dd>µC<small>ox</small> 200<small>µA/V²</small></dd></div>
+        <div><dt>Vov の定位置</dt><dd>0.2<small>V 前後</small></dd></div>
+        <div><dt>gm の効率</dt><dd>2/Vov<small> S/A</small></dd></div>
+        <div><dt>素の利得</dt><dd>2/(λVov)<small> 倍</small></dd></div>
+        <div><dt>MOS の熱雑音</dt><dd>√(4kTγ/gm)<small> V/√Hz</small></dd></div>
+        <div><dt>基準書</dt><dd>ラザビー<small>（Razavi）</small></dd></div>
+        <div class="spec-cap">この部の数値は <a href="AnalogLab/index.html">AnalogLab</a> の仮想プロセス（µCox=200µA/V²・γ=2/3・二乗則）で計算できます。実プロセスの設計は PDK の値で ― 式の形は同じです。</div>
+      </dl>
+    </div>
+  </div>
+</header>
+
+<div class="toc"><details>
+<summary><span class="tl">目次</span><span class="tc" id="tocNow">読みはじめ</span></summary>
+<div class="panel">
+<ol>
+    <li><a href="#s1"><span class="n">01</span><span>gm と ro</span></a></li>
+    <li><a href="#s2"><span class="n">02</span><span>一段で増やす</span></a></li>
+    <li><a href="#s3"><span class="n">03</span><span>写す（ミラー）</span></a></li>
+    <li><a href="#s4"><span class="n">04</span><span>差動対</span></a></li>
+    <li><a href="#s5"><span class="n">05</span><span>帰還</span></a></li>
+    <li><a href="#s6"><span class="n">06</span><span>OTA と補償</span></a></li>
+    <li><a href="#s7"><span class="n">07</span><span>雑音</span></a></li>
+    <li><a href="#s8"><span class="n">08</span><span>基準を作る</span></a></li>
+    <li class="dom"><span>付録</span></li>
+    <li><a href="#s9"><span class="n">—</span><span>用語表</span></a></li>
+    <li><a href="#sref"><span class="n">—</span><span>出典</span></a></li>
+  </ol>
+</div>
+</details></div>
+
+<div class="wrap">
+<div class="main">
+
+<nav class="rail" aria-label="ステージ">
+  <ol>
+    <li><a href="#s1"><span class="n">01</span><span>gm と ro</span></a></li>
+    <li><a href="#s2"><span class="n">02</span><span>一段で増やす</span></a></li>
+    <li><a href="#s3"><span class="n">03</span><span>ミラー</span></a></li>
+    <li><a href="#s4"><span class="n">04</span><span>差動対</span></a></li>
+    <li><a href="#s5"><span class="n">05</span><span>帰還</span></a></li>
+    <li><a href="#s6"><span class="n">06</span><span>OTA</span></a></li>
+    <li><a href="#s7"><span class="n">07</span><span>雑音</span></a></li>
+    <li><a href="#s8"><span class="n">08</span><span>基準</span></a></li>
+    <li class="dom"><span>付録</span></li>
+    <li><a href="#s9"><span class="n">—</span><span>用語表</span></a></li>
+    <li><a href="#sref"><span class="n">—</span><span>出典</span></a></li>
+  </ol>
+</nav>
+
+<main>
+
+<!-- ================= 01 ================= -->
+<section class="stage" id="s1">
+  <div class="stage-head"><span class="stage-num">01</span>
+    <h2>トランジスタをアナログの目で見る — gm と ro</h2></div>
+  <p class="lede">デジタルの目には、MOSFET はスイッチでした。アナログの目には<strong>電圧で電流を操る蛇口</strong>です。飽和領域の二乗則（<a href="第2部_デバイスの基礎.html#s5">第2部05</a>、NandLab「電圧で見る」と同じ式）を、設計の言葉に翻訳し直します。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>gm — 坂の傾き</h3>
+      <div class="eq">V<sub>ov</sub> = &radic;(2I<sub>D</sub>/(µC<sub>ox</sub>&middot;W/L))　　g<sub>m</sub> = 2I<sub>D</sub>/V<sub>ov</sub></div>
+      <p>ゲート電圧を少し揺らしたとき、ドレイン電流がどれだけ揺れるか ― その比 g<sub>m</sub>（トランスコンダクタンス）が増幅のすべての源です。式の形が肝で、<span class="key">同じ電流でも、W/L を太らせて V<sub>ov</sub> を下げれば g<sub>m</sub> は増えます</span>。g<sub>m</sub>/I<sub>D</sub> = 2/V<sub>ov</sub> は「1µA あたり何 S 買えるか」という<strong>効率</strong> ― 低電力アナログ設計の通貨です。</p>
+    </div>
+    <div class="body-col">
+      <h3>ro — 蛇口の惜しいところ</h3>
+      <div class="eq">r<sub>o</sub> = 1/(&lambda;&middot;I<sub>D</sub>)</div>
+      <p>理想の電流源なら、ドレイン電圧を変えても電流は変わらないはず。実際はチャネル長変調 &lambda; のぶんだけ漏れます ― その「変わってしまい方」の逆数が出力抵抗 r<sub>o</sub>。<span class="key">後で見るとおり、r<sub>o</sub> は利得の天井を決めます</span>。&lambda; はチャネル長 L を伸ばすと小さくなる（＝r<sub>o</sub> が上がる）ので、アナログのトランジスタはデジタルより長めに作るのが定石です。</p>
+      <p>V<sub>ov</sub> をどこに置くか ― それがアナログ設計の最初の決断です。下げれば g<sub>m</sub> 効率と利得が伸び、スイングも楽になる。ただし素子は太り（面積・容量）、0.1V を切るあたりで二乗則の外（弱反転）に出ます。<strong>0.15〜0.25V が定位置</strong>。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 02 ================= -->
+<section class="stage" id="s2">
+  <div class="stage-head"><span class="stage-num">02</span>
+    <h2>一段で増やす — ソース接地と2人の脇役</h2></div>
+  <p class="lede">増幅器の原型は、蛇口（MOS）と受け皿（負荷）を積むだけです。ラザビーの最初の山 ― <span class="key">利得・スイング・帯域が同じ電圧予算を取り合う</span>こと ― が、この1段に全部入っています。</p>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">CS AMP — ソース接地増幅器</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 250" role="img" aria-label="ソース接地増幅器の回路図。電源から負荷抵抗RDを通ってMOSFETのドレインへ、ソースは接地。ゲートに入力、ドレインが出力。右側に利得と動作点の式。" style="min-width:700px;width:100%;display:block">
+        <path d="M120 30 H300" stroke="var(--ink-2)" stroke-width="2"/>
+        <text x="108" y="34" font-size="11" fill="var(--ink-2)" text-anchor="end">V<tspan font-size="8" dy="3">DD</tspan></text>
+        <path d="M210 30 V60" stroke="var(--ink-2)" stroke-width="1.5"/>
+        <path d="M210 60 l-6 6 l12 8 l-12 8 l12 8 l-12 8 l6 6" stroke="var(--ink-2)" stroke-width="1.5" fill="none"/>
+        <text x="232" y="82" font-size="11" fill="var(--ink)">R<tspan font-size="8" dy="3">D</tspan></text>
+        <path d="M210 104 V130" stroke="var(--ink-2)" stroke-width="1.5"/>
+        <circle cx="210" cy="130" r="3" fill="var(--warn)"/>
+        <path d="M210 130 H320" stroke="var(--warn)" stroke-width="1.5"/>
+        <text x="326" y="134" font-size="11" fill="var(--warn)">V<tspan font-size="8" dy="3">out</tspan></text>
+        <path d="M210 130 V160" stroke="var(--ink-2)" stroke-width="1.5"/>
+        <path d="M210 160 V190" stroke="var(--ink-2)" stroke-width="2"/>
+        <path d="M196 160 V190" stroke="var(--ink-2)" stroke-width="2"/>
+        <path d="M190 160 V190" stroke="var(--ink-2)" stroke-width="1.2"/>
+        <path d="M120 175 H190" stroke="var(--electron)" stroke-width="1.5"/>
+        <text x="112" y="179" font-size="11" fill="var(--electron-2)" text-anchor="end">V<tspan font-size="8" dy="3">in</tspan></text>
+        <path d="M210 190 V214" stroke="var(--ink-2)" stroke-width="1.5"/>
+        <path d="M196 214 h28 M201 220 h18 M206 226 h8" stroke="var(--ink-2)" stroke-width="1.5"/>
+        <text x="240" y="200" font-size="10" fill="var(--ink-3)">ソース接地</text>
+        <g font-size="12" fill="var(--ink)">
+          <text x="440" y="70">|A<tspan font-size="9" dy="3">v</tspan><tspan dy="-3">| = g</tspan><tspan font-size="9" dy="3">m</tspan><tspan dy="-3">&middot;(R</tspan><tspan font-size="9" dy="3">D</tspan><tspan dy="-3"> &#8741; r</tspan><tspan font-size="9" dy="3">o</tspan><tspan dy="-3">)</tspan></text>
+          <text x="440" y="104">g<tspan font-size="9" dy="3">m</tspan><tspan dy="-3">&middot;R</tspan><tspan font-size="9" dy="3">D</tspan><tspan dy="-3"> = 2&middot;(I</tspan><tspan font-size="9" dy="3">D</tspan><tspan dy="-3">R</tspan><tspan font-size="9" dy="3">D</tspan><tspan dy="-3">)/V</tspan><tspan font-size="9" dy="3">ov</tspan></text>
+          <text x="440" y="142" fill="var(--ink-2)" font-size="11">動作点 = V<tspan font-size="8" dy="3">DD</tspan><tspan dy="-3"> &minus; I</tspan><tspan font-size="8" dy="3">D</tspan><tspan dy="-3">R</tspan><tspan font-size="8" dy="3">D</tspan></text>
+          <text x="440" y="166" fill="var(--ink-2)" font-size="11">下の壁 = V<tspan font-size="8" dy="3">ov</tspan><tspan dy="-3">（飽和に留まる）</tspan></text>
+          <text x="440" y="204" fill="var(--warn)" font-size="11">利得 ＝「R<tspan font-size="8" dy="3">D</tspan><tspan dy="-3"> に落とす電圧 &divide; V</tspan><tspan font-size="8" dy="3">ov</tspan><tspan dy="-3"> の半分」</tspan></text>
+          <text x="440" y="226" fill="var(--warn)" font-size="11">― 利得とスイングは同じ電圧予算の取り合い</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>g<sub>m</sub>R<sub>D</sub> = 2(I<sub>D</sub>R<sub>D</sub>)/V<sub>ov</sub>。電源 1.8V・V<sub>ov</sub>=0.2V なら、R<sub>D</sub> に 1.2V 落として利得 12 ― それ以上は出力の居場所（スイング）が消えます。<a href="AnalogLab/index.html?quest=gain">AnalogLab「ソース接地で 10 倍」</a>がこの綱引きそのものです。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>ro の壁 — 素の利得</h3>
+      <p>R<sub>D</sub> を上げていくと、利得は r<sub>o</sub> の分流で頭打ちになります。負荷を理想の電流源にしたときの上限が<strong>素の利得（intrinsic gain）</strong>:</p>
+      <div class="eq">g<sub>m</sub>&middot;r<sub>o</sub> = 2/(&lambda;&middot;V<sub>ov</sub>)</div>
+      <p>W/L も I<sub>D</sub> も式から消えるのが肝で、<span class="key">効くのは V<sub>ov</sub>（下げる）とチャネル長（伸ばして &lambda; を下げる）だけ</span>。微細化で &lambda; が伸び、素の利得が数十まで痩せたことが、カスコード（03）や多段（06）が要る理由です。</p>
+    </div>
+    <div class="body-col">
+      <h3>2人の脇役 — SF と CG</h3>
+      <p><strong>ソースフォロワ（SF）</strong>は利得1弱の「電圧のバッファ」。増やさない代わりに、重い負荷を軽々と駆動します ― <a href="第4部_イメージセンサ.html#s5">第4部05</a>で画素の電荷を運び出していたのがまさにこれ。<strong>ゲート接地（CG）</strong>は入力抵抗が約 1/g<sub>m</sub> と低く、<span class="key">電流をそのまま受け取る</span>入口 ― TIA やカスコードの部品になります。CS が「増やす」、SF が「運ぶ」、CG が「受ける」。実用回路はこの3枚の組み合わせです。</p>
+    </div>
+  </div>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — gm/Id 設計法：効率の物差しで選ぶ</span>
+    <p>現代のアナログ設計は「W/L を決める」より先に「<strong>g<sub>m</sub>/I<sub>D</sub> をどこに置くか</strong>」を決めます。二乗則では g<sub>m</sub>/I<sub>D</sub> = 2/V<sub>ov</sub> ― V<sub>ov</sub>=0.2V で 10 S/A、0.1V で 20 S/A。<span class="key">高効率側（V<sub>ov</sub> 小）は低電力・高利得・低雑音に有利で、素子が太り遅くなる。低効率側（V<sub>ov</sub> 大）は速くて小さいが電流を食う</span>。この1軸の上のどこに座るかが、回路の性格をほぼ決めます。実プロセスでは弱反転（g<sub>m</sub>/I<sub>D</sub> が nV<sub>T</sub> 分の1、25〜30 S/A で飽和する領域 ― <a href="第2部_デバイスの基礎.html#s5">第2部の S 値</a>の裏面）まで使うので、シミュレータの g<sub>m</sub>/I<sub>D</sub> カーブが設計表になります。<a href="AnalogLab/index.html?quest=eff">AnalogLab「電力で gm を買う」</a>で一度この算数を踏んでください。</p>
+  </div>
+</section>
+
+<!-- ================= 03 ================= -->
+<section class="stage" id="s3">
+  <div class="stage-head"><span class="stage-num">03</span>
+    <h2>写す — カレントミラー</h2></div>
+  <p class="lede">アナログ回路の中を流れる電流は、ほとんどが<strong>1本の基準のコピー</strong>です。コピー機の原理は拍子抜けするほど簡単 ― 同じ V<sub>GS</sub> を共有させるだけ。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>W/L の比で増減する</h3>
+      <div class="eq">I<sub>out</sub> = I<sub>in</sub> &middot; (W/L)<sub>2</sub> / (W/L)<sub>1</sub></div>
+      <p>入力側の MOS をダイオード接続（ゲートとドレインを短絡）して I<sub>in</sub> を流すと、その電流に見合う V<sub>GS</sub> が立ちます。同じ V<sub>GS</sub> を隣の MOS に配れば、<span class="key">二乗則ごと同じ動作点がコピーされ、電流は W/L の比で拡大縮小</span>できる。バイアスの配線が「電圧1本」で済むのはこの仕掛けのおかげです。</p>
+    </div>
+    <div class="body-col">
+      <h3>コピーの品質は ro</h3>
+      <p>ミラーは「電流源」として使われますが、その品質＝出力抵抗は素の r<sub>o</sub> です。ドレイン電圧が動くとコピーが &lambda; のぶん狂う ― 02の「惜しいところ」がそのまま誤差になります。<span class="key">品質を上げたければカスコード</span>（下の「くわしく」）。代償は V<sub>ov</sub> 1個ぶんのヘッドルームです。</p>
+    </div>
+  </div>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — カスコードの直感：蛇口の上に衝立を立てる</span>
+    <p>CS の上に CG を積むのがカスコードです。出力側から見ると、下の MOS のドレイン電圧を上の MOS が<span class="key">ほぼ一定に守ってくれる</span>ので、&lambda; の漏れ道が見えなくなる ― 出力抵抗はおよそ <strong>g<sub>m</sub>r<sub>o</sub> 倍</strong>に跳ね上がります（r<sub>out</sub> ≒ g<sub>m2</sub>r<sub>o2</sub>&middot;r<sub>o1</sub>）。素の利得が数十しかない微細プロセスで利得を稼ぐ第一手で、ミラーに使えば電流源の品質も同じ倍率で上がります。<strong>請求書はヘッドルーム</strong>: 積んだぶん V<sub>ov</sub> が縦に並び、低電圧の電源では居場所がなくなる ― 電源電圧が下がり続けた20年で、カスコードから多段（06）へ潮流が動いた理由です。</p>
+  </div>
+</section>
+
+<!-- ================= 04 ================= -->
+<section class="stage" id="s4">
+  <div class="stage-head"><span class="stage-num">04</span>
+    <h2>差動対 — 差だけを増やす</h2></div>
+  <p class="lede">実世界の信号は揺れる電源・跳ねるグラウンドの上に載っています。<a href="第4部_イメージセンサ.html#sana">第4部「列の回路」</a>で予告した答えがこれ ― <strong>2本で運んで、差だけを見る</strong>。</p>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">DIFF PAIR — 差動対</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 260" role="img" aria-label="差動対の回路図。2個のMOSFETのソースを束ねてテール電流源で引き、それぞれのドレインに負荷抵抗。2つの入力の差が2つの出力の差になる。" style="min-width:700px;width:100%;display:block">
+        <path d="M170 28 H430" stroke="var(--ink-2)" stroke-width="2"/>
+        <text x="158" y="32" font-size="11" fill="var(--ink-2)" text-anchor="end">V<tspan font-size="8" dy="3">DD</tspan></text>
+        <g stroke="var(--ink-2)" stroke-width="1.5" fill="none">
+          <path d="M230 28 V52 M230 52 l-6 6 l12 8 l-12 8 l12 8 l-12 8 l6 6 M230 96 V120"/>
+          <path d="M370 28 V52 M370 52 l-6 6 l12 8 l-12 8 l12 8 l-12 8 l6 6 M370 96 V120"/>
+        </g>
+        <text x="246" y="80" font-size="11" fill="var(--ink)">R<tspan font-size="8" dy="3">D</tspan></text>
+        <text x="386" y="80" font-size="11" fill="var(--ink)">R<tspan font-size="8" dy="3">D</tspan></text>
+        <circle cx="230" cy="120" r="3" fill="var(--warn)"/><circle cx="370" cy="120" r="3" fill="var(--warn)"/>
+        <path d="M230 120 H180" stroke="var(--warn)" stroke-width="1.5"/><path d="M370 120 H420" stroke="var(--warn)" stroke-width="1.5"/>
+        <text x="174" y="124" font-size="10" fill="var(--warn)" text-anchor="end">V<tspan font-size="7" dy="2">out−</tspan></text>
+        <text x="426" y="124" font-size="10" fill="var(--warn)">V<tspan font-size="7" dy="2">out+</tspan></text>
+        <g stroke="var(--ink-2)" stroke-width="2" fill="none">
+          <path d="M230 120 V150 M230 150 V178 M216 150 V178"/>
+          <path d="M370 120 V150 M370 150 V178 M384 150 V178"/>
+        </g>
+        <path d="M210 150 V178" stroke="var(--ink-2)" stroke-width="1.2"/>
+        <path d="M390 150 V178" stroke="var(--ink-2)" stroke-width="1.2"/>
+        <path d="M160 164 H210" stroke="var(--electron)" stroke-width="1.5"/>
+        <path d="M440 164 H390" stroke="var(--electron)" stroke-width="1.5"/>
+        <text x="152" y="168" font-size="10" fill="var(--electron-2)" text-anchor="end">V<tspan font-size="7" dy="2">in+</tspan></text>
+        <text x="446" y="168" font-size="10" fill="var(--electron-2)">V<tspan font-size="7" dy="2">in−</tspan></text>
+        <path d="M230 178 V196 H370 V178" stroke="var(--ink-2)" stroke-width="1.5" fill="none"/>
+        <path d="M300 196 V212" stroke="var(--ink-2)" stroke-width="1.5"/>
+        <circle cx="300" cy="222" r="10" stroke="var(--ink-2)" fill="none" stroke-width="1.5"/>
+        <path d="M300 216 v12 M296 224 l4 6 l4 -6" stroke="var(--ink-2)" stroke-width="1.2" fill="none"/>
+        <path d="M300 232 V244 M288 244 h24 M293 250 h14" stroke="var(--ink-2)" stroke-width="1.5"/>
+        <text x="318" y="226" font-size="10" fill="var(--ink-3)">テール電流源 I<tspan font-size="7" dy="2">SS</tspan></text>
+        <g font-size="12" fill="var(--ink)">
+          <text x="520" y="70">A<tspan font-size="9" dy="3">dm</tspan><tspan dy="-3"> = &minus;g</tspan><tspan font-size="9" dy="3">m</tspan><tspan dy="-3">&middot;R</tspan><tspan font-size="9" dy="3">D</tspan></text>
+          <text x="520" y="104" fill="var(--ink-2)" font-size="11">（片側の CS と同じ）</text>
+          <text x="520" y="146" fill="var(--warn)" font-size="11">同相（2本に同じだけ乗る揺れ）は</text>
+          <text x="520" y="166" fill="var(--warn)" font-size="11">テールが飲み込み、差だけが残る</text>
+          <text x="520" y="204" fill="var(--ink-2)" font-size="11">保険料 = 電流2本ぶんの電力と</text>
+          <text x="520" y="222" fill="var(--ink-2)" font-size="11">テールの V<tspan font-size="8" dy="3">ov</tspan><tspan dy="-3"> のヘッドルーム</tspan></text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>差動利得は片側のソース接地と同じ g<sub>m</sub>R<sub>D</sub> ― 差動にしても利得はタダでは増えません。買っているのは<strong>同相を捨てる力</strong>（電源の揺れ・基板ノイズ・温度ドリフトの共通分が引き算で消える）。OP アンプの初段が例外なく差動対なのはこのためです。<a href="AnalogLab/index.html?quest=diff">AnalogLab「差動対で 20 倍」</a>。</figcaption>
+  </figure>
+</section>
+
+<!-- ================= 05 ================= -->
+<section class="stage" id="s5">
+  <div class="stage-head"><span class="stage-num">05</span>
+    <h2>帰還 — 利得を「使う」技術</h2></div>
+  <p class="lede">増幅器の利得はばらつき、温度で動き、周波数で垂れます。帰還はその利得を<strong>使い潰して安定を買う</strong>取引です ― 出力の一部を入力へ戻して差だけを増幅させると、閉ループの振る舞いは<span class="key">帰還素子（抵抗や容量の比）だけ</span>で決まるようになります。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>仮想接地 — 差が消えるまで働く</h3>
+      <p>ループゲインが大きいと、増幅器は「2つの入力の差がゼロになるまで」出力を動かします。反転入力が入力信号に釘付けになる ― これが<strong>仮想接地</strong>。TIA（<a href="第5部_光検出デバイス.html#s7">第5部07</a>）で PD の電圧振幅が殺せるのも、チャージアンプで電荷が全部 C<sub>f</sub> に押し込まれるのも、この釘のおかげです。閉ループ利得は R<sub>f</sub> や C<sub>f</sub> という<span class="key">受動素子の値だけで決まり、トランジスタのばらつきから解放されます</span>。</p>
+      <p>御利益は他にも: 帯域が伸びる（利得×帯域はほぼ一定 ― 余った利得を帯域に両替できる）、歪みが減る、入出力インピーダンスを狙って変えられる。<strong>04の差動対＋大利得＝OP アンプが「部品」として通用する</strong>のは、帰還がばらつきを消してくれるからです。</p>
+    </div>
+    <div class="body-col">
+      <h3>安定性 — 戻る道草が長すぎると</h3>
+      <p>帰還には唯一の危険があります。ループを一周する信号には<span class="key">極ごとの遅れ（位相）</span>が付く。一周で 180&deg; 遅れてまだ利得が 1 以上あると、負帰還のつもりが正帰還になり<strong>発振</strong>します ― <a href="第3部_論理回路.html">第3部</a>のリングオシレータが「わざと」やっていたことが、ここでは事故として起きる。</p>
+      <p>だから帰還アンプの設計は「利得を確保する」と「一周の遅れを 180&deg; の手前で止める（<strong>位相余裕</strong>、実務は 60&deg; 前後）」の両立です。TIA で PD の容量 C<sub>pd</sub> が大きいと不安定になりやすいのもこれで、第5部で「窓が狭い」と言った素の 1/(2&pi;R<sub>f</sub>C) を、実機がループゲインで広げられるのは<span class="key">安定性の設計を払った上での話</span>です。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 06 ================= -->
+<section class="stage" id="s6">
+  <div class="stage-head"><span class="stage-num">06</span>
+    <h2>OTA — 差動対と CS を積む</h2></div>
+  <p class="lede">素の利得が数十しかないなら、積めばいい。<strong>初段＝差動対（同相を捨てる）、二段目＝CS（振幅を稼ぐ）</strong> ― 教科書の「2段 OTA」は、この部の部品を2つ繋いだだけの形です。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>2段の勘定</h3>
+      <p>利得は段の積（数十 × 数十 = 数千）。ただし極も2つになり、05の警告どおり<span class="key">そのまま帰還を掛けるとほぼ発振します</span>。そこで補償 ― 下の「くわしく」 ― を入れて、片方の極を支配的にする。すると帯域の物差しは1本の数字に畳まれます:</p>
+      <div class="eq">GBW ≒ g<sub>m1</sub> / (2&pi;&middot;C<sub>c</sub>)　　スルーレート ≒ I<sub>SS</sub>/C<sub>c</sub></div>
+      <p>初段の g<sub>m</sub> と補償容量だけで速さが決まり、大信号の追従（スルーレート）はテール電流が決める ― <a href="AnalogLab/index.html?quest=gbw">AnalogLab「GBW を電力で買う」</a>の算数がそのまま実機の設計式になります。</p>
+    </div>
+    <div class="body-col">
+      <h3>どこにでもいる</h3>
+      <p>画素の列に並ぶアンプ（<a href="第4部_イメージセンサ.html#sana">第4部</a>）、チャージアンプの中身、ADC の比較器の前段、バンドギャップ（08）のサーボ ― この部の外で「アンプ」と呼ばれているものの中身は、たいていこの2段 OTA かその親戚です。<span class="key">差動対・ミラー・CS・帰還という4枚のカードの組み合わせ</span>として読めるようになれば、回路図はもう怖くありません。</p>
+    </div>
+  </div>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — ミラー補償：容量を「増幅して」使う</span>
+    <p>2段の間に小さな容量 C<sub>c</sub> を渡すだけで、初段から見るとそれは<span class="key">利得倍（ミラー効果）に膨らんだ大容量</span>に見えます。初段の極が大きく下がって支配的になり、同じ C<sub>c</sub> が二段目では負荷を「軽く」見せて第2極を押し上げる ― 1個の容量で2つの極が左右に割れる（<strong>極分離</strong>）。オンチップでは大きな容量が作れないので、ミラー効果で「増幅して」使うわけです。おまけに右半面ゼロという厄介者も付いてきて、直列抵抗で殺すのが定番 ― この辺りからがラザビー後半の本番です。</p>
+  </div>
+</section>
+
+<!-- ================= 07 ================= -->
+<section class="stage" id="s7">
+  <div class="stage-head"><span class="stage-num">07</span>
+    <h2>雑音 — 床は初段が決める</h2></div>
+  <p class="lede"><a href="第5部_光検出デバイス.html#s4">第5部の NEP</a> に出てきた「アンプ雑音」の中身を開けます。答えは2人だけ ― 熱雑音と 1/f。そして<strong>多段アンプの床は、ほぼ初段だけで決まります</strong>（後段の雑音は前段の利得で割られて入ってくるから）。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>熱雑音 — gm で買い戻す</h3>
+      <div class="eq">v<sub>n</sub>&sup2; = 4kT&gamma;/g<sub>m</sub>　（&gamma; ≒ 2/3）</div>
+      <p>抵抗の 4kTR と同じ物理（<a href="第4部_イメージセンサ.html#sd">第4部付録D</a>）が、MOS ではチャネル抵抗に立ちます。入力に換算すると g<sub>m</sub> 分の1 ― <span class="key">静かにしたければ g<sub>m</sub>、つまり電流で払う</span>。雑音を半分にするには g<sub>m</sub> が4倍。低雑音アンプの電力が大きいのは趣味ではなく、この式の請求書です（<a href="AnalogLab/index.html?quest=lownoise">AnalogLab「2nV/√Hz の初段」</a>）。</p>
+    </div>
+    <div class="body-col">
+      <h3>1/f — 低い方に住む亡霊</h3>
+      <p>ゲート酸化膜のトラップ（<a href="第4部_イメージセンサ.html#sd">付録D</a>の RTS の重ね合わせ）が作る 1/f 雑音は、低周波ほど大きく、<span class="key">面積 WL に反比例</span>します。ゆっくりした信号 ― センサの読み出しはたいていそう ― では熱雑音より効く。対策は3つ: 素子を太らせる、pMOS を使う（トラップが効きにくい）、そして<strong>信号を 1/f の住処から引っ越させる</strong>（下の「くわしく」）。</p>
+    </div>
+  </div>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — 1/f からの引っ越し：チョッパと CDS</span>
+    <p><strong>チョッパ</strong>は、入力信号を高い周波数に変調してから増幅し、後で復調する ― 増幅が行われるのは 1/f の届かない高域なので、亡霊はオフセットもろとも復調で外へ掃き出されます。<strong>CDS（相関二重サンプリング）</strong>は時間軸の同じ発想: <a href="第4部_イメージセンサ.html#s5">第4部05</a>で kTC を消したあの引き算は、<span class="key">2回のサンプルの間に動けない成分（オフセットと 1/f の低域）を全部消す</span>フィルタでもあります。イメージセンサが 1/f にそこそこ強いのは、CDS が最初から組み込まれているから ― 回路の技法とセンサの技法が、同じ一つの考えの別の顔です。</p>
+  </div>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — kT/C：スイッチを閉じるたびに払う税</span>
+    <p>スイッチト・キャパシタ回路（SC）はアナログの主力ですが、<span class="key">スイッチで容量をサンプルするたびに kT/C の雑音が焼き付きます</span>（<a href="第4部_イメージセンサ.html#s5">第4部05</a>のリセット雑音と同じもの。抵抗値によらず C だけで決まる、あの不思議な式）。静かにしたければ C を大きく ― でも大きな C は駆動に g<sub>m</sub> を要求し、g<sub>m</sub> は電流を要求する。<strong>雑音×速度×電力のどれかを犠牲にする三すくみ</strong>が、ここでも同じ形で現れます。ADC の分解能の議論は、実務ではほぼこの kT/C との交渉です。</p>
+  </div>
+</section>
+
+<!-- ================= 08 ================= -->
+<section class="stage" id="s8">
+  <div class="stage-head"><span class="stage-num">08</span>
+    <h2>基準を作る — バンドギャップリファレンス</h2></div>
+  <p class="lede">ADC の1目盛りも、TIA の閾値も、どこかに「動かない電圧」が要ります。電源は揺れ、温度は動く ― その中で<strong>物性定数にしか依存しない電圧</strong>を作るのがバンドギャップリファレンスです。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>逆向きの2つを足す</h3>
+      <p>ダイオード（<a href="第2部_デバイスの基礎.html#s3">第2部03</a>）の順方向電圧 V<sub>BE</sub> は温度で<strong>下がる</strong>（約 &minus;2mV/℃）。いっぽう、<span class="key">面積の違う2本のダイオードの V<sub>BE</sub> の差</span>は &Delta;V<sub>BE</sub> = V<sub>T</sub>&middot;ln n で、熱電圧 V<sub>T</sub>=kT/q に比例して<strong>上がる</strong>。下がるもの（CTAT）と上がるもの（PTAT）を適量ずつ足すと、傾きが打ち消し合います:</p>
+      <div class="eq">V<sub>ref</sub> = V<sub>BE</sub> + m&middot;V<sub>T</sub>ln n ≒ 1.2 V</div>
+    </div>
+    <div class="body-col">
+      <h3>1.2V の正体</h3>
+      <p>打ち消した先に残る値が<span class="key">シリコンのバンドギャップを 0K へ外挿した電圧（約1.2V）</span>に一致する ― だから「バンドギャップ」リファレンス。<a href="第2部_デバイスの基礎.html">第2部</a>の E<sub>g</sub>=1.12eV が、回路の教科書の最後にもう一度、基準電圧の顔をして現れるわけです。実機はここに OTA（06）のサーボと、ばらつき補正（トリミング）が付きます。温度計が欲しければ逆に PTAT だけ取り出せばよい ― センサのオンチップ温度計はたいていこれです。</p>
+    </div>
+  </div>
+
+  <div class="caveat">
+    <span class="tag">この部が単純化していること</span>
+    <p><strong>トランジスタは終始、長チャネルの二乗則（level 1）です。</strong>弱反転・速度飽和・ボディ効果・ミスマッチ（ペルグロム則は<a href="第4部_イメージセンサ.html#sd">第4部付録D</a>）は式に入れていません。V<sub>ov</sub> 0.1V 以下や微細プロセスでは、係数も式の形も動きます。</p>
+    <p><strong>周波数特性は「極＝1/(2πRC)」の直感まで。</strong>ボーデ線図・ゼロの取り扱い・位相余裕の定量設計、そして pMOS を含む実際の回路トポロジ（能動負荷・フォールデッドカスコード）はラザビーの本編に譲ります。この部は「読めるようになる」までの地図です。</p>
+  </div>
+</section>
+
+<!-- ================= 用語表 ================= -->
+<section class="stage" id="s9">
+  <div class="stage-head"><span class="stage-num">—</span>
+    <h2>用語表</h2></div>
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">TERMS — この部の言葉</span></div>
+    <div class="scroll-x">
+      <table>
+        <thead><tr><th>用語</th><th>意味</th><th>目安</th></tr></thead>
+        <tbody>
+          <tr><td>V<sub>ov</sub></td><td>オーバードライブ電圧 V<sub>GS</sub>−V<sub>th</sub>。gm 効率・スイングの壁・素の利得、全部の通貨</td><td class="num">0.15〜0.25 V</td></tr>
+          <tr><td>g<sub>m</sub> / g<sub>m</sub>/I<sub>D</sub></td><td>ゲート電圧→ドレイン電流の傾きと、その電流効率（= 2/V<sub>ov</sub>）</td><td class="num">数〜数十 S/A</td></tr>
+          <tr><td>r<sub>o</sub> / 素の利得</td><td>チャネル長変調の漏れの逆数 1/(λI<sub>D</sub>) と、利得の天井 g<sub>m</sub>r<sub>o</sub> = 2/(λV<sub>ov</sub>)</td><td class="num">数十〜百</td></tr>
+          <tr><td>CS / SF / CG</td><td>増やす・運ぶ・受ける。一段増幅の3つの置き方</td><td class="num">−g<sub>m</sub>R / 〜1 / 1/g<sub>m</sub>受け</td></tr>
+          <tr><td>カレントミラー</td><td>同じ V<sub>GS</sub> の共有で電流を W/L 比コピー。カスコードで品質（出力抵抗）を g<sub>m</sub>r<sub>o</sub> 倍</td><td class="num">I&middot;(W/L)比</td></tr>
+          <tr><td>差動対</td><td>差だけ増やし（g<sub>m</sub>R<sub>D</sub>）、同相をテールで捨てる。OP アンプの初段の定番</td><td class="num">電力2倍が保険料</td></tr>
+          <tr><td>仮想接地 / 位相余裕</td><td>帰還が入力差をゼロに釘付けにする点／一周の遅れを 180° の手前で止める余白</td><td class="num">実務 60° 前後</td></tr>
+          <tr><td>GBW / スルーレート</td><td>2段 OTA の速さの物差し g<sub>m1</sub>/2πC<sub>c</sub> と、大信号の追従 I<sub>SS</sub>/C<sub>c</sub></td><td class="num">補償容量が握る</td></tr>
+          <tr><td>4kTγ/g<sub>m</sub> / 1/f</td><td>MOS の熱雑音（入力換算）と、トラップ起源で低域に住む雑音（∝1/WL）。逃げ道はチョッパ・CDS</td><td class="num">1mS で 3.3nV/√Hz</td></tr>
+          <tr><td>バンドギャップ</td><td>CTAT（V<sub>BE</sub>）と PTAT（V<sub>T</sub>ln n）を足して温度係数ゼロ。残る値は E<sub>g</sub> 由来</td><td class="num">≒1.2 V</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </figure>
+</section>
+
+<!-- ================= 出典 ================= -->
+<section class="stage" id="sref">
+  <div class="stage-head"><span class="stage-num">—</span>
+    <h2>出典 — もっと先へ</h2></div>
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">BOOKS — この部の出発点</span></div>
+    <div class="scroll-x">
+      <table>
+        <thead><tr><th>書名</th><th>著者</th><th>この部のどこ</th></tr></thead>
+        <tbody>
+          <tr><td>Design of Analog CMOS<br>Integrated Circuits</td><td>Behzad Razavi<br>McGraw-Hill（邦訳『アナログCMOS集積回路の設計』基礎・応用・演習編、丸善出版）</td>
+            <td><strong>この部の基準書。</strong>01〜08 の全部がこの本の前半の要約です。二乗則の式・一段増幅・差動対・ミラー・帰還・補償・雑音・バンドギャップまで、導出付きで載っています。</td></tr>
+          <tr><td>Analysis and Design of<br>Analog Integrated Circuits</td><td>Gray, Hurst, Lewis, Meyer<br>Wiley</td>
+            <td>もう一冊の定番。バイポーラを含む素子物理からの導出が厚く、帰還と安定性（05）の形式的な扱いはこちらが本家です。</td></tr>
+          <tr><td>Analog Integrated<br>Circuit Design</td><td>Tony Chan Carusone,<br>David Johns, Kenneth Martin<br>Wiley</td>
+            <td>スイッチト・キャパシタと ADC/DAC へ進むならこれ。07 の「くわしく」で触れた kT/C の世界の教科書です。</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <figcaption><strong>書誌情報は、著者・出版社にとどめてあります。</strong>版が多い本ばかりなので、参照するときは手元の版の章立てで探してください。</figcaption>
+  </figure>
+
+  <div class="foot">
+    <span>この部の数値は AnalogLab の仮想プロセス（µCox=200µA/V²・γ=2/3）での代表値です。実プロセスの設計は PDK の値で。</span>
+    <span><a href="index.html">学びの地図へ戻る</a> · 実践は <a href="AnalogLab/index.html">AnalogLab</a>（設計して採点にかける） · 検出器側は <a href="第5部_光検出デバイス.html">第5部</a></span>
+    <span style="font-family:var(--mono)">Vov → gm → Gain → Feedback</span>
+  </div>
+</section>
+
+</main>
+</div>
+</div>
+
+<script>
+(function(){
+"use strict";
+var root=document.documentElement;
+var KEY="part6.depth";
+var bS=document.getElementById("dSimple"), bD=document.getElementById("dDeep");
+function setDepth(deep){
+  root.setAttribute("data-depth", deep?"deep":"simple");
+  bS.setAttribute("aria-pressed", deep?"false":"true");
+  bD.setAttribute("aria-pressed", deep?"true":"false");
+  try{ localStorage.setItem(KEY, deep?"deep":"simple"); }catch(e){}
+}
+bS.addEventListener("click", function(){ setDepth(false); });
+bD.addEventListener("click", function(){ setDepth(true); });
+var saved=null; try{ saved=localStorage.getItem(KEY); }catch(e){}
+setDepth(saved==="deep");
+
+var secs=[].slice.call(document.querySelectorAll("section.stage[id]"));
+var railLinks={}, tocLinks={};
+[].forEach.call(document.querySelectorAll('.rail a[href^="#"]'), function(a){ railLinks[a.getAttribute("href").slice(1)]=a; });
+[].forEach.call(document.querySelectorAll('.toc a[href^="#"]'), function(a){ tocLinks[a.getAttribute("href").slice(1)]=a; });
+var tocNow=document.getElementById("tocNow");
+function mark(id){
+  for(var k in railLinks) railLinks[k].classList.toggle("on", k===id);
+  if(tocNow && tocLinks[id]){
+    var sp=tocLinks[id].querySelectorAll("span");
+    tocNow.textContent=(sp[1]?sp[1].textContent:id);
+  }
+}
+if("IntersectionObserver" in window){
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ mark(e.target.id); } });
+  },{rootMargin:"-30% 0px -60% 0px"});
+  secs.forEach(function(s){ io.observe(s); });
+}
+})();
+</script>
+</body>
+</html>
