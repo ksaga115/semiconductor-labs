@@ -1,0 +1,7 @@
+{
+  "name": "QALab",
+  "version": "1.0.0",
+  "launch": "起動.vbs",
+  "kind": "web",
+  "description": "FIT/MTTF・アレニウス加速試験・ワイブル・熱抵抗とTj・TECの冷却収支・Cpk/ppm・誤差伝播を設計して採点にかけるラボ（ブラウザのみ・依存ゼロ）"
+}

@@ -1,0 +1,765 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>html{color-scheme:light dark}body{margin:0;font:14px system-ui;background:#fafaf9}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>信頼性と品質 ― 壊れ方を数える</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ground:#EDEEF2; --surface:#FFFFFF; --surface-2:#F5F6F9; --surface-3:#E2E5ED;
+  --ink:#14161E; --ink-2:#4A5061; --ink-3:#787F92;
+  --line:#D3D7E1; --line-2:#E5E7EF;
+  --photon:#D98803; --photon-2:#A96504; --photon-soft:#FAEBCD;
+  --electron:#1D74B8; --electron-2:#155A91; --electron-soft:#D6E7F5;
+  --si:#8A8FA3; --si-soft:#DEE0E8;
+  --cfr:#CF4437; --cfg:#33955A; --cfb:#2E6DC4;
+  --volt:#7047B5; --volt-soft:#E7DEF7;
+  --digital:#0F766E; --digital-soft:#D3EAE6;
+  --warn:#B4400C; --ok:#2C7A55;
+  --shadow:0 1px 2px rgba(20,22,30,.06), 0 8px 24px -12px rgba(20,22,30,.18);
+  --mono:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;
+  --sans:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic UI","Yu Gothic",Meiryo,sans-serif;
+  --disp:"Zen Old Mincho","Hiragino Mincho ProN","Yu Mincho",serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#0F1117; --surface:#171A22; --surface-2:#1D212B; --surface-3:#2B3140;
+    --ink:#E8EAF1; --ink-2:#AAB1C3; --ink-3:#7C8397;
+    --line:#2D323F; --line-2:#232833;
+    --photon:#F0B444; --photon-2:#F7C766; --photon-soft:#3A2C10;
+    --electron:#5FB0E8; --electron-2:#8ACAF3; --electron-soft:#12293C;
+    --si:#767C92; --si-soft:#242938;
+    --cfr:#E56E60; --cfg:#57BE80; --cfb:#5F97E2;
+    --volt:#A98AE0; --volt-soft:#2A2140;
+    --digital:#4FBFAE; --digital-soft:#0F2E2B;
+    --warn:#E8875A; --ok:#5CBF8E;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0F1117; --surface:#171A22; --surface-2:#1D212B; --surface-3:#2B3140;
+  --ink:#E8EAF1; --ink-2:#AAB1C3; --ink-3:#7C8397;
+  --line:#2D323F; --line-2:#232833;
+  --photon:#F0B444; --photon-2:#F7C766; --photon-soft:#3A2C10;
+  --electron:#5FB0E8; --electron-2:#8ACAF3; --electron-soft:#12293C;
+  --si:#767C92; --si-soft:#242938;
+  --cfr:#E56E60; --cfg:#57BE80; --cfb:#5F97E2;
+  --volt:#A98AE0; --volt-soft:#2A2140;
+  --digital:#4FBFAE; --digital-soft:#0F2E2B;
+  --warn:#E8875A; --ok:#5CBF8E;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.7);
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font-family:var(--sans);
+  font-size:16px;line-height:1.8;-webkit-font-smoothing:antialiased;
+  font-feature-settings:"palt" 1;}
+h1,h2,h3,h4{margin:0;text-wrap:balance;line-height:1.35}
+p{margin:0}
+a{color:var(--electron)}
+
+.wrap{max-width:1180px;margin:0 auto;padding:0 22px 90px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-3);font-weight:500}
+
+/* hero */
+.hero{padding:52px 0 34px;border-bottom:1px solid var(--line)}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:28px}
+@media(min-width:900px){.hero-grid{grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);gap:48px;align-items:end}}
+.hero h1{font-family:var(--disp);font-weight:700;font-size:clamp(33px,5.2vw,56px);
+  letter-spacing:.02em;line-height:1.2;margin:12px 0 0}
+.hero h1 .lit{color:var(--photon)}
+.hero .sub{margin-top:18px;color:var(--ink-2);font-size:17px;max-width:36em}
+.spec{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--line);
+  border-radius:3px;background:var(--surface);overflow:hidden}
+.spec div{flex:1 1 30%;padding:11px 13px;border-right:1px solid var(--line-2);
+  border-bottom:1px solid var(--line-2)}
+.spec dt{font-size:10px;font-family:var(--mono);letter-spacing:.07em;color:var(--ink-3);margin:0}
+.spec dd{margin:2px 0 0;font-family:var(--mono);font-size:14.5px;font-weight:600;
+  color:var(--ink);font-variant-numeric:tabular-nums}
+.spec dd small{font-size:10.5px;color:var(--ink-3);font-weight:400;margin-left:2px}
+.spec-cap{padding:9px 13px;font-size:11.5px;color:var(--ink-3);flex:1 1 100%;
+  border-right:0;border-bottom:0;background:var(--surface-2)}
+
+.depth{display:inline-flex;border:1px solid var(--line);border-radius:2px;
+  background:var(--surface);overflow:hidden;font-family:var(--mono);font-size:12px}
+.depth button{appearance:none;border:0;background:transparent;color:var(--ink-2);
+  padding:7px 15px;cursor:pointer;font:inherit;letter-spacing:.05em;transition:.15s}
+.depth button[aria-pressed="true"]{background:var(--ink);color:var(--ground)}
+.depth button:focus-visible{outline:2px solid var(--electron);outline-offset:-2px}
+.depth-row{display:flex;align-items:center;gap:13px;flex-wrap:wrap;margin-top:26px}
+.depth-row span{font-size:12.5px;color:var(--ink-3)}
+
+/* condition bar */
+.bar{position:sticky;top:0;z-index:40;background:var(--surface);
+  border-bottom:1px solid var(--line);box-shadow:var(--shadow)}
+.bar-in{max-width:1180px;margin:0 auto;padding:11px 22px;
+  display:grid;grid-template-columns:minmax(0,1fr);gap:13px}
+@media(min-width:940px){.bar-in{grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:28px;align-items:center}}
+.ctrls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.ctrl label{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.07em;
+  color:var(--ink-3);margin-bottom:1px}
+.ctrl .val{font-family:var(--mono);font-size:13.5px;font-weight:600;color:var(--ink);
+  font-variant-numeric:tabular-nums;display:block;margin-bottom:2px;white-space:nowrap}
+.ctrl .val em{font-style:normal;font-size:10.5px;color:var(--ink-3);font-weight:400;margin-left:3px}
+input[type=range]{width:100%;appearance:none;background:transparent;margin:0;height:15px;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:3px;background:var(--surface-3);border-radius:2px}
+input[type=range]::-moz-range-track{height:3px;background:var(--surface-3);border-radius:2px}
+input[type=range]::-webkit-slider-thumb{appearance:none;width:14px;height:14px;border-radius:50%;
+  background:var(--ink);margin-top:-5.5px;border:2px solid var(--surface)}
+input[type=range]::-moz-range-thumb{width:11px;height:11px;border-radius:50%;background:var(--ink);border:2px solid var(--surface)}
+input[type=range]:focus-visible{outline:2px solid var(--electron);outline-offset:3px;border-radius:2px}
+
+.chain{display:flex;align-items:stretch;border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.chain div{flex:1 1 0;padding:6px 9px;border-right:1px solid var(--line-2);min-width:0}
+.chain div:last-child{border-right:0}
+.chain dt{margin:0;font-family:var(--mono);font-size:9px;letter-spacing:.05em;color:var(--ink-3);white-space:nowrap}
+.chain dd{margin:1px 0 0;font-family:var(--mono);font-size:13.5px;font-weight:600;
+  font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chain .c-ph dd{color:var(--photon-2)} .chain .c-e dd{color:var(--electron)}
+.chain .c-v dd{color:var(--volt)} .chain .c-d dd{color:var(--digital)}
+.chain dd small{font-size:9.5px;font-weight:400;color:var(--ink-3);margin-left:2px}
+.flag{font-family:var(--mono);font-size:9px;letter-spacing:.03em;color:var(--warn);
+  display:block;height:12px;line-height:12px}
+
+/* layout */
+.main{display:grid;grid-template-columns:minmax(0,1fr)}
+@media(min-width:1080px){.main{grid-template-columns:180px minmax(0,1fr);gap:46px}}
+.rail{display:none}
+@media(min-width:1080px){.rail{display:block;position:sticky;top:104px;align-self:start;
+  padding-top:58px;
+  /* 節が増えて画面より高くなったので、はみ出したぶんはレールの中でスクロールさせる */
+  max-height:calc(100vh - 118px);overflow-y:auto;overscroll-behavior:contain;
+  scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.rail::-webkit-scrollbar{width:6px}
+.rail::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+.rail::-webkit-scrollbar-track{background:transparent}}
+.rail ol{list-style:none;margin:0;padding:0;border-left:1px solid var(--line)}
+.rail a{display:grid;grid-template-columns:24px 1fr;gap:5px;padding:6px 0 6px 13px;
+  text-decoration:none;color:var(--ink-3);font-size:12.5px;line-height:1.45;
+  border-left:2px solid transparent;margin-left:-1px;transition:.15s}
+.rail a .n{font-family:var(--mono);font-size:10.5px;padding-top:2px}
+.rail a:hover{color:var(--ink-2)}
+.rail a.on{color:var(--ink);border-left-color:var(--photon);font-weight:500}
+.rail a.on .n{color:var(--photon)}
+.rail .dom{font-family:var(--mono);font-size:9px;letter-spacing:.11em;color:var(--ink-3);
+  padding:15px 0 4px 15px;text-transform:uppercase}
+.rail .dom.first{padding-top:2px}
+
+/* stage */
+.stage{padding:58px 0 6px;scroll-margin-top:112px}
+.stage + .stage{border-top:1px solid var(--line)}
+.stage-head{display:flex;gap:15px;align-items:baseline}
+.stage-num{font-family:var(--mono);font-size:11.5px;font-weight:600;color:var(--photon);
+  letter-spacing:.06em;flex:0 0 auto;padding-top:5px}
+.stage h2{font-family:var(--disp);font-weight:700;font-size:clamp(23px,3.1vw,32px);letter-spacing:.02em}
+.lede{color:var(--ink-2);font-size:16.5px;max-width:40em;margin-top:12px}
+.stage h3{font-size:15px;font-weight:700;margin-top:28px;letter-spacing:.02em}
+.stage h3 + p{margin-top:8px}
+.stage p + p{margin-top:14px}
+/* 日本語は1em＝1文字。35字は狭すぎて右に空白が残るので、42字を上限にする */
+.body-col{max-width:42em}
+.two .body-col{max-width:none}
+.two{display:grid;grid-template-columns:minmax(0,1fr);gap:26px;margin-top:26px}
+@media(min-width:880px){.two{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:34px;align-items:start}}
+.two.wide-l{grid-template-columns:minmax(0,1fr)}
+@media(min-width:980px){.two.wide-l{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}}
+.full{margin-top:26px}
+
+/* figure */
+figure{margin:0;background:var(--surface);border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.fig-head{display:flex;justify-content:space-between;align-items:center;gap:12px;
+  padding:8px 13px;border-bottom:1px solid var(--line-2);background:var(--surface-2);flex-wrap:wrap}
+.fig-title{font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;color:var(--ink-2);font-weight:500}
+.fig-body{padding:14px 13px}
+figcaption{padding:10px 13px 12px;border-top:1px solid var(--line-2);
+  font-size:12.5px;line-height:1.65;color:var(--ink-3)}
+canvas{display:block;width:100%;height:auto}
+svg{display:block;max-width:100%;height:auto}
+.scroll-x{overflow-x:auto}
+
+.btns{display:flex;gap:5px;flex-wrap:wrap}
+.btn{appearance:none;font-family:var(--mono);font-size:11px;letter-spacing:.03em;
+  padding:5px 11px;border:1px solid var(--line);background:var(--surface);color:var(--ink-2);
+  border-radius:2px;cursor:pointer;transition:.15s;white-space:nowrap;line-height:1.5}
+.btn:hover{border-color:var(--ink-3);color:var(--ink)}
+.btn[aria-pressed="true"]{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+.btn:focus-visible{outline:2px solid var(--electron);outline-offset:2px}
+.slider-row{display:grid;gap:3px;margin-top:12px}
+.slider-row .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.slider-row .lab{font-family:var(--mono);font-size:10px;letter-spacing:.07em;color:var(--ink-3)}
+.slider-row .num{font-family:var(--mono);font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
+.readouts{display:flex;flex-wrap:wrap;border-top:1px solid var(--line-2)}
+.readouts div{flex:1 1 auto;min-width:92px;padding:8px 12px;border-right:1px solid var(--line-2)}
+.readouts div:last-child{border-right:0}
+.readouts dt{margin:0;font-family:var(--mono);font-size:9px;letter-spacing:.05em;color:var(--ink-3);white-space:nowrap}
+.readouts dd{margin:1px 0 0;font-family:var(--mono);font-size:13.5px;font-weight:600;font-variant-numeric:tabular-nums}
+
+/* deep layer */
+.deep{display:none}
+[data-depth="deep"] .deep{display:block}
+.deep-note{margin-top:20px;border-left:2px solid var(--electron);padding:1px 0 1px 16px;
+  max-width:46em}
+/* 「くわしい」を閉じると片側が空になる2列組みは、1列に戻して
+   本文が理由もなく半分の幅で折り返さないようにする */
+[data-depth="simple"] .two:has(> .deep:nth-child(2):last-child){
+  grid-template-columns:minmax(0,1fr)
+}
+/* 片方だけ deep にした2列組みは、かんたん時に1列へ畳む。
+   deep が左右どちらにあっても、残った側が半分幅で折り返さないようにする */
+[data-depth="simple"] .two:has(> .deep:first-child:not(:last-child)),
+[data-depth="simple"] .two:has(> .deep:last-child:not(:first-child)){
+  grid-template-columns:minmax(0,1fr)
+}
+[data-depth="deep"] .body-col.deep{display:block}
+.deep-note .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;color:var(--electron);
+  display:block;margin-bottom:5px}
+.deep-note p + p{margin-top:12px}
+.eq{font-family:var(--mono);font-size:13px;background:var(--surface-2);border:1px solid var(--line-2);
+  border-radius:2px;padding:10px 13px;margin-top:12px;overflow-x:auto;white-space:nowrap;color:var(--ink)}
+.eq b{color:var(--photon-2);font-weight:600}
+.eq i{font-style:normal;color:var(--electron);font-weight:600}
+.eq u{text-decoration:none;color:var(--volt);font-weight:600}
+
+.tag-inline{font-family:var(--mono);font-size:11px;padding:0 5px;border-radius:2px;
+  border:1px solid currentColor;white-space:nowrap}
+.t-ph{color:var(--photon-2)} .t-e{color:var(--electron)} .t-v{color:var(--volt)} .t-d{color:var(--digital)}
+.key{font-weight:700;background:linear-gradient(transparent 62%, var(--photon-soft) 62%);padding:0 1px}
+code{font-family:var(--mono);font-size:.9em;background:var(--surface-2);padding:1px 5px;
+  border-radius:2px;border:1px solid var(--line-2)}
+.qa{margin-top:26px;border:1px solid var(--line);border-radius:3px;background:var(--surface);overflow:hidden}
+.qa > div{padding:13px 16px;border-bottom:1px solid var(--line-2)}
+.qa > div:last-child{border-bottom:0}
+#imgNote em{font-style:normal;color:var(--ink-3)}
+#imgNote strong{color:var(--ink)}
+.qa h4{font-size:14px;margin-bottom:4px;color:var(--ink)}
+.qa p{font-size:14px;color:var(--ink-2)}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line-2);vertical-align:top}
+th{font-family:var(--mono);font-size:10px;letter-spacing:.07em;color:var(--ink-3);font-weight:500;
+  border-bottom:1px solid var(--line)}
+td:first-child{font-family:var(--mono);font-weight:600;white-space:nowrap;color:var(--ink)}
+td.num{font-variant-numeric:tabular-nums;font-family:var(--mono);text-align:right;white-space:nowrap}
+tbody tr:last-child td{border-bottom:0}
+/* 長い表を主題ごとに区切る見出し行 */
+tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
+  letter-spacing:.09em;color:var(--ink-3);font-weight:500;white-space:normal;
+  padding:9px 12px;border-bottom:1px solid var(--line)}
+.foot{margin-top:54px;padding-top:22px;border-top:1px solid var(--line);
+  font-size:12.5px;color:var(--ink-3);display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+/* 冒頭の読み方の案内 */
+.guide{margin-top:26px;border:1px solid var(--line);border-radius:3px;background:var(--surface);
+  overflow:hidden}
+.guide-h{padding:9px 15px;border-bottom:1px solid var(--line-2);background:var(--surface-2);
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;color:var(--ink-2);
+  display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.guide-b{display:grid;grid-template-columns:minmax(0,1fr);gap:0}
+@media(min-width:760px){.guide-b{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.guide-b > div{padding:12px 15px;border-bottom:1px solid var(--line-2)}
+@media(min-width:760px){.guide-b > div{border-bottom:0;border-right:1px solid var(--line-2)}
+  .guide-b > div:last-child{border-right:0}}
+.guide-b b{display:block;font-size:13px;color:var(--ink);margin-bottom:3px}
+.guide-b span{font-size:12.5px;color:var(--ink-2);line-height:1.65}
+.guide-b em{font-style:normal;font-family:var(--mono);font-size:10.5px;color:var(--ink-3);
+  display:block;margin-top:5px}
+
+/* 狭い画面用の目次。レールが出ない幅で、右下に浮かせる。
+   ページのどこからでも開けて、リストは中でスクロールする */
+.toc{display:none}
+@media(max-width:1079px){.toc{display:block;position:fixed;right:14px;bottom:14px;z-index:60}}
+.toc details{position:relative}
+.toc summary{list-style:none;cursor:pointer;display:flex;align-items:baseline;gap:8px;
+  max-width:min(76vw,300px);padding:9px 15px;border:1px solid var(--line);border-radius:999px;
+  background:var(--surface);box-shadow:var(--shadow);color:var(--ink)}
+.toc summary::-webkit-details-marker{display:none}
+.toc summary .tl{font-family:var(--mono);font-size:10px;letter-spacing:.09em;color:var(--ink-3);flex:0 0 auto}
+.toc summary .tc{font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.toc details[open] summary{border-color:var(--ink-3)}
+.toc .panel{position:absolute;right:0;bottom:calc(100% + 8px);width:min(80vw,320px);
+  max-height:min(64vh,520px);overflow-y:auto;overscroll-behavior:contain;
+  background:var(--surface);border:1px solid var(--line);border-radius:4px;
+  box-shadow:var(--shadow);padding:6px 0 10px;
+  scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.toc .panel::-webkit-scrollbar{width:6px}
+.toc .panel::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+.toc ol{list-style:none;margin:0;padding:0}
+.toc li.dom{font-family:var(--mono);font-size:9px;letter-spacing:.11em;color:var(--ink-3);
+  padding:11px 16px 3px;text-transform:uppercase}
+.toc a{display:grid;grid-template-columns:26px 1fr;gap:6px;padding:7px 16px;
+  text-decoration:none;color:var(--ink-2);font-size:13.5px;line-height:1.4}
+.toc a .n{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);padding-top:2px}
+.toc a:hover,.toc a:focus-visible{background:var(--surface-2);color:var(--ink)}
+.toc a.on{background:var(--surface-2);color:var(--ink);font-weight:500}
+.toc a.on .n{color:var(--photon)}
+
+/* 断定していないことを明示する箱 */
+.caveat{margin-top:18px;border:1px solid var(--line);border-left:2px solid var(--warn);
+  border-radius:2px;background:var(--surface);padding:12px 16px;max-width:46em}
+.caveat .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;color:var(--warn);
+  display:block;margin-bottom:6px}
+.caveat p{font-size:13.5px;color:var(--ink-2);line-height:1.72}
+.caveat p + p{margin-top:10px}
+/* 参考書からラボへ渡す箱。読んだことを、隣のラボ（SemiLab / PixelLab）で自分の手で確かめる */
+.lab-go{margin-top:22px;border:1px solid var(--line);border-left:2px solid var(--digital);
+  border-radius:2px;background:var(--surface);padding:12px 16px;max-width:46em}
+.lab-go .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;color:var(--digital);
+  display:block;margin-bottom:6px}
+.lab-go p{font-size:13.5px;color:var(--ink-2);line-height:1.72}
+.lab-go .qs{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px;align-items:center}
+.lab-go .qs a{font-family:var(--mono);font-size:11.5px;padding:4px 10px;border:1px solid var(--line);
+  border-radius:2px;background:var(--surface-2);color:var(--ink);text-decoration:none;white-space:nowrap}
+.lab-go .qs a:hover{border-color:var(--digital);color:var(--digital)}
+.lab-go .qs .lab{font-family:var(--mono);font-size:10px;color:var(--ink-3);letter-spacing:.07em;margin-left:4px}
+.lab-go .qs .lab:first-child{margin-left:0}
+.back{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--ink-3);text-decoration:none;
+  display:inline-block;margin-bottom:14px}
+.back:hover{color:var(--ink)}
+/* 3本スライダの図 */
+.sl3{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;margin-top:14px}
+@media(min-width:760px){.sl3{grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}}
+.sl3 .slider-row{margin-top:0}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+
+/* 印刷。画面用の仕掛け（固定バー・レール・目次）を外し、
+   図が改ページで割れないようにして、「くわしい」の中身も出す */
+@media print{
+  .bar,.rail,.toc,.depth-row,.guide,.lab-go,.back{display:none!important}
+  .main{display:block!important}
+  .wrap{max-width:none;padding:0}
+  body{background:#fff;font-size:10.5pt;line-height:1.65}
+  /* 画面では隠している式や補足も、紙では出す */
+  .deep{display:revert!important}
+  figure,.qa,.qa>div,.caveat,.deep-note,.eq,.foot{break-inside:avoid;page-break-inside:avoid}
+  tr,thead{break-inside:avoid;page-break-inside:avoid}
+  .stage{padding:16pt 0 0;break-before:auto}
+  .stage h2,.stage h3,.stage-head{break-after:avoid;page-break-after:avoid}
+  /* 画面では横スクロールさせている広い図を、紙幅に収める */
+  .scroll-x{overflow:visible!important}
+  canvas{min-width:0!important;max-width:100%!important}
+  svg{max-width:100%!important}
+  a{color:inherit;text-decoration:none}
+  .hero{padding-top:0}
+}
+</style>
+
+<header class="wrap hero">
+  <div class="hero-grid">
+    <div>
+      <a class="back" href="index.html">&larr; Labs / 半導体 ― 第8部 信頼性と品質（実践: QALab）</a><br>
+      <span class="eyebrow">FIT &rarr; Arrhenius &rarr; Weibull &rarr; Cpk</span>
+      <h1>信頼性と品質 ― <span class="lit">壊れ方</span>を数える</h1>
+      <p class="sub">作った物はいつか壊れ、作るたびに数字はばらつきます。第1部〜第7部で作ってきたデバイスたちが<strong>客先で10年生きる</strong>ことと、<strong>工場で百万個そろう</strong>こと ― その2つを祈りではなく数字で請求するのが、この部の言葉（FIT・アレニウス・ワイブル・θ・Cpk）です。保証書を書く人も、放熱器を選ぶ人も、工程能力を報告する人も、同じ式の別の窓口に座っています。</p>
+      <div class="depth-row">
+        <div class="depth" role="group" aria-label="説明の深さ">
+          <button id="dSimple" aria-pressed="true">かんたん</button>
+          <button id="dDeep" aria-pressed="false">くわしい</button>
+        </div>
+        <span>「くわしい」で 0故障試験の統計・6σの正体・バーンインが開きます</span>
+      </div>
+
+      <div class="guide">
+        <div class="guide-h"><span>読み方（役割別）</span><span>全部で 35〜55 分</span></div>
+        <div class="guide-b">
+          <div><b>営業・企画なら</b><span>01 FIT → 02 加速 → 08 規格。保証年数と FIT と MTTF の関係、そして客先に出す信頼性報告書が読める数字になります。</span><em>12 〜 18 分</em></div>
+          <div><b>設計・開発なら</b><span>04 熱 → 05 TEC → 03 ワイブルを足す。温度は寿命の為替レート ― 放熱器ひとつで寿命が6倍変わる勘定を自分で回せます。</span><em>25 〜 40 分</em></div>
+          <div><b>研究・製造なら</b><span>06 Cpk → 07 誤差の合成 と「くわしく」全部。バーンイン・GR&amp;R・「6σ=3.4ppm」の正体はここ。</span><em>35 〜 55 分</em></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <dl class="spec">
+        <div><dt>1 FIT</dt><dd>1<small> 故障/10⁹台·時間</small></dd></div>
+        <div><dt>AF（0.7eV・55→125℃）</dt><dd>&asymp;78<small></small></dd></div>
+        <div><dt>B10</dt><dd>&eta;(&minus;ln0.9)<sup>1/m</sup><small></small></dd></div>
+        <div><dt>Tj</dt><dd>Tamb+P&Sigma;&theta;<small></small></dd></div>
+        <div><dt>Cpk 1.33</dt><dd>63<small> ppm</small></dd></div>
+        <div><dt>TEC の直線</dt><dd>Qmax(1&minus;&Delta;T/&Delta;Tmax)<small></small></dd></div>
+        <div class="spec-cap">この部の式はすべて <a href="QALab/index.html">QALab</a> で数値にできます。AF&asymp;78 も 2700ppm も、ラボの検査が定義から機械で確かめています。</div>
+      </dl>
+    </div>
+  </div>
+</header>
+
+<div class="toc"><details>
+<summary><span class="tl">目次</span><span class="tc" id="tocNow">読みはじめ</span></summary>
+<div class="panel">
+<ol>
+    <li><a href="#s1"><span class="n">01</span><span>壊れ方の地図</span></a></li>
+    <li><a href="#s2"><span class="n">02</span><span>時間を買う</span></a></li>
+    <li><a href="#s3"><span class="n">03</span><span>壊れ方の形</span></a></li>
+    <li><a href="#s4"><span class="n">04</span><span>熱の会計</span></a></li>
+    <li><a href="#s5"><span class="n">05</span><span>冷やす側の窓口</span></a></li>
+    <li><a href="#s6"><span class="n">06</span><span>ばらつきの言葉</span></a></li>
+    <li><a href="#s7"><span class="n">07</span><span>誤差の合成</span></a></li>
+    <li><a href="#s8"><span class="n">08</span><span>現場の品質</span></a></li>
+    <li class="dom"><span>付録</span></li>
+    <li><a href="#s9"><span class="n">—</span><span>用語表</span></a></li>
+    <li><a href="#sref"><span class="n">—</span><span>出典</span></a></li>
+  </ol>
+</div>
+</details></div>
+
+<div class="wrap">
+<div class="main">
+
+<nav class="rail" aria-label="ステージ">
+  <ol>
+    <li><a href="#s1"><span class="n">01</span><span>壊れ方の地図</span></a></li>
+    <li><a href="#s2"><span class="n">02</span><span>時間を買う</span></a></li>
+    <li><a href="#s3"><span class="n">03</span><span>壊れ方の形</span></a></li>
+    <li><a href="#s4"><span class="n">04</span><span>熱の会計</span></a></li>
+    <li><a href="#s5"><span class="n">05</span><span>TEC</span></a></li>
+    <li><a href="#s6"><span class="n">06</span><span>Cpk</span></a></li>
+    <li><a href="#s7"><span class="n">07</span><span>誤差の合成</span></a></li>
+    <li><a href="#s8"><span class="n">08</span><span>現場の品質</span></a></li>
+    <li class="dom"><span>付録</span></li>
+    <li><a href="#s9"><span class="n">—</span><span>用語表</span></a></li>
+    <li><a href="#sref"><span class="n">—</span><span>出典</span></a></li>
+  </ol>
+</nav>
+
+<main>
+
+<!-- ================= 01 ================= -->
+<section class="stage" id="s1">
+  <div class="stage-head"><span class="stage-num">01</span>
+    <h2>壊れ方の地図 — バスタブ・FIT・MTTF</h2></div>
+  <p class="lede">故障率をひとつの曲線に描くと、浴槽の断面になります。左の壁が<strong>初期不良</strong>、平らな底が<strong>偶発故障</strong>、右の壁が<strong>摩耗</strong>。信頼性の言葉はまず、この底の高さを数える単位 ― FIT ― から始まります。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>FIT — 底の高さの単位</h3>
+      <div class="eq">1 FIT = 10⁹ 台·時間あたり 1 故障（&lambda; = 10⁻⁹ /時間）</div>
+      <p>半導体の偶発故障はまれすぎて「%/年」では小数点が続くので、<span class="key">10億台·時間</span>という大きな枡で数えます。100 FIT の部品は、1万台を1年（8,760時間）動かして<strong>約9台壊れる</strong>速さ。部品を n 個直列に使う装置は、独立なら故障率が足し算になるので、<span class="key">&lambda;<sub>系</sub> = &Sigma;&lambda;<sub>i</sub></span> ― 100 FIT × 100 個で 10,000 FIT です。</p>
+    </div>
+    <div class="body-col">
+      <h3>MTTF — 逆数にしただけ、でも罠がある</h3>
+      <div class="eq">MTTF = 1/&lambda; = 10⁹/FIT 時間</div>
+      <p>10,000 FIT なら MTTF は 10万時間 ― 約11.4年。ここで実務最大の罠: <span class="key">MTTF は保証期間ではありません</span>。故障率一定なら MTTF の時点まで生き残るのは e<sup>&minus;1</sup> = <strong>37%だけ</strong>。「MTTF 100万時間 = 114年」というカタログの数字は「114年もつ」ではなく「1年で壊れるのは0.9%」と読むのが正しい。修理して使い続ける装置では MTTF の代わりに MTBF（故障間隔）と呼びますが、式は同じです。</p>
+    </div>
+  </div>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — 「0故障でした」に何 FIT の価値があるか</span>
+    <p>信頼性試験の結果はたいてい「n台×1000時間、故障ゼロ」という形で届きます。ゼロなら故障率もゼロ…ではなく、統計的に言えるのは<span class="key">上限</span>だけ: 信頼水準 60% なら &lambda; &le; &minus;ln(0.4)/(総台·時間) = 0.92/(総台·時間)。たとえば JEDEC 流の 3ロット×77台×1000時間の高温動作試験（HTOL、125℃）を、Ea 0.7eV・使用55℃の加速率 78（→02）で使用条件に換算すると 231,000 h × 78 &asymp; 1.8×10⁷ 台·時間 ― 0故障で言えるのは<strong>「60%の信頼で 51 FIT 以下」</strong>です。報告書の FIT の脇には必ず信頼水準と仮定 Ea が付いている（付いていなければ聞く）― それがこの計算の跡です。</p>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — QALab 第1章</span>
+    <p>部品の FIT と直列数から系の MTTF を出し、「20年」の請求書を部品品質で払うか、部品点数で払うかを比べる。同じ目標に払い方が2つあることが、そのまま設計の自由度になる。</p>
+    <div class="qs"><a href="QALab/index.html?quest=mttf">系の MTTF を 20 年に</a><a href="QALab/index.html?quest=series">部品を減らして稼ぐ</a></div>
+  </div>
+</section>
+
+<!-- ================= 02 ================= -->
+<section class="stage" id="s2">
+  <div class="stage-head"><span class="stage-num">02</span>
+    <h2>時間を買う — アレニウス加速</h2></div>
+  <p class="lede">10年の保証を出すのに10年試験するわけにはいきません。温度を上げて時間を早送りする ― その為替レートがアレニウスの式です。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>AF — 温度の為替レート</h3>
+      <div class="eq">AF = exp[ (Ea/k) · (1/T<sub>使用</sub> &minus; 1/T<sub>試験</sub>) ]　　k = 8.62×10⁻⁵ eV/K</div>
+      <p>化学反応の速度が温度で指数的に速くなるのと同じ形で、多くの故障メカニズムも速くなります。定番の数字: <span class="key">Ea = 0.7 eV で 55℃→125℃ なら AF &asymp; 78</span>。使用条件の10年（87,600時間）は、125℃ の炉の中では 1,123時間 ― 約7週間で「済む」。125℃・1000時間という業界標準の HTOL 試験は、この換算でおよそ<strong>9年ぶんの前借り</strong>です。温度は絶対温度（K）で入れること ― ℃のまま引き算すると全部間違えます。</p>
+    </div>
+    <div class="body-col">
+      <h3>Ea は物性定数ではなく「仮定」</h3>
+      <p>加速率は Ea に指数で効きます。そして Ea は故障メカニズムごとに違う: 酸化膜破壊・エレクトロマイグレーション・金属間化合物の成長 ― JEDEC の JEP122 に<span class="key">0.3〜1.2 eV ほどの幅</span>で表になっています。だから信頼性報告書でまず見るのは FIT の値ではなく<strong>仮定した Ea</strong>。Ea を 0.7 から 1.0 に「盛る」と同じ試験が3倍以上の寿命を主張できてしまう ― それは加速したのではなく、仮定を変えただけです（<a href="QALab/index.html?quest=accel">QALab の課題</a>はこのため Ea を固定しています）。</p>
+    </div>
+  </div>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — 「10℃で寿命半分」の出自</span>
+    <p>現場でよく聞く10℃則は、アレニウスの式の影です。Ea = 0.7 eV のとき 55→65℃ の AF はちょうど 2.1 ― <span class="key">室温付近・Ea 0.7 eV なら本当に「10℃で約2倍」</span>。ただし同じ 10℃ でも 100→110℃ では 1.8倍、Ea 0.4 eV なら 1.5倍と、温度域と機構でレートは動きます。法則ではなく<strong>特定の Ea と温度域での近似</strong>だと知っていれば、「10℃則で見積もりました」という資料のどこを確かめればいいかが分かります。電解コンデンサの寿命式（105℃品・10℃半減）が同じ形をしているのも偶然ではありません。</p>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — QALab 第1章</span>
+    <p>Ea・使用温度・実証したい寿命を固定したまま、試験温度だけで「500時間以内」の請求書を払う。試験温度と必要時間の対数プロットが、ラボの盤面に描かれる。</p>
+    <div class="qs"><a href="QALab/index.html?quest=accel">10 年を 500 時間で実証する</a></div>
+  </div>
+</section>
+
+<!-- ================= 03 ================= -->
+<section class="stage" id="s3">
+  <div class="stage-head"><span class="stage-num">03</span>
+    <h2>壊れ方の形 — ワイブルの m を読む</h2></div>
+  <p class="lede">「いつ壊れるか」の分布を1本で書けるのがワイブル分布。形状パラメータ m の値ひとつで、バスタブのどの壁の話をしているかが分かります。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>m は壊れ方の性格</h3>
+      <div class="eq">F(t) = 1 &minus; exp[&minus;(t/&eta;)<sup>m</sup>]　　B10 = &eta;·(&minus;ln 0.9)<sup>1/m</sup></div>
+      <p><span class="key">m &lt; 1 は初期不良</span>（時間とともに故障率が下がる ― 弱い個体から先に死ぬ）、<span class="key">m = 1 は偶発</span>（指数分布 ― 01の世界）、<span class="key">m &gt; 1 は摩耗</span>（そろって寿命が来る ― はんだ疲労や可動部）。&eta;（尺度）は「63%が壊れる時刻」。実務でよく使う <strong>B10</strong>（10%が壊れる時刻）は上の式で出ます: 同じ &eta; = 10,000h でも、m=1 なら B10 は 1,054h、m=2 なら 3,246h ― <strong>形がそろっているほど、最初の10%は遅く来る</strong>。</p>
+    </div>
+    <div class="body-col">
+      <h3>どっちの壁かで対策が真逆になる</h3>
+      <p>m の診断を間違えると対策が逆効果になります。初期不良（m&lt;1）ならスクリーニング ― 出荷前に弱い個体を使い切る（→08）― が効き、設計変更は要らないかもしれない。摩耗（m&gt;1）ならスクリーニングは<strong>寿命を削るだけ</strong>で、効くのは設計・材料の変更。偶発（m=1）ならどちらも効かず、ディレーティング（→04）と冗長化の出番。<span class="key">対策会議の最初の議題は「m はいくつか」</span>であるべきなのです。</p>
+    </div>
+  </div>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — ワイブルプロットが直線になる理由</span>
+    <p>F(t) の式を2回対数を取って整理すると <span class="key">ln[&minus;ln(1&minus;F)] = m·ln t &minus; m·ln &eta;</span> ― 縦軸に ln(&minus;ln(1&minus;F))、横軸に ln t を取れば<strong>傾き m の直線</strong>になります。ワイブル確率紙（いまはソフトの1クリック）はこの座標変換のこと。故障データを打点して直線に乗れば単一メカニズム、<strong>折れ線になったら故障モードが混ざっている</strong>合図で、折れ点の前後を別々に解析します。打点には順序統計のメディアンランク（i&minus;0.3)/(n+0.4) を使うのが定石です。</p>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — QALab 第1章</span>
+    <p>m = 2（摩耗）を固定して、B10 ≥ 5,000 時間の請求書を η で払う。逆算すると η ≥ 15,400h ― 「10%までの静けさ」が尺度でいくらになるかの勘定。</p>
+    <div class="qs"><a href="QALab/index.html?quest=weib">B10 寿命を 5,000 時間に</a></div>
+  </div>
+</section>
+
+<!-- ================= 04 ================= -->
+<section class="stage" id="s4">
+  <div class="stage-head"><span class="stage-num">04</span>
+    <h2>熱の会計 — θ の直列と Tj</h2></div>
+  <p class="lede">02で見たとおり、温度は寿命の為替レートです。ではその温度は誰が決めるのか ― 発熱と、熱の通り道の抵抗。オームの法則とそっくりの会計で出せます。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>θ — 熱のオームの法則</h3>
+      <div class="eq">Tj = T<sub>周囲</sub> + P · (&theta;<sub>jc</sub> + &theta;<sub>cs</sub> + &theta;<sub>sa</sub>)</div>
+      <p>電流→発熱 P [W]、電圧→温度差、抵抗→熱抵抗 &theta; [K/W]。チップ→ケース（&theta;jc、パッケージで決まる）、ケース→放熱器（&theta;cs、グリスやシート）、放熱器→空気（&theta;sa、放熱器のサイズと風）の<span class="key">直列和に発熱を掛けると、チップ温度（ジャンクション温度 Tj）の上昇</span>になります。2W の発熱で &Sigma;&theta; = 32 K/W なら、周囲40℃で Tj = 104℃。設計で動かしやすいのはほぼ &theta;sa だけ ― 放熱器選定が熱設計の主戦場です。</p>
+    </div>
+    <div class="body-col">
+      <h3>ディレーティング — 為替差益で寿命を買う</h3>
+      <p>Tj 104℃ を、放熱器を良くして（&theta;sa 30→15 K/W）74℃ に下げると、Ea 0.7eV のアレニウスで<span class="key">寿命は約6.4倍</span>。放熱器ひとつでこの差です。定格より軽く使う（ディレーティング）のも同じ理屈 ― 発熱 P が下がれば Tj が下がり、02の式が寿命を返してくれる。<strong>「Tj を85℃以下に」という社内ルールの正体は、寿命の為替レート表</strong>なのです。MPPC や APD の増倍率が温度で動く話（<a href="第5部_光検出デバイス.html#s3">第5部03</a>）も、この Tj の会計の上に乗っています。</p>
+    </div>
+  </div>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — カタログの θja を信じすぎない</span>
+    <p>データシートには &theta;ja（ジャンクション→周囲を一発で）も載っていますが、この値は <span class="key">JEDEC 規定の標準基板（JESD51）に載せた測定値</span>で、実基板の銅箔・ビア・隣の部品で大きく変わります。&theta;ja は「パッケージ同士の比較用」、実設計は &theta;jc から積み上げるか熱シミュレーション ― と使い分けるのが安全。もうひとつ: &theta; 一定は<strong>定常状態</strong>の話で、パルス駆動なら過渡熱インピーダンス Zth(t) の曲線を見ます。短いパルスは熱容量が受け止めるので、同じピーク電力でも Tj は低く済みます。</p>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — QALab 第2章</span>
+    <p>発熱・周囲温度・θjc・θcs を固定し、放熱器の θsa だけで Tj ≤ 85℃ を払う。逆算は θsa ≤ 20.5 K/W ― カタログの放熱器の欄でどの行から買えるかが決まる数字。</p>
+    <div class="qs"><a href="QALab/index.html?quest=theta">Tj を 85 ℃ 以下に</a></div>
+  </div>
+</section>
+
+<!-- ================= 05 ================= -->
+<section class="stage" id="s5">
+  <div class="stage-head"><span class="stage-num">05</span>
+    <h2>冷やす側の窓口 — TEC の直線</h2></div>
+  <p class="lede">検出器の暗電流を桁で減らすには冷やすのが早い ― <a href="第5部_光検出デバイス.html#s5">第5部</a>が「冷却の請求書」と呼んだ話です。その請求書の支払い窓口がペルチェ素子（TEC）。性能はたった1本の直線で近似できます。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>ΔT と Qc のトレードオフ</h3>
+      <div class="eq">Qc &asymp; Qmax · (1 &minus; &Delta;T/&Delta;Tmax)</div>
+      <p>TEC のカタログ値は2つ: 温度差ゼロのとき吸える熱 <strong>Qmax</strong> と、何も吸わないとき作れる最大温度差 <strong>&Delta;Tmax</strong>（単段で70K前後）。その間は<span class="key">ほぼ直線</span>で、深く冷やすほど吸えなくなります。Qmax 5W・&Delta;Tmax 70K の素子で 60K 冷やすと、吸えるのは 0.71W ― センサの発熱と侵入熱の合計がそれを超えたら、その温度は維持できません。<strong>「何度にしたいか」と「何ワット吸うか」は同時には欲張れない</strong> ― これが冷却設計の第一文です。</p>
+    </div>
+    <div class="body-col">
+      <h3>熱い側はもっと熱い</h3>
+      <p>TEC は熱を<strong>移す</strong>素子であって消す素子ではありません。高温側には<span class="key">吸った熱＋TEC 自身の消費電力</span>が出てきます（効率 COP はこの領域でしばしば1未満 ― 1W 吸うのに 1W 以上食う）。つまり高温側の放熱器には冷やしたい熱の2〜3倍が流れ、その設計は04の &theta; の会計そのもの。放熱が追いつかないと高温側の温度が上がり、同じ &Delta;T でも到達温度が浮いてしまう ― <strong>TEC の失敗のほとんどは冷たい側ではなく熱い側で起きます</strong>。</p>
+    </div>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — QALab 第2章</span>
+    <p>Qmax・ΔTmax・熱負荷を固定して、「50K 以上冷やし、かつ負荷を吸い切る」ΔT の窓を探す。窓は 50〜53K しかない ― 直線のトレードオフが両側から挟んでくる。</p>
+    <div class="qs"><a href="QALab/index.html?quest=tec">TEC の請求書を払う</a></div>
+  </div>
+</section>
+
+<!-- ================= 06 ================= -->
+<section class="stage" id="s6">
+  <div class="stage-head"><span class="stage-num">06</span>
+    <h2>ばらつきの言葉 — Cpk と ppm</h2></div>
+  <p class="lede">ここからは「壊れる」ではなく「そろわない」の話。工程のばらつき σ と規格の幅を1つの数字で対話させるのが工程能力指数 Cpk です。<a href="第1部_製造プロセス.html">第1部</a>の歩留まりの、統計側の顔でもあります。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>Cpk — 規格までの距離を σ で測る</h3>
+      <div class="eq">Cpk = (規格の片幅 &minus; |中心のずれ|) / 3&sigma;</div>
+      <p>規格の端まで<span class="key">3&sigma; ちょうどなら Cpk = 1</span>。正規分布なら両側で 2,700 ppm がはみ出します。業界でよく要求される <strong>Cpk 1.33</strong> は「端まで4&sigma;」のことで、はみ出しは 63 ppm。1.67 なら 5&sigma; で 0.6 ppm。<strong>ずれ（中心の偏り）は σ と同罪</strong> ― 分子から直接引かれるので、ばらつきを絞るのと中心を合わせるのは同じ価値があります。ばらつきだけ見た指数は Cp と呼び、Cp と Cpk の差が「中心合わせで取り返せる分」です。</p>
+    </div>
+    <div class="body-col">
+      <h3>ppm 換算は正規分布の約束の上にある</h3>
+      <p>Cpk→ppm の換算表は<span class="key">分布が正規である前提</span>で正規分布の裾 &Phi; を積分しただけのものです。実工程の裾はしばしば正規より厚い（外れ値・混入ロット・測定ミス）ので、Cpk 1.33 を測ったからと 63 ppm を<strong>保証する</strong>のは踏み込みすぎ。それでも共通言語としての価値は大きく、「Cpk が 1 を切った工程は規格内に収まる根拠がない」という警報としては強力に機能します。センサの画素ごとの感度ばらつき（PRNU、<a href="第4部_イメージセンサ.html#sptc">第4部 PTC</a>）も、まったく同じ言葉で報告されます。</p>
+    </div>
+  </div>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — 「6σ = 3.4ppm」の 1.5σ</span>
+    <p>正規分布で ±6&sigma; の外は両側 0.002 ppm のはず ― なのにシックスシグマ運動の掲げる数字は 3.4 ppm。差の正体は<span class="key">「工程の中心は長期的に ±1.5&sigma; 漂う」という運動側の約束事</span>で、6&sigma; &minus; 1.5&sigma; = 4.5&sigma; の片側裾 = 3.4 ppm がこの数字の出どころです。統計の定理ではなく経験的な取り決めなので、「6σ品質＝3.4ppm」と聞いたら 1.5σ シフト込みの流儀の話だと翻訳してください。この部の Cpk→ppm はシフトなし（測った時点の分布そのまま）で計算しています。</p>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — QALab 第3章</span>
+    <p>規格幅と中心ずれを固定し、σ だけで Cpk ≥ 1.33 を払う。ずれ 0.05 のぶん σ の許しは 0.0627 まで縮む ― 「中心を合わせれば σ は 0.075 でよかった」が数字で見える。</p>
+    <div class="qs"><a href="QALab/index.html?quest=cpk">Cpk 1.33 の工程</a></div>
+  </div>
+</section>
+
+<!-- ================= 07 ================= -->
+<section class="stage" id="s7">
+  <div class="stage-head"><span class="stage-num">07</span>
+    <h2>誤差の合成 — 二乗和の会計</h2></div>
+  <p class="lede">測定器のばらつき、サンプルのばらつき、日差・器差 ― 独立な誤差は足し算ではなく<strong>二乗和の平方根</strong>で足します。この1行が、誤差予算という設計手法の全部です。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>√(σ₁²+σ₂²) — 大きい方しか効かない</h3>
+      <div class="eq">&sigma;<sub>合成</sub> = &radic;(&sigma;₁&sup2; + &sigma;₂&sup2;)　　（独立なとき）</div>
+      <p>0.3% と 0.4% を合成すると 0.5% ― 3-4-5 の直角三角形です。この足し算の実務的な帰結は<span class="key">「支配項以外を磨いても無駄」</span>: 0.3 と 0.6 の合成は 0.67 で、小さい方を半分の 0.15 にしても 0.62 にしかならない。大きい方を 0.4 にすれば 0.5。<strong>誤差予算表を書いたら、まず最大の項に全資源を向ける</strong> ― ノイズの二乗和（<a href="第6部_アナログ回路.html#s7">第6部07</a>）とまったく同じ会計です。</p>
+    </div>
+    <div class="body-col">
+      <h3>測定系は工程の共犯者 — GR&amp;R</h3>
+      <p>工程の σ を測った値には、測定系自身のばらつきが二乗和で混入しています。<span class="key">Gauge R&amp;R</span> は同じ物を複数人×複数回測ってこれを分離する定番手順で、目安は測定系のばらつきが公差の<strong>10%未満なら合格、30%超なら測定系の作り直し</strong>（AIAG の MSA の流儀）。Cpk が悪い工程を叩く前に、まず物差しを疑う ― 順番を間違えると存在しない不良を追いかけることになります。カメラの世界でこの「物差しの検定」を規格化したのが EMVA 1288（<a href="第4部_イメージセンサ.html#sptc">第4部 PTC</a> の作法の標準化）です。</p>
+    </div>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — QALab 第3章</span>
+    <p>誤差Aを 0.3% に固定して、合成 0.51% 以下の予算を誤差Bで払う。B ≤ 0.41% ― 二乗和は「両方半分ずつ」を許してくれない。</p>
+    <div class="qs"><a href="QALab/index.html?quest=prop">誤差の合成を 0.51% に</a></div>
+  </div>
+</section>
+
+<!-- ================= 08 ================= -->
+<section class="stage" id="s8">
+  <div class="stage-head"><span class="stage-num">08</span>
+    <h2>現場の品質 — 規格・スクリーニング・報告書</h2></div>
+  <p class="lede">最後に、この部の言葉が現場でどんな書類になって流れているか。試験の名前と規格の番号は、01〜07 の式の商品名です。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>定番試験の正体</h3>
+      <p>信頼性認定の骨格は JEDEC の JESD47（車載はさらに厳しい AEC-Q100）に定義されています。<span class="key">HTOL</span>（125℃・1000h 通電）は02の温度加速で偶発故障を、<span class="key">温度サイクル</span>（&minus;55〜125℃ を数百回など）ははんだ・ワイヤの熱膨張差疲労（m&gt;1 の摩耗）を、<span class="key">85℃/85%RH・1000h</span>（THB）や HAST は湿気の侵入を、それぞれ担当します。試験の名前を見たら「バスタブのどの壁を攻めているか」に翻訳する ― それだけで報告書の目次が読めます。</p>
+    </div>
+    <div class="body-col">
+      <h3>報告書のどこを見るか</h3>
+      <p>信頼性データの読み方は3点セットです: <span class="key">①仮定（Ea・加速式・使用条件）②標本（何ロット・何台・何時間）③信頼水準（0故障の上限計算）</span>。「FIT いくつ」という結論の数字は、この3つを差し替えれば大きく動きます（01・02の「くわしく」参照）。営業の席でこの3つを聞けること、設計の席でこの3つを書けること ― それがこの部の実務的なゴールです。</p>
+    </div>
+  </div>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — スクリーニングとバーンイン</span>
+    <p>バスタブの左の壁（m&lt;1 の初期不良）は、設計ではなく<strong>個体の欠陥</strong>（微小なごみ・弱い酸化膜）が原因なので、対策は選別: 出荷前に高温・高電圧で短時間動かし、<span class="key">弱い個体の残り寿命を工場の中で使い切ってから出す</span>のがバーンインです。効くのは m&lt;1 の集団だけ ― 摩耗型（m&gt;1）にかけると全個体の寿命を等しく削るだけなので、03の m の診断が先に立ちます。かける時間と温度も02の AF で設計する ― この部の式は全部つながっています。</p>
+  </div>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — ESD: リストバンドは回路定数である</span>
+    <p>人体は歩くだけで数 kV に帯電し、指先からの放電は 100 pF・1.5 k&Omega; の RC 放電でモデル化されます（HBM: 人体モデル。搬送中に帯電した<strong>デバイス自身</strong>が金属に触れた瞬間に放つ、もっと速い放電が CDM: 帯電デバイスモデル）。多くの半導体は<span class="key">HBM 数百 V〜2 kV で壊れる</span>ので、人が「何も感じない」放電（〜3 kV 未満）で十分に壊れる ― 発見できない不良の一大産地です。リストバンドと導電マットは接地への放電経路をゆっくりにする<strong>回路設計</strong>であって、儀式ではありません。壊れ切らずに弱った個体（潜在損傷）が市場で初期不良になる ― バスタブの左壁の供給源のひとつです。</p>
+  </div>
+
+  <div class="caveat">
+    <span class="tag">この部が単純化していること</span>
+    <p><strong>加速は温度のみです。</strong>湿度加速（Peck の式: 相対湿度のべき乗×アレニウス）、温度サイクルの Coffin-Manson（寿命 &prop; &Delta;T<sup>&minus;n</sup>、はんだで n&asymp;2）、電圧・電流密度の加速は式ごとモデル外。実際の認定はこれらの組み合わせです。</p>
+    <p><strong>Cpk→ppm は正規分布、θ は一次元定常、TEC は一次近似です。</strong>裾の厚い分布・過渡熱・TEC の電流依存は、それぞれ実測とシミュレーションの領分。この部の式は「桁と方向を最初に当てる」ための一次見積もりとして使ってください。</p>
+  </div>
+</section>
+
+<!-- ================= 用語表 ================= -->
+<section class="stage" id="s9">
+  <div class="stage-head"><span class="stage-num">—</span>
+    <h2>用語表</h2></div>
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">TERMS — この部の言葉</span></div>
+    <div class="scroll-x">
+      <table>
+        <thead><tr><th>用語</th><th>意味</th><th>目安</th></tr></thead>
+        <tbody>
+          <tr><td>バスタブ曲線</td><td>故障率の時間変化。初期不良（下り坂）・偶発（底）・摩耗（上り坂）の3区間で対策が全部違う</td><td class="num">m&lt;1 / =1 / &gt;1</td></tr>
+          <tr><td>FIT / MTTF / MTBF</td><td>10⁹台·時間あたりの故障数と、その逆数。直列系は FIT の足し算。MTTF 時点の生存率は37%</td><td class="num">100 FIT=MTTF 1141年</td></tr>
+          <tr><td>アレニウス加速 / AF</td><td>exp[(Ea/k)(1/Tu−1/Ts)]。温度で時間を早送りする為替レート。Ea は故障機構ごとの仮定</td><td class="num">0.7eV·55→125℃で78</td></tr>
+          <tr><td>Ea（活性化エネルギー）</td><td>加速の効き方を決める1数字。JEP122 に機構別の表。報告書ではまずこれを確認する</td><td class="num">0.3〜1.2 eV</td></tr>
+          <tr><td>HTOL / THB / 温度サイクル</td><td>高温動作・高温高湿・熱膨張差疲労の定番試験。バスタブのどの壁を攻めるかが違う</td><td class="num">125℃1000h / 85·85</td></tr>
+          <tr><td>ワイブル m・η / B10</td><td>壊れ方の形と尺度。B10=η(−ln0.9)^{1/m} は「10%が壊れる時刻」</td><td class="num">η は63%点</td></tr>
+          <tr><td>熱抵抗 θ / Tj</td><td>熱のオームの法則。Tj=Tamb+PΣθ。カタログ θja は標準基板の値で実基板では変わる</td><td class="num">K/W の直列和</td></tr>
+          <tr><td>ディレーティング</td><td>定格より軽く・冷たく使って寿命を買う。根拠はアレニウス ― Tj 30℃ 下げで寿命数倍</td><td class="num">104→74℃で6.4倍</td></tr>
+          <tr><td>TEC / Qmax・ΔTmax</td><td>ペルチェ冷却。Qc=Qmax(1−ΔT/ΔTmax) の直線。高温側には吸った熱＋消費電力が出る</td><td class="num">単段 ΔTmax〜70K</td></tr>
+          <tr><td>Cp / Cpk</td><td>規格幅を 6σ で割った工程能力と、中心ずれを引いた実力値。差は中心合わせの伸びしろ</td><td class="num">1.33 が定番要求</td></tr>
+          <tr><td>ppm 換算</td><td>Cpk→不良率。正規仮定で 1.00→2700・1.33→63・1.67→0.6 ppm。裾が正規でないと崩れる</td><td class="num">±3σ で 2700</td></tr>
+          <tr><td>GR&amp;R / MSA</td><td>測定系自身のばらつきの検定。工程を叩く前に物差しを疑う手順</td><td class="num">公差の10%未満で合格</td></tr>
+          <tr><td>誤差伝播</td><td>独立誤差は √(Σσ²)。支配項以外を磨いても合成はほぼ動かない ― 誤差予算の根拠</td><td class="num">3-4-5</td></tr>
+          <tr><td>バーンイン</td><td>初期不良個体の残り寿命を出荷前に使い切る選別。m&gt;1 の集団には逆効果</td><td class="num">m&lt;1 にだけ効く</td></tr>
+          <tr><td>ESD / HBM・CDM</td><td>静電破壊。人体は 100pF·1.5kΩ の放電源。感じない電圧（〜3kV）で十分壊れる</td><td class="num">HBM 数百V〜2kV</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </figure>
+</section>
+
+<!-- ================= 出典 ================= -->
+<section class="stage" id="sref">
+  <div class="stage-head"><span class="stage-num">—</span>
+    <h2>出典 — もっと先へ</h2></div>
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">BOOKS &amp; STANDARDS — この部の出発点</span></div>
+    <div class="scroll-x">
+      <table>
+        <thead><tr><th>資料</th><th>発行</th><th>この部のどこ</th></tr></thead>
+        <tbody>
+          <tr><td>JEP122<br>（Failure Mechanisms and Models）</td><td>JEDEC<br>（無償公開）</td>
+            <td><strong>02 の Ea の表の本家。</strong>故障メカニズムごとの加速モデルと活性化エネルギーが根拠付きで並びます。信頼性報告書の Ea の妥当性はここと突き合わせる。JESD47（認定試験の構成）・JESD51（熱測定）も同じ棚に。</td></tr>
+          <tr><td>Introduction to<br>Statistical Quality Control</td><td>D. C. Montgomery<br>Wiley</td>
+            <td>06・07 の教科書。管理図・工程能力指数・GR&amp;R（MSA）・抜取検査まで、品質統計の標準的な一冊です。Cpk の限界と正しい使い方の議論もここにあります。</td></tr>
+          <tr><td>信頼性工学の教科書<br>（ワイブル解析を含むもの）</td><td>各社<br>（日科技連ほか）</td>
+            <td>01・03 の背景。ワイブル確率紙・メディアンランク・0故障の信頼限界など、この部が1段で通り過ぎた統計の手続きが演習付きで学べます。版が多いので手元の目次で該当章を。</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <figcaption><strong>規格番号は原文が正です。</strong>JEDEC の文書は登録すれば無償で読めます ― 社内資料の Ea や試験条件の出典を一次資料で確かめる習慣が、この部のいちばんの持ち帰りです。</figcaption>
+  </figure>
+
+  <div class="foot">
+    <span>この部の式は一次見積もり用です。認定計画・熱設計の確定は規格原文とシミュレーションで。</span>
+    <span><a href="index.html">学びの地図へ戻る</a> · 実践は <a href="QALab/index.html">QALab</a>（設計して採点にかける） · 温度の被害者は <a href="第5部_光検出デバイス.html">第5部</a> · ばらつきの現場は <a href="第1部_製造プロセス.html">第1部</a></span>
+    <span style="font-family:var(--mono)">FIT → Arrhenius → Weibull → Cpk</span>
+  </div>
+</section>
+
+</main>
+</div>
+</div>
+
+<script>
+(function(){
+"use strict";
+var root=document.documentElement;
+var KEY="part8.depth";
+var bS=document.getElementById("dSimple"), bD=document.getElementById("dDeep");
+function setDepth(deep){
+  root.setAttribute("data-depth", deep?"deep":"simple");
+  bS.setAttribute("aria-pressed", deep?"false":"true");
+  bD.setAttribute("aria-pressed", deep?"true":"false");
+  try{ localStorage.setItem(KEY, deep?"deep":"simple"); }catch(e){}
+}
+bS.addEventListener("click", function(){ setDepth(false); });
+bD.addEventListener("click", function(){ setDepth(true); });
+var saved=null; try{ saved=localStorage.getItem(KEY); }catch(e){}
+setDepth(saved==="deep");
+
+var secs=[].slice.call(document.querySelectorAll("section.stage[id]"));
+var railLinks={}, tocLinks={};
+[].forEach.call(document.querySelectorAll('.rail a[href^="#"]'), function(a){ railLinks[a.getAttribute("href").slice(1)]=a; });
+[].forEach.call(document.querySelectorAll('.toc a[href^="#"]'), function(a){ tocLinks[a.getAttribute("href").slice(1)]=a; });
+var tocNow=document.getElementById("tocNow");
+function mark(id){
+  for(var k in railLinks) railLinks[k].classList.toggle("on", k===id);
+  if(tocNow && tocLinks[id]){
+    var sp=tocLinks[id].querySelectorAll("span");
+    tocNow.textContent=(sp[1]?sp[1].textContent:id);
+  }
+}
+if("IntersectionObserver" in window){
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ mark(e.target.id); } });
+  },{rootMargin:"-30% 0px -60% 0px"});
+  secs.forEach(function(s){ io.observe(s); });
+}
+})();
+</script>
+</body>
+</html>
