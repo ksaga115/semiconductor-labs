@@ -1,0 +1,212 @@
+/* 課題と採点 ― すべて design 型。条件で固定する欄は check がその値かどうかも見る */
+(function (global) {
+  'use strict';
+  var OP = global.OP || (global.OP = {});
+  var O = OP.opto;
+
+  function row(label, value, want, ok) { return { label: label, value: value, want: want, ok: !!ok }; }
+  function f(v, d) { return (+v).toFixed(d === undefined ? 2 : d); }
+  function near(a, b) { return Math.abs(a - b) <= Math.abs(b) * 1e-9 + 1e-12; }
+
+  var CH = [
+    { id: 1, name: '第1章　明るさの会計', lead: 'lx を W に、W を光子に。カメラ方程式と逆二乗。第4部の照度の根拠がここ。' },
+    { id: 2, name: '第2章　結像と限界', lead: 'レンズの公式・エアリー径・0.61λ/NA。絞りと解像の綱引き。' },
+    { id: 3, name: '第3章　ビームと膜と計測', lead: 'ガウスビームの集光、ファイバの窓、λ/4 コート、ロックイン。' }
+  ];
+
+  var LIST = [
+    /* ===== 第1章 ===== */
+    {
+      id: 'lux', ch: 1, kind: 'design',
+      name: 'カメラ方程式でセンサを照らす',
+      desc: '被写体 **1000 lx・反射率 0.18・透過率 0.9** のまま、F値でセンサ面の照度を **5 lx 以上**にする。',
+      why: 'センサ面の照度は E = ρ·E<sub>被写体</sub>·T/(4N²) ― F値の2乗で暗くなる。'
+         + '第4部の「数字の根拠」にある**センサ面 0.52%** はこの式そのもの（ρ0.18・T0.9・F2.8）。'
+         + '露出計もカメラの自動露出も、中身はこの1行の算数。',
+      hint: '162/(4N²) ≥ 5 → N ≤ 2.85。F2.8 が「明るいレンズ」と呼ばれる理由。',
+      check: function (ev, d) {
+        var lock = d.lx === 1000 && near(d.rho, 0.18) && near(d.T, 0.9);
+        return {
+          ok: lock && ev.Eimg >= 5,
+          rows: [
+            row('センサ面の照度', f(ev.Eimg, 2) + ' lx（' + f(ev.phiUm, 0) + ' 光子/µm²/s @555nm）', '5.00 以上', ev.Eimg >= 5),
+            row('F値', f(d.N, 2), '', true),
+            row('条件固定', lock ? '守っている（1000lx・ρ0.18・T0.9）' : '課題の条件に戻す', '', lock)
+          ]
+        };
+      }
+    },
+    {
+      id: 'inv', ch: 1, kind: 'design',
+      name: '逆二乗で照らす',
+      desc: '距離 **2 m** のまま、点光源の光度で照度を **10 lx 以上**にする。',
+      why: 'E = I/r²。距離を2倍にすると 1/4 ― 照明設計の最初の式で、'
+         + '検出器の受ける光の見積もりはたいていここから始まる。立体角に広がった光束が'
+         + 'r² の球面に薄まっていく、それだけの話。',
+      hint: 'I ≥ 10 × 2² = 40 cd。',
+      check: function (ev, d) {
+        return {
+          ok: d.rm === 2 && ev.Einv >= 10,
+          rows: [
+            row('照度 I/r²', f(ev.Einv, 2) + ' lx', '10.00 以上', ev.Einv >= 10),
+            row('光度 / 距離', f(d.cd, 0) + ' cd / ' + f(d.rm, 1) + ' m', '距離は 2 のまま', d.rm === 2)
+          ]
+        };
+      }
+    },
+    {
+      id: 'lockin', ch: 1, kind: 'design',
+      name: 'ロックインで床から引き上げる',
+      desc: '信号の元の帯域 **1 kHz** のまま、ロックインの帯域を絞って SNR 改善 **100 倍以上**にする。',
+      why: 'ノイズは帯域に√で比例する（第5部の W/√Hz の√）。信号を変調して狭い帯域に閉じ込めれば、'
+         + '**SNR は √(B_in/B_lock) 倍**になる ― 微弱光計測の定石ロックイン検出の芯。'
+         + '第6部のチョッパと同じ発想で、1/f の外へ引っ越す御利益も付いてくる。',
+      hint: '√(1000/B) ≥ 100 → B ≤ 0.1 Hz。時定数にして数秒 ― 静けさは時間で買う。',
+      check: function (ev, d) {
+        return {
+          ok: d.bin === 1000 && ev.snrGain >= 100,
+          rows: [
+            row('SNR 改善', f(ev.snrGain, 1) + ' 倍', '100.0 以上', ev.snrGain >= 100),
+            row('帯域', f(d.bin, 0) + ' Hz → ' + f(d.blk, 2) + ' Hz', '元は 1000 のまま', d.bin === 1000),
+            row('等価な時定数', '約 ' + f(1 / (2 * Math.PI * d.blk), 1) + ' s', '', true)
+          ]
+        };
+      }
+    },
+
+    /* ===== 第2章 ===== */
+    {
+      id: 'lens', ch: 2, kind: 'design',
+      name: '等倍で結ぶ',
+      desc: '焦点距離 **50 mm** のまま、物体距離で倍率を **1.00 ± 0.05** にする。',
+      why: '1/a + 1/b = 1/f と m = b/a。等倍は a = b = 2f のとき ― 「2f-2f」の配置。'
+         + '検査光学やリレー光学の基本形で、倍率をどこに置くかが画素と分解能の配分を決める。',
+      hint: 'a = 2f = 100 mm。',
+      check: function (ev, d) {
+        return {
+          ok: d.fmm === 50 && isFinite(ev.mag) && Math.abs(ev.mag - 1) <= 0.05,
+          rows: [
+            row('倍率 b/a', isFinite(ev.mag) ? f(ev.mag, 3) : '（虚像。a > f にする）', '1.000 ± 0.050', isFinite(ev.mag) && Math.abs(ev.mag - 1) <= 0.05),
+            row('物体距離 / 像距離', f(d.amm, 0) + ' mm / ' + (isFinite(ev.bmm) ? f(ev.bmm, 1) : '—') + ' mm', '', true),
+            row('焦点距離', f(d.fmm, 0) + ' mm', '50 のまま', d.fmm === 50)
+          ]
+        };
+      }
+    },
+    {
+      id: 'airy', ch: 2, kind: 'design',
+      name: '絞りすぎない',
+      desc: '波長 **555 nm** のまま、エアリー径 2.44λN を **3.0 µm 以下**に収める（小さい画素のカメラ）。',
+      why: '絞るほど深度は稼げるが、回折の点像 2.44λN が太る ― 第4部「解像の限界」の式。'
+         + '画素 1.5µm 級のスマホカメラが F2 前後の明るい固定絞りなのは、**絞る余地が回折で消えている**から。',
+      hint: 'N ≤ 3.0/(2.44×0.555) ≒ 2.2。',
+      check: function (ev, d) {
+        return {
+          ok: d.nm === 555 && ev.airyUm <= 3,
+          rows: [
+            row('エアリー径', f(ev.airyUm, 2) + ' µm', '3.00 以下', ev.airyUm <= 3),
+            row('F値', f(d.N, 2), '2.2 以下が目安', d.N <= 2.22),
+            row('波長', d.nm + ' nm', '555 のまま', d.nm === 555)
+          ]
+        };
+      }
+    },
+    {
+      id: 'res', ch: 2, kind: 'design',
+      name: '0.5 µm を見分ける',
+      desc: '波長 **555 nm** のまま、対物の NA で分解能 0.61λ/NA を **0.50 µm 以下**にする。',
+      why: '顕微鏡側の分解能はレイリーの 0.61λ/NA ― カメラの 2.44λN と同じ回折の物理を、'
+         + 'NA の言葉で言い直したもの（N ≒ 1/2NA）。病理スキャナが高 NA 対物を使う理由で、'
+         + 'これ以上は波長を短くする（青・UV・電子）しかない。',
+      hint: 'NA ≥ 0.61×0.555/0.5 ≒ 0.68。乾燥系対物の上限（〜0.95）の内側。',
+      check: function (ev, d) {
+        return {
+          ok: d.nm === 555 && ev.resUm <= 0.5,
+          rows: [
+            row('分解能 0.61λ/NA', f(ev.resUm, 3) + ' µm', '0.500 以下', ev.resUm <= 0.5),
+            row('NA', f(d.naobj, 2), '0.68 以上が目安', d.naobj >= 0.677),
+            row('波長', d.nm + ' nm', '555 のまま', d.nm === 555)
+          ]
+        };
+      }
+    },
+
+    /* ===== 第3章 ===== */
+    {
+      id: 'gauss', ch: 3, kind: 'design',
+      name: 'レーザーを 20 µm に絞る',
+      desc: '波長 **1064 nm・f=50 mm・M²=1** のまま、入射ビーム半径で集光径 2w₀ を **20 µm 以下**にする。',
+      why: 'ガウスビームの集光ウェストは w₀ = M²·λf/(πw) ― **太いビームほど小さく絞れる**。'
+         + 'レーザー加工も顕微鏡の励起も、この逆比例が全部を決める。M² が悪いビームは'
+         + 'その倍数だけ絞れない ― ビーム品質が金額になる理由。',
+      hint: 'w ≥ λf/(π×10µm) ≒ 1.7 mm。ビームエキスパンダで太らせてから入れる。',
+      check: function (ev, d) {
+        var lock = d.nm === 1064 && d.fmm === 50 && near(d.m2, 1);
+        return {
+          ok: lock && ev.spotUm <= 20,
+          rows: [
+            row('集光径 2w₀', f(ev.spotUm, 1) + ' µm', '20.0 以下', ev.spotUm <= 20),
+            row('入射ビーム半径', f(d.winmm, 2) + ' mm', '1.7 以上が目安', d.winmm >= 1.69),
+            row('条件固定', lock ? '守っている（1064nm・f50・M²=1）' : '課題の条件に戻す', '', lock)
+          ]
+        };
+      }
+    },
+    {
+      id: 'fiber', ch: 3, kind: 'design',
+      name: 'ファイバに入れる',
+      desc: 'コア **10 µm・NA 0.14** のファイバ（1064nm・f=50mm・M²=1）へ: **スポット ≤ コア** かつ **ビームの NA ≤ ファイバの NA**。',
+      why: '結合の条件は2つ同時 ― 場所（スポットがコアに入る）と角度（光線がNAの受け入れ角に入る）。'
+         + '太いビームはスポットが小さくなるが**角度が開く**（NA_beam = w/f）ので、窓は両側から閉じる。'
+         + '面積×立体角（エテンデュ）は光学系で減らせない、という会計原則の入口。',
+      hint: 'スポット≤10µm は w ≥ 3.4 mm。NA≤0.14 は w ≤ 7 mm。窓は 3.4〜7 mm。',
+      check: function (ev, d) {
+        var lock = d.nm === 1064 && d.fmm === 50 && near(d.m2, 1) && d.coreu === 10 && near(d.naf, 0.14);
+        return {
+          ok: lock && ev.spotUm <= d.coreu && ev.naBeam <= d.naf,
+          rows: [
+            row('スポット / コア', f(ev.spotUm, 1) + ' / ' + f(d.coreu, 0) + ' µm', 'スポットが小さい', ev.spotUm <= d.coreu),
+            row('ビームNA / ファイバNA', f(ev.naBeam, 3) + ' / ' + f(d.naf, 2), 'ビームが小さい', ev.naBeam <= d.naf),
+            row('条件固定', lock ? '守っている' : '課題の条件（コア10・NA0.14・1064nm・f50・M²1）に戻す', '', lock)
+          ]
+        };
+      }
+    },
+    {
+      id: 'ar', ch: 3, kind: 'design',
+      name: 'λ/4 で反射を殺す',
+      desc: '基板 **n=3.9（シリコン）**のまま、λ/4 単層コートの屈折率で残留反射を **2% 以下**にする（素の反射は31%）。',
+      why: 'λ/4 膜の残留反射は R = ((n₁n₃−n₂²)/(n₁n₃+n₂²))² ― **n₂ = √(n₁n₃) でゼロ**。'
+         + 'シリコンなら理想は n=1.97。SemiLab「反射を殺す」で膜厚を合わせたあの課題の、'
+         + '屈折率側の設計がこれ。ガラス（理想1.22）に良い材料が無く MgF₂(1.38) で妥協する話も同じ式から読める。',
+      hint: '√3.9 ≒ 1.97 を狙う。1.73〜2.25 の窓なら 2% 以下。',
+      check: function (ev, d) {
+        return {
+          ok: near(d.nsub, 3.9) && ev.Rar <= 0.02,
+          rows: [
+            row('残留反射', f(ev.Rar * 100, 2) + ' %（素の反射 ' + f(ev.Rfres * 100, 1) + '%）', '2.00 以下', ev.Rar <= 0.02),
+            row('コートの屈折率', f(d.ncoat, 2) + '（理想 √n₁n₃ = ' + f(ev.nIdeal, 2) + '）', '', true),
+            row('基板', 'n = ' + f(d.nsub, 1), '3.9 のまま', near(d.nsub, 3.9))
+          ]
+        };
+      }
+    }
+  ];
+
+  function byId(id) { for (var i = 0; i < LIST.length; i++) if (LIST[i].id === id) return LIST[i]; return null; }
+  function chapterOf(q) { for (var i = 0; i < CH.length; i++) if (CH[i].id === q.ch) return CH[i]; return null; }
+
+  function grade(id, st) {
+    var q = byId(id);
+    if (!q) return { ok: false, rows: [], error: '課題が見つかりません' };
+    try {
+      var r = q.check(O.evaluate(st.design), st.design);
+      r.quest = q;
+      return r;
+    } catch (e) {
+      return { ok: false, quest: q, rows: [row('採点できませんでした', String(e && e.message || e), '', false)] };
+    }
+  }
+
+  OP.quest = { LIST: LIST, CH: CH, byId: byId, chapterOf: chapterOf, grade: grade };
+})(typeof window !== 'undefined' ? window : globalThis);

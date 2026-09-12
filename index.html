@@ -189,18 +189,18 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
     <div>
       <span class="eyebrow">Labs / 半導体 ― 参考書と実践</span>
       <h1>工程から<span class="lit">像</span>まで、<br>読んで、作って、確かめる</h1>
-      <p class="sub">半導体を、製造工程 → 素子の物理 → 論理回路 → イメージセンサ → 光検出デバイス → アナログ回路の6部で通して学ぶための場所。各部は<b>参考書</b>（読んで理解する）と<b>ラボ</b>（自分の手で作って、機械に採点させる）の二層になっていて、参考書の節から対応するラボの課題へその場で飛べる。</p>
+      <p class="sub">半導体を、製造工程 → 素子の物理 → 論理回路 → イメージセンサ → 光検出デバイス → アナログ回路 → 光学の7部で通して学ぶための場所。各部は<b>参考書</b>（読んで理解する）と<b>ラボ</b>（自分の手で作って、機械に採点させる）の二層になっていて、参考書の節から対応するラボの課題へその場で飛べる。</p>
       <p class="sub">4部は地続き。工程が不純物の分布を作り、不純物が接合を立て、接合が MOSFET とフォトダイオードになり、MOSFET は NAND に、フォトダイオードは画素になる。<b>背骨はイメージセンサ</b> ― 結晶と接合という物理層から、画素・読み出し回路をへて、現像・画像というアプリ層まで、1本の信号がどう登っていくかを全部の部で追いかけられるようにしてある。</p>
     </div>
     <div>
       <dl class="spec">
-        <div><dt>参考書</dt><dd>6<small>部</small></dd></div>
-        <div><dt>ラボ</dt><dd>6<small>本</small></dd></div>
-        <div><dt>採点つき課題</dt><dd>89<small>問</small></dd></div>
+        <div><dt>参考書</dt><dd>7<small>部</small></dd></div>
+        <div><dt>ラボ</dt><dd>7<small>本</small></dd></div>
+        <div><dt>採点つき課題</dt><dd>98<small>問</small></dd></div>
         <div><dt>依存</dt><dd>0<small>ブラウザのみ</small></dd></div>
         <div><dt>通信</dt><dd>0<small>手元で完結</small></dd></div>
-        <div><dt>自動検査</dt><dd>2,682<small>件 (Node)</small></dd></div>
-        <div class="spec-cap">課題数は ProcessLab 13 ＋ SemiLab 22 ＋ NandLab 25 ＋ PixelLab 12 ＋ PhotonLab 8 ＋ AnalogLab 9。検査は6本の <code>node tests/all.js</code> の合計（2026-09-13 時点）。</div>
+        <div><dt>自動検査</dt><dd>2,863<small>件 (Node)</small></dd></div>
+        <div class="spec-cap">課題数は ProcessLab 13 ＋ SemiLab 22 ＋ NandLab 25 ＋ PixelLab 12 ＋ PhotonLab 8 ＋ AnalogLab 9 ＋ OptoLab 9。検査は7本の <code>node tests/all.js</code> の合計（2026-09-13 時点）。</div>
       </dl>
     </div>
   </div>
@@ -599,6 +599,33 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       <div class="do"><span class="lbl">AnalogLab 第3章</span><a class="q" href="AnalogLab/index.html?quest=tia">TIAのRfを選ぶ</a><a class="q" href="AnalogLab/index.html?quest=charge">チャージアンプ</a><a class="q" href="AnalogLab/index.html?quest=lownoise">2nV/√Hzの初段</a></div>
     </div>
   </article>
+
+  <!-- 第7部 -->
+  <article class="part" id="p7">
+    <div class="part-h">
+      <div>
+        <span class="pn">第7部</span>
+        <h3>検出器の相手側 ― 光学</h3>
+        <p class="desc">lx と W と光子の換算（683）、逆二乗、カメラ方程式 ρET/4N²（第4部の0.52%の出どころ）、回折の限界、ガウスビームの集光、ファイバの2重の門、フレネル反射とλ/4コート、積分球とロックイン。営業でもカタログの光学の数字が読めるように、読み方ガイドは役割別。</p>
+      </div>
+      <div class="pair">
+        <div><span class="kind read">参考書</span><a href="第7部_光学.html">光学 ― 検出器の相手側</a><small>Lux → Watt → Photon → Image · 8章</small></div>
+        <div><span class="kind lab">ラボ</span><a href="OptoLab/index.html">OptoLab</a><small>原始部品 ＝ 光線とその会計 · 3章 9問 · <a href="OptoLab/README.md">README</a></small></div>
+      </div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">01-03</span><div class="ct"><a href="第7部_光学.html#s1">2つの物差し / 逆二乗 / カメラ方程式</a></div><div class="cd">683 lm/W、E=I/r²、L=ρE/π、センサ照度 ρET/4N² ― 距離が式から消える理由。第4部の照度の根拠。</div></div>
+      <div class="do"><span class="lbl">OptoLab 第1章</span><a class="q" href="OptoLab/index.html?quest=lux">カメラ方程式</a><a class="q" href="OptoLab/index.html?quest=inv">逆二乗で照らす</a><a class="q" href="OptoLab/index.html?quest=lockin">ロックイン</a></div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">04-06</span><div class="ct"><a href="第7部_光学.html#s4">回折 / ガウスビーム / ファイバ</a></div><div class="cd">2.44λN と 0.61λ/NA、焦点深度±2λN²。w₀=M²λf/πw ― 太いほど絞れる。場所と角度の2重の門とエテンデュ。</div></div>
+      <div class="do"><span class="lbl">OptoLab 第2-3章</span><a class="q" href="OptoLab/index.html?quest=lens">等倍で結ぶ</a><a class="q" href="OptoLab/index.html?quest=airy">絞りすぎない</a><a class="q" href="OptoLab/index.html?quest=res">0.5µmを見分ける</a><a class="q" href="OptoLab/index.html?quest=gauss">20µmに絞る</a><a class="q" href="OptoLab/index.html?quest=fiber">ファイバに入れる</a></div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">07-08</span><div class="ct"><a href="第7部_光学.html#s7">反射と膜 / 測る現場</a></div><div class="cd">ガラス4%・シリコン35%、λ/4 と √(n₁n₃)、迷光とゴースト。パワーメータ・積分球・ロックインの√B則。</div></div>
+      <div class="do"><span class="lbl">OptoLab 第3章</span><a class="q" href="OptoLab/index.html?quest=ar">λ/4で反射を殺す</a></div>
+    </div>
+  </article>
 </section>
 
 <!-- ================= 02 進み方 ================= -->
@@ -689,7 +716,8 @@ node SemiLab\tests\all.js       1,074 件
 node NandLab\tests\all.js         642 件
 node PixelLab\tests\all.js        281 件
 node PhotonLab\tests\all.js       173 件
-node AnalogLab\tests\all.js       180 件</pre>
+node AnalogLab\tests\all.js       180 件
+node OptoLab\tests\all.js         181 件</pre>
       <div class="caveat">
         <span class="tag">配置の注意</span>
         <p>ProcessLab と PixelLab は <code>../SemiLab/src/*.js</code> を読み込む。<b>SemiLab・ProcessLab・PixelLab は必ずこのフォルダに兄弟として置く。</b>1本だけ別の場所へ動かすと、起動はするが物理が無くて動かない。</p>

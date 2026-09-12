@@ -1,0 +1,703 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>html{color-scheme:light dark}body{margin:0;font:14px system-ui;background:#fafaf9}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>光学 ― 検出器の相手側</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ground:#EDEEF2; --surface:#FFFFFF; --surface-2:#F5F6F9; --surface-3:#E2E5ED;
+  --ink:#14161E; --ink-2:#4A5061; --ink-3:#787F92;
+  --line:#D3D7E1; --line-2:#E5E7EF;
+  --photon:#D98803; --photon-2:#A96504; --photon-soft:#FAEBCD;
+  --electron:#1D74B8; --electron-2:#155A91; --electron-soft:#D6E7F5;
+  --si:#8A8FA3; --si-soft:#DEE0E8;
+  --cfr:#CF4437; --cfg:#33955A; --cfb:#2E6DC4;
+  --volt:#7047B5; --volt-soft:#E7DEF7;
+  --digital:#0F766E; --digital-soft:#D3EAE6;
+  --warn:#B4400C; --ok:#2C7A55;
+  --shadow:0 1px 2px rgba(20,22,30,.06), 0 8px 24px -12px rgba(20,22,30,.18);
+  --mono:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;
+  --sans:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic UI","Yu Gothic",Meiryo,sans-serif;
+  --disp:"Zen Old Mincho","Hiragino Mincho ProN","Yu Mincho",serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#0F1117; --surface:#171A22; --surface-2:#1D212B; --surface-3:#2B3140;
+    --ink:#E8EAF1; --ink-2:#AAB1C3; --ink-3:#7C8397;
+    --line:#2D323F; --line-2:#232833;
+    --photon:#F0B444; --photon-2:#F7C766; --photon-soft:#3A2C10;
+    --electron:#5FB0E8; --electron-2:#8ACAF3; --electron-soft:#12293C;
+    --si:#767C92; --si-soft:#242938;
+    --cfr:#E56E60; --cfg:#57BE80; --cfb:#5F97E2;
+    --volt:#A98AE0; --volt-soft:#2A2140;
+    --digital:#4FBFAE; --digital-soft:#0F2E2B;
+    --warn:#E8875A; --ok:#5CBF8E;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0F1117; --surface:#171A22; --surface-2:#1D212B; --surface-3:#2B3140;
+  --ink:#E8EAF1; --ink-2:#AAB1C3; --ink-3:#7C8397;
+  --line:#2D323F; --line-2:#232833;
+  --photon:#F0B444; --photon-2:#F7C766; --photon-soft:#3A2C10;
+  --electron:#5FB0E8; --electron-2:#8ACAF3; --electron-soft:#12293C;
+  --si:#767C92; --si-soft:#242938;
+  --cfr:#E56E60; --cfg:#57BE80; --cfb:#5F97E2;
+  --volt:#A98AE0; --volt-soft:#2A2140;
+  --digital:#4FBFAE; --digital-soft:#0F2E2B;
+  --warn:#E8875A; --ok:#5CBF8E;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.7);
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font-family:var(--sans);
+  font-size:16px;line-height:1.8;-webkit-font-smoothing:antialiased;
+  font-feature-settings:"palt" 1;}
+h1,h2,h3,h4{margin:0;text-wrap:balance;line-height:1.35}
+p{margin:0}
+a{color:var(--electron)}
+
+.wrap{max-width:1180px;margin:0 auto;padding:0 22px 90px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-3);font-weight:500}
+
+/* hero */
+.hero{padding:52px 0 34px;border-bottom:1px solid var(--line)}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:28px}
+@media(min-width:900px){.hero-grid{grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);gap:48px;align-items:end}}
+.hero h1{font-family:var(--disp);font-weight:700;font-size:clamp(33px,5.2vw,56px);
+  letter-spacing:.02em;line-height:1.2;margin:12px 0 0}
+.hero h1 .lit{color:var(--photon)}
+.hero .sub{margin-top:18px;color:var(--ink-2);font-size:17px;max-width:36em}
+.spec{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--line);
+  border-radius:3px;background:var(--surface);overflow:hidden}
+.spec div{flex:1 1 30%;padding:11px 13px;border-right:1px solid var(--line-2);
+  border-bottom:1px solid var(--line-2)}
+.spec dt{font-size:10px;font-family:var(--mono);letter-spacing:.07em;color:var(--ink-3);margin:0}
+.spec dd{margin:2px 0 0;font-family:var(--mono);font-size:14.5px;font-weight:600;
+  color:var(--ink);font-variant-numeric:tabular-nums}
+.spec dd small{font-size:10.5px;color:var(--ink-3);font-weight:400;margin-left:2px}
+.spec-cap{padding:9px 13px;font-size:11.5px;color:var(--ink-3);flex:1 1 100%;
+  border-right:0;border-bottom:0;background:var(--surface-2)}
+
+.depth{display:inline-flex;border:1px solid var(--line);border-radius:2px;
+  background:var(--surface);overflow:hidden;font-family:var(--mono);font-size:12px}
+.depth button{appearance:none;border:0;background:transparent;color:var(--ink-2);
+  padding:7px 15px;cursor:pointer;font:inherit;letter-spacing:.05em;transition:.15s}
+.depth button[aria-pressed="true"]{background:var(--ink);color:var(--ground)}
+.depth button:focus-visible{outline:2px solid var(--electron);outline-offset:-2px}
+.depth-row{display:flex;align-items:center;gap:13px;flex-wrap:wrap;margin-top:26px}
+.depth-row span{font-size:12.5px;color:var(--ink-3)}
+
+/* condition bar */
+.bar{position:sticky;top:0;z-index:40;background:var(--surface);
+  border-bottom:1px solid var(--line);box-shadow:var(--shadow)}
+.bar-in{max-width:1180px;margin:0 auto;padding:11px 22px;
+  display:grid;grid-template-columns:minmax(0,1fr);gap:13px}
+@media(min-width:940px){.bar-in{grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:28px;align-items:center}}
+.ctrls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.ctrl label{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.07em;
+  color:var(--ink-3);margin-bottom:1px}
+.ctrl .val{font-family:var(--mono);font-size:13.5px;font-weight:600;color:var(--ink);
+  font-variant-numeric:tabular-nums;display:block;margin-bottom:2px;white-space:nowrap}
+.ctrl .val em{font-style:normal;font-size:10.5px;color:var(--ink-3);font-weight:400;margin-left:3px}
+input[type=range]{width:100%;appearance:none;background:transparent;margin:0;height:15px;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:3px;background:var(--surface-3);border-radius:2px}
+input[type=range]::-moz-range-track{height:3px;background:var(--surface-3);border-radius:2px}
+input[type=range]::-webkit-slider-thumb{appearance:none;width:14px;height:14px;border-radius:50%;
+  background:var(--ink);margin-top:-5.5px;border:2px solid var(--surface)}
+input[type=range]::-moz-range-thumb{width:11px;height:11px;border-radius:50%;background:var(--ink);border:2px solid var(--surface)}
+input[type=range]:focus-visible{outline:2px solid var(--electron);outline-offset:3px;border-radius:2px}
+
+.chain{display:flex;align-items:stretch;border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.chain div{flex:1 1 0;padding:6px 9px;border-right:1px solid var(--line-2);min-width:0}
+.chain div:last-child{border-right:0}
+.chain dt{margin:0;font-family:var(--mono);font-size:9px;letter-spacing:.05em;color:var(--ink-3);white-space:nowrap}
+.chain dd{margin:1px 0 0;font-family:var(--mono);font-size:13.5px;font-weight:600;
+  font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chain .c-ph dd{color:var(--photon-2)} .chain .c-e dd{color:var(--electron)}
+.chain .c-v dd{color:var(--volt)} .chain .c-d dd{color:var(--digital)}
+.chain dd small{font-size:9.5px;font-weight:400;color:var(--ink-3);margin-left:2px}
+.flag{font-family:var(--mono);font-size:9px;letter-spacing:.03em;color:var(--warn);
+  display:block;height:12px;line-height:12px}
+
+/* layout */
+.main{display:grid;grid-template-columns:minmax(0,1fr)}
+@media(min-width:1080px){.main{grid-template-columns:180px minmax(0,1fr);gap:46px}}
+.rail{display:none}
+@media(min-width:1080px){.rail{display:block;position:sticky;top:104px;align-self:start;
+  padding-top:58px;
+  /* 節が増えて画面より高くなったので、はみ出したぶんはレールの中でスクロールさせる */
+  max-height:calc(100vh - 118px);overflow-y:auto;overscroll-behavior:contain;
+  scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.rail::-webkit-scrollbar{width:6px}
+.rail::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+.rail::-webkit-scrollbar-track{background:transparent}}
+.rail ol{list-style:none;margin:0;padding:0;border-left:1px solid var(--line)}
+.rail a{display:grid;grid-template-columns:24px 1fr;gap:5px;padding:6px 0 6px 13px;
+  text-decoration:none;color:var(--ink-3);font-size:12.5px;line-height:1.45;
+  border-left:2px solid transparent;margin-left:-1px;transition:.15s}
+.rail a .n{font-family:var(--mono);font-size:10.5px;padding-top:2px}
+.rail a:hover{color:var(--ink-2)}
+.rail a.on{color:var(--ink);border-left-color:var(--photon);font-weight:500}
+.rail a.on .n{color:var(--photon)}
+.rail .dom{font-family:var(--mono);font-size:9px;letter-spacing:.11em;color:var(--ink-3);
+  padding:15px 0 4px 15px;text-transform:uppercase}
+.rail .dom.first{padding-top:2px}
+
+/* stage */
+.stage{padding:58px 0 6px;scroll-margin-top:112px}
+.stage + .stage{border-top:1px solid var(--line)}
+.stage-head{display:flex;gap:15px;align-items:baseline}
+.stage-num{font-family:var(--mono);font-size:11.5px;font-weight:600;color:var(--photon);
+  letter-spacing:.06em;flex:0 0 auto;padding-top:5px}
+.stage h2{font-family:var(--disp);font-weight:700;font-size:clamp(23px,3.1vw,32px);letter-spacing:.02em}
+.lede{color:var(--ink-2);font-size:16.5px;max-width:40em;margin-top:12px}
+.stage h3{font-size:15px;font-weight:700;margin-top:28px;letter-spacing:.02em}
+.stage h3 + p{margin-top:8px}
+.stage p + p{margin-top:14px}
+/* 日本語は1em＝1文字。35字は狭すぎて右に空白が残るので、42字を上限にする */
+.body-col{max-width:42em}
+.two .body-col{max-width:none}
+.two{display:grid;grid-template-columns:minmax(0,1fr);gap:26px;margin-top:26px}
+@media(min-width:880px){.two{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:34px;align-items:start}}
+.two.wide-l{grid-template-columns:minmax(0,1fr)}
+@media(min-width:980px){.two.wide-l{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}}
+.full{margin-top:26px}
+
+/* figure */
+figure{margin:0;background:var(--surface);border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.fig-head{display:flex;justify-content:space-between;align-items:center;gap:12px;
+  padding:8px 13px;border-bottom:1px solid var(--line-2);background:var(--surface-2);flex-wrap:wrap}
+.fig-title{font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;color:var(--ink-2);font-weight:500}
+.fig-body{padding:14px 13px}
+figcaption{padding:10px 13px 12px;border-top:1px solid var(--line-2);
+  font-size:12.5px;line-height:1.65;color:var(--ink-3)}
+canvas{display:block;width:100%;height:auto}
+svg{display:block;max-width:100%;height:auto}
+.scroll-x{overflow-x:auto}
+
+.btns{display:flex;gap:5px;flex-wrap:wrap}
+.btn{appearance:none;font-family:var(--mono);font-size:11px;letter-spacing:.03em;
+  padding:5px 11px;border:1px solid var(--line);background:var(--surface);color:var(--ink-2);
+  border-radius:2px;cursor:pointer;transition:.15s;white-space:nowrap;line-height:1.5}
+.btn:hover{border-color:var(--ink-3);color:var(--ink)}
+.btn[aria-pressed="true"]{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+.btn:focus-visible{outline:2px solid var(--electron);outline-offset:2px}
+.slider-row{display:grid;gap:3px;margin-top:12px}
+.slider-row .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.slider-row .lab{font-family:var(--mono);font-size:10px;letter-spacing:.07em;color:var(--ink-3)}
+.slider-row .num{font-family:var(--mono);font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
+.readouts{display:flex;flex-wrap:wrap;border-top:1px solid var(--line-2)}
+.readouts div{flex:1 1 auto;min-width:92px;padding:8px 12px;border-right:1px solid var(--line-2)}
+.readouts div:last-child{border-right:0}
+.readouts dt{margin:0;font-family:var(--mono);font-size:9px;letter-spacing:.05em;color:var(--ink-3);white-space:nowrap}
+.readouts dd{margin:1px 0 0;font-family:var(--mono);font-size:13.5px;font-weight:600;font-variant-numeric:tabular-nums}
+
+/* deep layer */
+.deep{display:none}
+[data-depth="deep"] .deep{display:block}
+.deep-note{margin-top:20px;border-left:2px solid var(--electron);padding:1px 0 1px 16px;
+  max-width:46em}
+/* 「くわしい」を閉じると片側が空になる2列組みは、1列に戻して
+   本文が理由もなく半分の幅で折り返さないようにする */
+[data-depth="simple"] .two:has(> .deep:nth-child(2):last-child){
+  grid-template-columns:minmax(0,1fr)
+}
+/* 片方だけ deep にした2列組みは、かんたん時に1列へ畳む。
+   deep が左右どちらにあっても、残った側が半分幅で折り返さないようにする */
+[data-depth="simple"] .two:has(> .deep:first-child:not(:last-child)),
+[data-depth="simple"] .two:has(> .deep:last-child:not(:first-child)){
+  grid-template-columns:minmax(0,1fr)
+}
+[data-depth="deep"] .body-col.deep{display:block}
+.deep-note .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;color:var(--electron);
+  display:block;margin-bottom:5px}
+.deep-note p + p{margin-top:12px}
+.eq{font-family:var(--mono);font-size:13px;background:var(--surface-2);border:1px solid var(--line-2);
+  border-radius:2px;padding:10px 13px;margin-top:12px;overflow-x:auto;white-space:nowrap;color:var(--ink)}
+.eq b{color:var(--photon-2);font-weight:600}
+.eq i{font-style:normal;color:var(--electron);font-weight:600}
+.eq u{text-decoration:none;color:var(--volt);font-weight:600}
+
+.tag-inline{font-family:var(--mono);font-size:11px;padding:0 5px;border-radius:2px;
+  border:1px solid currentColor;white-space:nowrap}
+.t-ph{color:var(--photon-2)} .t-e{color:var(--electron)} .t-v{color:var(--volt)} .t-d{color:var(--digital)}
+.key{font-weight:700;background:linear-gradient(transparent 62%, var(--photon-soft) 62%);padding:0 1px}
+code{font-family:var(--mono);font-size:.9em;background:var(--surface-2);padding:1px 5px;
+  border-radius:2px;border:1px solid var(--line-2)}
+.qa{margin-top:26px;border:1px solid var(--line);border-radius:3px;background:var(--surface);overflow:hidden}
+.qa > div{padding:13px 16px;border-bottom:1px solid var(--line-2)}
+.qa > div:last-child{border-bottom:0}
+#imgNote em{font-style:normal;color:var(--ink-3)}
+#imgNote strong{color:var(--ink)}
+.qa h4{font-size:14px;margin-bottom:4px;color:var(--ink)}
+.qa p{font-size:14px;color:var(--ink-2)}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line-2);vertical-align:top}
+th{font-family:var(--mono);font-size:10px;letter-spacing:.07em;color:var(--ink-3);font-weight:500;
+  border-bottom:1px solid var(--line)}
+td:first-child{font-family:var(--mono);font-weight:600;white-space:nowrap;color:var(--ink)}
+td.num{font-variant-numeric:tabular-nums;font-family:var(--mono);text-align:right;white-space:nowrap}
+tbody tr:last-child td{border-bottom:0}
+/* 長い表を主題ごとに区切る見出し行 */
+tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
+  letter-spacing:.09em;color:var(--ink-3);font-weight:500;white-space:normal;
+  padding:9px 12px;border-bottom:1px solid var(--line)}
+.foot{margin-top:54px;padding-top:22px;border-top:1px solid var(--line);
+  font-size:12.5px;color:var(--ink-3);display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+/* 冒頭の読み方の案内 */
+.guide{margin-top:26px;border:1px solid var(--line);border-radius:3px;background:var(--surface);
+  overflow:hidden}
+.guide-h{padding:9px 15px;border-bottom:1px solid var(--line-2);background:var(--surface-2);
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;color:var(--ink-2);
+  display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.guide-b{display:grid;grid-template-columns:minmax(0,1fr);gap:0}
+@media(min-width:760px){.guide-b{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.guide-b > div{padding:12px 15px;border-bottom:1px solid var(--line-2)}
+@media(min-width:760px){.guide-b > div{border-bottom:0;border-right:1px solid var(--line-2)}
+  .guide-b > div:last-child{border-right:0}}
+.guide-b b{display:block;font-size:13px;color:var(--ink);margin-bottom:3px}
+.guide-b span{font-size:12.5px;color:var(--ink-2);line-height:1.65}
+.guide-b em{font-style:normal;font-family:var(--mono);font-size:10.5px;color:var(--ink-3);
+  display:block;margin-top:5px}
+
+/* 狭い画面用の目次。レールが出ない幅で、右下に浮かせる。
+   ページのどこからでも開けて、リストは中でスクロールする */
+.toc{display:none}
+@media(max-width:1079px){.toc{display:block;position:fixed;right:14px;bottom:14px;z-index:60}}
+.toc details{position:relative}
+.toc summary{list-style:none;cursor:pointer;display:flex;align-items:baseline;gap:8px;
+  max-width:min(76vw,300px);padding:9px 15px;border:1px solid var(--line);border-radius:999px;
+  background:var(--surface);box-shadow:var(--shadow);color:var(--ink)}
+.toc summary::-webkit-details-marker{display:none}
+.toc summary .tl{font-family:var(--mono);font-size:10px;letter-spacing:.09em;color:var(--ink-3);flex:0 0 auto}
+.toc summary .tc{font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.toc details[open] summary{border-color:var(--ink-3)}
+.toc .panel{position:absolute;right:0;bottom:calc(100% + 8px);width:min(80vw,320px);
+  max-height:min(64vh,520px);overflow-y:auto;overscroll-behavior:contain;
+  background:var(--surface);border:1px solid var(--line);border-radius:4px;
+  box-shadow:var(--shadow);padding:6px 0 10px;
+  scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.toc .panel::-webkit-scrollbar{width:6px}
+.toc .panel::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+.toc ol{list-style:none;margin:0;padding:0}
+.toc li.dom{font-family:var(--mono);font-size:9px;letter-spacing:.11em;color:var(--ink-3);
+  padding:11px 16px 3px;text-transform:uppercase}
+.toc a{display:grid;grid-template-columns:26px 1fr;gap:6px;padding:7px 16px;
+  text-decoration:none;color:var(--ink-2);font-size:13.5px;line-height:1.4}
+.toc a .n{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);padding-top:2px}
+.toc a:hover,.toc a:focus-visible{background:var(--surface-2);color:var(--ink)}
+.toc a.on{background:var(--surface-2);color:var(--ink);font-weight:500}
+.toc a.on .n{color:var(--photon)}
+
+/* 断定していないことを明示する箱 */
+.caveat{margin-top:18px;border:1px solid var(--line);border-left:2px solid var(--warn);
+  border-radius:2px;background:var(--surface);padding:12px 16px;max-width:46em}
+.caveat .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;color:var(--warn);
+  display:block;margin-bottom:6px}
+.caveat p{font-size:13.5px;color:var(--ink-2);line-height:1.72}
+.caveat p + p{margin-top:10px}
+/* 参考書からラボへ渡す箱。読んだことを、隣のラボ（SemiLab / PixelLab）で自分の手で確かめる */
+.lab-go{margin-top:22px;border:1px solid var(--line);border-left:2px solid var(--digital);
+  border-radius:2px;background:var(--surface);padding:12px 16px;max-width:46em}
+.lab-go .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;color:var(--digital);
+  display:block;margin-bottom:6px}
+.lab-go p{font-size:13.5px;color:var(--ink-2);line-height:1.72}
+.lab-go .qs{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px;align-items:center}
+.lab-go .qs a{font-family:var(--mono);font-size:11.5px;padding:4px 10px;border:1px solid var(--line);
+  border-radius:2px;background:var(--surface-2);color:var(--ink);text-decoration:none;white-space:nowrap}
+.lab-go .qs a:hover{border-color:var(--digital);color:var(--digital)}
+.lab-go .qs .lab{font-family:var(--mono);font-size:10px;color:var(--ink-3);letter-spacing:.07em;margin-left:4px}
+.lab-go .qs .lab:first-child{margin-left:0}
+.back{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--ink-3);text-decoration:none;
+  display:inline-block;margin-bottom:14px}
+.back:hover{color:var(--ink)}
+/* 3本スライダの図 */
+.sl3{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;margin-top:14px}
+@media(min-width:760px){.sl3{grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}}
+.sl3 .slider-row{margin-top:0}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+
+/* 印刷。画面用の仕掛け（固定バー・レール・目次）を外し、
+   図が改ページで割れないようにして、「くわしい」の中身も出す */
+@media print{
+  .bar,.rail,.toc,.depth-row,.guide,.lab-go,.back{display:none!important}
+  .main{display:block!important}
+  .wrap{max-width:none;padding:0}
+  body{background:#fff;font-size:10.5pt;line-height:1.65}
+  /* 画面では隠している式や補足も、紙では出す */
+  .deep{display:revert!important}
+  figure,.qa,.qa>div,.caveat,.deep-note,.eq,.foot{break-inside:avoid;page-break-inside:avoid}
+  tr,thead{break-inside:avoid;page-break-inside:avoid}
+  .stage{padding:16pt 0 0;break-before:auto}
+  .stage h2,.stage h3,.stage-head{break-after:avoid;page-break-after:avoid}
+  /* 画面では横スクロールさせている広い図を、紙幅に収める */
+  .scroll-x{overflow:visible!important}
+  canvas{min-width:0!important;max-width:100%!important}
+  svg{max-width:100%!important}
+  a{color:inherit;text-decoration:none}
+  .hero{padding-top:0}
+}
+</style>
+<header class="wrap hero">
+  <div class="hero-grid">
+    <div>
+      <a class="back" href="index.html">&larr; Labs / 半導体 ― 第7部 光学（実践: OptoLab）</a><br>
+      <span class="eyebrow">Lux &rarr; Watt &rarr; Photon &rarr; Image</span>
+      <h1>光学 ― 検出器の<span class="lit">相手側</span></h1>
+      <p class="sub">この一連の本の検出器たちは、必ず光学系の後ろに座っています。lx と W と光子の換算、レンズがセンサに落とす照度、回折が許す細かさ、レーザーの絞り方、ファイバの入り口、反射の会計 ― <a href="第4部_イメージセンサ.html">第4部</a>が仮定していた「センサに届く光」を、この部が自分の手で出せるようにします。研究・設計・製造・営業のどの席からでも、カタログの光学の数字が読めるようになるのが目標です。</p>
+      <div class="depth-row">
+        <div class="depth" role="group" aria-label="説明の深さ">
+          <button id="dSimple" aria-pressed="true">かんたん</button>
+          <button id="dDeep" aria-pressed="false">くわしい</button>
+        </div>
+        <span>「くわしい」で焦点深度・エテンデュ・迷光の実務が開きます</span>
+      </div>
+
+      <div class="guide">
+        <div class="guide-h"><span>読み方（役割別）</span><span>全部で 35〜55 分</span></div>
+        <div class="guide-b">
+          <div><b>営業・企画なら</b><span>01 換算 → 02 逆二乗 → 07 反射の 4%と31%。カタログの lm/W・F値・NA・ARコートが読める数字になります。</span><em>12 〜 18 分</em></div>
+          <div><b>設計・開発なら</b><span>03 カメラ方程式・04 回折・05 ガウス・06 ファイバを足す。仕様の行間が式で埋まります。</span><em>25 〜 40 分</em></div>
+          <div><b>研究・製造なら</b><span>08 測る現場と「くわしく」全部。焦点深度・エテンデュ・迷光 ― 現場で揉める話はここ。</span><em>35 〜 55 分</em></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <dl class="spec">
+        <div><dt>1 lx（555nm）</dt><dd>1/683<small> W/m²</small></dd></div>
+        <div><dt>カメラ方程式</dt><dd>ρET/4N²<small></small></dd></div>
+        <div><dt>エアリー径</dt><dd>2.44λN<small></small></dd></div>
+        <div><dt>分解能</dt><dd>0.61λ/NA<small></small></dd></div>
+        <div><dt>集光ウェスト</dt><dd>M²λf/πw<small></small></dd></div>
+        <div><dt>ガラスの反射</dt><dd>4<small>%/面</small></dd></div>
+        <div class="spec-cap">この部の式はすべて <a href="OptoLab/index.html">OptoLab</a> で数値にできます。<a href="第4部_イメージセンサ.html#snum">第4部「数字の根拠」</a>のセンサ面照度 0.52%・190光子/px/s/lx は、この部の 01〜03 の式から出ます（OptoLab の検査が突き合わせ済み）。</div>
+      </dl>
+    </div>
+  </div>
+</header>
+
+<div class="toc"><details>
+<summary><span class="tl">目次</span><span class="tc" id="tocNow">読みはじめ</span></summary>
+<div class="panel">
+<ol>
+    <li><a href="#s1"><span class="n">01</span><span>2つの物差し</span></a></li>
+    <li><a href="#s2"><span class="n">02</span><span>立体角と逆二乗</span></a></li>
+    <li><a href="#s3"><span class="n">03</span><span>結像と照度</span></a></li>
+    <li><a href="#s4"><span class="n">04</span><span>回折の限界</span></a></li>
+    <li><a href="#s5"><span class="n">05</span><span>ガウスビーム</span></a></li>
+    <li><a href="#s6"><span class="n">06</span><span>ファイバ</span></a></li>
+    <li><a href="#s7"><span class="n">07</span><span>反射と膜</span></a></li>
+    <li><a href="#s8"><span class="n">08</span><span>測る現場</span></a></li>
+    <li class="dom"><span>付録</span></li>
+    <li><a href="#s9"><span class="n">—</span><span>用語表</span></a></li>
+    <li><a href="#sref"><span class="n">—</span><span>出典</span></a></li>
+  </ol>
+</div>
+</details></div>
+
+<div class="wrap">
+<div class="main">
+
+<nav class="rail" aria-label="ステージ">
+  <ol>
+    <li><a href="#s1"><span class="n">01</span><span>物差し</span></a></li>
+    <li><a href="#s2"><span class="n">02</span><span>逆二乗</span></a></li>
+    <li><a href="#s3"><span class="n">03</span><span>結像</span></a></li>
+    <li><a href="#s4"><span class="n">04</span><span>回折</span></a></li>
+    <li><a href="#s5"><span class="n">05</span><span>ガウス</span></a></li>
+    <li><a href="#s6"><span class="n">06</span><span>ファイバ</span></a></li>
+    <li><a href="#s7"><span class="n">07</span><span>反射と膜</span></a></li>
+    <li><a href="#s8"><span class="n">08</span><span>測る現場</span></a></li>
+    <li class="dom"><span>付録</span></li>
+    <li><a href="#s9"><span class="n">—</span><span>用語表</span></a></li>
+    <li><a href="#sref"><span class="n">—</span><span>出典</span></a></li>
+  </ol>
+</nav>
+
+<main>
+
+<!-- ================= 01 ================= -->
+<section class="stage" id="s1">
+  <div class="stage-head"><span class="stage-num">01</span>
+    <h2>光の2つの物差し — W と lm</h2></div>
+  <p class="lede">光の量には物差しが2本あります。物理の <strong>W（放射量）</strong>と、人の目の感じ方で重みを付けた <strong>lm（測光量）</strong>。カタログも照度計も後者で書かれ、検出器の計算は前者でやる ― 換算が全ての入口です。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>683 という橋</h3>
+      <div class="eq">1 lm = 1/683 W（555 nm にて）　　1 lx = 1 lm/m²</div>
+      <p>目がいちばん敏感な緑（555nm）で、<span class="key">1 W の光は定義により 683 lm</span>。他の波長では視感度 V(&lambda;) のぶん割り引かれます（青や赤は同じ W でも暗く感じる）。だから「lx から W/m²」の正確な換算は光源のスペクトルに依る ― この本の計算では<strong>555nm 単色として 1 lx = 1.464 mW/m²</strong> を使います（<a href="第4部_イメージセンサ.html#snum">第4部「数字の根拠」</a>と同じ約束）。</p>
+    </div>
+    <div class="body-col">
+      <h3>W から光子へ</h3>
+      <p>検出器の言葉（<a href="第5部_光検出デバイス.html#s4">第5部04</a>）へはもう1段: 光子1個のエネルギーは 1240/&lambda;[nm] eV なので、<span class="key">W を光子/秒に割り直せます</span>。1 lx の 555nm 光は約 4.1&times;10<sup>15</sup> 光子/(m&sup2;s) ― 第4部の仮想センサが使っていた「1lx あたり 190 光子/画素/s」は、この数字に画素面積とカメラ方程式（03）を掛けたものです。<a href="OptoLab/index.html?quest=lux">OptoLab</a> の検査は、この突き合わせを機械でやっています。</p>
+    </div>
+  </div>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — カタログの測光量の読み分け</span>
+    <p>測光量は4兄弟です: <b>光束 lm</b>（光源が出す総量）、<b>光度 cd = lm/sr</b>（ある方向への濃さ）、<b>照度 lx = lm/m&sup2;</b>（面が受ける密度）、<b>輝度 cd/m&sup2;</b>（見た目の明るさ。ディスプレイのニトがこれ）。LED のカタログは lm と cd、照明設計は lx、ディスプレイは cd/m&sup2; ― <span class="key">単位を見れば「どこで測った量か」が分かります</span>。放射量側にも同じ4兄弟（W・W/sr・W/m&sup2;・W/(sr·m&sup2;)）がいて、赤外や UV ― 目に見えない光 ― では放射量しか意味を持ちません。サーモグラフィ（第5部）のカタログが W 系で書かれる理由です。</p>
+  </div>
+</section>
+
+<!-- ================= 02 ================= -->
+<section class="stage" id="s2">
+  <div class="stage-head"><span class="stage-num">02</span>
+    <h2>立体角と逆二乗 — 光は薄まる</h2></div>
+  <p class="lede">点光源の光は球面に広がります。面積は r&sup2; で増えるから、照度は r&sup2; で薄まる ― それだけの話が、照明設計と受光量見積もりのほぼ全部を支えます。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>E = I/r²</h3>
+      <p>光度 I [cd] の点光源から距離 r [m] の面の照度は <span class="key">E = I/r&sup2; [lx]</span>。距離2倍で 1/4、10倍で 1/100。「検出器にどれだけ届くか」の一次見積もりはいつもここから始まります（<a href="OptoLab/index.html?quest=inv">OptoLab「逆二乗で照らす」</a>）。点光源とみなせるのは、距離が光源の大きさの5倍を超えるあたりから ― 近接照明では成り立ちません。</p>
+    </div>
+    <div class="body-col">
+      <h3>ランベルト面と輝度</h3>
+      <p>紙や壁のような拡散面は、照度 E を受けると<span class="key">輝度 L = &rho;E/&pi;</span> で四方へ照り返します（&rho; は反射率）。この L が次の03の主役 ― カメラが見ているのは照度ではなく<strong>被写体の輝度</strong>です。そして重要な会計原則: <strong>レンズをどう組んでも輝度は増やせません</strong>（明るく「見せる」ことはできても、単位面積・単位立体角あたりの光は増えない）。その正体は06の「くわしく」で。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 03 ================= -->
+<section class="stage" id="s3">
+  <div class="stage-head"><span class="stage-num">03</span>
+    <h2>結像と照度 — カメラ方程式</h2></div>
+  <p class="lede">レンズの仕事は2つ ― <strong>どこに・どの大きさで</strong>結ぶか（結像公式）と、<strong>どれだけ明るく</strong>結ぶか（カメラ方程式）。第4部が黙って使っていた「センサ面 0.52%」がここで導出されます。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>どこに結ぶか</h3>
+      <div class="eq">1/a + 1/b = 1/f　　倍率 m = b/a</div>
+      <p>物体距離 a・像距離 b・焦点距離 f。遠景（a&raquo;f）では b&asymp;f ― 「焦点距離＝センサまでの距離」になり、等倍は a=b=2f の「2f-2f」（<a href="OptoLab/index.html?quest=lens">OptoLab「等倍で結ぶ」</a>）。倍率が決まれば、被写体の 1mm がセンサ上で何画素かが決まる ― 検査光学の分解能の予算はここで配ります。</p>
+      <h3>F値と NA</h3>
+      <p>レンズの「明るさ」は口径比 <strong>F値 N = f/D</strong>。像側の光線円錐の開き（開口数 NA）とは <span class="key">N &asymp; 1/(2NA)</span> の関係で、カメラ屋は F値、顕微鏡屋は NA で同じものを語っています。</p>
+    </div>
+    <div class="body-col">
+      <h3>どれだけ明るく結ぶか</h3>
+      <div class="eq">E<sub>センサ</sub> = &pi;LT/(4N&sup2;) = &rho;&middot;E<sub>被写体</sub>&middot;T/(4N&sup2;)</div>
+      <p>輝度 L の被写体を F値 N・透過率 T のレンズで結ぶと、センサ面の照度はこれだけ。<span class="key">被写体までの距離が式から消えている</span>のが肝です ― 遠ざかると1画素が見る被写体の面積が増えて、ちょうど相殺する。逆二乗で暗くなるのは点光源（星）だけで、面の被写体はカメラを引いても暗くなりません。</p>
+      <p>数字を入れると &rho;0.18・T0.9・F2.8 で <strong>0.52%</strong> ― 第4部の仮想カメラの前提そのもの（<a href="OptoLab/index.html?quest=lux">OptoLab「カメラ方程式」</a>）。1000 lx の部屋でセンサ面は約 5 lx。ここに01の換算と画素面積を掛けると、第4部の「190 光子/画素/s/lx」に着地します。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 04 ================= -->
+<section class="stage" id="s4">
+  <div class="stage-head"><span class="stage-num">04</span>
+    <h2>回折の限界 — 絞りと NA の壁</h2></div>
+  <p class="lede">レンズをどれだけ磨いても、点は点に結べません。開口で回折した光は必ず有限の大きさに広がる ― <a href="第4部_イメージセンサ.html#sopt">第4部「解像の限界」</a>で画素側から見た壁を、光学側から見直します。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>カメラの言葉で: 2.44λN</h3>
+      <p>点像（エアリーディスク）の径は <span class="key">2.44&lambda;N</span>。F2.8・555nm で 3.8µm ― 3µm 画素と同じ桁です。絞るほど（N を上げるほど）太るので、<strong>小さい画素ほど絞れない</strong>。スマホカメラの絞りが F2 前後で固定なのは、絞る余地が回折で消えているから（<a href="OptoLab/index.html?quest=airy">OptoLab「絞りすぎない」</a>）。</p>
+    </div>
+    <div class="body-col">
+      <h3>顕微鏡の言葉で: 0.61λ/NA</h3>
+      <p>同じ物理を NA で書くとレイリーの分解能 <span class="key">0.61&lambda;/NA</span>。可視光・乾燥系対物（NA&le;0.95）では 0.36µm あたりが壁で、それより先は油浸（NA〜1.4）か、波長を短くする（青・UV・電子線）しかない。病理スキャナや検査顕微鏡の対物選定はこの1行です（<a href="OptoLab/index.html?quest=res">OptoLab「0.5µm を見分ける」</a>）。</p>
+    </div>
+  </div>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — 焦点深度：ピントの「厚み」も N が決める</span>
+    <p>像側でピントが合っていると言える範囲（焦点深度）はおよそ <strong>&plusmn;2&lambda;N&sup2;</strong>（判定基準により係数は1〜2）。F2.8 なら &plusmn;9µm 程度 ― センサの取り付け公差はこの土俵で戦っています。N&sup2; で効くので、<span class="key">絞ると深度は急に楽になるが、04の回折で解像が死ぬ</span> ― 深度と解像はここでも同じ N を取り合います。物体側の被写界深度も同じ物理の相似形で、倍率の2乗で換算されます。</p>
+  </div>
+</section>
+
+<!-- ================= 05 ================= -->
+<section class="stage" id="s5">
+  <div class="stage-head"><span class="stage-num">05</span>
+    <h2>ガウスビーム — レーザーの絞り方</h2></div>
+  <p class="lede">レーザーの光は点光源でも面光源でもなく、<strong>ガウスビーム</strong>という別の生き物です。第5部・第8部の相手役（LD・VCSEL）を実際に使うときの、最小限の文法。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>ウェストと発散は反比例</h3>
+      <div class="eq">w&#8320;&middot;&theta; = &lambda;/&pi;　（&theta; は遠方の半角）</div>
+      <p>細く絞ったビームほど速く広がる ― 積が波長で決まった不変量になります。ウェスト w&#8320; の周りでビームとみなせる距離（レイリー長）は z<sub>R</sub> = &pi;w&#8320;&sup2;/&lambda;。<span class="key">「どこまで細く」と「どこまで平行に」は同時に選べません</span>。</p>
+    </div>
+    <div class="body-col">
+      <h3>集光: 太いほど絞れる</h3>
+      <div class="eq">w&#8320;&prime; = M&sup2;&middot;&lambda;f/(&pi;w)</div>
+      <p>半径 w の平行ビームを焦点距離 f のレンズで絞ると、ウェストはこれだけ。<span class="key">入射ビームが太いほど小さく絞れる</span>（04の NA の話の言い換え）ので、加工機や顕微鏡はビームエキスパンダで太らせてから集光します。ビーム品質 M&sup2; はその倍数だけ絞れなくする係数 ― カタログの M&sup2; が金額になる理由（<a href="OptoLab/index.html?quest=gauss">OptoLab「20µm に絞る」</a>）。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 06 ================= -->
+<section class="stage" id="s6">
+  <div class="stage-head"><span class="stage-num">06</span>
+    <h2>ファイバ — 場所と角度の両方で入る</h2></div>
+  <p class="lede">ファイバの入り口は2重の門です ― <strong>コアの中に（場所）</strong>、<strong>受け入れ角の中に（角度）</strong>。どちらか片方では入りません。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>NA — 受け入れ角の定義</h3>
+      <div class="eq">NA = &radic;(n<sub>コア</sub>&sup2; &minus; n<sub>クラッド</sub>&sup2;)</div>
+      <p>全反射で導波できる光線の最大角。マルチモードで 0.2〜0.29、シングルモードで 0.1〜0.14 級。集光ビームの円錐半角は w/f なので、<span class="key">太いビームで小さく絞るほど角度の門に引っかかる</span> ― 結合の窓は両側から閉じます（<a href="OptoLab/index.html?quest=fiber">OptoLab「ファイバに入れる」</a>）。シングルモードはさらにモードの形まで合わせる必要があり（MFD 整合）、許容ずれはµm級 ― 光通信のコネクタが精密部品である理由。</p>
+    </div>
+    <div class="body-col">
+      <h3>会計原則 — エテンデュ</h3>
+      <p>「場所×角度」（面積×立体角）は<strong>エテンデュ</strong>と呼ばれ、<span class="key">受動光学系では決して減らせません</span>（減らせたら02の輝度が増やせてしまう）。太いLEDの光を細いファイバへ「全部」入れることは原理的に不可能 ― できるのはエテンデュの小さい光源（レーザー）を選ぶことだけ。照明設計・集光設計の見積もりで最初に引くべき線で、<strong>「頑張れば入るはず」を式が止めてくれます</strong>。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 07 ================= -->
+<section class="stage" id="s7">
+  <div class="stage-head"><span class="stage-num">07</span>
+    <h2>反射と膜 — 4% の会計</h2></div>
+  <p class="lede">ガラスの面は1枚あたり約4%を照り返します。10面の光学系なら3分の1が迷子 ― ARコートは贅沢品ではなく会計の必需品です。<a href="SemiLab/index.html?quest=ar">SemiLab「反射を殺す」</a>で膜厚を合わせたあの話の、屈折率側。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>フレネル反射</h3>
+      <div class="eq">R = ((n&#8322;&minus;n&#8321;)/(n&#8322;+n&#8321;))&sup2;　（垂直入射）</div>
+      <p>屈折率の段差が大きいほど照り返す。ガラス（n1.5）で4%、<span class="key">シリコン（n&asymp;3.9）では約35%</span> ― センサがARコート無しでは光の3分の1を捨てる勘定で、第2部・第4部のQEの議論の前提がこれです。</p>
+    </div>
+    <div class="body-col">
+      <h3>λ/4 単層の設計</h3>
+      <div class="eq">R = ((n&#8321;n&#8323;&minus;n&#8322;&sup2;)/(n&#8321;n&#8323;+n&#8322;&sup2;))&sup2;　理想は n&#8322; = &radic;(n&#8321;n&#8323;)</div>
+      <p>厚み&lambda;/4の膜で、上面と下面の反射が逆位相で打ち消し合う。屈折率まで &radic;(n&#8321;n&#8323;) に合えば<strong>ゼロ</strong>。シリコンなら理想 n=1.97（SiN がほぼ適任）、ガラスなら理想1.22 ― そんな低屈折率の丈夫な材料が無いので MgF&#8322;(1.38) で 1.3% に妥協する、という実務も同じ式から読めます（<a href="OptoLab/index.html?quest=ar">OptoLab「λ/4 で反射を殺す」</a>）。広帯域や斜入射は多層膜の世界です。</p>
+    </div>
+  </div>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — 迷子の4%はどこへ行く：迷光とゴースト</span>
+    <p>反射で失った光は消えません。<span class="key">鏡筒の中を彷徨って、あらぬ場所から像に混ざります</span>。面と面の間で2回反射した光が作る薄い像がゴースト（夜景の光源の対称位置に出るあれ）、方々で散った成分がベールのように黒を持ち上げるのがフレア ― <strong>コントラストの敵はレンズの枚数×R&sup2;</strong> で増えます。ARコートの本当の御利益は透過率の数%より、この迷光を桁で減らすこと。カメラ試験で黒がグレーに浮くとき、疑う順番は「コート・鏡筒の内面反射・センサのカバーガラス」です。</p>
+  </div>
+</section>
+
+<!-- ================= 08 ================= -->
+<section class="stage" id="s8">
+  <div class="stage-head"><span class="stage-num">08</span>
+    <h2>測る現場 — 光をどう検定するか</h2></div>
+  <p class="lede">設計した光は、測って初めて仕様になります。現場の3点セット ― パワーメータ・積分球・ロックイン ― と、その信頼の根拠。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>絶対値: パワーメータと積分球</h3>
+      <p>光パワーの物差しはフォトダイオード式（速い・感度が波長依存）とサーマル式（第5部の熱型 ― 遅いが波長を選ばない）。どちらも<span class="key">校正の連鎖（トレーサビリティ）で国家標準に繋がっている</span>ことが値の根拠です。広がる光や LED の全光束は<strong>積分球</strong> ― 内面の拡散反射で光を混ぜ切ってから測る白い球 ― で受けます。センサの QE 測定（<a href="第4部_イメージセンサ.html#sptc">第4部 PTC</a> の「QE はこの方法では出ない」の続き）も、校正済み光源＋積分球の仕事です。</p>
+    </div>
+    <div class="body-col">
+      <h3>微弱光: ロックインで床から引き上げる</h3>
+      <p>ノイズは帯域の&radic;に比例する（第5部の W/&radic;Hz）。信号を周波数 f で変調し、その f のごく狭い帯域だけを同期検波すれば、<span class="key">SNR は &radic;(B<sub>元</sub>/B<sub>ロックイン</sub>) 倍</span> ― 1kHz を 0.1Hz に絞れば100倍。おまけに 1/f 雑音（<a href="第6部_アナログ回路.html#s7">第6部07</a>のチョッパと同じ発想）の外へ引っ越せます。代金は時間: 帯域 0.1Hz は時定数数秒 ― <strong>静けさは時間で買う</strong>（<a href="OptoLab/index.html?quest=lockin">OptoLab「ロックイン」</a>）。スペクトルまで欲しければ第5部の分光器＋この技法が定番です。</p>
+    </div>
+  </div>
+
+  <div class="caveat">
+    <span class="tag">この部が単純化していること</span>
+    <p><strong>幾何光学は近軸・無収差、測光は555nm単色換算です。</strong>収差（球面・色・コマ…）、cos⁴則の周辺減光、偏光、部分コヒーレンスは扱っていません。実レンズの性能はレンズデータでの光線追跡（Zemax 等）の世界です。</p>
+    <p><strong>ファイバ結合はスポットとNAの2条件の近似。</strong>シングルモードの結合効率はモード重なり積分で、ここでの「入る/入らない」より滑らかに落ちます。多層膜・斜入射の膜設計も専用ツールの領分です。</p>
+  </div>
+</section>
+
+<!-- ================= 用語表 ================= -->
+<section class="stage" id="s9">
+  <div class="stage-head"><span class="stage-num">—</span>
+    <h2>用語表</h2></div>
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">TERMS — この部の言葉</span></div>
+    <div class="scroll-x">
+      <table>
+        <thead><tr><th>用語</th><th>意味</th><th>目安</th></tr></thead>
+        <tbody>
+          <tr><td>放射量 / 測光量</td><td>物理の W 系と、視感度 V(λ) で重みづけた lm 系。橋は 683 lm/W @555nm。目に見えない波長は放射量のみ</td><td class="num">1 lx = 1.46 mW/m²</td></tr>
+          <tr><td>lm / cd / lx / cd/m²</td><td>光束（総量）・光度（方向密度）・照度（面密度）・輝度（見た目）。単位が測った場所を教える</td><td class="num">4兄弟</td></tr>
+          <tr><td>逆二乗則</td><td>点光源の照度 E = I/r²。距離が光源径の5倍を超えたあたりから成立</td><td class="num">2倍で1/4</td></tr>
+          <tr><td>カメラ方程式</td><td>センサ面照度 = πLT/4N² = ρET/4N²。距離が消えるのが肝（面の被写体は引いても暗くならない）</td><td class="num">F2.8で 0.52%</td></tr>
+          <tr><td>F値 / NA</td><td>f/D と 光線円錐の開き。N ≈ 1/(2NA)。カメラと顕微鏡の同じもの</td><td class="num">明るさは 1/N²</td></tr>
+          <tr><td>エアリー径 / レイリー分解能</td><td>2.44λN と 0.61λ/NA ― 同じ回折の2つの書き方。第4部「解像の限界」と同一</td><td class="num">F2.8で3.8µm</td></tr>
+          <tr><td>焦点深度</td><td>像側でピントと言える厚み ±2λN² 級。絞ると深く、解像は浅く ― 同じ N の取り合い</td><td class="num">F2.8で±9µm</td></tr>
+          <tr><td>ガウスビーム</td><td>w₀·θ = λ/π の不変量。集光は w₀′=M²λf/(πw) ― 太いほど絞れ、M² はその税</td><td class="num">レイリー長 πw₀²/λ</td></tr>
+          <tr><td>ファイバの NA / MFD</td><td>√(n₁²−n₂²) の受け入れ角と、シングルモードのモード径。結合は場所と角度の2重の門</td><td class="num">SM: NA〜0.14</td></tr>
+          <tr><td>エテンデュ</td><td>面積×立体角。受動光学系で不減 ― 輝度が増やせない会計原則。「頑張れば入る」を止める線</td><td class="num">A·Ω 保存</td></tr>
+          <tr><td>フレネル反射 / λ/4</td><td>((n₂−n₁)/(n₂+n₁))² と、n=√(n₁n₃)・厚みλ/4 で消す単層AR。ガラス4%・シリコン35%</td><td class="num">理想でゼロ</td></tr>
+          <tr><td>迷光 / ゴースト</td><td>反射で迷子になった光が像に混ざる。面間2回反射の像がゴースト、散乱のベールがフレア</td><td class="num">面数×R²で増える</td></tr>
+          <tr><td>積分球 / ロックイン</td><td>拡散反射で光を混ぜ切って測る球と、変調＋同期検波で帯域を絞る計測。√(B/B)のSNR改善</td><td class="num">1kHz→0.1Hzで100倍</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </figure>
+</section>
+
+<!-- ================= 出典 ================= -->
+<section class="stage" id="sref">
+  <div class="stage-head"><span class="stage-num">—</span>
+    <h2>出典 — もっと先へ</h2></div>
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">BOOKS — この部の出発点</span></div>
+    <div class="scroll-x">
+      <table>
+        <thead><tr><th>書名</th><th>著者</th><th>この部のどこ</th></tr></thead>
+        <tbody>
+          <tr><td>Optics</td><td>Eugene Hecht<br>Pearson（邦訳『ヘクト 光学』丸善出版）</td>
+            <td><strong>幾何光学と波動光学の定番教科書。</strong>02〜04・07 の結像・回折・干渉・薄膜が導出付きで載っています。まず1冊ならこれ。</td></tr>
+          <tr><td>Fundamentals of<br>Photonics</td><td>B. E. A. Saleh &amp; M. C. Teich<br>Wiley</td>
+            <td>05・06 の本家。ガウスビーム・共振器・ファイバ・変調まで、フォトニクス全域を式で通します。第5部・第8部の光源側の物理もこの本の領分。</td></tr>
+          <tr><td>光電子増倍管<br>ハンドブック（測光の章）</td><td>浜松ホトニクス</td>
+            <td>01 の放射量・測光量の換算表と実務の単位系が、検出器屋の視点で整理されています。第5部の出典と同じ資料の前半。</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <figcaption><strong>書誌情報は、著者・出版社にとどめてあります。</strong>版が多い本ばかりなので、参照するときは手元の版の章立てで探してください。</figcaption>
+  </figure>
+
+  <div class="foot">
+    <span>この部の式は近軸・単色換算の一次見積もり用です。実設計は光線追跡と膜設計ツールで。</span>
+    <span><a href="index.html">学びの地図へ戻る</a> · 実践は <a href="OptoLab/index.html">OptoLab</a>（設計して採点にかける） · 受け側は <a href="第4部_イメージセンサ.html">第4部</a>・<a href="第5部_光検出デバイス.html">第5部</a></span>
+    <span style="font-family:var(--mono)">Lux → Watt → Photon → Image</span>
+  </div>
+</section>
+
+</main>
+</div>
+</div>
+
+<script>
+(function(){
+"use strict";
+var root=document.documentElement;
+var KEY="part7.depth";
+var bS=document.getElementById("dSimple"), bD=document.getElementById("dDeep");
+function setDepth(deep){
+  root.setAttribute("data-depth", deep?"deep":"simple");
+  bS.setAttribute("aria-pressed", deep?"false":"true");
+  bD.setAttribute("aria-pressed", deep?"true":"false");
+  try{ localStorage.setItem(KEY, deep?"deep":"simple"); }catch(e){}
+}
+bS.addEventListener("click", function(){ setDepth(false); });
+bD.addEventListener("click", function(){ setDepth(true); });
+var saved=null; try{ saved=localStorage.getItem(KEY); }catch(e){}
+setDepth(saved==="deep");
+
+var secs=[].slice.call(document.querySelectorAll("section.stage[id]"));
+var railLinks={}, tocLinks={};
+[].forEach.call(document.querySelectorAll('.rail a[href^="#"]'), function(a){ railLinks[a.getAttribute("href").slice(1)]=a; });
+[].forEach.call(document.querySelectorAll('.toc a[href^="#"]'), function(a){ tocLinks[a.getAttribute("href").slice(1)]=a; });
+var tocNow=document.getElementById("tocNow");
+function mark(id){
+  for(var k in railLinks) railLinks[k].classList.toggle("on", k===id);
+  if(tocNow && tocLinks[id]){
+    var sp=tocLinks[id].querySelectorAll("span");
+    tocNow.textContent=(sp[1]?sp[1].textContent:id);
+  }
+}
+if("IntersectionObserver" in window){
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ mark(e.target.id); } });
+  },{rootMargin:"-30% 0px -60% 0px"});
+  secs.forEach(function(s){ io.observe(s); });
+}
+})();
+</script>
+</body>
+</html>
