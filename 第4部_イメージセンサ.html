@@ -1773,6 +1773,13 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <p>逆にJPEGは、デモザイク・WB・カラーマトリクス・ガンマ・8bit量子化まで全部済ませた状態。<span class="key">線形性も余分なビットも失われている</span>ので、後から大きくいじると破綻します。</p>
       <p>センサの分光感度が人の目と一致しないという話は、この節の「色を合わせる」で図とともに扱いました。RAWにマトリクスをかける前の状態が入っているからこそ、<span class="key">あとから別のマトリクスで現像し直せる</span>のです。</p>
   </div>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — 色は間引いても許される：4:2:0 と圧縮の入り口</span>
+    <p>現像を終えた絵は、保存の段階でもう一度「捨てる」判断をします。その一発目が色の間引きです。<strong>人の目は、明るさの細かさに比べて色の細かさにずっと鈍い</strong> ― これは Bayer 配列が緑（輝度の主成分）を1画素おきに、赤と青をその半分しか置かなかったのと<span class="key">同じ事実を、もう一度使っている</span>のです。</p>
+    <p>やり方は、RGB を輝度 Y と2つの色差 Cb・Cr に変換し、<strong>色差だけを縦横それぞれ半分に間引く</strong>。これが 4:2:0 という記法で、情報量は 3 チャネルぶんから Y + Cb/4 + Cr/4 = 1.5 チャネルぶん、<span class="key">つまり半分</span>になります。見た目はほとんど変わりません ― 輝度が細かく残っていれば、色の輪郭が甘くても絵は立つからです（デモザイクが成り立つ理屈と同根です）。</p>
+    <p>JPEG はこの後、8×8 画素のブロックごとに周波数成分へ分解（DCT）し、<strong>高い周波数ほど粗く量子化して</strong>符号化します。動画（H.264/HEVC など）も配信・記録用はほぼ 4:2:0 です。<span class="key">ここから先は不可逆</span> ― RAW が「現像前」で止めているのに対し、こちらは「見え方が変わらない範囲で捨て切った後」の姿です。符号化の中身はセンサから先の話なので、このページではここまでにします。</p>
+  </div>
 </section>
 
 <!-- ================= 08 ================= -->
@@ -2191,6 +2198,14 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p>代償は製造です。<strong>2枚のウェハを、位置を合わせて貼り合わせ、電気的に繋ぐ</strong>工程が増えます。どちらか片方が不良なら両方が無駄になるので、歩留まりは掛け算で効きます。それでも標準になったのは、上に挙げた見返りがそれだけ大きいからです。</p>
   </div>
 
+  <div class="deep deep-note">
+    <span class="tag">くわしく — 貼り合わせの中身：TSV から Cu-Cu へ</span>
+    <p>「縦につなぐ」の実装は、この15年で一度入れ替わっています。</p>
+    <p><strong>始まりは裏面照射（2009年に量産開始）でした。</strong>基板を数µmまで薄くすると1枚では持たないので、裏面照射のウェハはもともと<span class="key">支持基板を貼り合わせて</span>作ります。積層型（2012年〜）の発想は、この「ただ支えているだけの板」を<strong>働くロジックウェハに置き換える</strong>ことでした。貼るという工程はすでにあったのです。初期の積層の電気接続は <b>TSV（シリコン貫通電極）</b>で、チップの<span class="key">周辺部にまとめて</span>穴を掘って上下を繋いでいました。</p>
+    <p><strong>いまの主流は Cu-Cu ハイブリッド接合です（2016年に量産開始）。</strong>両方のウェハ表面を、絶縁膜の中に銅パッドが埋まった平面に仕上げ（第1部の CMP がここでも主役です）、<span class="key">絶縁膜同士を先に密着させてから、熱処理で向かい合った銅同士を接合します</span>。はんだバンプが要らないので、接続ピッチは量産で数µm、学会発表では1µm前後まで詰められており、<strong>周辺だけでなく画素の真下で繋げる</strong>ようになりました。本文の「画素の直下に回路を置ける」も、SPAD の節の「下の階にクエンチとTDC」も、この接合が前提です。</p>
+    <p><strong>3層にもなっています。</strong>2017年には画素とロジックの間に DRAM を挟んだ3層積層が発表されました。全画素を一気に DRAM へ吐き出してからゆっくり外へ送る構成で、読み出しの瞬間速度が桁で上がり、スマートフォンで 960 fps のスローモーション撮影を可能にしました。製造側の一般論（チップレット・CoWoS・接合の要求精度）は<a href="第1部_製造プロセス.html">第1部</a> 09 が詳しいので、そちらと往復して読むのがおすすめです。</p>
+  </div>
+
   <div class="two">
     <div class="body-col deep">
       <h3>ついでに：速度飽和</h3>
@@ -2511,6 +2526,40 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <h3>なぜ普通のカメラを置き換えないのか</h3>
       <p>数える方式は暗所で圧倒的（読み出しノイズという概念が無い）ですが、代償があります。<b>面積</b>: ガード構造やクエンチ回路で画素が大きくなり、開口も稼ぎにくい。<b>デッドタイム</b>: 明るいシーンでは数え落としが起き、応答が飽和する。<b>DCR</b>: 室温で常に数えてしまうぶんが床になる。だから住み分けは「明るさを絵にするのは蓄積型、時間と極暗を扱うのはSPAD」でした ― ただし付録Bで見た<b>積層</b>がこの絵を変えつつあり、下の階にクエンチとTDCを押し込んだメガピクセル級SPADが実用になっています。</p>
     </div>
+  </div>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — もうひとつの測距：iToF（位相で測る）</span>
+    <p>dToF が「到着<b>時刻</b>」を数えるのに対し、<strong>iToF（間接ToF）は「位相」を測ります</strong>。光を数十〜百MHz級の矩形波で変調して照らし続けると、返ってくる波は往復時間ぶんだけ遅れる ― この遅れは周期に対する<span class="key">位相のずれ &phi; ＝ 4&pi;f&middot;d/c</span> として現れるので、逆に解けば距離になります: <b>d = c&middot;&phi; / (4&pi;f)</b>。</p>
+    <svg viewBox="0 0 760 200" role="img" aria-label="iToFの原理図。送った変調波と、往復時間ぶん位相が遅れて返ってきた波を上下に並べ、遅れφを両矢印で示す。下段には90度ずつずらした4つの受光窓Q1からQ4。右側に位相と距離の関係式。" style="width:100%;max-width:760px;display:block;margin:10px auto">
+      <text x="50" y="20" font-size="10" fill="var(--photon-2)" font-weight="600">送る光（f で変調）</text>
+      <path d="M50 62 L50 32 L110 32 L110 62 L170 62 L170 32 L230 32 L230 62 L290 62 L290 32 L350 32 L350 62 L410 62 L410 32 L452 32" fill="none" stroke="var(--photon)" stroke-width="2"/>
+      <text x="50" y="86" font-size="10" fill="var(--electron-2)" font-weight="600">返ってきた光（&phi; 遅れ・弱い）</text>
+      <path d="M50 126 L86 126 L86 98 L146 98 L146 126 L206 126 L206 98 L266 98 L266 126 L326 126 L326 98 L386 98 L386 126 L446 126 L446 98 L452 98" fill="none" stroke="var(--electron)" stroke-width="2"/>
+      <g stroke="var(--warn)" stroke-width="1.2"><path d="M50 70 H86"/><path d="M50 66 L50 74 M86 66 L86 74"/></g>
+      <text x="92" y="74" font-size="10" fill="var(--warn)" font-weight="600">&phi;</text>
+      <g>
+        <rect x="50" y="146" width="30" height="22" fill="var(--volt-soft)" stroke="var(--volt)" stroke-width="1"/>
+        <rect x="80" y="146" width="30" height="22" fill="none" stroke="var(--volt)" stroke-width="1"/>
+        <rect x="110" y="146" width="30" height="22" fill="var(--volt-soft)" stroke="var(--volt)" stroke-width="1"/>
+        <rect x="140" y="146" width="30" height="22" fill="none" stroke="var(--volt)" stroke-width="1"/>
+        <text x="65" y="182" font-size="9" fill="var(--volt)" text-anchor="middle">Q1 (0&deg;)</text>
+        <text x="95" y="192" font-size="9" fill="var(--volt)" text-anchor="middle">Q2 (90&deg;)</text>
+        <text x="125" y="182" font-size="9" fill="var(--volt)" text-anchor="middle">Q3 (180&deg;)</text>
+        <text x="155" y="192" font-size="9" fill="var(--volt)" text-anchor="middle">Q4 (270&deg;)</text>
+        <text x="190" y="161" font-size="9.5" fill="var(--ink-3)">90&deg; ずつずらした4つの窓で電荷を振り分ける</text>
+      </g>
+      <g font-size="11" fill="var(--ink)">
+        <text x="480" y="40">位相のずれ　&phi; = 4&pi;f&middot;d / c</text>
+        <text x="480" y="66">距離　d = c&middot;&phi; / (4&pi;f)</text>
+        <text x="480" y="98" fill="var(--ink-2)" font-size="10">4つの窓の電荷の差の比から</text>
+        <text x="480" y="112" fill="var(--ink-2)" font-size="10">arctan で &phi; が出る</text>
+        <text x="480" y="144" fill="var(--warn)" font-size="10">&phi; は 2&pi; で一周 → 曖昧距離 c/(2f)</text>
+        <text x="480" y="158" fill="var(--warn)" font-size="10">f = 100 MHz なら 1.5 m ごとに巻き戻る</text>
+      </g>
+    </svg>
+    <p>受け側は SPAD ではなく普通のフォトダイオードで、<strong>変調と同期して電荷の行き先を切り替える復調画素</strong>を使います（電界でキャリアを2つの取り口へ振り分けるCAPDなど。取り口は2つなので、0&deg;/180&deg; と 90&deg;/270&deg; の組を分けて取れば4窓が揃う）。4つの窓に溜まった電荷の差の比を取ると、光の絶対量や背景光の直流分が打ち消し合って、<span class="key">arctan ひとつで &phi; が出ます</span>。ピコ秒級の時間計測器が要らず画素を小さくできるのが強みで、顔認証などの近距離深度カメラに広く使われています。</p>
+    <p>弱点は2つ。<strong>曖昧さ</strong>: &phi; は 2&pi; で一周するので、c/(2f) より遠くは巻き戻って見えます（100 MHz で 1.5 m）。変調を上げるほど精度は上がるが曖昧距離が縮む ― 実用機は<span class="key">2つの周波数で測って矛盾しない距離を選ぶ</span>ことで両立させます。<strong>マルチパス</strong>: 壁で一度跳ねてから届いた光も同じ画素に混ざり、位相が混ざって距離がずれる。部屋の隅や光沢面で系統誤差になります。dToF はヒストグラムの山が分離するのでこの点に強く、<span class="key">遠距離・屋外は dToF、近距離・小型は iToF</span> という住み分けになっています。</p>
   </div>
 
   <div class="caveat">
@@ -2840,6 +2889,10 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>像面位相差AF</td><td>瞳の右半分・左半分を別々に見る画素対で、像のズレ（位相差）からピントの向きと量を1回で出す測距</td><td class="num">基線長で感度が決まる</td></tr>
           <tr><td>デュアルピクセル</td><td>全画素のPDを左右2分割。別々に読めばAF、足せば通常画素 ― 遮光式の感度損と画像欠陥を消した形</td><td class="num">読み出し2倍</td></tr>
           <tr><td>DVS / イベント</td><td>log輝度の変化がしきい値を超えるたびに (x, y, 極性, 時刻) を非同期に出す画素。絶対輝度は持たない</td><td class="num">µs級・〜120dB</td></tr>
+          <tr><td>ToF（dToF / iToF）</td><td>光の往復で距離を測る。パルスの到着時刻をヒストグラムで読むのが dToF、変調波の位相 &phi; = 4&pi;fd/c で測るのが iToF</td><td class="num">1 ns = 15 cm</td></tr>
+          <tr><td>曖昧距離</td><td>iToF で位相が 2&pi; を一周して距離が巻き戻る間隔 c/(2f)。2周波数の併用で解く</td><td class="num">1.5 m @100 MHz</td></tr>
+          <tr><td>Cu-Cu ハイブリッド接合</td><td>バンプを使わず、絶縁膜と銅パッドの平面同士を直接貼り合わせる接続。画素直下の縦配線を可能にした</td><td class="num">ピッチ数µm→1µm級</td></tr>
+          <tr><td>4:2:0</td><td>色差 Cb・Cr を縦横半分に間引く記法。目の色解像度の低さを使う ― Bayer と同じ判断の保存版</td><td class="num">データ量 1/2</td></tr>
         </tbody>
       </table>
     </div>
@@ -2935,7 +2988,8 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <p><strong>像面位相差AF</strong>——<a href="#saf">「像面位相差AF」</a>へ。画質ではなく測距の話なので、一本道の番号は持たせていません。</p>
       <p style="margin-top:12px"><strong>SPAD と光子計数</strong>——<a href="#sspad">「降伏の先 — SPAD」</a>へ（仮想センサ1台の枠の外である点は変わりません）。</p>
       <p style="margin-top:12px"><strong>イベントベースセンサ</strong>——<a href="#sevt">「イベントベースセンサ」</a>へ。フレームという概念ごと違う別方式として。</p>
-      <p style="margin-top:12px"><strong>読み出しの高速化</strong>——サブADC構成、圧縮、インターフェース（MIPI）。センサから先の話で、引き続き扱いません。</p>
+      <p style="margin-top:12px"><strong>測距（ToF）</strong>——dToF と iToF は「降伏の先 — SPAD」の節内で扱いました（1 ns = 15 cm と、位相の巻き戻り）。</p>
+      <p style="margin-top:12px"><strong>読み出しの高速化</strong>——サブADC構成、インターフェース（MIPI）。センサから先の話で、引き続き扱いません（圧縮は 07 の「色は間引いても許される」で入り口だけ）。</p>
     </div>
   </div>
 </section>
