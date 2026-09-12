@@ -346,13 +346,27 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   .hero{padding-top:0}
 }
 </style>
+
+<style>
+/* ===== 第6部 追加分: 図解アニメーションの共通部品（reduced-motion では自動停止） ===== */
+@keyframes p6flow { to { stroke-dashoffset: -60; } }
+.flow{stroke-dasharray:7 5;animation:p6flow 1.6s linear infinite}
+.flow.slow{animation-duration:3s}
+@keyframes p6blink { 0%,100%{opacity:.15} 50%{opacity:1} }
+.blink{animation:p6blink 1.8s ease-in-out infinite}
+@keyframes p6draw { 0%{stroke-dashoffset:var(--len,600)} 55%{stroke-dashoffset:0} 100%{stroke-dashoffset:0} }
+.draw{stroke-dasharray:var(--len,600);animation:p6draw 4s linear infinite}
+@keyframes p6wob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
+.wob{animation:p6wob 2.4s ease-in-out infinite;transform-box:fill-box}
+</style>
+
 <header class="wrap hero">
   <div class="hero-grid">
     <div>
       <a class="back" href="index.html">&larr; Labs / 半導体 ― 第6部 アナログ回路（実践: AnalogLab）</a><br>
       <span class="eyebrow">Vov &rarr; gm &rarr; Gain &rarr; Feedback</span>
       <h1>アナログ回路 ―<br><span class="lit">坂</span>に住む設計</h1>
-      <p class="sub"><a href="第3部_論理回路.html">第3部</a>のデジタルは、トランジスタの坂を「しきい値で切って」捨てました。アナログはその坂に住みます。<a href="第2部_デバイスの基礎.html">第2部</a>で作った MOSFET を増幅器として読み直し、利得・帯域・雑音・スイングが同じ電圧予算を取り合う世界を、ラザビーの道順で登ります。<a href="第5部_光検出デバイス.html">第5部</a>の検出器の後段 ― TIA・チャージアンプ・差動対 ― がこの部の出口です。</p>
+      <p class="sub"><a href="第3部_論理回路.html">第3部</a>のデジタルは、トランジスタの坂を「しきい値で切って」捨てました。アナログはその坂に住みます。<a href="第2部_デバイスの基礎.html">第2部</a>で作った MOSFET を増幅器として読み直し、利得・帯域・雑音・スイングが同じ電圧予算を取り合う世界を、ラザビーの道順で登ります。章の並びも設計の順番です: <strong>1個の素子の言葉</strong>（01）→ <strong>1段の増幅</strong>（02）→ <strong>電流を配る</strong>（03）→ <strong>差で守る</strong>（04）→ <strong>帰還で仕上げる</strong>（05）→ <strong>積んで OTA</strong>（06）→ <strong>床＝雑音</strong>（07）→ <strong>動かない土台＝基準</strong>（08）。<a href="第5部_光検出デバイス.html">第5部</a>の検出器の後段 ― TIA・チャージアンプ・差動対 ― がこの部の出口です。</p>
       <div class="depth-row">
         <div class="depth" role="group" aria-label="説明の深さ">
           <button id="dSimple" aria-pressed="true">かんたん</button>
@@ -362,11 +376,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       </div>
 
       <div class="guide">
-        <div class="guide-h"><span>読み方</span><span>全部で 35〜55 分（「かんたん / くわしい」で変わります）</span></div>
+        <div class="guide-h"><span>読み方（役割別）</span><span>全部で 60〜110 分（「かんたん / くわしい」で変わります）</span></div>
         <div class="guide-b">
-          <div><b>一段まで</b><span>01 gm と ro → 02 一段で増やす。増幅の九九が入ります。</span><em>10 〜 15 分</em></div>
-          <div><b>回路の形まで</b><span>03 ミラー・04 差動対・05 帰還。実用回路の3点セット。</span><em>20 〜 30 分</em></div>
-          <div><b>設計の現場まで</b><span>06 OTA・07 雑音・08 基準、「くわしく」全部。</span><em>35 〜 55 分</em></div>
+          <div><b>営業・企画なら</b><span>01 の gm の意味 → 05 帰還のご利益 → 07 雑音は電流で買う。仕様書の「GBW・スルーレート・nV/√Hz」が交渉できる言葉になります。</span><em>15 〜 25 分</em></div>
+          <div><b>設計・開発なら</b><span>01〜06 を式ごと、AnalogLab を並走。九九（gm/Id）から2段OTAの補償まで、回路図が「4枚のカード」に見えてきます。</span><em>40 〜 70 分</em></div>
+          <div><b>研究・製造なら</b><span>07 雑音・08 基準と「くわしく」全部。チョッパ・CDS・kT/C ― 計測の床と戦う技法は全部ここに繋がります。</span><em>60 〜 110 分</em></div>
         </div>
       </div>
     </div>
@@ -432,16 +446,103 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
 
   <div class="two">
     <div class="body-col">
+      <h3>小信号 — 「置いてから、揺らす」</h3>
+      <p>アナログ設計は必ず2幕構成です。第1幕は<strong>バイアス</strong>: 直流でトランジスタを坂の上の1点（動作点）に「置く」。第2幕は<strong>小信号</strong>: その点のまわりで信号を小さく「揺らす」。坂は曲がっています（二乗則）が、<span class="key">十分小さく揺らせば、その点での接線 ― 傾き ― だけが全てを決めます</span>。この接線の傾きが g<sub>m</sub>。曲線を1本の直線に置き換えるこの近似のおかげで、増幅器の設計は「傾きの掛け算」という代数になります。</p>
+      <p>だから同じ回路図でも、<strong>動作点が違えば別の回路</strong>です。カタログの g<sub>m</sub> や利得に必ずバイアス条件が添えてあるのはこのためで、逆に言えば、動作点を意図して動かせば同じ石から違う性格を引き出せます。</p>
+    </div>
+    <div class="body-col">
       <h3>gm — 坂の傾き</h3>
       <div class="eq">V<sub>ov</sub> = &radic;(2I<sub>D</sub>/(µC<sub>ox</sub>&middot;W/L))　　g<sub>m</sub> = 2I<sub>D</sub>/V<sub>ov</sub></div>
       <p>ゲート電圧を少し揺らしたとき、ドレイン電流がどれだけ揺れるか ― その比 g<sub>m</sub>（トランスコンダクタンス）が増幅のすべての源です。式の形が肝で、<span class="key">同じ電流でも、W/L を太らせて V<sub>ov</sub> を下げれば g<sub>m</sub> は増えます</span>。g<sub>m</sub>/I<sub>D</sub> = 2/V<sub>ov</sub> は「1µA あたり何 S 買えるか」という<strong>効率</strong> ― 低電力アナログ設計の通貨です。</p>
-    </div>
-    <div class="body-col">
       <h3>ro — 蛇口の惜しいところ</h3>
       <div class="eq">r<sub>o</sub> = 1/(&lambda;&middot;I<sub>D</sub>)</div>
       <p>理想の電流源なら、ドレイン電圧を変えても電流は変わらないはず。実際はチャネル長変調 &lambda; のぶんだけ漏れます ― その「変わってしまい方」の逆数が出力抵抗 r<sub>o</sub>。<span class="key">後で見るとおり、r<sub>o</sub> は利得の天井を決めます</span>。&lambda; はチャネル長 L を伸ばすと小さくなる（＝r<sub>o</sub> が上がる）ので、アナログのトランジスタはデジタルより長めに作るのが定石です。</p>
-      <p>V<sub>ov</sub> をどこに置くか ― それがアナログ設計の最初の決断です。下げれば g<sub>m</sub> 効率と利得が伸び、スイングも楽になる。ただし素子は太り（面積・容量）、0.1V を切るあたりで二乗則の外（弱反転）に出ます。<strong>0.15〜0.25V が定位置</strong>。</p>
     </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">TANGENT — 坂に置いて、接線で増やす</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 250" role="img" aria-label="Id対Vgsの二乗則カーブ。動作点に白い点があり、そこに接線が引かれている。ゲート電圧の小さな揺れが接線を通ってドレイン電流の揺れになる様子。" style="min-width:700px;width:100%;display:block">
+        <g stroke="var(--line)" stroke-width="1" opacity="0.6">
+          <path d="M70 20 V200"/><path d="M70 200 H460"/>
+        </g>
+        <text x="265" y="226" font-size="10" fill="var(--ink-3)" text-anchor="middle">V<tspan font-size="7" dy="2">GS</tspan></text>
+        <text x="40" y="110" font-size="10" fill="var(--ink-3)" text-anchor="middle" transform="rotate(-90 40 110)">I<tspan font-size="7" dy="2">D</tspan></text>
+        <path d="M100 200 Q 240 196 320 130 Q 380 78 440 30" stroke="var(--si)" stroke-width="2.2" fill="none" class="draw" style="--len:520"/>
+        <path d="M250 218 L440 62" stroke="var(--warn)" stroke-width="1.5" stroke-dasharray="6 4"/>
+        <circle cx="345" cy="107" r="5" fill="var(--surface)" stroke="var(--warn)" stroke-width="2"/>
+        <text x="358" y="100" font-size="10" fill="var(--warn)">動作点（バイアスで置く）</text>
+        <text x="330" y="52" font-size="10" fill="var(--warn)">接線の傾き = g<tspan font-size="7" dy="2">m</tspan></text>
+        <g class="wob">
+          <path d="M330 168 h30" stroke="var(--electron)" stroke-width="2"/>
+          <text x="368" y="172" font-size="9" fill="var(--electron-2)">入力の揺れ</text>
+        </g>
+        <path d="M345 200 V115" stroke="var(--electron)" stroke-width="1" stroke-dasharray="3 3"/>
+        <path d="M345 107 H74" stroke="var(--electron)" stroke-width="1" stroke-dasharray="3 3"/>
+        <g font-size="10.5" fill="var(--ink-2)">
+          <text x="510" y="60" font-weight="600">2幕構成</text>
+          <text x="510" y="84">第1幕: バイアス ― 坂のどこに座るか</text>
+          <text x="510" y="104">　（V<tspan font-size="7" dy="2">ov</tspan><tspan dy="-2"> を決める＝性格を決める）</tspan></text>
+          <text x="510" y="132">第2幕: 小信号 ― 接線で揺れを増やす</text>
+          <text x="510" y="152">　（g<tspan font-size="7" dy="2">m</tspan><tspan dy="-2"> と r</tspan><tspan font-size="7" dy="2">o</tspan><tspan dy="-2"> の代数になる）</tspan></text>
+          <text x="510" y="186" fill="var(--ink-3)" font-size="9.5">揺らしすぎると接線から外れる ―</text>
+          <text x="510" y="202" fill="var(--ink-3)" font-size="9.5">それが「歪み」の正体（大信号の世界）</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>デジタル（第3部）は坂の右端と左端しか使わない。アナログは<span class="key">坂の途中に座って、接線を働かせる</span> ― 同じ石の、まったく別の使い方です。</figcaption>
+  </figure>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">EFFICIENCY — gm/Id という1本の物差し</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 230" role="img" aria-label="Vov（またはgm/Id）の軸上に弱反転、定位置0.15〜0.25V、高速側の領域が示され、左ほど高効率・低速・大面積、右ほど低効率・高速・小面積というトレードオフが描かれている。" style="min-width:700px;width:100%;display:block">
+        <path d="M60 120 H700" stroke="var(--ink-2)" stroke-width="2"/>
+        <path d="M692 115 L702 120 L692 125 Z" fill="var(--ink-2)"/>
+        <g font-size="9.5" fill="var(--ink-3)" text-anchor="middle">
+          <text x="140" y="140">V<tspan font-size="7" dy="2">ov</tspan> ≈ 0.05V</text>
+          <text x="360" y="140">0.15〜0.25V</text>
+          <text x="600" y="140">0.4V〜</text>
+        </g>
+        <g font-size="9.5" text-anchor="middle">
+          <text x="140" y="158" fill="var(--ink-2)">g<tspan font-size="7" dy="2">m</tspan>/I<tspan font-size="7" dy="2">D</tspan> 25〜30 S/A</text>
+          <text x="360" y="158" fill="var(--ink-2)">8〜13 S/A</text>
+          <text x="600" y="158" fill="var(--ink-2)">〜5 S/A</text>
+        </g>
+        <rect x="80" y="60" width="160" height="40" rx="6" fill="var(--surface-2)" stroke="var(--electron)"/>
+        <text x="160" y="78" font-size="10" fill="var(--electron-2)" text-anchor="middle">弱反転（指数の世界）</text>
+        <text x="160" y="93" font-size="8.5" fill="var(--ink-3)" text-anchor="middle">低電力・低速・二乗則の外</text>
+        <rect x="280" y="60" width="160" height="40" rx="6" fill="var(--surface-2)" stroke="var(--si)"/>
+        <text x="360" y="78" font-size="10" fill="var(--si)" text-anchor="middle">定位置（この部の世界）</text>
+        <text x="360" y="93" font-size="8.5" fill="var(--ink-3)" text-anchor="middle">利得・速度・面積のバランス</text>
+        <rect x="520" y="60" width="160" height="40" rx="6" fill="var(--surface-2)" stroke="var(--warn)"/>
+        <text x="600" y="78" font-size="10" fill="var(--warn)" text-anchor="middle">高速側</text>
+        <text x="600" y="93" font-size="8.5" fill="var(--ink-3)" text-anchor="middle">小さく速い・電流を食う</text>
+        <g font-size="9.5" fill="var(--ink-3)">
+          <text x="80" y="196">← 効率（低雑音・高利得・低電力）</text>
+          <text x="680" y="196" text-anchor="end">速さ（f<tspan font-size="7" dy="2">T</tspan>・小面積）→</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>1本の軸のどこに座るかが、回路の性格をほぼ決める。<span class="key">左端の 25〜30 S/A は弱反転の物理限界 1/(nV<sub>T</sub>)</span> ― <a href="第2部_デバイスの基礎.html#s5">第2部の S 値 60mV/桁</a>の裏面が、設計の通貨の上限として再登場します。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>Vov をどこに置くか — 最初の決断</h3>
+      <p>V<sub>ov</sub> をどこに置くか ― それがアナログ設計の最初の決断です。下げれば g<sub>m</sub> 効率と利得が伸び、スイングも楽になる。ただし素子は太り（面積・容量）、0.1V を切るあたりで二乗則の外（弱反転）に出ます。<strong>0.15〜0.25V が定位置</strong>。<a href="AnalogLab/index.html?quest=bias">AnalogLab「Vov を狙って置く」</a>が文字どおりこの決断の練習です。</p>
+    </div>
+    <div class="body-col">
+      <h3>もうひとつの物差し — fT</h3>
+      <p>速さの物差しも一言。トランジスタ自身の帯域は <strong>f<sub>T</sub> ≒ g<sub>m</sub>/(2&pi;C<sub>gs</sub>)</strong> ― 自分のゲート容量を自分の g<sub>m</sub> で駆動できる限界の周波数です。V<sub>ov</sub> を上げる（＝右の領域に座る）と f<sub>T</sub> は上がる ― <span class="key">効率と速さが同じ軸の両端にある</span>ことが、上の図の言い直しです。RF の初段が V<sub>ov</sub> 高め、センサの初段が V<sub>ov</sub> 低めに座るのは、それぞれの信号の速さが決めています。</p>
+    </div>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — AnalogLab 第1章</span>
+    <p>Vov を狙って置き、電力で gm を買う。この章の「九九」を自分の数字で覚える。</p>
+    <div class="qs"><a href="AnalogLab/index.html?quest=bias">Vov を狙って置く</a><a href="AnalogLab/index.html?quest=eff">電力で gm を買う</a></div>
   </div>
 </section>
 
@@ -494,14 +595,50 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <p>W/L も I<sub>D</sub> も式から消えるのが肝で、<span class="key">効くのは V<sub>ov</sub>（下げる）とチャネル長（伸ばして &lambda; を下げる）だけ</span>。微細化で &lambda; が伸び、素の利得が数十まで痩せたことが、カスコード（03）や多段（06）が要る理由です。</p>
     </div>
     <div class="body-col">
+      <h3>速さの壁 — 出力の極</h3>
+      <p>一段にはもう1枚の壁があります。出力ノードには必ず容量（負荷・配線・次段のゲート）がぶら下がり、<span class="key">極 f<sub>p</sub> = 1/(2&pi;&middot;R<sub>out</sub>&middot;C<sub>L</sub>)</span> より上では利得が落ち始めます。R<sub>D</sub>=12k&Omega;・C<sub>L</sub>=1pF なら 13MHz ― <strong>利得を稼ごうと R を上げるほど、遅くなる</strong>。利得×帯域の積が g<sub>m</sub>/(2&pi;C<sub>L</sub>) でほぼ一定になるのはこのためで、この積（GBW）が06で速さの通貨になります。<a href="AnalogLab/index.html?quest=gbw">AnalogLab「GBW を電力で買う」</a>で √ の伸び方まで確かめられます。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">WALL — R<sub>D</sub> を上げても、r<sub>o</sub> の壁で頭打ち</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 220" role="img" aria-label="横軸RD（対数）、縦軸利得のグラフ。利得はRDに比例して伸びるがgm・roの壁で飽和する。壁の高さは素の利得。" style="min-width:700px;width:100%;display:block">
+        <g stroke="var(--line)" stroke-width="1" opacity="0.6">
+          <path d="M70 20 V180"/><path d="M70 180 H700"/>
+        </g>
+        <text x="385" y="208" font-size="10" fill="var(--ink-3)" text-anchor="middle">負荷抵抗 R<tspan font-size="7" dy="2">D</tspan>（対数）→</text>
+        <text x="40" y="100" font-size="10" fill="var(--ink-3)" text-anchor="middle" transform="rotate(-90 40 100)">|利得|</text>
+        <path d="M80 176 C 240 150, 380 90, 480 62 C 560 42, 640 38, 690 37" stroke="var(--si)" stroke-width="2.2" fill="none" class="draw" style="--len:700"/>
+        <path d="M70 34 H700" stroke="var(--warn)" stroke-width="1.5" stroke-dasharray="6 4"/>
+        <text x="690" y="28" font-size="10" fill="var(--warn)" text-anchor="end">壁 = g<tspan font-size="7" dy="2">m</tspan><tspan dy="-2">r</tspan><tspan font-size="7" dy="2">o</tspan><tspan dy="-2">（素の利得 = 2/λV</tspan><tspan font-size="7" dy="2">ov</tspan><tspan dy="-2">）</tspan></text>
+        <text x="200" y="120" font-size="9.5" fill="var(--ink-3)">はじめは g<tspan font-size="7" dy="2">m</tspan><tspan dy="-2">R</tspan><tspan font-size="7" dy="2">D</tspan><tspan dy="-2"> で素直に伸びる</tspan></text>
+        <text x="500" y="100" font-size="9.5" fill="var(--ink-3)">r<tspan font-size="7" dy="2">o</tspan><tspan dy="-2"> の分流が効いて寝る</tspan></text>
+      </svg>
+    </div>
+    <figcaption>AnalogLab の盤面の左の図と同じ曲線。<span class="key">壁を上げたければ、R<sub>D</sub> ではなく V<sub>ov</sub> と L</span>（＝壁そのもの）を触るしかない ― <a href="AnalogLab/index.html?quest=gain2">「ro の壁 ― 素の利得 100」</a>がその練習です。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
       <h3>2人の脇役 — SF と CG</h3>
       <p><strong>ソースフォロワ（SF）</strong>は利得1弱の「電圧のバッファ」。増やさない代わりに、重い負荷を軽々と駆動します ― <a href="第4部_イメージセンサ.html#s5">第4部05</a>で画素の電荷を運び出していたのがまさにこれ。<strong>ゲート接地（CG）</strong>は入力抵抗が約 1/g<sub>m</sub> と低く、<span class="key">電流をそのまま受け取る</span>入口 ― TIA やカスコードの部品になります。CS が「増やす」、SF が「運ぶ」、CG が「受ける」。実用回路はこの3枚の組み合わせです。</p>
+    </div>
+    <div class="body-col">
+      <h3>3枚のカードの見分け方</h3>
+      <p>回路図で迷ったら<strong>「信号がどの端子から入り、どの端子から出るか」</strong>だけ見ます: ゲート入力・ドレイン出力なら CS（反転で増やす）。ゲート入力・ソース出力なら SF（同相で運ぶ）。ソース入力・ドレイン出力なら CG（電流を受けて渡す）。<span class="key">端子の組み合わせは3通りしかない</span>ので、どんな複雑な回路図も、この3枚と受動素子への分解で読めます ― 06 の「4枚のカード」の最初の3枚です。</p>
     </div>
   </div>
 
   <div class="deep deep-note">
     <span class="tag">くわしく — gm/Id 設計法：効率の物差しで選ぶ</span>
     <p>現代のアナログ設計は「W/L を決める」より先に「<strong>g<sub>m</sub>/I<sub>D</sub> をどこに置くか</strong>」を決めます。二乗則では g<sub>m</sub>/I<sub>D</sub> = 2/V<sub>ov</sub> ― V<sub>ov</sub>=0.2V で 10 S/A、0.1V で 20 S/A。<span class="key">高効率側（V<sub>ov</sub> 小）は低電力・高利得・低雑音に有利で、素子が太り遅くなる。低効率側（V<sub>ov</sub> 大）は速くて小さいが電流を食う</span>。この1軸の上のどこに座るかが、回路の性格をほぼ決めます。実プロセスでは弱反転（g<sub>m</sub>/I<sub>D</sub> が nV<sub>T</sub> 分の1、25〜30 S/A で飽和する領域 ― <a href="第2部_デバイスの基礎.html#s5">第2部の S 値</a>の裏面）まで使うので、シミュレータの g<sub>m</sub>/I<sub>D</sub> カーブが設計表になります。<a href="AnalogLab/index.html?quest=eff">AnalogLab「電力で gm を買う」</a>で一度この算数を踏んでください。</p>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — AnalogLab 第2章</span>
+    <p>10倍の利得・素の利得100・GBWの√則 ― 一段の3枚の壁を全部触る。</p>
+    <div class="qs"><a href="AnalogLab/index.html?quest=gain">ソース接地で 10 倍</a><a href="AnalogLab/index.html?quest=gain2">ro の壁 ― 素の利得 100</a><a href="AnalogLab/index.html?quest=gbw">GBW を電力で買う</a></div>
   </div>
 </section>
 
@@ -511,6 +648,50 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <h2>写す — カレントミラー</h2></div>
   <p class="lede">アナログ回路の中を流れる電流は、ほとんどが<strong>1本の基準のコピー</strong>です。コピー機の原理は拍子抜けするほど簡単 ― 同じ V<sub>GS</sub> を共有させるだけ。</p>
 
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">MIRROR — 電圧1本で電流を配る</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 240" role="img" aria-label="カレントミラーの回路図。左はダイオード接続のMOSFETに基準電流Irefが流れ、そのゲート電圧が右の2つのMOSFETに配られ、W/L比1倍と2倍の電流がコピーされる。" style="min-width:700px;width:100%;display:block">
+        <g stroke="var(--ink-2)" stroke-width="1.5" fill="none">
+          <path d="M150 30 V70"/>
+          <circle cx="150" cy="84" r="12" stroke-width="1.4"/>
+          <path d="M150 78 v12 M146 86 l4 6 l4 -6"/>
+          <path d="M150 96 V130"/>
+        </g>
+        <text x="170" y="88" font-size="10" fill="var(--ink-3)">I<tspan font-size="7" dy="2">ref</tspan></text>
+        <g stroke="var(--ink-2)" stroke-width="2" fill="none">
+          <path d="M150 130 V160 M150 160 V186 M136 160 V186"/>
+          <path d="M420 130 V160 M420 160 V186 M406 160 V186"/>
+          <path d="M620 130 V160 M620 160 V186 M606 160 V186"/>
+        </g>
+        <path d="M130 160 V186" stroke="var(--ink-2)" stroke-width="1.2"/>
+        <path d="M400 160 V186" stroke="var(--ink-2)" stroke-width="1.2"/>
+        <path d="M600 160 V186" stroke="var(--ink-2)" stroke-width="1.2"/>
+        <path d="M150 140 H110 V173 H130" stroke="var(--volt)" stroke-width="1.4" fill="none"/>
+        <circle cx="150" cy="140" r="3" fill="var(--volt)"/>
+        <path d="M130 173 H400" stroke="var(--volt)" stroke-width="1.4" class="flow slow"/>
+        <path d="M400 173 H600" stroke="var(--volt)" stroke-width="1.4" class="flow slow"/>
+        <text x="300" y="166" font-size="9.5" fill="var(--volt)">同じ V<tspan font-size="7" dy="2">GS</tspan> を配る（電圧1本のバス）</text>
+        <g stroke="var(--ink-2)" stroke-width="1.5">
+          <path d="M150 186 V206"/><path d="M420 186 V206"/><path d="M620 186 V206"/>
+          <path d="M136 206 h28 M141 212 h18 M146 218 h8" />
+          <path d="M406 206 h28 M411 212 h18 M416 218 h8"/>
+          <path d="M606 206 h28 M611 212 h18 M616 218 h8"/>
+        </g>
+        <g stroke="var(--ink-2)" stroke-width="1.5" fill="none">
+          <path d="M420 130 V50" class="flow"/><path d="M620 130 V50" class="flow"/>
+        </g>
+        <g font-size="10" fill="var(--ink-2)" text-anchor="middle">
+          <text x="150" y="240">基準（ダイオード接続）</text>
+          <text x="420" y="240">(W/L)×1 → I<tspan font-size="7" dy="2">ref</tspan></text>
+          <text x="620" y="240">(W/L)×2 → 2I<tspan font-size="7" dy="2">ref</tspan></text>
+        </g>
+        <text x="440" y="44" font-size="9.5" fill="var(--ink-3)">コピー先の回路へ</text>
+      </svg>
+    </div>
+    <figcaption>左の1本に流した基準が、<span class="key">V<sub>GS</sub> という「電圧の言葉」に変換されて配線1本で配られ、各所で W/L 比つきの電流に戻る</span>。チップの中のバイアス分配は、ほぼ全部この形です。</figcaption>
+  </figure>
+
   <div class="two">
     <div class="body-col">
       <h3>W/L の比で増減する</h3>
@@ -519,7 +700,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     </div>
     <div class="body-col">
       <h3>コピーの品質は ro</h3>
-      <p>ミラーは「電流源」として使われますが、その品質＝出力抵抗は素の r<sub>o</sub> です。ドレイン電圧が動くとコピーが &lambda; のぶん狂う ― 02の「惜しいところ」がそのまま誤差になります。<span class="key">品質を上げたければカスコード</span>（下の「くわしく」）。代償は V<sub>ov</sub> 1個ぶんのヘッドルームです。</p>
+      <p>ミラーは「電流源」として使われますが、その品質＝出力抵抗は素の r<sub>o</sub> です。ドレイン電圧が動くとコピーが &lambda; のぶん狂う ― 02の「惜しいところ」がそのまま誤差になります。<span class="key">品質を上げたければカスコード</span>（下の「くわしく」）。代償は V<sub>ov</sub> 1個ぶんのヘッドルームです。もうひとつの敵は<strong>ミスマッチ</strong>: 2本の石は同じに作ったつもりでも V<sub>th</sub> と µC<sub>ox</sub> がばらつく（ペルグロム則 ― <a href="第4部_イメージセンサ.html#sd">第4部付録D</a>）。だから精度が要るミラーは<strong>面積を張り、向きを揃え、共通重心に置く</strong> ― レイアウトの作法がそのまま回路性能になります。</p>
     </div>
   </div>
 
@@ -579,6 +760,17 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     </div>
     <figcaption>差動利得は片側のソース接地と同じ g<sub>m</sub>R<sub>D</sub> ― 差動にしても利得はタダでは増えません。買っているのは<strong>同相を捨てる力</strong>（電源の揺れ・基板ノイズ・温度ドリフトの共通分が引き算で消える）。OP アンプの初段が例外なく差動対なのはこのためです。<a href="AnalogLab/index.html?quest=diff">AnalogLab「差動対で 20 倍」</a>。</figcaption>
   </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>大信号 — 電流の綱引き</h3>
+      <p>差を大きくしていくと何が起きるか。テール電流 I<sub>SS</sub> は一定なので、2本の石は<strong>決まった量の電流を綱引き</strong>します。差がゼロなら半分ずつ、差が開くほど片側に寄り、<span class="key">|&Delta;V<sub>in</sub>| ≒ &radic;2&middot;V<sub>ov</sub> で全量が片側へ</span> ― それ以上はいくら差を開けても出力は動きません（S字の飽和）。この「入力の受け持ち範囲が V<sub>ov</sub> で決まる」ことは、コンパレータの感度やスルーレート（06: 大信号では I<sub>SS</sub> しか流せない）に直結します。S字の真ん中の接線だけを使うのが小信号動作 ― 01 の図と同じ構図です。</p>
+    </div>
+    <div class="body-col">
+      <h3>捨てる力の値段 — CMRR とミスマッチ</h3>
+      <p>「同相を捨てる力」を数字にしたのが <strong>CMRR</strong>（同相除去比: 差動利得 ÷ 同相利得）。理想では∞ですが、現実には2つの理由で有限です: ①テール電流源の出力抵抗が有限（同相の揺れがテールを揺らす）、②<strong>左右の石のミスマッチ</strong>（同相の揺れが偽の「差」に化ける）。だから差動対のレイアウトも03のミラーと同じ作法 ― 面積を張り、共通重心 ― で描かれ、<span class="key">オフセット電圧（入力換算のずれ、mV級）</span>としてカタログに現れます。オフセットを消したい計測の現場が07のチョッパに繋がります。</p>
+    </div>
+  </div>
 </section>
 
 <!-- ================= 05 ================= -->
@@ -586,6 +778,34 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   <div class="stage-head"><span class="stage-num">05</span>
     <h2>帰還 — 利得を「使う」技術</h2></div>
   <p class="lede">増幅器の利得はばらつき、温度で動き、周波数で垂れます。帰還はその利得を<strong>使い潰して安定を買う</strong>取引です ― 出力の一部を入力へ戻して差だけを増幅させると、閉ループの振る舞いは<span class="key">帰還素子（抵抗や容量の比）だけ</span>で決まるようになります。</p>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">LOOP — 差が消えるまで回る輪</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 220" role="img" aria-label="負帰還のブロック図。入力から引き算ノード、大利得A、出力。出力からβを通って引き算ノードへ戻る。閉ループ利得は約1/β。" style="min-width:700px;width:100%;display:block">
+        <circle cx="180" cy="90" r="16" stroke="var(--ink-2)" fill="none" stroke-width="1.6"/>
+        <text x="180" y="95" font-size="12" fill="var(--ink-2)" text-anchor="middle">&minus;</text>
+        <path d="M60 90 H164" stroke="var(--electron)" stroke-width="1.8" class="flow"/>
+        <text x="60" y="78" font-size="10.5" fill="var(--electron-2)">入力</text>
+        <rect x="260" y="60" width="140" height="60" rx="8" fill="var(--surface-2)" stroke="var(--si)"/>
+        <text x="330" y="84" font-size="13" fill="var(--si)" text-anchor="middle">A（大利得）</text>
+        <text x="330" y="104" font-size="9" fill="var(--ink-3)" text-anchor="middle">ばらつく・垂れる・でも大きい</text>
+        <path d="M196 90 H256" stroke="var(--ink-2)" stroke-width="1.8" class="flow"/>
+        <path d="M400 90 H700" stroke="var(--warn)" stroke-width="1.8" class="flow"/>
+        <text x="700 " y="78" font-size="10.5" fill="var(--warn)" text-anchor="end">出力</text>
+        <rect x="290" y="150" width="80" height="40" rx="8" fill="var(--surface-2)" stroke="var(--volt)"/>
+        <text x="330" y="174" font-size="12" fill="var(--volt)" text-anchor="middle">&beta;</text>
+        <path d="M560 90 V170 H374" stroke="var(--volt)" stroke-width="1.6" class="flow slow" fill="none"/>
+        <path d="M286 170 H180 V110" stroke="var(--volt)" stroke-width="1.6" class="flow slow" fill="none"/>
+        <text x="470" y="188" font-size="9.5" fill="var(--ink-3)">戻す量 = 抵抗や容量の「比」で決まる</text>
+        <g font-size="11" fill="var(--ink)">
+          <text x="540" y="40">閉ループ利得 = A/(1+A&beta;) ≒ 1/&beta;</text>
+          <text x="540" y="60" font-size="9.5" fill="var(--ink-3)">（A&beta; ≫ 1 のとき ― A の値は消える）</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>輪が回るたび「入力と戻りの差」が縮み、<span class="key">差がほぼゼロになる点で落ち着く</span> ― これが仮想接地。閉ループの答え 1/&beta; に、当てにならない A が現れないのが帰還の魔法です（A&beta;＝ループゲインが大きい限り）。</figcaption>
+  </figure>
 
   <div class="two">
     <div class="body-col">
@@ -599,6 +819,39 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <p>だから帰還アンプの設計は「利得を確保する」と「一周の遅れを 180&deg; の手前で止める（<strong>位相余裕</strong>、実務は 60&deg; 前後）」の両立です。TIA で PD の容量 C<sub>pd</sub> が大きいと不安定になりやすいのもこれで、第5部で「窓が狭い」と言った素の 1/(2&pi;R<sub>f</sub>C) を、実機がループゲインで広げられるのは<span class="key">安定性の設計を払った上での話</span>です。</p>
     </div>
   </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">MARGIN — 利得が1に落ちる場所で、遅れは何度か</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 230" role="img" aria-label="ループゲインのボーデ線図の模式。上段は利得が周波数とともに−20dB/decで落ち、ユニティゲイン周波数で1になる。下段は位相が極ごとに遅れ、ユニティゲイン点での180度までの残りが位相余裕。" style="min-width:700px;width:100%;display:block">
+        <g stroke="var(--line)" stroke-width="1" opacity="0.6">
+          <path d="M70 20 V100"/><path d="M70 100 H700"/>
+          <path d="M70 130 V210"/><path d="M70 210 H700"/>
+        </g>
+        <text x="44" y="60" font-size="9.5" fill="var(--ink-3)" text-anchor="middle" transform="rotate(-90 44 60)">|ループゲイン|</text>
+        <text x="44" y="170" font-size="9.5" fill="var(--ink-3)" text-anchor="middle" transform="rotate(-90 44 170)">位相の遅れ</text>
+        <path d="M80 30 H200 L480 92 L640 98" stroke="var(--si)" stroke-width="2" fill="none" class="draw" style="--len:600"/>
+        <path d="M70 88 H700" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="4 4"/>
+        <text x="694" y="84" font-size="9" fill="var(--ink-3)" text-anchor="end">|1|（0 dB）</text>
+        <circle cx="462" cy="88" r="4" fill="var(--warn)"/>
+        <path d="M462 88 V210" stroke="var(--warn)" stroke-width="1" stroke-dasharray="3 3"/>
+        <text x="462" y="18" font-size="9.5" fill="var(--warn)" text-anchor="middle">利得が1になる周波数</text>
+        <path d="M80 140 C 200 146, 300 168, 460 178 C 560 184, 640 196, 690 202" stroke="var(--volt)" stroke-width="2" fill="none" class="draw" style="--len:660;animation-delay:.4s"/>
+        <path d="M70 206 H700" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="4 4"/>
+        <text x="694" y="202" font-size="9" fill="var(--ink-3)" text-anchor="end">180&deg;（正帰還の線）</text>
+        <path d="M462 178 V206" stroke="var(--warn)" stroke-width="3"/>
+        <text x="480" y="196" font-size="10" fill="var(--warn)">位相余裕（60&deg; 前後を狙う）</text>
+        <text x="180" y="126" font-size="9" fill="var(--ink-3)">支配極から −20dB/dec で降りてくる</text>
+      </svg>
+    </div>
+    <figcaption>安定性の判定はこの1点だけ見ればよい: <span class="key">利得が1に落ちる周波数で、遅れが 180&deg; までどれだけ残っているか</span>。06 の補償は、この図の形を「支配極1本＋余裕」へ整形する作業です（<a href="AnalogLab/index.html?quest=ota2">AnalogLab「2段OTA」</a>の PM がこの余白）。</figcaption>
+  </figure>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — AnalogLab 第3章</span>
+    <p>仮想接地の実戦2連: TIA の Rf の窓と、チャージアンプの Cf。第5部の検出器がここに繋がる。</p>
+    <div class="qs"><a href="AnalogLab/index.html?quest=tia">TIA の Rf を選ぶ</a><a href="AnalogLab/index.html?quest=charge">チャージアンプ ― 電荷を電圧に</a></div>
+  </div>
 </section>
 
 <!-- ================= 06 ================= -->
@@ -606,6 +859,66 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   <div class="stage-head"><span class="stage-num">06</span>
     <h2>OTA — 差動対と CS を積む</h2></div>
   <p class="lede">素の利得が数十しかないなら、積めばいい。<strong>初段＝差動対（同相を捨てる）、二段目＝CS（振幅を稼ぐ）</strong> ― 教科書の「2段 OTA」は、この部の部品を2つ繋いだだけの形です。</p>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">TWO-STAGE — 4枚のカードでできた OP アンプ</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 780 280" role="img" aria-label="2段OTAの回路図。初段は差動対とカレントミラー負荷、二段目はソース接地。段間にミラー補償容量Ccが渡り、出力に負荷容量CL。" style="min-width:720px;width:100%;display:block">
+        <path d="M100 30 H700" stroke="var(--ink-2)" stroke-width="2"/>
+        <text x="88" y="34" font-size="11" fill="var(--ink-2)" text-anchor="end">V<tspan font-size="8" dy="3">DD</tspan></text>
+        <g stroke="var(--ink-2)" stroke-width="2" fill="none">
+          <path d="M180 30 V56 M180 56 V84 M194 56 V84 M180 84 V110"/>
+          <path d="M320 30 V56 M320 56 V84 M306 56 V84 M320 84 V110"/>
+        </g>
+        <path d="M200 56 V84" stroke="var(--ink-2)" stroke-width="1.2"/>
+        <path d="M300 56 V84" stroke="var(--ink-2)" stroke-width="1.2"/>
+        <path d="M200 70 H300" stroke="var(--volt)" stroke-width="1.3"/>
+        <path d="M180 96 H164 V70 H200" stroke="var(--volt)" stroke-width="1.3" fill="none"/>
+        <circle cx="180" cy="96" r="3" fill="var(--volt)"/>
+        <text x="238" y="62" font-size="9" fill="var(--volt)" text-anchor="middle">ミラー負荷（03）</text>
+        <g stroke="var(--ink-2)" stroke-width="2" fill="none">
+          <path d="M180 110 V140 M180 140 V168 M166 140 V168"/>
+          <path d="M320 110 V140 M320 140 V168 M334 140 V168"/>
+        </g>
+        <path d="M160 140 V168" stroke="var(--ink-2)" stroke-width="1.2"/>
+        <path d="M340 140 V168" stroke="var(--ink-2)" stroke-width="1.2"/>
+        <path d="M120 154 H160" stroke="var(--electron)" stroke-width="1.5"/>
+        <path d="M380 154 H340" stroke="var(--electron)" stroke-width="1.5"/>
+        <text x="112" y="158" font-size="10" fill="var(--electron-2)" text-anchor="end">in+</text>
+        <text x="386" y="158" font-size="10" fill="var(--electron-2)">in&minus;</text>
+        <text x="250" y="130" font-size="9" fill="var(--ink-3)" text-anchor="middle">差動対（04）</text>
+        <path d="M180 168 V186 H320 V168" stroke="var(--ink-2)" stroke-width="1.5" fill="none"/>
+        <path d="M250 186 V206" stroke="var(--ink-2)" stroke-width="1.5"/>
+        <g stroke="var(--ink-2)" stroke-width="2" fill="none">
+          <path d="M250 206 V228 M236 228 h28 M241 234 h18 M246 240 h8"/>
+        </g>
+        <text x="270" y="216" font-size="9" fill="var(--ink-3)">テール（ミラーの1本）</text>
+        <circle cx="320" cy="110" r="3" fill="var(--warn)"/>
+        <path d="M320 110 H520" stroke="var(--warn)" stroke-width="1.5" class="flow slow"/>
+        <text x="420" y="102" font-size="9" fill="var(--warn)" text-anchor="middle">初段の出力（高インピーダンス点）</text>
+        <g stroke="var(--ink-2)" stroke-width="2" fill="none">
+          <path d="M560 30 V88 M560 88 l-6 6 l12 8 l-12 8 l12 8 l-12 8 l6 6 M560 132 V150"/>
+        </g>
+        <text x="580" y="106" font-size="10" fill="var(--ink)">R<tspan font-size="8" dy="3">D2</tspan>（または電流源）</text>
+        <g stroke="var(--ink-2)" stroke-width="2" fill="none">
+          <path d="M560 150 V176 M560 176 V204 M546 176 V204"/>
+        </g>
+        <path d="M540 176 V204" stroke="var(--ink-2)" stroke-width="1.2"/>
+        <path d="M520 110 V190 H540" stroke="var(--warn)" stroke-width="1.5" fill="none"/>
+        <path d="M560 204 V224 M546 224 h28 M551 230 h18 M556 236 h8" stroke="var(--ink-2)" stroke-width="1.6"/>
+        <text x="600" y="196" font-size="9" fill="var(--ink-3)">二段目 = CS（02）</text>
+        <circle cx="560" cy="150" r="3" fill="var(--warn)"/>
+        <path d="M560 150 H710" stroke="var(--warn)" stroke-width="1.8" class="flow"/>
+        <text x="716" y="154" font-size="11" fill="var(--warn)">out</text>
+        <path d="M660 150 V176 M650 176 h20 M650 184 h20 M660 184 V204 M646 204 h28 M651 210 h18 M656 216 h8" stroke="var(--ink-2)" stroke-width="1.4" fill="none"/>
+        <text x="686" y="184" font-size="9.5" fill="var(--ink-3)">C<tspan font-size="7" dy="2">L</tspan></text>
+        <path d="M470 110 V128 M460 128 h20 M460 136 h20 M470 136 V150 H560" stroke="var(--volt)" stroke-width="1.6" fill="none"/>
+        <text x="440" y="136" font-size="10" fill="var(--volt)" text-anchor="end">C<tspan font-size="7" dy="2">c</tspan>（ミラー補償）</text>
+        <text x="390" y="262" font-size="9.5" fill="var(--ink-3)" text-anchor="middle">利得 = （gm₁·Rout₁）×（gm₂·Rout₂）＝ 数千。GBW = gm₁/2πCc、第2極 gm₂/CL、右半面ゼロ gm₂/Cc</text>
+      </svg>
+    </div>
+    <figcaption>読み方はカードの分解で: <span class="key">差動対（04）＋ミラー負荷（03）＋CS（02）＋帰還はこの外側（05）</span>。段間に渡した小さな C<sub>c</sub> が全体の周波数特性を1本に束ねます（下の「くわしく」）。<a href="AnalogLab/index.html?quest=ota2">AnalogLab「2段OTA」</a>はこの図の Cc・gm₂ を自分で決める課題です。</figcaption>
+  </figure>
 
   <div class="two">
     <div class="body-col">
@@ -617,12 +930,47 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <div class="body-col">
       <h3>どこにでもいる</h3>
       <p>画素の列に並ぶアンプ（<a href="第4部_イメージセンサ.html#sana">第4部</a>）、チャージアンプの中身、ADC の比較器の前段、バンドギャップ（08）のサーボ ― この部の外で「アンプ」と呼ばれているものの中身は、たいていこの2段 OTA かその親戚です。<span class="key">差動対・ミラー・CS・帰還という4枚のカードの組み合わせ</span>として読めるようになれば、回路図はもう怖くありません。</p>
+      <p>スルーレートも一言。小信号の速さ（GBW）とは別に、大きな段差を追いかけるときは<strong>初段が流せる電流の上限 I<sub>SS</sub> で C<sub>c</sub> を充電する速さ</strong>しか出ません（04 の綱引きの帰結）。オシロで見る「大信号で台形になる」現象の正体で、<span class="key">速い ADC の駆動では GBW よりこちらが先に効く</span>ことがよくあります。</p>
     </div>
   </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">POLE SPLIT — C<sub>c</sub> 1個で、極が左右に割れる</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 190" role="img" aria-label="極分離の周波数軸の図。補償前は2つの極が近くに並び発振の危険。ミラー補償後は第1極が大きく左（低域）へ、第2極が右（高域）へ動き、間にGBWが収まる。" style="min-width:700px;width:100%;display:block">
+        <path d="M60 60 H700" stroke="var(--ink-2)" stroke-width="1.6"/>
+        <path d="M692 55 L702 60 L692 65 Z" fill="var(--ink-2)"/>
+        <text x="710" y="64" font-size="9.5" fill="var(--ink-3)">f（対数）</text>
+        <text x="50" y="46" font-size="10" fill="var(--ink-2)">補償前:</text>
+        <circle cx="330" cy="60" r="5" fill="var(--warn)"/><circle cx="430" cy="60" r="5" fill="var(--warn)"/>
+        <text x="380" y="42" font-size="9.5" fill="var(--warn)" text-anchor="middle">極が2本とも中域に ― 遅れが速く 180&deg; へ（危険）</text>
+        <path d="M60 140 H700" stroke="var(--ink-2)" stroke-width="1.6"/>
+        <path d="M692 135 L702 140 L692 145 Z" fill="var(--ink-2)"/>
+        <text x="50" y="126" font-size="10" fill="var(--ink-2)">補償後:</text>
+        <circle cx="140" cy="140" r="5" fill="var(--si)"/>
+        <circle cx="620" cy="140" r="5" fill="var(--si)"/>
+        <path d="M300 132 L180 132" stroke="var(--si)" stroke-width="1.3" class="flow"/>
+        <path d="M470 132 L580 132" stroke="var(--si)" stroke-width="1.3" class="flow"/>
+        <text x="140" y="164" font-size="9.5" fill="var(--si)" text-anchor="middle">支配極（左へ）</text>
+        <text x="620" y="164" font-size="9.5" fill="var(--si)" text-anchor="middle">第2極 gm₂/C<tspan font-size="7" dy="2">L</tspan>（右へ）</text>
+        <path d="M400 132 V148" stroke="var(--warn)" stroke-width="2.4"/>
+        <text x="400" y="122" font-size="9.5" fill="var(--warn)" text-anchor="middle">GBW はこの間に収める</text>
+        <circle cx="510" cy="140" r="4" fill="none" stroke="var(--warn)" stroke-width="1.6"/>
+        <text x="292" y="184" font-size="9" fill="var(--ink-3)">○ = 右半面ゼロ gm₂/C<tspan font-size="6.5" dy="2">c</tspan><tspan dy="-2">（利得は落とさず位相だけ削る厄介者 ― 直列抵抗で殺すのが定番）</tspan></text>
+      </svg>
+    </div>
+    <figcaption>ミラー効果で初段から見た C<sub>c</sub> は利得倍に膨れ、支配極を作る。同じ C<sub>c</sub> が二段目では帰還として第2極を<strong>押し上げる</strong> ― 1個の部品が両方向に働く「極分離」。この図の整形の結果が、05 の MARGIN の図です。</figcaption>
+  </figure>
 
   <div class="deep deep-note">
     <span class="tag">くわしく — ミラー補償：容量を「増幅して」使う</span>
     <p>2段の間に小さな容量 C<sub>c</sub> を渡すだけで、初段から見るとそれは<span class="key">利得倍（ミラー効果）に膨らんだ大容量</span>に見えます。初段の極が大きく下がって支配的になり、同じ C<sub>c</sub> が二段目では負荷を「軽く」見せて第2極を押し上げる ― 1個の容量で2つの極が左右に割れる（<strong>極分離</strong>）。オンチップでは大きな容量が作れないので、ミラー効果で「増幅して」使うわけです。おまけに右半面ゼロという厄介者も付いてきて、直列抵抗で殺すのが定番 ― この辺りからがラザビー後半の本番です。</p>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — AnalogLab 第2章</span>
+    <p>gm₂ を gm₁ の3倍にしてから、Cc の窓（速すぎず・遅すぎず）を探す。この章の2枚の図を自分の手で再現する課題。</p>
+    <div class="qs"><a href="AnalogLab/index.html?quest=ota2">2段OTA ― 速さと安定の綱引き</a></div>
   </div>
 </section>
 
@@ -637,12 +985,40 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <h3>熱雑音 — gm で買い戻す</h3>
       <div class="eq">v<sub>n</sub>&sup2; = 4kT&gamma;/g<sub>m</sub>　（&gamma; ≒ 2/3）</div>
       <p>抵抗の 4kTR と同じ物理（<a href="第4部_イメージセンサ.html#sd">第4部付録D</a>）が、MOS ではチャネル抵抗に立ちます。入力に換算すると g<sub>m</sub> 分の1 ― <span class="key">静かにしたければ g<sub>m</sub>、つまり電流で払う</span>。雑音を半分にするには g<sub>m</sub> が4倍。低雑音アンプの電力が大きいのは趣味ではなく、この式の請求書です（<a href="AnalogLab/index.html?quest=lownoise">AnalogLab「2nV/√Hz の初段」</a>）。</p>
+      <p>「入力に換算する」という会計も一度だけ確かめます。雑音は回路のあちこちで生まれますが、比べるために<strong>全部を入力1点に引き戻して</strong>「これだけの雑音が入力にあったのと同じ」という1つの数字（nV/&radic;Hz）にします。後段の雑音は前段の利得で割られて小さく見える ― <span class="key">だから初段が床を決め、初段にだけ電流を奢る</span>のが低雑音設計の配分です（<a href="第5部_光検出デバイス.html#s7">第5部の受光チェーンの掟</a>と同じ話）。</p>
     </div>
     <div class="body-col">
       <h3>1/f — 低い方に住む亡霊</h3>
       <p>ゲート酸化膜のトラップ（<a href="第4部_イメージセンサ.html#sd">付録D</a>の RTS の重ね合わせ）が作る 1/f 雑音は、低周波ほど大きく、<span class="key">面積 WL に反比例</span>します。ゆっくりした信号 ― センサの読み出しはたいていそう ― では熱雑音より効く。対策は3つ: 素子を太らせる、pMOS を使う（トラップが効きにくい）、そして<strong>信号を 1/f の住処から引っ越させる</strong>（下の「くわしく」）。</p>
+      <p>2人の勢力の境目が<strong>コーナー周波数</strong>です: 1/f の坂と熱雑音の床が交差する周波数で、MOS では kHz〜MHz 級（バイポーラよりずっと高い ― MOS の弱点）。<span class="key">信号の帯域がコーナーより下にあるなら、熱雑音をいくら磨いても無駄</span> ― まず亡霊の側を退治する（か、引っ越す）のが先です。</p>
     </div>
   </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">SPECTRUM — 亡霊の坂と、引っ越しの矢印</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 230" role="img" aria-label="雑音スペクトル密度の図。低周波で1/fの坂、コーナー周波数から上で平らな熱雑音の床。低周波にいた信号をチョッパで高周波へ動かす矢印が描かれている。" style="min-width:700px;width:100%;display:block">
+        <g stroke="var(--line)" stroke-width="1" opacity="0.6">
+          <path d="M70 20 V190"/><path d="M70 190 H700"/>
+        </g>
+        <text x="385" y="216" font-size="10" fill="var(--ink-3)" text-anchor="middle">周波数（対数）→</text>
+        <text x="40" y="105" font-size="10" fill="var(--ink-3)" text-anchor="middle" transform="rotate(-90 40 105)">雑音密度 [V/√Hz]</text>
+        <path d="M85 34 L330 128 L690 132" stroke="var(--si)" stroke-width="2.2" fill="none" class="draw" style="--len:700"/>
+        <text x="150" y="60" font-size="10" fill="var(--si)">1/f の坂（∝1/WL・トラップ）</text>
+        <text x="540" y="120" font-size="10" fill="var(--si)">熱雑音の床 √(4kTγ/gm)</text>
+        <path d="M330 190 V128" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="3 3"/>
+        <text x="330" y="206" font-size="9.5" fill="var(--ink-2)" text-anchor="middle">コーナー周波数</text>
+        <rect x="120" y="150" width="40" height="40" fill="var(--photon)" opacity="0.25"/>
+        <text x="140" y="146" font-size="9" fill="var(--photon-2)" text-anchor="middle">信号（遅い）</text>
+        <rect x="500" y="150" width="40" height="40" fill="var(--photon)" opacity="0.55"/>
+        <text x="520" y="146" font-size="9" fill="var(--photon-2)" text-anchor="middle">変調後の信号</text>
+        <path d="M170 170 H490" stroke="var(--photon)" stroke-width="2" class="flow"/>
+        <path d="M482 165 L492 170 L482 175 Z" fill="var(--photon)"/>
+        <text x="330" y="162" font-size="9.5" fill="var(--photon-2)" text-anchor="middle">チョッパ = 静かな高台への引っ越し</text>
+      </svg>
+    </div>
+    <figcaption>増幅は高台（熱雑音だけの領域）で行い、あとで復調して戻す ― 亡霊とオフセットは高台に置き去りになる。<a href="第7部_光学.html#s8">第7部のロックイン</a>が光の変調で同じことをやっているのは偶然ではなく、<span class="key">「1/f から逃げる」は計測全体の共通戦略</span>です。</figcaption>
+  </figure>
 
   <div class="deep deep-note">
     <span class="tag">くわしく — 1/f からの引っ越し：チョッパと CDS</span>
@@ -652,6 +1028,13 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   <div class="deep deep-note">
     <span class="tag">くわしく — kT/C：スイッチを閉じるたびに払う税</span>
     <p>スイッチト・キャパシタ回路（SC）はアナログの主力ですが、<span class="key">スイッチで容量をサンプルするたびに kT/C の雑音が焼き付きます</span>（<a href="第4部_イメージセンサ.html#s5">第4部05</a>のリセット雑音と同じもの。抵抗値によらず C だけで決まる、あの不思議な式）。静かにしたければ C を大きく ― でも大きな C は駆動に g<sub>m</sub> を要求し、g<sub>m</sub> は電流を要求する。<strong>雑音×速度×電力のどれかを犠牲にする三すくみ</strong>が、ここでも同じ形で現れます。ADC の分解能の議論は、実務ではほぼこの kT/C との交渉です。</p>
+    <p>SC のもうひとつの顔が<strong>「抵抗を時間で作る」</strong>: 1クロックで q=CV を運ぶと平均電流は fCV ― つまり<span class="key">等価抵抗 1/(fC)</span>。シリコンで作りにくい M&Omega; 級の高抵抗が、小さな C と遅いクロックで作れて、しかも比精度は容量比で決まる。CMOS のフィルタと ADC がスイッチだらけなのはこのためです（<a href="AnalogLab/index.html?quest=sc">AnalogLab「抵抗を時間で作る」</a>で kT/C との両側窓ごと踏めます）。</p>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — AnalogLab 第3章</span>
+    <p>2nV/√Hz を電力で買い、SC の等価抵抗を kT/C の窓の中で作る。床との交渉の2大定番。</p>
+    <div class="qs"><a href="AnalogLab/index.html?quest=lownoise">2 nV/√Hz の初段</a><a href="AnalogLab/index.html?quest=sc">抵抗を時間で作る ― SC</a></div>
   </div>
 </section>
 
@@ -664,19 +1047,43 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   <div class="two">
     <div class="body-col">
       <h3>逆向きの2つを足す</h3>
-      <p>ダイオード（<a href="第2部_デバイスの基礎.html#s3">第2部03</a>）の順方向電圧 V<sub>BE</sub> は温度で<strong>下がる</strong>（約 &minus;2mV/℃）。いっぽう、<span class="key">面積の違う2本のダイオードの V<sub>BE</sub> の差</span>は &Delta;V<sub>BE</sub> = V<sub>T</sub>&middot;ln n で、熱電圧 V<sub>T</sub>=kT/q に比例して<strong>上がる</strong>。下がるもの（CTAT）と上がるもの（PTAT）を適量ずつ足すと、傾きが打ち消し合います:</p>
+      <p>ダイオード（<a href="第2部_デバイスの基礎.html#s3">第2部03</a>）の順方向電圧 V<sub>BE</sub> は温度で<strong>下がる</strong>（約 &minus;2mV/℃）。いっぽう、<span class="key">面積の違う2本のダイオードの V<sub>BE</sub> の差</span>は &Delta;V<sub>BE</sub> = V<sub>T</sub>&middot;ln n で、熱電圧 V<sub>T</sub>=kT/q に比例して<strong>上がる</strong>（+0.086mV/℃ &times; ln n）。下がるもの（CTAT）と上がるもの（PTAT）を適量ずつ足すと、傾きが打ち消し合います:</p>
       <div class="eq">V<sub>ref</sub> = V<sub>BE</sub> + m&middot;V<sub>T</sub>ln n ≒ 1.2 V</div>
+      <p>倍率 m は回路（抵抗比とミラー）で作ります ― たとえば n=8（ln n≒2.08）なら m≒11 で傾きゼロ。<span class="key">合わせ込みが「物性（V<sub>BE</sub>）×幾何（面積比 n）×受動素子の比（m）」だけでできている</span>のがこの回路の美しさで、どれもチップの中で精度よく作れるものばかりです。</p>
     </div>
     <div class="body-col">
       <h3>1.2V の正体</h3>
       <p>打ち消した先に残る値が<span class="key">シリコンのバンドギャップを 0K へ外挿した電圧（約1.2V）</span>に一致する ― だから「バンドギャップ」リファレンス。<a href="第2部_デバイスの基礎.html">第2部</a>の E<sub>g</sub>=1.12eV が、回路の教科書の最後にもう一度、基準電圧の顔をして現れるわけです。実機はここに OTA（06）のサーボと、ばらつき補正（トリミング）が付きます。温度計が欲しければ逆に PTAT だけ取り出せばよい ― センサのオンチップ温度計はたいていこれです。</p>
+      <p>この章で部の物語が一周します: <strong>第2部の物性 → この部の回路 → 動かない1.2V → それを目盛りに ADC が数を作り → 第3部のデジタルへ</strong>。アナログ回路は、物理と数字のあいだの<span class="key">通訳</span>なのです。</p>
     </div>
   </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">BANDGAP — 下がる線と上がる線を足すと、水平線</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 220" role="img" aria-label="温度対電圧のグラフ。VBEは右下がり、m倍したΔVBEは右上がり、2つの和がほぼ水平な1.2Vの線になる。" style="min-width:700px;width:100%;display:block">
+        <g stroke="var(--line)" stroke-width="1" opacity="0.6">
+          <path d="M70 20 V180"/><path d="M70 180 H700"/>
+        </g>
+        <g font-size="9" fill="var(--ink-3)">
+          <text x="120" y="196" text-anchor="middle">−40℃</text><text x="385" y="196" text-anchor="middle">+25℃</text><text x="650" y="196" text-anchor="middle">+125℃</text>
+        </g>
+        <text x="40" y="100" font-size="10" fill="var(--ink-3)" text-anchor="middle" transform="rotate(-90 40 100)">電圧</text>
+        <path d="M90 96 L690 140" stroke="var(--volt)" stroke-width="2" class="draw" style="--len:620"/>
+        <text x="200" y="92" font-size="10" fill="var(--volt)">V<tspan font-size="7" dy="2">BE</tspan>（CTAT: −2mV/℃）</text>
+        <path d="M90 152 L690 108" stroke="var(--si)" stroke-width="2" class="draw" style="--len:620;animation-delay:.4s"/>
+        <text x="200" y="168" font-size="10" fill="var(--si)">m·V<tspan font-size="7" dy="2">T</tspan>ln n（PTAT: +2mV/℃ に合わせる）</text>
+        <path d="M90 46 C 300 42, 500 42, 690 46" stroke="var(--warn)" stroke-width="2.4" class="draw" style="--len:620;animation-delay:.8s"/>
+        <text x="560" y="36" font-size="10.5" fill="var(--warn)">和 ≒ 1.2 V（ほぼ水平 ― 2次の曲がりだけ残る）</text>
+      </svg>
+    </div>
+    <figcaption>1次の傾きは完全に消せるが、<span class="key">V<sub>BE</sub> の曲率（2次）はわずかに残り</span>、お椀を伏せた形の数mVがカタログの温度特性になる ― これを削る「曲率補正」からが職人の世界です。</figcaption>
+  </figure>
 
   <div class="caveat">
     <span class="tag">この部が単純化していること</span>
     <p><strong>トランジスタは終始、長チャネルの二乗則（level 1）です。</strong>弱反転・速度飽和・ボディ効果・ミスマッチ（ペルグロム則は<a href="第4部_イメージセンサ.html#sd">第4部付録D</a>）は式に入れていません。V<sub>ov</sub> 0.1V 以下や微細プロセスでは、係数も式の形も動きます。</p>
-    <p><strong>周波数特性は「極＝1/(2πRC)」の直感まで。</strong>ボーデ線図・ゼロの取り扱い・位相余裕の定量設計、そして pMOS を含む実際の回路トポロジ（能動負荷・フォールデッドカスコード）はラザビーの本編に譲ります。この部は「読めるようになる」までの地図です。</p>
+    <p><strong>周波数特性は「極＝1/(2πRC)」の直感まで。</strong>ボーデ線図の定量・ゼロの一般論・フォールデッドカスコードなど pMOS を含む実トポロジ、バンドギャップの曲率補正はラザビーの本編に譲ります。この部は「読めるようになる」までの地図です。</p>
   </div>
 </section>
 
@@ -690,16 +1097,21 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <table>
         <thead><tr><th>用語</th><th>意味</th><th>目安</th></tr></thead>
         <tbody>
+          <tr><td>小信号 / 動作点</td><td>バイアスで坂の1点に「置き」、そのまわりの接線で「揺らす」2幕構成。接線から外れた分が歪み</td><td class="num">置いてから、揺らす</td></tr>
           <tr><td>V<sub>ov</sub></td><td>オーバードライブ電圧 V<sub>GS</sub>−V<sub>th</sub>。gm 効率・スイングの壁・素の利得、全部の通貨</td><td class="num">0.15〜0.25 V</td></tr>
-          <tr><td>g<sub>m</sub> / g<sub>m</sub>/I<sub>D</sub></td><td>ゲート電圧→ドレイン電流の傾きと、その電流効率（= 2/V<sub>ov</sub>）</td><td class="num">数〜数十 S/A</td></tr>
+          <tr><td>g<sub>m</sub> / g<sub>m</sub>/I<sub>D</sub></td><td>ゲート電圧→ドレイン電流の傾きと、その電流効率（= 2/V<sub>ov</sub>。弱反転の上限は 1/nV<sub>T</sub>）</td><td class="num">上限 25〜30 S/A</td></tr>
           <tr><td>r<sub>o</sub> / 素の利得</td><td>チャネル長変調の漏れの逆数 1/(λI<sub>D</sub>) と、利得の天井 g<sub>m</sub>r<sub>o</sub> = 2/(λV<sub>ov</sub>)</td><td class="num">数十〜百</td></tr>
-          <tr><td>CS / SF / CG</td><td>増やす・運ぶ・受ける。一段増幅の3つの置き方</td><td class="num">−g<sub>m</sub>R / 〜1 / 1/g<sub>m</sub>受け</td></tr>
+          <tr><td>f<sub>T</sub></td><td>自分のゲート容量を自分の gm で駆動できる限界 g<sub>m</sub>/2πC<sub>gs</sub>。効率と速さは同じ軸の両端</td><td class="num">V<sub>ov</sub> を上げると速い</td></tr>
+          <tr><td>CS / SF / CG</td><td>増やす・運ぶ・受ける。端子の入出力の組み合わせは3通りしかない ― 回路図分解の3枚</td><td class="num">−g<sub>m</sub>R / 〜1 / 1/g<sub>m</sub>受け</td></tr>
           <tr><td>カレントミラー</td><td>同じ V<sub>GS</sub> の共有で電流を W/L 比コピー。カスコードで品質（出力抵抗）を g<sub>m</sub>r<sub>o</sub> 倍</td><td class="num">I&middot;(W/L)比</td></tr>
-          <tr><td>差動対</td><td>差だけ増やし（g<sub>m</sub>R<sub>D</sub>）、同相をテールで捨てる。OP アンプの初段の定番</td><td class="num">電力2倍が保険料</td></tr>
-          <tr><td>仮想接地 / 位相余裕</td><td>帰還が入力差をゼロに釘付けにする点／一周の遅れを 180° の手前で止める余白</td><td class="num">実務 60° 前後</td></tr>
+          <tr><td>差動対 / CMRR</td><td>差だけ増やし（g<sub>m</sub>R<sub>D</sub>）、同相をテールで捨てる。捨てる力の数字が CMRR、破れの原因はテールの r<sub>o</sub> とミスマッチ</td><td class="num">全切替は √2·V<sub>ov</sub></td></tr>
+          <tr><td>仮想接地 / 位相余裕</td><td>帰還が入力差をゼロに釘付けにする点／利得1の周波数で 180° まで残す余白</td><td class="num">実務 60° 前後</td></tr>
+          <tr><td>ミラー補償 / 極分離</td><td>段間の小容量が初段から利得倍に見え、支配極を作り第2極を押し上げる。おまけの右半面ゼロは抵抗で殺す</td><td class="num">C<sub>c</sub> 1個で2極が割れる</td></tr>
           <tr><td>GBW / スルーレート</td><td>2段 OTA の速さの物差し g<sub>m1</sub>/2πC<sub>c</sub> と、大信号の追従 I<sub>SS</sub>/C<sub>c</sub></td><td class="num">補償容量が握る</td></tr>
-          <tr><td>4kTγ/g<sub>m</sub> / 1/f</td><td>MOS の熱雑音（入力換算）と、トラップ起源で低域に住む雑音（∝1/WL）。逃げ道はチョッパ・CDS</td><td class="num">1mS で 3.3nV/√Hz</td></tr>
-          <tr><td>バンドギャップ</td><td>CTAT（V<sub>BE</sub>）と PTAT（V<sub>T</sub>ln n）を足して温度係数ゼロ。残る値は E<sub>g</sub> 由来</td><td class="num">≒1.2 V</td></tr>
+          <tr><td>4kTγ/g<sub>m</sub> / 1/f</td><td>MOS の熱雑音（入力換算）と、トラップ起源で低域に住む雑音（∝1/WL）。境目がコーナー周波数</td><td class="num">1mS で 3.3nV/√Hz</td></tr>
+          <tr><td>チョッパ / CDS</td><td>信号を 1/f の届かない高域へ変調して増幅（周波数軸）／2サンプルの引き算で低域を消す（時間軸）。同じ思想の2つの顔</td><td class="num">オフセットも消える</td></tr>
+          <tr><td>kT/C / SC</td><td>サンプルのたび焼き付く雑音と、1/(fC) で抵抗を作るスイッチト・キャパシタ。ADC の分解能はほぼこの交渉</td><td class="num">1pF で 64µV</td></tr>
+          <tr><td>バンドギャップ</td><td>CTAT（V<sub>BE</sub>）と PTAT（V<sub>T</sub>ln n）を足して温度係数ゼロ。残る値は E<sub>g</sub> 由来。2次の曲率は残る</td><td class="num">≒1.2 V</td></tr>
         </tbody>
       </table>
     </div>
@@ -778,3 +1190,4 @@ if("IntersectionObserver" in window){
 </script>
 </body>
 </html>
+
