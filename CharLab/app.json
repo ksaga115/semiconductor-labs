@@ -1,0 +1,7 @@
+{
+  "name": "CharLab",
+  "version": "1.0.0",
+  "launch": "起動.vbs",
+  "kind": "web",
+  "description": "謎の素子3つ（ダイオード・MOSFET・MOS容量）の I-V / C-V 測定表から n・Is・Rs・Vth・µCoxW/L・S値・tox・Na・Vfb を抽出して当てるラボ（ブラウザのみ・依存ゼロ）"
+}

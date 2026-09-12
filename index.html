@@ -195,12 +195,12 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
     <div>
       <dl class="spec">
         <div><dt>参考書</dt><dd>8<small>部</small></dd></div>
-        <div><dt>ラボ</dt><dd>8<small>本</small></dd></div>
-        <div><dt>採点つき課題</dt><dd>119<small>問</small></dd></div>
+        <div><dt>ラボ</dt><dd>9<small>本</small></dd></div>
+        <div><dt>採点つき課題</dt><dd>128<small>問</small></dd></div>
         <div><dt>依存</dt><dd>0<small>ブラウザのみ</small></dd></div>
         <div><dt>通信</dt><dd>0<small>手元で完結</small></dd></div>
-        <div><dt>自動検査</dt><dd>3,289<small>件 (Node)</small></dd></div>
-        <div class="spec-cap">課題数は ProcessLab 13 ＋ SemiLab 22 ＋ NandLab 25 ＋ PixelLab 12 ＋ PhotonLab 12 ＋ AnalogLab 11 ＋ OptoLab 12 ＋ QALab 12。検査は8本の <code>node tests/all.js</code> の合計（2026-09-13 時点）。</div>
+        <div><dt>自動検査</dt><dd>3,473<small>件 (Node)</small></dd></div>
+        <div class="spec-cap">課題数は ProcessLab 13 ＋ SemiLab 22 ＋ CharLab 9 ＋ NandLab 25 ＋ PixelLab 12 ＋ PhotonLab 12 ＋ AnalogLab 11 ＋ OptoLab 12 ＋ QALab 12。検査は9本の <code>node tests/all.js</code> の合計（2026-09-13 時点）。</div>
       </dl>
     </div>
   </div>
@@ -423,7 +423,8 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       </div>
       <div class="pair">
         <div><span class="kind read">参考書</span><a href="第2部_デバイスの基礎.html">半導体デバイスの基礎</a><small>一片のシリコンから、スイッチができるまで · 5章＋付録</small></div>
-        <div><span class="kind lab">ラボ</span><a href="SemiLab/index.html">SemiLab</a><small>原始部品 ＝ 不純物 · 5章 22問 · <a href="SemiLab/README.md">README</a></small></div>
+        <div><span class="kind lab">ラボ</span><a href="SemiLab/index.html">SemiLab</a><small>作る側 · 原始部品 ＝ 不純物 · 5章 22問 · <a href="SemiLab/README.md">README</a></small></div>
+        <div><span class="kind lab">ラボ</span><a href="CharLab/index.html">CharLab</a><small>測る側 · 謎の素子の I-V / C-V から当てる · 3章 9問 · <a href="CharLab/README.md">README</a></small></div>
       </div>
     </div>
     <div class="chap">
@@ -436,7 +437,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
     </div>
     <div class="chap">
       <div><span class="cn">2-3</span><div class="ct"><a href="第2部_デバイスの基礎.html#s3">ダイオード ― 整流と漏れ</a></div><div class="cd">ショックレー式、飽和電流、短基底、暗電流（生成電流）と温度。</div></div>
-      <div class="do"><span class="lbl">SemiLab 第3章</span><a class="q" href="SemiLab/index.html?quest=rectify">整流する</a><a class="q" href="SemiLab/index.html?quest=j0">飽和電流を小さくする</a><a class="q" href="SemiLab/index.html?quest=shortbase">薄くすると電流が増える</a><a class="q" href="SemiLab/index.html?quest=dark">暗電流を減らす</a></div>
+      <div class="do"><span class="lbl">SemiLab 第3章</span><a class="q" href="SemiLab/index.html?quest=rectify">整流する</a><a class="q" href="SemiLab/index.html?quest=j0">飽和電流を小さくする</a><a class="q" href="SemiLab/index.html?quest=shortbase">薄くすると電流が増える</a><a class="q" href="SemiLab/index.html?quest=dark">暗電流を減らす</a><span class="lbl">CharLab 第1章（測る側）</span><a class="q" href="CharLab/index.html?quest=dn">理想係数nを当てる</a><a class="q" href="CharLab/index.html?quest=dis">Isを当てる</a><a class="q" href="CharLab/index.html?quest=drs">Rsを当てる</a></div>
     </div>
     <div class="chap">
       <div><span class="cn">2-4</span><div class="ct"><a href="第2部_デバイスの基礎.html#s4">光を電気にする ― フォトダイオード</a></div><div class="cd">吸収係数と波長、量子効率、表面再結合、反射防止。第4部の入口。</div></div>
@@ -444,7 +445,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
     </div>
     <div class="chap">
       <div><span class="cn">2-5</span><div class="ct"><a href="第2部_デバイスの基礎.html#s5">MOS、そして MOSFET ― NAND の中身へ</a></div><div class="cd">酸化膜を挟むとゲートになる。表面ポテンシャル、しきい値電圧、S値の 60mV/桁 の壁、Id-Vd。第3部の入口。</div></div>
-      <div class="do"><span class="lbl">SemiLab 第5章</span><a class="q" href="SemiLab/index.html?quest=moscap">MOS キャパシタ</a><a class="q" href="SemiLab/index.html?quest=vth">しきい値電圧を合わせる</a><a class="q" href="SemiLab/index.html?quest=swing">切れ味を上げる</a><a class="q" href="SemiLab/index.html?quest=nand">NAND の中身へ</a></div>
+      <div class="do"><span class="lbl">SemiLab 第5章</span><a class="q" href="SemiLab/index.html?quest=moscap">MOS キャパシタ</a><a class="q" href="SemiLab/index.html?quest=vth">しきい値電圧を合わせる</a><a class="q" href="SemiLab/index.html?quest=swing">切れ味を上げる</a><a class="q" href="SemiLab/index.html?quest=nand">NAND の中身へ</a><span class="lbl">CharLab 第2-3章（測る側）</span><a class="q" href="CharLab/index.html?quest=mvth">Vthを外挿で当てる</a><a class="q" href="CharLab/index.html?quest=mss">S値を裾で当てる</a><a class="q" href="CharLab/index.html?quest=ctox">toxを棚で当てる</a><a class="q" href="CharLab/index.html?quest=cna">Naを棚で当てる</a></div>
     </div>
     <div class="chap">
       <div><span class="cn">—</span><div class="ct"><a href="第2部_デバイスの基礎.html#spow">電力を切る ― パワーデバイス</a></div><div class="cd">同じ MOSFET で数百 V を切る。耐圧とオン抵抗の綱引きを、片側接合の空乏層と臨界電界だけで読む。縦型 MOSFET・IGBT・SiC/GaN。</div></div>
@@ -757,6 +758,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       <p>物理・課題・採点は Node だけで検査できる。<code>tests/ui.js</code> は本物の <code>index.html</code> から DOM を組んで本物の <code>ui.js</code> を動かす。</p>
       <pre>node ProcessLab\tests\all.js      332 件
 node SemiLab\tests\all.js       1,074 件
+node CharLab\tests\all.js         184 件
 node NandLab\tests\all.js         642 件
 node PixelLab\tests\all.js        281 件
 node PhotonLab\tests\all.js       254 件
@@ -773,7 +775,7 @@ node QALab\tests\all.js           243 件</pre>
 </section>
 
 <div class="foot">
-  <span>Labs / 半導体 ― 参考書 8 部・ラボ 8 本。ひとつの原始部品から積み上げる。</span>
+  <span>Labs / 半導体 ― 参考書 8 部・ラボ 9 本。ひとつの原始部品から積み上げる。</span>
   <span class="mono">工程 → 不純物 → pn接合 → MOSFET → インバータ → NAND → ALU ／ pn接合 → フォトダイオード → 画素 → 像</span>
 </div>
 

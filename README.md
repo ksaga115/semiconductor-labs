@@ -1,6 +1,6 @@
 # 半導体 ― 工程から像まで、読んで、作って、確かめる
 
-**入口は [`index.html`](index.html)（学びの地図）。** ブラウザで開くと、8部の目次と、章ごとに対応する
+**入口は [`index.html`](index.html)（学びの地図）。** ブラウザで開くと、8部・9ラボの目次と、章ごとに対応する
 ラボの課題へのリンクが出る。この README はその Markdown 版（要点だけ）。
 
 半導体を、製造工程 → 素子の物理 → 論理回路 → イメージセンサ → 光検出デバイス → アナログ回路 → 光学 → 信頼性と品質 の8部で通して学ぶための場所。
@@ -15,6 +15,7 @@
                      └→ フォトダイオード → 画素 → カメラ → 像
                               └→ PMT・APD・MPPC ―「数える」一族（第5部）
    光学（第7部）が光を届け、アナログ（第6部）が読み出し、信頼性と品質（第8部）が 10年・百万個の側から締める
+   第2部だけラボが2本 ― SemiLab（作る側）と CharLab（測る側: 謎の素子の I-V/C-V からパラメータを当てる）
 ```
 
 ---
@@ -33,7 +34,8 @@
   第7部_光学.html                 第7部 参考書 ― 検出器の相手側: 照度の会計・カメラ方程式・回折・ガウス・ファイバ・膜（8章）
   第8部_信頼性と品質.html           第8部 参考書 ― 壊れ方を数える: FIT・アレニウス・ワイブル・θとTj・TEC・Cpk・誤差伝播（8章）
   ProcessLab\                    第1部 ラボ ― 原始部品 ＝ 工程（4章 13問）
-  SemiLab\                       第2部 ラボ ― 原始部品 ＝ 不純物（5章 22問）
+  SemiLab\                       第2部 ラボ（作る側）― 原始部品 ＝ 不純物（5章 22問）
+  CharLab\                       第2部 ラボ（測る側）― 謎の素子の I-V/C-V から n・Vth・tox・Na を当てる（3章 9問）
   NandLab\                       第3部 ラボ ― 原始部品 ＝ NAND（5章 25問）
   PixelLab\                      第4部 ラボ ― 原始部品 ＝ 光子と電子を数えること（3章 12問）
   PhotonLab\                     第5部 ラボ ― 原始部品 ＝ 光子とη（3章 12問。R・NEP・D*・最適なM・MPPC・背景光・計数・走行×RC・TCSPC）
@@ -74,6 +76,7 @@
 ```
 node ProcessLab\tests\all.js      332 件
 node SemiLab\tests\all.js       1,074 件
+node CharLab\tests\all.js         184 件
 node NandLab\tests\all.js         642 件
 node PixelLab\tests\all.js        281 件
 node PhotonLab\tests\all.js       254 件
@@ -90,4 +93,4 @@ node QALab\tests\all.js           243 件
 
 - ~~NandLab「電圧で見る」のしきい値 0.7V は決め打ち~~ → **SemiLab 第5章「NAND の中身へ」の採点を通すと、その nMOS の Vth が NandLab「電圧で見る」に渡る**ようになった（localStorage 経由・出どころを画面に明記）。渡るのは Vth だけ ― この素朴なモデルでは n と p の強さの比しか効かず比は 1 固定なので、Cox は坂の形を変えない。電源 3.3V は決め打ちのまま
 - NandLab に「原始部品を NOR にする」モードを足すか検討（第3部 01 章で NOR の万能性を説明しているが、ラボでは NAND からしか組めない）
-- 各ラボの「ここから先」（README）― BJT・降伏・反射防止膜の設計・pMOS（SemiLab。ただし dev.js の MOS 解は p 基板＋n+poly ゲート前提で、n 基板に対しては正しい Vth を返さないことを確認済み ― pMOS 課題はソルバの n 基板対応が先）、側壁と形状・TED（ProcessLab）、光学（PixelLab。HDR 合成は「長短合成で 100 dB」として課題化済み）、メモリ（NandLab。RAM16 を「実装部品」として追加済み ― 課題の採点では使えない）、ゼロ打ち消し抵抗・スルーレート（AnalogLab）、調芯公差＝軸ずれ/角度ずれのモード結合（OptoLab）、Norris-Landzberg・GR&R の分散分析と ndc（QALab）。モード結合・TCSPCパイルアップ・HAST・GR&R入口は課題化済み。さらに先の候補: デバイス特性ラボ（C-V/I-V の実測練習）、NandLab の NOR モード
+- 各ラボの「ここから先」（README）― BJT・降伏・反射防止膜の設計・pMOS（SemiLab。ただし dev.js の MOS 解は p 基板＋n+poly ゲート前提で、n 基板に対しては正しい Vth を返さないことを確認済み ― pMOS 課題はソルバの n 基板対応が先）、側壁と形状・TED（ProcessLab）、光学（PixelLab。HDR 合成は「長短合成で 100 dB」として課題化済み）、メモリ（NandLab。RAM16 を「実装部品」として追加済み ― 課題の採点では使えない）、ゼロ打ち消し抵抗・スルーレート（AnalogLab）、調芯公差＝軸ずれ/角度ずれのモード結合（OptoLab）、Norris-Landzberg・GR&R の分散分析と ndc（QALab）、温度を振った I-V・1/C² プロファイル・SemiLab→CharLab の素子受け渡し（CharLab。C-V/I-V の測って当てるは実装済み）。さらに先の候補: NandLab の NOR モード
