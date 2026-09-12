@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="ja">
 <head>
 <meta charset="utf-8">
@@ -366,8 +366,8 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
         <div class="guide-h"><span>読み方</span><span>図25点＋補助図・全部で 75〜100 分（下の「かんたん / くわしい」でも変わります）</span></div>
         <div class="guide-b">
           <div><b>一本道だけ追う</b><span>00 から 07 まで、番号のついた段を順に。光が数値になるまでが繋がります。</span><em>16 〜 22 分</em></div>
-          <div><b>限界の理由まで</b><span>番号のない節（解像の限界／CCD という別解／ノイズの正体／センサを測る）を足す。「なぜそこまでしかできないか」が入ります。</span><em>30 〜 41 分</em></div>
-          <div><b>床下まで開ける</b><span>付録 A〜D とむすび。トンネル効果・短チャネル効果・暗電流・ノイズの起源。半導体物理に踏み込みます。</span><em>75 〜 100 分</em></div>
+          <div><b>限界の理由まで</b><span>番号のない節（解像の限界・位相差AF・CCD・列の回路・HDR・ノイズ・PTC）を足す。「なぜそこまでしかできないか」が入ります。</span><em>40 〜 55 分</em></div>
+          <div><b>床下まで開ける</b><span>付録 A〜D と SPAD・イベントベース、むすび。トンネル・短チャネル・暗電流・ノイズの起源から、数える画素まで。</span><em>90 〜 115 分</em></div>
         </div>
       </div>
     </div>
@@ -422,6 +422,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li><a href="#s0"><span class="n">00</span><span>全体像</span></a></li>
     <li><a href="#s1"><span class="n">01</span><span>入射と色分け</span></a></li>
     <li><a href="#sopt"><span class="n">—</span><span>解像の限界</span></a></li>
+    <li><a href="#saf"><span class="n">—</span><span>像面位相差AF</span></a></li>
     <li class="dom"><span>電荷の領域</span></li>
     <li><a href="#s2"><span class="n">02</span><span>光電変換</span></a></li>
     <li><a href="#s3"><span class="n">03</span><span>蓄積</span></a></li>
@@ -431,6 +432,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li><a href="#s5"><span class="n">05</span><span>電荷→電圧</span></a></li>
     <li class="dom"><span>数値の領域</span></li>
     <li><a href="#s6"><span class="n">06</span><span>読み出しとAD</span></a></li>
+    <li><a href="#sana"><span class="n">—</span><span>列の回路</span></a></li>
     <li><a href="#shdr"><span class="n">—</span><span>ダイナミックレンジ</span></a></li>
     <li><a href="#s7"><span class="n">07</span><span>モザイクから像へ</span></a></li>
     <li class="dom"><span>まとめ</span></li>
@@ -442,6 +444,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li><a href="#sc"><span class="n">C</span><span>暗電流の出どころ</span></a></li>
     <li><a href="#sd"><span class="n">D</span><span>ばらつきの起源</span></a></li>
     <li><a href="#sspad"><span class="n">—</span><span>降伏の先（SPAD）</span></a></li>
+    <li><a href="#sevt"><span class="n">—</span><span>イベントベース</span></a></li>
     <li class="dom"><span>むすび</span></li>
     <li><a href="#send"><span class="n">—</span><span>4つの境目に戻る</span></a></li>
     <li class="dom"><span>付録</span></li>
@@ -461,6 +464,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li><a href="#s0"><span class="n">00</span><span>全体像</span></a></li>
     <li><a href="#s1"><span class="n">01</span><span>入射と色分け</span></a></li>
     <li><a href="#sopt"><span class="n">—</span><span>解像の限界</span></a></li>
+    <li><a href="#saf"><span class="n">—</span><span>像面位相差AF</span></a></li>
     <li class="dom"><span>電荷の領域</span></li>
     <li><a href="#s2"><span class="n">02</span><span>光電変換</span></a></li>
     <li><a href="#s3"><span class="n">03</span><span>蓄積</span></a></li>
@@ -470,6 +474,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li><a href="#s5"><span class="n">05</span><span>電荷→電圧</span></a></li>
     <li class="dom"><span>数値の領域</span></li>
     <li><a href="#s6"><span class="n">06</span><span>読み出しとAD</span></a></li>
+    <li><a href="#sana"><span class="n">—</span><span>列の回路</span></a></li>
     <li><a href="#shdr"><span class="n">—</span><span>ダイナミックレンジ</span></a></li>
     <li><a href="#s7"><span class="n">07</span><span>モザイクから像へ</span></a></li>
     <li class="dom"><span>まとめ</span></li>
@@ -481,6 +486,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li><a href="#sc"><span class="n">C</span><span>暗電流の出どころ</span></a></li>
     <li><a href="#sd"><span class="n">D</span><span>ばらつきの起源</span></a></li>
     <li><a href="#sspad"><span class="n">—</span><span>降伏の先（SPAD）</span></a></li>
+    <li><a href="#sevt"><span class="n">—</span><span>イベントベース</span></a></li>
     <li class="dom"><span>むすび</span></li>
     <li><a href="#send"><span class="n">—</span><span>4つの境目に戻る</span></a></li>
     <li class="dom"><span>付録</span></li>
@@ -783,12 +789,119 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <div class="eq">&nu;<sub>見える</sub> = | &nu; &minus; &nu;<sub>s</sub>&middot;round(&nu;/&nu;<sub>s</sub>) |</div>
   </div>
 
+  <div class="deep deep-note">
+    <span class="tag">くわしく — 実機の MTF はどう測るか（スラントエッジ）</span>
+    <p>この節の MTF は式から描きましたが、実機では「わずかに<b>斜めに傾けた</b>白黒のエッジ」を1枚撮るだけで測れます（ISO 12233）。種は標本化のすき間の埋め方: エッジが画素格子に対して斜めなので、<span class="key">行ごとにエッジと画素の位置関係が少しずつずれ</span>、多数の行を「エッジからの距離」で並べ直すと、画素ピッチより細かく刻んだエッジ断面（ESF）が合成できます ― ナイキストの制約を、同じ模様の多数コピーで実質すり抜ける手です。</p>
+    <p>あとは一本道: ESF を微分すると線像分布（LSF）、それをフーリエ変換した絶対値が MTF。レンズ・ローパス・画素開口・現像まで<b>通しの実測</b>が出るので、この図の理論上限と見比べれば「どこで損しているか」が切り分けられます。测るときは現像の輪郭強調を必ず切ること ― 強調は MTF を1を超えて見せ、測定を嘘にします。</p>
+  </div>
+
   <div class="caveat">
     <span class="tag">この図が単純化していること</span>
     <p><strong>単色 550 nm での計算です。</strong>エアリー円板も遮断周波数も波長に比例するので、赤（650 nm）では2割ほど大きく／低くなり、青（450 nm）では小さく／高くなります。白色光では波長ごとの重ね合わせになり、この図より少しなだらかな形になります。</p>
     <p><strong>レンズは理想（収差ゼロ）としています。</strong>実際のレンズは開放側では収差でMTFが落ちるので、いちばん解像する絞りは回折だけで決まる位置よりも絞り側に来ます。この図が描いているのは<span class="key">「どんなに良いレンズでもここまで」という上限</span>で、実測のMTFは必ずこれより下です。</p>
     <p><strong>1次元で描いています。</strong>実際の標本化は2次元で、格子の向きに対して斜めの縞では折り返し方が変わります。ベイヤーの緑が市松（正方格子を45度回したもの）なので、緑の限界は方向によって違います。図の「輝度の半分」はあくまで赤・青についての話です。</p>
     <p><strong>マイクロレンズの効果は入れていません。</strong>画素開口のMTFは受光部の幅で計算していますが、01で見たとおりマイクロレンズが光を集めるので、実効的な開口は幾何的な受光部より広くなります。実機の画素MTFはこの図より少し低め（＝もう少しぼける）に出ます。</p>
+  </div>
+</section>
+
+<!-- ================= 像面位相差AF ================= -->
+<section class="stage" id="saf">
+  <div class="stage-head"><span class="stage-num">—</span>
+    <h2>像面位相差AF — センサ自身が「どっちに、どれだけ」を知る</h2></div>
+  <p class="lede">ピントを合わせるには、いま前ピンか後ピンか、どれだけ外れているかを知る必要があります。像のコントラストを見ながらレンズを行き来させる山登り（コントラストAF）は確実ですが遅い。<span class="key">位相差AFは、1回の読みで「向きと量」を同時に出します</span>。種は視差 ― レンズの瞳の右半分と左半分は、わずかに違う場所からレンズを覗いているのです。</p>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">PHASE DETECTION — 瞳を左右に分けると、ボケが「ズレ」になる</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 1120 430" role="img" aria-label="位相差AFの原理図。上段は合焦・前ピン・後ピンでの光線。瞳の右半分を通る光と左半分を通る光が、合焦ではセンサ上の同じ点に、ピントが外れると左右にずれた点に届く。下段は右見画素と左見画素の断面（遮光式とデュアルピクセル式）。" style="min-width:920px">
+        <defs><marker id="afar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink-3)"/></marker></defs>
+        <!-- 3 cases -->
+        <g font-family="var(--mono)" font-size="11" font-weight="600" fill="var(--ink)">
+          <text x="190" y="24" text-anchor="middle">合焦</text>
+          <text x="560" y="24" text-anchor="middle">前ピン（レンズが遠すぎ）</text>
+          <text x="930" y="24" text-anchor="middle">後ピン</text>
+        </g>
+        <!-- common: lens ellipse, sensor line -->
+        <g>
+          <!-- 合焦 -->
+          <ellipse cx="120" cy="110" rx="14" ry="64" fill="var(--surface-3)" stroke="var(--ink-3)"/>
+          <line x1="330" y1="40" x2="330" y2="180" stroke="var(--ink-2)" stroke-width="3"/>
+          <path d="M40,110 L120,58 L330,110" fill="none" stroke="var(--photon)" stroke-width="2"/>
+          <path d="M40,110 L120,162 L330,110" fill="none" stroke="var(--electron)" stroke-width="2"/>
+          <circle cx="330" cy="110" r="5" fill="var(--ink)"/>
+          <text x="330" y="200" text-anchor="middle" font-family="var(--sans)" font-size="11" fill="var(--ink-2)">右像と左像が一致 → ズレ 0</text>
+          <!-- 前ピン: 焦点がセンサ手前 → 光線が交差後に広がり、右半分の光は左へ -->
+          <ellipse cx="490" cy="110" rx="14" ry="64" fill="var(--surface-3)" stroke="var(--ink-3)"/>
+          <line x1="700" y1="40" x2="700" y2="180" stroke="var(--ink-2)" stroke-width="3"/>
+          <path d="M410,110 L490,58 L660,124 L700,140" fill="none" stroke="var(--photon)" stroke-width="2"/>
+          <path d="M410,110 L490,162 L660,96 L700,80" fill="none" stroke="var(--electron)" stroke-width="2"/>
+          <circle cx="660" cy="110" r="4" fill="none" stroke="var(--ink-3)" stroke-width="1.5"/>
+          <circle cx="700" cy="140" r="5" fill="var(--photon)"/>
+          <circle cx="700" cy="80" r="5" fill="var(--electron)"/>
+          <line x1="712" y1="80" x2="712" y2="140" stroke="var(--warn)" stroke-width="2" marker-end="url(#afar)"/>
+          <text x="722" y="114" font-family="var(--sans)" font-size="11" fill="var(--warn)">ズレ</text>
+          <!-- 後ピン: 焦点がセンサの奥 -->
+          <ellipse cx="860" cy="110" rx="14" ry="64" fill="var(--surface-3)" stroke="var(--ink-3)"/>
+          <line x1="1030" y1="40" x2="1030" y2="180" stroke="var(--ink-2)" stroke-width="3"/>
+          <path d="M780,110 L860,58 L1030,96" fill="none" stroke="var(--photon)" stroke-width="2"/>
+          <path d="M780,110 L860,162 L1030,124" fill="none" stroke="var(--electron)" stroke-width="2"/>
+          <circle cx="1030" cy="96" r="5" fill="var(--photon)"/>
+          <circle cx="1030" cy="124" r="5" fill="var(--electron)"/>
+          <line x1="1042" y1="124" x2="1042" y2="96" stroke="var(--warn)" stroke-width="2" marker-end="url(#afar)"/>
+          <text x="1052" y="114" font-family="var(--sans)" font-size="11" fill="var(--warn)">逆向き</text>
+        </g>
+        <text x="60" y="60" font-family="var(--sans)" font-size="11" fill="var(--photon-2)">瞳の上（＝右）半分</text>
+        <text x="60" y="172" font-family="var(--sans)" font-size="11" fill="var(--electron-2)">瞳の下（＝左）半分</text>
+        <!-- 下段: 画素の作り -->
+        <g font-family="var(--sans)" font-size="12" fill="var(--ink)">
+          <text x="250" y="262" text-anchor="middle" font-weight="700">遮光式（専用AF画素を散りばめる）</text>
+          <text x="800" y="262" text-anchor="middle" font-weight="700">デュアルピクセル（全画素をPD2分割）</text>
+        </g>
+        <!-- 遮光式: 2画素、マイクロレンズ+半分メタル -->
+        <g>
+          <path d="M150,300 a30,20 0 0 1 60,0 z" fill="var(--surface-3)" stroke="var(--ink-3)"/>
+          <rect x="150" y="300" width="60" height="10" fill="var(--si-soft)"/>
+          <rect x="150" y="300" width="30" height="10" fill="var(--ink-2)"/>
+          <rect x="150" y="310" width="60" height="26" fill="var(--electron-soft)" stroke="var(--electron)"/>
+          <text x="180" y="354" text-anchor="middle" font-family="var(--mono)" font-size="10" fill="var(--ink-2)">右だけ見る</text>
+          <path d="M290,300 a30,20 0 0 1 60,0 z" fill="var(--surface-3)" stroke="var(--ink-3)"/>
+          <rect x="290" y="300" width="60" height="10" fill="var(--si-soft)"/>
+          <rect x="320" y="300" width="30" height="10" fill="var(--ink-2)"/>
+          <rect x="290" y="310" width="60" height="26" fill="var(--electron-soft)" stroke="var(--electron)"/>
+          <text x="320" y="354" text-anchor="middle" font-family="var(--mono)" font-size="10" fill="var(--ink-2)">左だけ見る</text>
+          <text x="250" y="390" text-anchor="middle" font-family="var(--sans)" font-size="11" fill="var(--ink-2)">遮光した半分は捨てる → その画素は画像としては欠陥（周囲から補間）</text>
+        </g>
+        <!-- Dual pixel -->
+        <g>
+          <path d="M740,300 a40,24 0 0 1 80,0 z" fill="var(--surface-3)" stroke="var(--ink-3)"/>
+          <rect x="740" y="300" width="80" height="10" fill="var(--si-soft)"/>
+          <rect x="740" y="310" width="38" height="26" fill="var(--electron-soft)" stroke="var(--electron)"/>
+          <rect x="782" y="310" width="38" height="26" fill="var(--electron-soft)" stroke="var(--electron)"/>
+          <text x="759" y="354" text-anchor="middle" font-family="var(--mono)" font-size="10" fill="var(--ink-2)">左PD</text>
+          <text x="801" y="354" text-anchor="middle" font-family="var(--mono)" font-size="10" fill="var(--ink-2)">右PD</text>
+          <text x="800" y="390" text-anchor="middle" font-family="var(--sans)" font-size="11" fill="var(--ink-2)">別々に読めばAF、足せば普通の1画素 → 全画素がAF点になり、画像の欠陥もない</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>ピントが外れると、瞳の右半分を通った像と左半分を通った像が<b>反対向きに</b>ずれます。2つの像の相関を取ってズレ（位相差）を測れば、<b>符号が前ピンか後ピンかを、大きさがレンズを動かす量を</b>そのまま教えてくれる ― 山登りのように行き過ぎて戻る必要がありません。ズレ→繰り出し量の換算はレンズごとの設計値で、ボディとレンズが通信して補正します。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>基線長 — 絞ると効かなくなる理由</h3>
+      <p>ズレの感度は、右像と左像の「視点の間隔」＝<b>瞳の重心間の距離（基線長）</b>で決まります。三角測量の基線と同じで、長いほど同じデフォーカスが大きなズレに写る。絞りを絞ると瞳そのものが小さくなって基線長が縮むので、<span class="key">F値の大きいレンズ・絞った状態では位相差AFは急に苦しくなります</span>（多くの機種にある「F8までAF対応」のような限界の正体）。</p>
+      <p>もうひとつの弱点は向きです。左右に分けた対は<b>縦線のズレしか測れません</b>（横縞は左右にずらしても同じに見える）。だから実機は横分割と縦分割の対を混ぜ、十字で補完します。</p>
+    </div>
+    <div class="body-col">
+      <h3>これが「一本道の外」だった理由</h3>
+      <p>位相差画素は、光→電子→…の信号を<b>画像のためではなく測距のために</b>使います。遮光式では画素の半分の光を捨てるので、01で数えた感度の予算から見れば純粋な損 ― それでも「どっちにどれだけ」が1回で分かる価値が勝つ、という取引です。デュアルピクセルはこの損をほぼ消しましたが、代わりに読み出しが画素あたり2回になり、06の列並列ADCの帯域を食います。<span class="key">ここでもタダの機能はありません</span>。</p>
+    </div>
+  </div>
+
+  <div class="caveat">
+    <span class="tag">この図が単純化していること</span>
+    <p><strong>光線は近軸の模式図です。</strong>実際の瞳分割はマイクロレンズと開口の位置関係で決まり、像高（画面の端）では瞳のケラレで左右の光量バランスが崩れます。実機はこの崩れをレンズごとに補正しています。</p>
+    <p><strong>相関演算（どうやってズレを数えるか）には踏み込みません。</strong>SAD（差の絶対値和）を横シフトしながら最小を探す、が基本形です。</p>
   </div>
 </section>
 
@@ -1276,6 +1389,18 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p>そして<strong>ショットノイズは原理的に消せません</strong>。光子が飛んでくるタイミングはポアソン分布に従うランダムな現象で、N個の光子を数えれば必ず&radic;N のゆらぎが乗る。信号そのものが持つゆらぎなので、回路をいくら良くしても取れません。明るいところではこれが支配的になり、SN比は&radic;N でしか改善しない──<span class="key">明るく撮ることが、いちばん確実な低ノイズ手段</span>である理由です。</p>
     <div class="eq">全ノイズ = &radic;( <b>N<sub>信号</sub></b> + N<sub>暗電流</sub> + <i>&sigma;<sub>読み出し</sub>&sup2;</i> )　　SNR = <b>N<sub>信号</sub></b> / 全ノイズ</div>
   </div>
+  <div class="deep deep-note">
+    <span class="tag">くわしく — CDS は「引き算」というフィルタ（周波数で見る）</span>
+    <p>時間差 Δt の2点を引く、という操作を周波数の目で見ると、<b>ゆっくりした成分ほど強く消すハイパスフィルタ</b>です。周期が Δt よりずっと長いゆらぎは2点でほぼ同じ値を取るので、差はゼロに近い ― オフセット（周波数ゼロ）は完全に消え、1/f ノイズのような低周波の主も大きく削れる。<span class="key">CDS が 1/f に効くのは、この形のおかげ</span>です。</p>
+    <p>代償もあります。速いゆらぎ（白色雑音）は2点で無相関なので、引き算で分散が<b>2倍</b>（実効√2倍）になる。それでも kTC・オフセット・1/f を消す得のほうが圧倒的に大きい ― 「低い周波数の敵が大きい」という画素の事情に、ちょうど合った形のフィルタなのです。</p>
+  </div>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — リセットには硬いのと柔らかいのがある</span>
+    <p>05では「リセット＝FDを電源へ戻すスイッチ」とだけ言いました。実は閉じ方に2流儀あります。<b>ハードリセット</b>: スイッチを十分深くオンにして完全に電源へ繋ぐ。速くて残像が出ないが、閉じ込められる雑音は満額の kTC。<b>ソフトリセット</b>: スイッチをぎりぎり（サブスレッショルド）で使うと、電流が「戻す向きにしか流れない」半分向きの熱平衡になり、閉じ込む雑音のパワーが<b>半分（電圧で1/√2）</b>に減ります。ただし完全には戻り切らないので前のフレームの痕跡（残像）が残る。</p>
+    <p><span class="key">CDS が効く4T画素ではどちらでも kTC は消える</span>ので、この選択が本当に効くのは CDS の使えない3T画素や一部のグローバルシャッター構成です。「同じスイッチでも閉じ方で雑音が変わる」― kTC が回路でなく熱力学で決まっている、ということの裏返しの一例として。</p>
+  </div>
+
   <div class="lab-go">
     <span class="tag">手を動かす — PixelLab 第2章</span>
     <p>浮遊拡散の容量を 2 fF → 1.3 fF に変えると、変換ゲインが上がり読み出し雑音（電子換算）が下がる。0.5 fF まで下げると、飽和電荷を決めるのが井戸ではなく浮遊拡散に変わる。この節の「小さい容量ほど大きな電圧」の両面が一度に見える。</p>
@@ -1336,6 +1461,92 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p>12bitなら4096段階。1段の電圧は満量程 0.6 V &divide; 4095 = 146.5 &micro;V、変換ゲイン 45 &micro;V/e&minus; で割ると <strong>1DN = 3.26電子</strong>（ゲイン×1のとき）です（「飽和12,000 &divide; 4096 = 2.93」ではありません——飽和はADCの満量程の90%にしか届かないからです。「センサを測る」と「数字はどこから来たか」参照）。刻んだことで生じる誤差は1段の幅の中でほぼ一様に散らばるので、その分散は <code>LSB&sup2;/12</code>、標準偏差は <code>LSB/&radic;12</code>。つまり <strong>3.26/3.46 = 0.94電子</strong> です。</p>
     <p>これを読み出しノイズ2.5電子と比べると<span class="key">約1/3で、十分に小さい</span>。ここが bit 数の決めどころです。<span class="key">量子化ノイズがアナログノイズより十分小さくなった時点で、それ以上ビットを増やしても新しい情報は入ってきません</span>。逆に足りなければ、せっかくのアナログ信号を刻みすぎで潰してしまいます。</p>
     <p>いまのハイエンドセンサが14〜16bitを持つのは、ダイナミックレンジを稼ぐためです。高ゲイン側と低ゲイン側の2回読みを合成する<strong>デュアルゲイン読み出し</strong>や、変換ゲインを切り替えて2枚を合成するHDR読み出しでは、出力側により広いビット幅が要ります。</p>
+  </div>
+</section>
+
+<!-- ================= 列の回路 ================= -->
+<section class="stage" id="sana">
+  <div class="stage-head"><span class="stage-num">—</span>
+    <h2>列の回路 — アナログの最小限（差を増やし、比で決める）</h2></div>
+  <p class="lede">05のソースフォロワと06の比較器・ランプのあいだには、アナログ回路の道具がいくつか挟まっています。全部を学ぶ必要はありませんが、<span class="key">「差だけを増幅する」「精度は利得ではなく比で出す」</span>という2つの考え方だけは、列回路の設計思想そのものなので、ここで最小限を押さえておきます。</p>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">DIFF PAIR &amp; FEEDBACK — 列回路の2つの道具</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 1120 340" role="img" aria-label="左は差動対の回路。共通のテール電流源を2つのトランジスタが取り合い、2入力の差だけが出力の差になる。電源の揺れなど両方に同じに乗るものは消える。右は負帰還のブロック図。大きな利得Aの前段と、出力を入力へ戻す割合βで、全体の利得が1/βに落ち着く。" style="min-width:900px">
+        <defs><marker id="anar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink-2)"/></marker></defs>
+        <!-- 差動対 -->
+        <text x="250" y="26" text-anchor="middle" font-family="var(--sans)" font-size="13" font-weight="700" fill="var(--ink)">差動対 ― 「差」だけを見る目</text>
+        <line x1="120" y1="44" x2="380" y2="44" stroke="var(--ink-2)" stroke-width="2"/>
+        <text x="392" y="48" font-family="var(--mono)" font-size="10" fill="var(--ink-3)">VDD</text>
+        <!-- 負荷抵抗2本 -->
+        <path d="M170,44 l0,10 -7,6 14,6 -14,6 14,6 -7,6 0,10" fill="none" stroke="var(--ink-2)" stroke-width="2"/>
+        <path d="M330,44 l0,10 -7,6 14,6 -14,6 14,6 -7,6 0,10" fill="none" stroke="var(--ink-2)" stroke-width="2"/>
+        <circle cx="170" cy="104" r="4" fill="var(--volt)"/><circle cx="330" cy="104" r="4" fill="var(--volt)"/>
+        <text x="140" y="100" text-anchor="end" font-family="var(--mono)" font-size="10.5" fill="var(--volt)">出力−</text>
+        <text x="360" y="100" font-family="var(--mono)" font-size="10.5" fill="var(--volt)">出力＋</text>
+        <!-- 2石 -->
+        <line x1="170" y1="104" x2="170" y2="128" stroke="var(--ink-2)" stroke-width="2"/>
+        <rect x="162" y="128" width="16" height="36" fill="var(--metal)"/>
+        <line x1="150" y1="124" x2="150" y2="168" stroke="var(--electron)" stroke-width="3"/>
+        <line x1="330" y1="104" x2="330" y2="128" stroke="var(--ink-2)" stroke-width="2"/>
+        <rect x="322" y="128" width="16" height="36" fill="var(--metal)"/>
+        <line x1="350" y1="124" x2="350" y2="168" stroke="var(--electron)" stroke-width="3"/>
+        <text x="126" y="150" text-anchor="end" font-family="var(--mono)" font-size="11" fill="var(--electron-2)">入力A</text>
+        <text x="374" y="150" font-family="var(--mono)" font-size="11" fill="var(--electron-2)">入力B</text>
+        <!-- テール -->
+        <line x1="170" y1="164" x2="170" y2="190" stroke="var(--ink-2)" stroke-width="2"/>
+        <line x1="330" y1="164" x2="330" y2="190" stroke="var(--ink-2)" stroke-width="2"/>
+        <line x1="170" y1="190" x2="330" y2="190" stroke="var(--ink-2)" stroke-width="2"/>
+        <line x1="250" y1="190" x2="250" y2="206" stroke="var(--ink-2)" stroke-width="2"/>
+        <circle cx="250" cy="220" r="14" fill="none" stroke="var(--ink-2)" stroke-width="2"/>
+        <line x1="250" y1="212" x2="250" y2="228" stroke="var(--ink-2)" stroke-width="2" marker-end="url(#anar)"/>
+        <line x1="250" y1="234" x2="250" y2="252" stroke="var(--ink-2)" stroke-width="2"/>
+        <g stroke="var(--ink-3)" stroke-width="2"><line x1="236" y1="252" x2="264" y2="252"/><line x1="242" y1="257" x2="258" y2="257"/><line x1="247" y1="262" x2="253" y2="262"/></g>
+        <text x="272" y="224" font-family="var(--sans)" font-size="11" fill="var(--ink-3)">決まった電流（テール）</text>
+        <text x="250" y="292" text-anchor="middle" font-family="var(--sans)" font-size="11.5" fill="var(--ink-2)">2石が<tspan font-weight="700">決まった電流を取り合う</tspan> → 勝ち負けは A−B だけで決まる</text>
+        <text x="250" y="312" text-anchor="middle" font-family="var(--sans)" font-size="11.5" fill="var(--ink-2)">両方に同じに乗るもの（電源の揺れ・温度）は<tspan font-weight="700">出力の差から消える</tspan></text>
+        <!-- 帰還 -->
+        <text x="810" y="26" text-anchor="middle" font-family="var(--sans)" font-size="13" font-weight="700" fill="var(--ink)">負帰還 ― 精度を「利得」から「比」へ移す</text>
+        <circle cx="620" cy="120" r="16" fill="var(--surface)" stroke="var(--ink-2)" stroke-width="2"/>
+        <text x="620" y="125" text-anchor="middle" font-family="var(--mono)" font-size="13" fill="var(--ink)">−</text>
+        <line x1="540" y1="120" x2="602" y2="120" stroke="var(--ink-2)" stroke-width="2" marker-end="url(#anar)"/>
+        <text x="536" y="112" text-anchor="end" font-family="var(--mono)" font-size="11.5" fill="var(--ink-2)">入力 x</text>
+        <rect x="666" y="96" width="120" height="48" fill="var(--surface)" stroke="var(--ink-2)" stroke-width="2"/>
+        <text x="726" y="126" text-anchor="middle" font-family="var(--mono)" font-size="14" font-weight="700" fill="var(--ink)">利得 A（大）</text>
+        <line x1="636" y1="120" x2="664" y2="120" stroke="var(--ink-2)" stroke-width="2" marker-end="url(#anar)"/>
+        <line x1="786" y1="120" x2="900" y2="120" stroke="var(--ink-2)" stroke-width="2" marker-end="url(#anar)"/>
+        <text x="906" y="124" font-family="var(--mono)" font-size="11.5" fill="var(--ink-2)">出力 y</text>
+        <circle cx="850" cy="120" r="4" fill="var(--ink-2)"/>
+        <line x1="850" y1="120" x2="850" y2="196" stroke="var(--ink-2)" stroke-width="2"/>
+        <rect x="700" y="176" width="100" height="40" fill="var(--surface)" stroke="var(--ink-2)" stroke-width="2"/>
+        <text x="750" y="201" text-anchor="middle" font-family="var(--mono)" font-size="13" fill="var(--ink)">β（比）</text>
+        <line x1="850" y1="196" x2="802" y2="196" stroke="var(--ink-2)" stroke-width="2" marker-end="url(#anar)"/>
+        <line x1="698" y1="196" x2="620" y2="196" stroke="var(--ink-2)" stroke-width="2"/>
+        <line x1="620" y1="196" x2="620" y2="138" stroke="var(--ink-2)" stroke-width="2" marker-end="url(#anar)"/>
+        <text x="810" y="262" text-anchor="middle" font-family="var(--mono)" font-size="13" fill="var(--ink)">y = x · A/(1+Aβ)　→　A が大きければ　y ≈ x/β</text>
+        <text x="810" y="292" text-anchor="middle" font-family="var(--sans)" font-size="11.5" fill="var(--ink-2)">ばらつく A が式から消え、答えは <tspan font-weight="700">β＝コンデンサや抵抗の比</tspan>で決まる</text>
+        <text x="810" y="312" text-anchor="middle" font-family="var(--sans)" font-size="11.5" fill="var(--ink-2)">比のマッチングは同じチップ内なら 0.1% 級 ― 付録D（Pelgrom）の御利益側</text>
+      </svg>
+    </div>
+    <figcaption>左: 差動対。テール電流を2石が取り合うので、出力の差は<b>入力の差だけ</b>の関数になり、両方に共通に乗る揺れ（電源・基板・温度）は一次で消えます。06の比較器も05のCDS後段も、頭はこれ。右: 負帰還。<b>大きくて不正確な利得 A</b> に、<b>正確な「比」β</b> で出力を戻すと、全体は 1/β に落ち着く。増幅器の製造ばらつき（付録D）が答えから消え、精度の責任がマッチングの良い受動素子の比へ移る ― アナログ設計の中心思想です。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>列で実際に使われている顔ぶれ</h3>
+      <p><b>比較器</b>（06）＝帰還をかけない差動対そのもの。「AとBどちらが大きいか」だけを1ビットで出す。<b>列アンプ</b>＝コンデンサ比 C1/C2 で決まる利得を信号に掛けてからADCへ入れる（暗い信号を量子化の刻みに埋もれさせない ― 06のゲインの実体はたいていこれ）。<b>ランプ生成</b>＝決まった電流 I をコンデンサ C に流し込むと V(t) = I·t/C の直線が出る ― 全列共通のランプは、この1本の積分器で作られています。</p>
+    </div>
+    <div class="body-col">
+      <h3>なぜ「比」なら信じられるのか</h3>
+      <p>絶対値（この容量は正確に 1 pF か）はプロセスばらつきで数%〜数十%動きますが、<b>隣どうしに同じ形で作った2つの素子の比</b>は、付録DのPelgrom則の世界で 0.1% 級まで揃います。だからアナログ設計は徹底して「絶対値を使わず、比と差に落とす」形に組み替える ― 差動対が差を、帰還が比を担当する、というのがこの節の2枚の絵の意味です。</p>
+    </div>
+  </div>
+
+  <div class="caveat">
+    <span class="tag">この節が単純化していること</span>
+    <p><strong>安定性（発振）・帯域・スルーレートには触れません。</strong>帰還は位相が回ると発振します ― ここは本職のアナログの教科書（Razavi など）の領分です。</p>
+    <p><strong>回路図は概念図です。</strong>実際の列アンプはスイッチトキャパシタ回路で、CDSと利得と標本化を1つの回路で兼ねる構成が普通です。</p>
   </div>
 </section>
 
@@ -2125,6 +2336,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     </div>
   </div>
 
+  <div class="deep deep-note">
+    <span class="tag">くわしく — 抵抗そのものが出す雑音（4kTR、ナイキスト）</span>
+    <p>kTC の導出で「抵抗は熱雑音を出す」と使いました。その大きさには名前があります: 温度 T の抵抗 R の両端には、平均ゼロ・パワースペクトル密度 <b>4kTR [V²/Hz]</b> の電圧ゆらぎが常に立っています（ジョンソン＝ナイキスト雑音）。出どころは kTC と同じエネルギー等分配で、<span class="key">抵抗の中の電荷担体が熱で揺れている、それだけ</span>です。周波数によらず平ら（白色）なので、帯域 Δf で積分した実効値は √(4kTR·Δf)。</p>
+    <p>ソースフォロワの「読み出しノイズの床」の白色成分はこれです。R を下げる（＝SFの gm を上げる＝電流を流す）か、帯域を絞るかでしか減らない ― 帯域を絞ると読み出しが遅くなるので、<b>速さとノイズの取引</b>になります。数字の感覚: 300 K・1 kΩ で √(4kTR) ≈ 4 nV/√Hz。</p>
+  </div>
+
   <h3 style="margin-top:44px">1/f ノイズは、トンネル効果でできている</h3>
   <p class="body-col" style="margin-top:8px">CDSの後に残る床の主成分が <strong>1/f ノイズ</strong>です。名前のとおり、パワースペクトルが周波数に反比例する。ほとんどあらゆる電子デバイスで観測されるのに、「なぜ 1/f なのか」は直感に反します。<span class="key">1/f は、特徴的な時定数を持たないということ</span>だからです。物理現象はふつう固有の時定数を持ち、その場合スペクトルはローレンツ型（ある周波数で折れる形）になります。</p>
   <p class="body-col" style="margin-top:14px">MOSトランジスタでの答えが <strong>McWhorter の数ゆらぎモデル</strong>です。ゲート酸化膜の中には欠陥（トラップ）が散らばっています。チャネルを流れる電子は、<span class="key">トンネル効果で酸化膜の中のトラップに捕まり、また出てきます</span>。捕まっているあいだチャネルの電子が1個減るので、電流が揺れる。</p>
@@ -2300,6 +2517,80 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <span class="tag">この節が単純化していること</span>
     <p><strong>数値は桁の目安です。</strong>V<sub>ex</sub>（数V）、デッドタイム（数十ns）、PDE・DCR は素子と波長・温度で桁が動きます。このページの仮想センサの諸元とは独立の話として読んでください。</p>
     <p><strong>アナログSiPM（SPADの並列和）や、ガイガー確率・ジッタの中身（電界分布に依存）には踏み込みません。</strong>入口は下の Cova らの総説が定番です。</p>
+  </div>
+</section>
+
+<!-- ================= イベントベース ================= -->
+<section class="stage" id="sevt">
+  <div class="stage-head"><span class="stage-num">—</span>
+    <h2>イベントベースセンサ — 「フレーム」を捨てた画素</h2></div>
+  <p class="lede">このページの一本道は「一定時間ためて、全画素を読む」が前提でした。イベントベースセンサ（DVS）はその前提ごと捨てます。各画素が<span class="key">自分の明るさの変化だけを、変わった瞬間に、非同期で</span>報告する。静止したシーンではデータがゼロ、動いた縁だけがマイクロ秒の細かさで流れてくる ― カメラというより網膜に近い出力です。</p>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">EVENT PIXEL — 画素の中身と、出力の形</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 1120 330" role="img" aria-label="イベント画素のブロック図と出力の比較。フォトダイオードの光電流を対数変換し、前回のイベント時からの変化がしきい値を超えるたびにONまたはOFFイベントを出す。下は同じ輝度変化に対するフレーム出力とイベント出力の時間軸比較。" style="min-width:920px">
+        <defs><marker id="evar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink-2)"/></marker></defs>
+        <!-- ブロック図 -->
+        <rect x="40" y="50" width="96" height="52" fill="var(--electron-soft)" stroke="var(--electron)"/>
+        <text x="88" y="72" text-anchor="middle" font-family="var(--sans)" font-size="11.5" fill="var(--ink)">フォトダイオード</text>
+        <text x="88" y="90" text-anchor="middle" font-family="var(--mono)" font-size="10" fill="var(--ink-2)">光電流 I ∝ 明るさ</text>
+        <line x1="136" y1="76" x2="176" y2="76" stroke="var(--ink-2)" stroke-width="2" marker-end="url(#evar)"/>
+        <rect x="178" y="50" width="120" height="52" fill="var(--surface)" stroke="var(--ink-2)"/>
+        <text x="238" y="72" text-anchor="middle" font-family="var(--sans)" font-size="11.5" fill="var(--ink)">対数変換</text>
+        <text x="238" y="90" text-anchor="middle" font-family="var(--mono)" font-size="10" fill="var(--ink-2)">V ∝ log I</text>
+        <line x1="298" y1="76" x2="338" y2="76" stroke="var(--ink-2)" stroke-width="2" marker-end="url(#evar)"/>
+        <rect x="340" y="50" width="150" height="52" fill="var(--surface)" stroke="var(--ink-2)"/>
+        <text x="415" y="72" text-anchor="middle" font-family="var(--sans)" font-size="11.5" fill="var(--ink)">差分（前回からの変化）</text>
+        <text x="415" y="90" text-anchor="middle" font-family="var(--mono)" font-size="10" fill="var(--ink-2)">Δlog I ＝ コントラスト</text>
+        <line x1="490" y1="76" x2="530" y2="76" stroke="var(--ink-2)" stroke-width="2" marker-end="url(#evar)"/>
+        <rect x="532" y="38" width="150" height="34" fill="var(--surface)" stroke="var(--one)"/>
+        <text x="607" y="60" text-anchor="middle" font-family="var(--mono)" font-size="11" fill="var(--one)">＋しきい値 → ON</text>
+        <rect x="532" y="82" width="150" height="34" fill="var(--surface)" stroke="var(--zero)"/>
+        <text x="607" y="104" text-anchor="middle" font-family="var(--mono)" font-size="11" fill="var(--zero)">−しきい値 → OFF</text>
+        <line x1="682" y1="76" x2="722" y2="76" stroke="var(--ink-2)" stroke-width="2" marker-end="url(#evar)"/>
+        <rect x="724" y="50" width="200" height="52" fill="var(--digital-soft)" stroke="var(--digital)"/>
+        <text x="824" y="72" text-anchor="middle" font-family="var(--sans)" font-size="11.5" fill="var(--digital)">イベント（非同期）</text>
+        <text x="824" y="90" text-anchor="middle" font-family="var(--mono)" font-size="10" fill="var(--ink-2)">(x, y, 極性, 時刻µs)</text>
+        <text x="500" y="136" text-anchor="middle" font-family="var(--sans)" font-size="11" fill="var(--ink-2)">発火したら「前回の値」をいまの値に貼り直してリセット ― 次はそこからの変化を見る</text>
+        <!-- 下段: 時間軸比較 -->
+        <g font-family="var(--mono)" font-size="10" fill="var(--ink-3)">
+          <text x="40" y="188">明るさ</text>
+          <text x="40" y="238">フレーム</text>
+          <text x="40" y="292">イベント</text>
+          <text x="1052" y="314">時間 →</text>
+        </g>
+        <path d="M110,206 L360,206 L400,178 L680,178 L720,210 L1040,210" fill="none" stroke="var(--photon)" stroke-width="2.5"/>
+        <!-- フレーム: 等間隔サンプル -->
+        <g fill="var(--ink-3)">
+          <rect x="150" y="228" width="7" height="16"/><rect x="270" y="228" width="7" height="16"/><rect x="390" y="228" width="7" height="16"/><rect x="510" y="228" width="7" height="16"/><rect x="630" y="228" width="7" height="16"/><rect x="750" y="228" width="7" height="16"/><rect x="870" y="228" width="7" height="16"/><rect x="990" y="228" width="7" height="16"/>
+        </g>
+        <text x="560" y="258" text-anchor="middle" font-family="var(--sans)" font-size="10.5" fill="var(--ink-3)">変化がなくても毎フレーム全画素ぶん出る／変化の瞬間はフレーム間隔でしか分からない</text>
+        <!-- イベント: 変化点に密集 -->
+        <g stroke-width="2.5">
+          <g stroke="var(--one)"><line x1="366" y1="298" x2="366" y2="280"/><line x1="376" y1="298" x2="376" y2="280"/><line x1="386" y1="298" x2="386" y2="280"/><line x1="396" y1="298" x2="396" y2="280"/></g>
+          <g stroke="var(--zero)"><line x1="686" y1="280" x2="686" y2="298"/><line x1="697" y1="280" x2="697" y2="298"/><line x1="708" y1="280" x2="708" y2="298"/><line x1="719" y1="280" x2="719" y2="298"/></g>
+        </g>
+        <text x="560" y="318" text-anchor="middle" font-family="var(--sans)" font-size="10.5" fill="var(--ink-2)">変化した瞬間だけ、µs 級の時刻付きで出る（上げはON、下げはOFF）― 静止区間はゼロ</text>
+      </svg>
+    </div>
+    <figcaption>画素は「絶対の明るさ」を持たず、<b>log I の変化がしきい値（典型で十数%）を超えるたび</b>に1発のイベントを出します。対数を先に取るので、しきい値は<b>コントラスト一定</b> ― 暗所でも明所でも「同じ割合の変化」に反応し、それだけで 120 dB 級のダイナミックレンジが出ます（第2部第5章のサブスレッショルド指数 ― まさに S 値の物理 ― を、対数変換器として順方向に使っています）。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>何が得意で、何が見えないか</h3>
+      <p>得意: <b>速さ</b>（フレーム待ちがないので実効µs級）、<b>データ量</b>（動いた縁ぶんだけ）、<b>DR</b>（対数圧縮）。見えないもの: <span class="key">絶対輝度</span>（変化しか出ないので、静止した模様は存在ごと消える）、そして<b>階調のある絵</b>そのもの。だから用途は「画を撮る」ではなく、高速の追跡・振動計測・SLAM補助など<b>時間が主役の仕事</b>に寄ります。フレーム型と並べて積む混載も実用化されています。</p>
+    </div>
+    <div class="body-col">
+      <h3>このページの言葉で読み直すと</h3>
+      <p>蓄積型が「電子を<b>数えてから</b>時刻を捨てる」のに対し、DVSは「<b>時刻を残して</b>数を捨てる」― SPAD（1個ずつ・時刻つき）とフレーム（全部足す・時刻なし）のあいだの、もうひとつの取引点です。ノイズの床もこのページの道具で読めます: 暗所ではフォトダイオードのショットノイズがしきい値を勝手に超えて<b>偽イベント</b>になる ― 08の「暗いところの支配項」の、イベント版です。</p>
+    </div>
+  </div>
+
+  <div class="caveat">
+    <span class="tag">この節が単純化していること</span>
+    <p><strong>ブロック図は DVS の原型（Lichtsteiner らの 128×128、2008）に沿った概念図です。</strong>実機はリセットの方式・帯域制御・アービタ（同時多発イベントの交通整理）などで多くの変種があります。しきい値の「十数%」も設定で振れる代表値です。</p>
   </div>
 </section>
 
@@ -2546,6 +2837,9 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>SPAD</td><td>降伏電圧より上（ガイガーモード）で待ち、キャリア1個を自己維持の雪崩に育てて数えるフォトダイオード。出力はデジタルパルス</td><td class="num">V<sub>BD</sub>＋数V</td></tr>
           <tr><td>PDE / DCR</td><td>SPADの実効検出効率（吸収×雪崩の起動確率×開口）／光がなくても数えてしまう率。DCRの起源は付録Cの暗電流と同じで、8〜10℃で倍</td><td class="num">素子で桁が動く</td></tr>
           <tr><td>デッドタイム</td><td>発火後、クエンチと再充電が済んで次を数えられるようになるまでの時間。明所での数え落としの原因</td><td class="num">数十 ns</td></tr>
+          <tr><td>像面位相差AF</td><td>瞳の右半分・左半分を別々に見る画素対で、像のズレ（位相差）からピントの向きと量を1回で出す測距</td><td class="num">基線長で感度が決まる</td></tr>
+          <tr><td>デュアルピクセル</td><td>全画素のPDを左右2分割。別々に読めばAF、足せば通常画素 ― 遮光式の感度損と画像欠陥を消した形</td><td class="num">読み出し2倍</td></tr>
+          <tr><td>DVS / イベント</td><td>log輝度の変化がしきい値を超えるたびに (x, y, 極性, 時刻) を非同期に出す画素。絶対輝度は持たない</td><td class="num">µs級・〜120dB</td></tr>
         </tbody>
       </table>
     </div>
@@ -2620,6 +2914,8 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
             <td>付録A / C。トラップ支援トンネルを、デバイスシミュレータに組み込める形にまとめた仕事です。</td></tr>
           <tr><td>単一光子検出の<br>APDとクエンチ回路</td><td>S. Cova ほか<br>Applied Optics, 1996</td>
             <td>「降伏の先 — SPAD」。ガイガーモード動作と受動／能動クエンチを整理した定番の総説です。</td></tr>
+          <tr><td>イベントベース視覚<br>（DVS）</td><td>P. Lichtsteiner, C. Posch,<br>T. Delbruck<br>IEEE J. Solid-State Circuits, 2008</td>
+            <td>「イベントベースセンサ」。128×128 の DVS ― 対数画素＋変化検出＋非同期出力という原型を確立した仕事です。</td></tr>
         </tbody>
       </table>
     </div>
@@ -2634,12 +2930,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <p>条件の書かれていない数値は、比較にも設計にも使えません。それが分かるようになっていれば、このページの目的は果たされています。</p>
     </div>
     <div class="body-col">
-      <h3>このページが扱わなかったこと</h3>
-      <p>一本道に絞ったので、外したものがあります。次に興味が向くとしたらこのあたりです。</p>
-      <p><strong>像面位相差AF</strong>——画素の一部を遮光して瞳を分割し、センサ自身で距離を測る仕組み。<span class="key">このページで唯一、光→像の一本道から外れる話題</span>です（画質ではなく測距の話なので）。それが外してある理由でもあります。</p>
-      <p style="margin-top:12px"><strong>SPAD と光子計数</strong>——付録Aの降伏の話の先で、1個ずつ光子を数える領域。要望が多かったので<a href="#sspad">「降伏の先 — SPAD」</a>として本編に足しました（仮想センサ1台の枠の外である点は変わりません）。</p>
-      <p style="margin-top:12px"><strong>読み出しの高速化</strong>——サブADC構成、圧縮、インターフェース（MIPI）。センサから先の話です。</p>
-      <p style="margin-top:12px"><strong>イベントベースセンサ</strong>——明るさの<em>変化</em>だけを画素ごとに非同期で出す方式。フレームという概念そのものを持たないので、このページの構成では扱えません。</p>
+      <h3>このページが扱わなかったこと（と、本編へ昇格したもの）</h3>
+      <p>一本道に絞って外していた話題のうち、3つは番号なしの節として本編に足しました。</p>
+      <p><strong>像面位相差AF</strong>——<a href="#saf">「像面位相差AF」</a>へ。画質ではなく測距の話なので、一本道の番号は持たせていません。</p>
+      <p style="margin-top:12px"><strong>SPAD と光子計数</strong>——<a href="#sspad">「降伏の先 — SPAD」</a>へ（仮想センサ1台の枠の外である点は変わりません）。</p>
+      <p style="margin-top:12px"><strong>イベントベースセンサ</strong>——<a href="#sevt">「イベントベースセンサ」</a>へ。フレームという概念ごと違う別方式として。</p>
+      <p style="margin-top:12px"><strong>読み出しの高速化</strong>——サブADC構成、圧縮、インターフェース（MIPI）。センサから先の話で、引き続き扱いません。</p>
     </div>
   </div>
 </section>

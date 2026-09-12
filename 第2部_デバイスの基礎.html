@@ -217,6 +217,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
     <li><a href="#s4"><span class="n">04</span><span>光を電気にする</span></a></li>
     <li class="dom">切り替える</li>
     <li><a href="#s5"><span class="n">05</span><span>MOS、そして MOSFET</span></a></li>
+    <li><a href="#spow"><span class="n">—</span><span>パワーデバイス</span></a></li>
     <li class="dom">付録</li>
     <li><a href="#snum"><span class="n">—</span><span>数字の根拠</span></a></li>
     <li><a href="#smodel"><span class="n">—</span><span>どこまでがモデルか</span></a></li>
@@ -688,6 +689,18 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
     <p><b>大注入も扱いません。</b>注入された少数キャリアが多数キャリアに迫る領域（順方向が V<sub>bi</sub> に近づくあたり）では、上の式は成り立ちません。SemiLab は順方向が V<sub>bi</sub> に届くと「大注入」の帯を出します。直列抵抗は入っていて、高電流で理想係数が 1.5 を超えるのはそのせいです。</p>
   </div>
 
+  <div class="deep-note">
+    <span class="tag">くわしく — 寿命 τ を測る（OCVD）</span>
+    <p>τ は仮定の当てはめ（10 µs / (1+N/5×10¹⁶)）で与えていますが、実物では測れます。定番が<b>開放電圧減衰法（OCVD）</b>: ダイオードに順方向電流を流して少数キャリアを注入しておき、<b>端子をパッと開放</b>する。電流の道が消えても注入されたキャリアはすぐには消えず、再結合で τ の時定数で減っていく ― 端子電圧はその濃度の対数（ショックレーの境界条件の逆読み）なので、</p>
+    <div class="eq">dV/dt = &minus; V<sub>t</sub> / &tau;　　← 電圧が直線で下がり、その傾きが τ を教える</div>
+    <p>オシロ1台で測れて、太陽電池の現場でもよく使われます。第4章の「拡散長 L = √(Dτ)」の τ は、こうやって実測される量です（接合容量の放電や大注入の補正など、実務の注意は成書に）。</p>
+  </div>
+
+  <div class="deep-note">
+    <span class="tag">くわしく — 降伏の使い道（ツェナー基準）</span>
+    <p>この部では降伏は「出ないもの」ですが、使い道を1つだけ。降伏の I-V は<b>ほぼ垂直</b> ― 電流が桁で変わっても電圧がほとんど動かない。つまり<span class="key">電圧の物差し</span>になります。しかも第4部 付録Aのとおり、ツェナー（トンネル）の温度係数は負、なだれは正。<b>5〜6 V 付近の素子では両機構が混ざって温度係数がほぼゼロ</b>になり、古典的な基準電圧源として使われました。いまの集積回路の主流は、同じ発想（負の温度係数を持つ V<sub>BE</sub> と、正の温度係数を持つ V<sub>t</sub>·ln n を混ぜて打ち消す）をバンドギャップ基準として作り込みます ― 出てくる電圧が約1.2 V ＝ E<sub>g</sub>/q なのは偶然ではありません。</p>
+  </div>
+
   <div class="lab-go">
     <span class="tag">手を動かす — SemiLab 第3章</span>
     <p>「測る」で I-V が出る。対数で見ると、低い電圧で傾きが緩く（n = 2）、真ん中で 60 mV/桁（n = 1）、高電流で寝る（直列抵抗）。「薄くすると電流が増える」は、n 側を 2 µm にして J<sub>0</sub> が「厚かったら」の何倍になったかを見る。「暗電流を減らす」は、濃くしすぎると τ が縮んで逆に増えるので、真ん中を狙う。</p>
@@ -942,6 +955,72 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
     <span class="tag">手を動かす — SemiLab 第5章 → NandLab</span>
     <p>「酸化膜」を押すと先頭に挟まり、左の電極が自動でゲートになる。ゲート電圧を上げていくと、キャリア濃度の段で表面の電子の線が正孔を追い越す瞬間が見える。「測る」で C-V と Id-Vd。最後の「NAND の中身へ」で作った nMOS が、NandLab で NAND をダブルクリックすると出てくる4石の中身。</p>
     <div class="qs"><span class="lab">SemiLab</span><a href="SemiLab/index.html?quest=moscap">MOS キャパシタ</a><a href="SemiLab/index.html?quest=vth">しきい値電圧を合わせる</a><a href="SemiLab/index.html?quest=swing">切れ味を上げる</a><a href="SemiLab/index.html?quest=nand">NAND の中身へ</a><span class="lab">NandLab</span><a href="NandLab/index.html?quest=not">NOT を作る（第3部へ）</a></div>
+  </div>
+</section>
+
+<!-- ================= パワーデバイス ================= -->
+<section class="stage" id="spow">
+  <div class="stage-head"><span class="stage-num">—</span><h2>電力を切る — パワーデバイス（この部の式で読む）</h2></div>
+  <p class="lede">この部のMOSFETは信号を切っていました。同じ部品で<span class="key">数百V・数十Aを切る</span>のがパワーデバイスです。新しい物理はほとんど要りません ― 効いてくるのは第2章の「片側接合の空乏層」と、第3章の「注入」、そして材料の臨界電界。<b>耐圧とオン抵抗の綱引き</b>という一本の軸で、Si の縦型MOSFETからIGBT、SiC・GaNまで並べて読めます。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <figure>
+        <div class="fig-head"><span class="fig-title">VERTICAL MOSFET — 電流は縦に、耐圧は厚みで</span></div>
+        <div class="fig-body scroll-x">
+          <svg viewBox="0 0 560 300" role="img" aria-label="縦型パワーMOSFETの断面。ソースとゲートが上面、ドレインが裏面。あいだに厚くて薄い濃度のドリフト層があり、オフのときはそこが空乏して電圧を支える。" style="min-width:460px">
+            <g font-family="var(--mono)" font-size="10.5">
+              <rect x="120" y="30" width="90" height="20" fill="var(--metal)"/><text x="165" y="44" text-anchor="middle" fill="var(--surface)">ソース</text>
+              <rect x="350" y="30" width="90" height="20" fill="var(--metal)"/><text x="395" y="44" text-anchor="middle" fill="var(--surface)">ソース</text>
+              <rect x="234" y="34" width="92" height="14" fill="var(--metal)"/><text x="280" y="45" text-anchor="middle" fill="var(--surface)">ゲート</text>
+              <rect x="234" y="48" width="92" height="8" fill="var(--ox-soft)" stroke="var(--ox)"/>
+            </g>
+            <rect x="100" y="56" width="360" height="40" fill="var(--hole-soft)"/>
+            <rect x="120" y="56" width="60" height="18" fill="var(--electron-soft)" stroke="var(--electron)"/>
+            <rect x="380" y="56" width="60" height="18" fill="var(--electron-soft)" stroke="var(--electron)"/>
+            <text x="150" y="70" text-anchor="middle" font-family="var(--mono)" font-size="9" fill="var(--electron-2)">n+</text>
+            <text x="410" y="70" text-anchor="middle" font-family="var(--mono)" font-size="9" fill="var(--electron-2)">n+</text>
+            <text x="205" y="88" text-anchor="middle" font-family="var(--mono)" font-size="9.5" fill="var(--hole)">p ウェル</text>
+            <rect x="100" y="96" width="360" height="120" fill="var(--electron-soft)"/>
+            <text x="280" y="150" text-anchor="middle" font-family="var(--mono)" font-size="11" fill="var(--electron-2)">n− ドリフト層（薄い濃度・厚い層）</text>
+            <text x="280" y="172" text-anchor="middle" font-family="var(--sans)" font-size="10.5" fill="var(--ink-2)">オフ: ここが空乏して数百Vを支える（第2章の片側接合）</text>
+            <text x="280" y="192" text-anchor="middle" font-family="var(--sans)" font-size="10.5" fill="var(--ink-2)">オン: ここの抵抗がそのまま損失（R<tspan font-size="8" baseline-shift="sub">on</tspan>）</text>
+            <rect x="100" y="216" width="360" height="22" fill="var(--electron)"/>
+            <text x="280" y="231" text-anchor="middle" font-family="var(--mono)" font-size="9.5" fill="var(--surface)">n+ 基板</text>
+            <rect x="100" y="238" width="360" height="18" fill="var(--metal)"/>
+            <text x="280" y="251" text-anchor="middle" font-family="var(--mono)" font-size="10.5" fill="var(--surface)">ドレイン（裏面全体）</text>
+            <path d="M165,56 L165,120 C165,180 240,200 280,216" fill="none" stroke="var(--volt)" stroke-width="2.5" marker-end="url(#pwar)"/>
+            <defs><marker id="pwar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--volt)"/></marker></defs>
+            <text x="130" y="130" font-family="var(--sans)" font-size="10.5" fill="var(--volt)">電流は縦へ</text>
+            <text x="280" y="284" text-anchor="middle" font-family="var(--sans)" font-size="10.5" fill="var(--ink-3)">チップの面積いっぱいを電流路に使える ― 横型との最大の違い</text>
+          </svg>
+        </div>
+        <figcaption>信号用と同じMOSの物理（第5章）を上面に置き、<b>耐圧の仕事はドリフト層に分離</b>した構造。支える電圧を上げたければ層を厚く・薄濃度にするしかなく、するとオンのとき直列に入る抵抗が増える ― これが耐圧×オン抵抗のトレードオフです。</figcaption>
+      </figure>
+    </div>
+    <div class="body-col">
+      <h3>綱引きの式 — 材料の臨界電界が全部を決める</h3>
+      <p>第2章の片側接合で、空乏層が支えられる最大電圧は「三角形の面積」でした: BV ≈ E<sub>c</sub>·W/2（E<sub>c</sub> は雪崩が始まる臨界電界、W はドリフト層の厚み）。いっぽうオン抵抗はその層の抵抗 R<sub>on</sub> ∝ W/(µN)。濃度 N も E<sub>c</sub> に縛られる（濃くすると同じ電圧でも電界が立ちすぎる）ので、整理すると:</p>
+      <div class="eq">R<sub>on</sub>（単位面積） ∝ BV² / ( &epsilon; µ <b>E<sub>c</sub>³</b> )　　← 分母に E<sub>c</sub> の3乗</div>
+      <p><span class="key">臨界電界が10倍の材料は、同じ耐圧のオン抵抗を桁3つ下げられる</span> ― これが SiC・GaN の存在理由の全部です（バリガ性能指数）。</p>
+      <div class="scroll-x" style="margin-top:12px"><table>
+        <thead><tr><th>材料</th><th>E<sub>g</sub></th><th>E<sub>c</sub> [MV/cm]</th><th>主戦場</th></tr></thead>
+        <tbody>
+          <tr><td>Si</td><td class="num">1.12 eV</td><td class="num">≈0.3</td><td>〜600V級・IGBTと分担</td></tr>
+          <tr><td>4H-SiC</td><td class="num">3.26</td><td class="num">≈2.5</td><td>EV・産業（600V〜数kV）</td></tr>
+          <tr><td>GaN</td><td class="num">3.39</td><td class="num">≈3.3</td><td>急速充電器など（横型HEMT）</td></tr>
+        </tbody>
+      </table></div>
+      <p style="font-size:12.5px;color:var(--ink-3);margin-top:8px">300 K の代表値。GaN は縦型が難しく、2次元電子ガス（ヘテロ界面に自然にできる高移動度の電子の板）を使う横型が主流。</p>
+      <h3>IGBT — MOSの顔とBJTの体</h3>
+      <p>Si のまま高耐圧に行くと R<sub>on</sub> が苦しい。そこで裏面を n+ でなく <b>p+</b> にすると、オン時にそこから正孔がドリフト層へ<b>注入</b>され、電子と正孔の両方で運ぶ低抵抗の状態になる（伝導度変調 ― 第3章の「注入」の応用）。入口はMOS（電圧駆動で楽）、体はバイポーラ ― それがIGBTです。代償は、<span class="key">溜め込んだ少数キャリアを掃き出すまで切れない</span>こと（テイル電流）。第3章の「薄くすると速くなる」の逆側で、導通損とスイッチング損の取引になります。</p>
+    </div>
+  </div>
+
+  <div class="caveat">
+    <span class="tag">この節が単純化していること</span>
+    <p><strong>R<sub>on</sub>∝BV²/E<sub>c</sub>³ は1次元の理想（単極・均一ドリフト層）です。</strong>実物はスーパージャンクション（p/n柱の埋め込みでこの限界線自体を破る）、トレンチゲート、電界緩和構造などで大きく改善されています。E<sub>c</sub> は濃度依存もある代表値です。</p>
+    <p><strong>SemiLab は降伏を解かない</strong>ので、この節の BV はこの部の中では「赤い帯が出る手前まで」の話として読んでください（切り分けの目安は第4部 付録A）。</p>
   </div>
 </section>
 

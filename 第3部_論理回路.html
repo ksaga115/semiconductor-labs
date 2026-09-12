@@ -223,6 +223,7 @@ table.tt td.x{color:var(--ink-3)}
     <li class="dom">順序</li>
     <li><a href="#s4"><span class="n">04</span><span>記憶する</span></a></li>
     <li><a href="#s5"><span class="n">05</span><span>組み上げる</span></a></li>
+    <li><a href="#smem"><span class="n">—</span><span>メモリの物理</span></a></li>
     <li class="dom">付録</li>
     <li><a href="#snum"><span class="n">—</span><span>数字の根拠</span></a></li>
     <li><a href="#smodel"><span class="n">—</span><span>どこまでがモデルか</span></a></li>
@@ -749,6 +750,12 @@ table.tt td.x{color:var(--ink-3)}
   </div>
 
   <div class="deep-note">
+    <span class="tag">くわしく — 状態機械（FSM）：この部の部品の、正式な名前</span>
+    <p>「レジスタが今を覚え、組合せ回路が次を決め、クロックで一斉に進む」― この形には<b>有限状態機械（FSM）</b>という正式な名前があります。部品は3つだけ: <b>状態レジスタ</b>（いまどの状態か）、<b>遷移論理</b>（いまの状態と入力から、次の状態を計算する組合せ回路）、<b>出力論理</b>。出力が状態だけで決まるものを Moore 型、入力にも即応するものを Mealy 型と呼びます。</p>
+    <p>実はこの章で組んだものは全部 FSM です。<span class="key">カウンタ＝「状態が16個で、遷移が+1だけ」の最小の FSM</span>。信号機も、自動販売機も、UART の受信も、CPU の制御部（フェッチ→デコード→実行を巡る）も、状態の丸と遷移の矢印を紙に描いてから、丸に2進の番号を振ってレジスタと積和形に落とす ― 第2章と第4章の道具で機械的に回路になります。<b>「順序のある振る舞い」を設計する標準の言葉</b>として、名前だけは持って帰ってください。</p>
+  </div>
+
+  <div class="deep-note">
     <span class="tag">くわしく — 第2部・第4部へ戻る</span>
     <p>この部で「石」と呼んできたスイッチは、第2部第5章の nMOS（p 基板・V<sub>th</sub> 0.4〜0.6 V・S 値 80 mV/桁以下）です。第1章の伝達特性で坂の急さを決めていたのは、その V<sub>th</sub> と二乗則の強さ。S 値は「オフのとき、しきい値の下でどれだけ漏れるか」で、これが CPU の待機電力の下限を決めます（第4部 付録 B「S 値の 59.5 mV/桁 という壁」）。第4部の画素の中にも、転送・リセット・ソースフォロワ・選択の4個の MOSFET がいて、同じ物理で動いています。</p>
   </div>
@@ -757,6 +764,112 @@ table.tt td.x{color:var(--ink-3)}
     <span class="tag">手を動かす — NandLab 第5章</span>
     <p>レジスタは「FF ＋ 手前のセレクタ」を1桁ぶんチップにして4つ置く。カウンタはクロック部品を繋いで「動かす」と、自分で組んだ回路が勝手に数えはじめる。R を繋ぎ忘れると X のまま動かない ― それが正しい。ALU は1桁ぶんをチップにしてから4つ。「道のり」で、NOT からここまでが何の上に建っているかが図で見える。</p>
     <div class="qs"><span class="lab">NandLab</span><a href="NandLab/index.html?quest=reg4">4ビットレジスタ</a><a href="NandLab/index.html?quest=shift4">4ビットシフトレジスタ</a><a href="NandLab/index.html?quest=count4">4ビットカウンタ</a><a href="NandLab/index.html?quest=alu4">4ビット ALU</a></div>
+  </div>
+</section>
+
+<!-- ================= メモリの物理 ================= -->
+<section class="stage" id="smem">
+  <div class="stage-head"><span class="stage-num">—</span><h2>メモリの物理 — 輪で覚える、電荷で覚える、閉じ込めて覚える</h2></div>
+  <p class="lede">第5章で「CPUに足りないのはメモリと制御」と言い、SRAM・DRAMの中身は「くわしく」で覗きました。この節はその先 ― <span class="key">電源を切っても消えないメモリ（Flash）が、何で覚えているのか</span>まで一気に降ります。答えは「絶縁体の箱に電子を閉じ込める」。そしてその出し入れが、第4部 付録Aのトンネルそのものです。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>覚え方は3系統しかない</h3>
+      <p><b>① 輪（SRAM）</b>: インバータ2個の輪が、電源のある限り自分を書き戻し続ける。速いが6石で高い。<b>② むき出しの電荷（DRAM）</b>: コンデンサの電荷で覚える。1T1Cで安いが、接合のリークで漏れる（第2部第3章の暗電流と同じ物理）ので数十msごとにリフレッシュ。電源を切れば消える。<b>③ 閉じ込めた電荷（Flash）</b>: 電荷を<span class="key">絶縁体で完全に囲まれた島</span>に置く。漏れる経路が「絶縁体をトンネルで抜ける」しかなく、その確率は厚みの指数で小さい ― だから<b>電源ゼロで10年</b>持つ。</p>
+      <p>③の島が<b>浮遊ゲート（FG）</b>です。MOSFETのゲート酸化膜の中に、どこにも繋がらないポリシリコンの板をもう1枚沈めた構造 ― 第2部第5章のMOSに、部品を1個足しただけです。</p>
+      <h3>書く・消す＝トンネルで出し入れ</h3>
+      <p>書き込み: 制御ゲートに高電圧（十数V）をかけると、トンネル酸化膜（8nm級）に大きな電界が立ち、チャネルの電子が Fowler–Nordheim トンネル（第4部 付録A）で FG へ注入される。消去: 逆向きの電圧で同じ道を逆に抜く。<span class="key">FGに電子が居ると、その負電荷がチャネルから見たしきい値を持ち上げる</span> ― 読み出しは「中間の電圧をゲートにかけて、流れるか流れないか」を見るだけ。つまり<b>記憶の実体は V<sub>th</sub> のシフト</b>で、第2部第5章の V<sub>th</sub> の式の Q<sub>dep</sub> の隣に、閉じ込めた電荷の項がひとつ増えた形です。</p>
+    </div>
+    <div class="body-col">
+      <figure>
+        <div class="fig-head"><span class="fig-title">FLOATING GATE — 閉じ込めた電荷が、しきい値を動かす</span></div>
+        <div class="fig-body scroll-x">
+          <svg viewBox="0 0 560 360" role="img" aria-label="浮遊ゲートセルの断面と、消去状態・書き込み状態の2本のId-Vg曲線。浮遊ゲートに電子が入ると曲線が右へ平行移動し、読み出し電圧で流れるか流れないかが変わる。" style="min-width:470px">
+            <!-- 断面 -->
+            <rect x="150" y="30" width="180" height="26" fill="var(--metal)"/>
+            <text x="240" y="48" text-anchor="middle" font-family="var(--mono)" font-size="11" fill="var(--surface)">制御ゲート</text>
+            <rect x="150" y="56" width="180" height="10" fill="var(--surface-3)" stroke="var(--line)"/>
+            <rect x="150" y="66" width="180" height="22" fill="var(--photon-soft)" stroke="var(--photon-2)" stroke-width="1.5"/>
+            <text x="240" y="82" text-anchor="middle" font-family="var(--mono)" font-size="11" fill="var(--photon-2)">浮遊ゲート（どこにも繋がらない）</text>
+            <g fill="var(--electron)"><circle cx="200" cy="76" r="4"/><circle cx="220" cy="76" r="4"/><circle cx="260" cy="76" r="4"/><circle cx="280" cy="76" r="4"/></g>
+            <rect x="150" y="88" width="180" height="9" fill="var(--surface-3)" stroke="var(--line)"/>
+            <text x="342" y="96" font-family="var(--mono)" font-size="9.5" fill="var(--ink-3)">トンネル酸化膜 〜8nm</text>
+            <rect x="90" y="97" width="300" height="46" fill="var(--hole-soft)"/>
+            <rect x="90" y="97" width="60" height="20" fill="var(--electron-soft)" stroke="var(--electron)"/>
+            <rect x="330" y="97" width="60" height="20" fill="var(--electron-soft)" stroke="var(--electron)"/>
+            <text x="120" y="112" text-anchor="middle" font-family="var(--mono)" font-size="9.5" fill="var(--electron-2)">n+</text>
+            <text x="360" y="112" text-anchor="middle" font-family="var(--mono)" font-size="9.5" fill="var(--electron-2)">n+</text>
+            <text x="240" y="132" text-anchor="middle" font-family="var(--mono)" font-size="10" fill="var(--hole)">p 基板</text>
+            <path d="M240,150 L240,166" stroke="var(--photon-2)" stroke-width="2" marker-end="url(#fgar)"/>
+            <defs><marker id="fgar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--photon-2)"/></marker></defs>
+            <text x="240" y="162" text-anchor="middle" font-family="var(--sans)" font-size="10" fill="var(--ink-2)" opacity="0">.</text>
+            <!-- Id-Vg -->
+            <g font-family="var(--mono)" font-size="10" fill="var(--ink-3)">
+              <text x="60" y="186">I（対数）</text>
+              <text x="510" y="338">V_G →</text>
+            </g>
+            <line x1="70" y1="330" x2="520" y2="330" stroke="var(--line)" stroke-width="1.5"/>
+            <path d="M120,326 C170,310 190,220 210,200 L280,196" fill="none" stroke="var(--one)" stroke-width="2.5"/>
+            <path d="M300,326 C350,310 370,220 390,200 L460,196" fill="none" stroke="var(--volt)" stroke-width="2.5"/>
+            <text x="150" y="212" font-family="var(--sans)" font-size="11" fill="var(--one)">消去（FG 空）＝「1」</text>
+            <text x="368" y="246" font-family="var(--sans)" font-size="11" fill="var(--volt)">書き込み（FG に電子）＝「0」</text>
+            <line x1="255" y1="192" x2="345" y2="192" stroke="var(--warn)" stroke-width="2" marker-end="url(#fgar)"/>
+            <text x="300" y="184" text-anchor="middle" font-family="var(--mono)" font-size="10.5" fill="var(--warn)">ΔV_th ＝ 閉じ込めた電荷</text>
+            <line x1="300" y1="330" x2="300" y2="216" stroke="var(--ink-3)" stroke-width="1.5" stroke-dasharray="4 4"/>
+            <text x="300" y="348" text-anchor="middle" font-family="var(--mono)" font-size="10" fill="var(--ink-2)">読み出し電圧（ここで流れる？）</text>
+          </svg>
+        </div>
+        <figcaption>読み出し電圧で、消去セルは流れ（1）、書き込みセルは流れない（0）。<b>V<sub>th</sub> の2本の山を細かく4本・8本に切れば1セルで2ビット・3ビット</b>（MLC/TLC）― ただし山の間隔＝雑音余裕（第1章）が狭くなり、読みも書きも遅く慎重になります。容量と信頼性の取引が、ここでも同じ形で現れます。</figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <div class="two">
+    <div class="body-col">
+      <figure>
+        <div class="fig-head"><span class="fig-title">NAND STRING — 名前の由来は、この直列</span></div>
+        <div class="fig-body scroll-x">
+          <svg viewBox="0 0 560 210" role="img" aria-label="NAND型フラッシュのストリング構造。ビット線と接地のあいだに、選択ゲートに挟まれたセルが直列に並ぶ。" style="min-width:470px">
+            <text x="60" y="36" font-family="var(--mono)" font-size="11" fill="var(--ink-2)">ビット線</text>
+            <line x1="120" y1="32" x2="150" y2="32" stroke="var(--ink-2)" stroke-width="2.5"/>
+            <line x1="150" y1="32" x2="150" y2="60" stroke="var(--ink-2)" stroke-width="2.5"/>
+            <g>
+              <rect x="130" y="60" width="40" height="28" fill="var(--surface-3)" stroke="var(--ink-2)"/>
+              <text x="150" y="79" text-anchor="middle" font-family="var(--mono)" font-size="9.5" fill="var(--ink-2)">選択</text>
+            </g>
+            <g font-family="var(--mono)" font-size="9.5" fill="var(--surface)">
+              <rect x="130" y="96" width="40" height="26" fill="var(--photon-2)"/><text x="150" y="113" text-anchor="middle">セル</text>
+              <rect x="130" y="126" width="40" height="26" fill="var(--photon-2)"/><text x="150" y="143" text-anchor="middle">セル</text>
+            </g>
+            <text x="150" y="166" text-anchor="middle" font-family="var(--mono)" font-size="11" fill="var(--ink-3)">⋮ 数十〜百数十段</text>
+            <rect x="130" y="172" width="40" height="26" fill="var(--photon-2)"/>
+            <text x="150" y="189" text-anchor="middle" font-family="var(--mono)" font-size="9.5" fill="var(--surface)">セル</text>
+            <line x1="150" y1="198" x2="150" y2="204" stroke="var(--ink-2)" stroke-width="2.5"/>
+            <g stroke="var(--ink-3)" stroke-width="2"><line x1="136" y1="204" x2="164" y2="204"/></g>
+            <g font-family="var(--sans)" font-size="11.5" fill="var(--ink-2)">
+              <text x="230" y="70">セルが<tspan font-weight="700">直列</tspan>に繋がる ― 第1章の「NAND の下側（nMOS 直列）」と同じ形。名前もそこから</text>
+              <text x="230" y="98">読み: 選んだ1段だけ読み出し電圧、残り全段は「必ず通じる」高めの電圧に</text>
+              <text x="230" y="126">→ ストリング全体が流れるかは、選んだ1段の 0/1 だけで決まる</text>
+              <text x="230" y="154">直列ゆえ接点が少なく<tspan font-weight="700">最小面積</tspan>。代わりにランダム読みは遅く、</text>
+              <text x="230" y="176">ページ単位の読み書き＋ブロック単位の消去、という作法になる</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption>NOR型（セルを並列に置く。速いが大きい）とNAND型（直列。遅いが小さい）の分岐は、第1章の NAND/NOR の直列・並列と同じ絵です。ストレージ用は容量が正義なので NAND が勝ちました。</figcaption>
+      </figure>
+    </div>
+    <div class="body-col">
+      <h3>寿命と3D ― トラップが主役になるまで</h3>
+      <p>書き消しのたび、電子がトンネル酸化膜を高電界で通り抜けます。通るたびに膜は少しずつ傷み、傷（トラップ）が増えるとリークが増え、やがて電荷を保てなくなる ― <b>書換回数の上限（10³〜10⁵回級）</b>の正体です。第4部 付録C・Dで悪役だった「酸化膜のトラップ」が、ここでは寿命を決める側で登場します。</p>
+      <p>さらに3D NAND（第1部）では、主役の交代が起きました。縦に立てた円筒チャネルの周りに浮遊ゲートを作るのは難しいので、<span class="key">多くの3D NANDは電荷を窒化膜のトラップそのものに置きます</span>（チャージトラップ方式）。トラップは絶縁体の中の点在した準位なので、膜に1か所傷が入っても電荷が丸ごと逃げない ― 嫌われ者だったトラップが、<b>記憶素子として雇われた</b>わけです。</p>
+      <p>DRAMが微細化の壁（第1部: キャパシタを深く掘る勝負）に居るあいだに、NANDは「積む」に転じて容量を伸ばし続けている ― メモリの現在地は、第1部の製造の話と、この節の物理の合流点にあります。</p>
+    </div>
+  </div>
+
+  <div class="caveat">
+    <span class="tag">この節が単純化していること</span>
+    <p><strong>書き込み方式は FN トンネルで代表させました。</strong>NOR型の書き込みは伝統的にホットエレクトロン注入（チャネルで加速した電子が障壁を飛び越える ― トンネルではなく「上を越える」）です。消去はどちらも FN。</p>
+    <p><strong>数値（10年・10³〜10⁵回・十数V・8nm）はいずれも桁の代表値</strong>で、世代と方式で動きます。誤り訂正（ECC）やウェアレベリングなど、システム側の延命策には踏み込みません。</p>
   </div>
 </section>
 
@@ -823,6 +936,8 @@ table.tt td.x{color:var(--ink-3)}
         <tr><td>Digital Integrated Circuits</td><td>Jan M. Rabaey ほか<br>Prentice Hall</td><td>1章の物理層。CMOS インバータの伝達特性・雑音余裕・遅延・消費電力を、この部より本気で導出している。第2部第5章との橋。</td></tr>
         <tr><td>CODE</td><td>Charles Petzold<br>Microsoft Press</td><td>リレーから CPU まで、数式なしで積み上げる読み物。この部の「なぜ」を別の語り口で。</td></tr>
         <tr><td>Introduction to<br>the Theory of Computation</td><td>Michael Sipser<br>Cengage</td><td>第1章の「万能性」と「単調性」の先。何が計算できて何ができないか。</td></tr>
+        <tr><td>浮遊ゲートメモリの提案<br>（論文）</td><td>D. Kahng &amp; S. M. Sze<br>Bell Syst. Tech. J., 1967</td><td>「メモリの物理」。絶縁体に電荷を閉じ込めて覚える、というアイデアの初出です。</td></tr>
+        <tr><td>NAND型フラッシュ<br>（論文）</td><td>舛岡富士雄 ほか<br>IEDM, 1987</td><td>「メモリの物理」。セルを直列に繋いで面積を割る NAND アレイの提案。ストレージの現在につながる分岐点です。</td></tr>
       </tbody>
     </table></div>
   </figure>
