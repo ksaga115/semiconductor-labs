@@ -194,13 +194,13 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
     </div>
     <div>
       <dl class="spec">
-        <div><dt>参考書</dt><dd>4<small>部</small></dd></div>
-        <div><dt>ラボ</dt><dd>4<small>本</small></dd></div>
-        <div><dt>採点つき課題</dt><dd>72<small>問</small></dd></div>
+        <div><dt>参考書</dt><dd>5<small>部</small></dd></div>
+        <div><dt>ラボ</dt><dd>5<small>本</small></dd></div>
+        <div><dt>採点つき課題</dt><dd>80<small>問</small></dd></div>
         <div><dt>依存</dt><dd>0<small>ブラウザのみ</small></dd></div>
         <div><dt>通信</dt><dd>0<small>手元で完結</small></dd></div>
-        <div><dt>自動検査</dt><dd>2,329<small>件 (Node)</small></dd></div>
-        <div class="spec-cap">課題数は ProcessLab 13 ＋ SemiLab 22 ＋ NandLab 25 ＋ PixelLab 12。検査は4本の <code>node tests/all.js</code> の合計（2026-09-12 時点）。</div>
+        <div><dt>自動検査</dt><dd>2,502<small>件 (Node)</small></dd></div>
+        <div class="spec-cap">課題数は ProcessLab 13 ＋ SemiLab 22 ＋ NandLab 25 ＋ PixelLab 12 ＋ PhotonLab 8。検査は5本の <code>node tests/all.js</code> の合計（2026-09-12 時点）。</div>
       </dl>
     </div>
   </div>
@@ -544,9 +544,32 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       <div><span class="cn">—</span><div class="ct"><a href="第4部_イメージセンサ.html#sspad">降伏の先 ― SPAD / イベントベースセンサ</a></div><div class="cd">雪崩を「壊れ」ではなく検出器にすると光子1個が数えられる。フレームを捨てると変化だけが µs で届く。</div></div>
       <div class="do"><span class="lbl">読むだけ</span><a class="q" href="SemiLab/index.html">SemiLab の I-V に降伏の目安を表示（表示のみ・採点外）</a></div>
     </div>
+  </article>
+
+  <!-- 第5部 -->
+  <article class="part" id="p5">
+    <div class="part-h">
+      <div>
+        <span class="pn">第5部</span>
+        <h3>数える一族 ― 光検出デバイス</h3>
+        <p class="desc">像を結ばずに「数える・測る」検出器の系統樹。真空へ叩き出すPMT、なだれを線形に使うAPD、SPADを並べて足すMPPC ― そこから共通の物差し（A/W・NEP・D*）、赤外と冷却、X線とPET、蛍光寿命、光通信、EMMIまで。第4部が「像」なら、この部は「光子そのもの」。</p>
+      </div>
+      <div class="pair">
+        <div><span class="kind read">参考書</span><a href="第5部_光検出デバイス.html">光検出デバイスの系統</a><small>光子 → 電子 → 増やす → 数える · 8章</small></div>
+        <div><span class="kind lab">ラボ</span><a href="PhotonLab/index.html">PhotonLab</a><small>原始部品 ＝ 光子とη · 3章 8問 · <a href="PhotonLab/README.md">README</a></small></div>
+      </div>
+    </div>
     <div class="chap">
-      <div><span class="cn">—</span><div class="ct"><a href="第4部_イメージセンサ.html#spmt">光を数える仲間たち ― PMT・APD・MPPC</a></div><div class="cd">真空へ叩き出す・なだれを線形に使う・SPADを並べて足す。検出器の一族と共通の物差し（A/W・NEP・D*）から、MCP・EM-CCD・熱型・赤外・X線FPD・蛍光寿命・光通信・EMMI・光る半導体まで。</div></div>
-      <div class="do"><span class="lbl">読むだけ</span><span class="none">イメージセンサの外へ広がる応用節（スーパーカミオカンデからPETまで）</span></div>
+      <div><span class="cn">01-03</span><div class="ct"><a href="第5部_光検出デバイス.html#s1">5つの答え / 真空で増やす / 半導体で増やす</a></div><div class="cd">FAMILY表。光電面とダイノード（＋スーパーカミオカンデ・ストリーク・MCP）。APDの過剰雑音 F(M) と MPPC の櫛の歯（＋EM-CCD）。</div></div>
+      <div class="do"><span class="lbl">PhotonLab 第2章</span><a class="q" href="PhotonLab/index.html?quest=apdopt">ちょうどいい M を探す</a><a class="q" href="PhotonLab/index.html?quest=pmt">雪だるまを組む</a><a class="q" href="PhotonLab/index.html?quest=mppc">数えられる明るさに収める</a></div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">04-06</span><div class="ct"><a href="第5部_光検出デバイス.html#s4">検出器の物差し / 波長を広げる / 時間を測る</a></div><div class="cd">R=ηλ/1240・NEP・D*。赤外の冷却の請求書と熱型、シンチレータとPET・FPD。TCSPCとFLIM。</div></div>
+      <div class="do"><span class="lbl">PhotonLab 第1章</span><a class="q" href="PhotonLab/index.html?quest=resp">感度を作る</a><a class="q" href="PhotonLab/index.html?quest=rate">ワットを個数に戻す</a><a class="q" href="PhotonLab/index.html?quest=nep">床を作る</a></div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">07-08</span><div class="ct"><a href="第5部_光検出デバイス.html#s7">現場の道具箱 / 光る半導体</a></div><div class="cd">光通信のPDとTIA、TDIと分光器、PSD、EMMI。相手役のLED・LD・VCSEL・QCLと「Siが光らない理由」。</div></div>
+      <div class="do"><span class="lbl">PhotonLab 第3章</span><a class="q" href="PhotonLab/index.html?quest=fast">速さの敵は容量</a><a class="q" href="PhotonLab/index.html?quest=nepm">増やして床を沈める</a></div>
     </div>
   </article>
 </section>
@@ -560,7 +583,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
     <div class="route rec">
       <span class="tag">RECOMMENDED — イメージセンサを主軸に</span>
       <h3>物理層からアプリ層まで、センサを背骨に登る</h3>
-      <p class="for">半導体を「1個の製品を貫く縦の断面」で学ぶ。結晶と接合（物理層）→ 画素という素子（デバイス層）→ 読み出しを支える論理（回路層）→ 現像と画像（アプリ層）。4部全部を、イメージセンサに効く順で通る。</p>
+      <p class="for">半導体を「1個の製品を貫く縦の断面」で学ぶ。結晶と接合（物理層）→ 画素という素子（デバイス層）→ 読み出しを支える論理（回路層）→ 現像と画像（アプリ層）→ センサの外の一族（第5部）。全部を、イメージセンサに効く順で通る。</p>
       <ol>
         <li><b>物理層:</b> 第2部 2-1・2-2 → SemiLab 第1・2章<span class="r">9問</span><span class="why">不純物がキャリアを決め、接合が空乏層＝「井戸」を立てる。センサの床がここ</span></li>
         <li><b>作り方:</b> 第1部 参考書 01〜05 → ProcessLab 第1〜4章<span class="r">13問</span><span class="why">その接合を工場はどう刻むか。第4章「フォトダイオードを作る」は工程で作った1本を SemiLab に渡して採点する ― 2つの部が繋がる</span></li>
@@ -569,13 +592,14 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
         <li><b>回路層:</b> 第3部 → NandLab<span class="r">25問</span><span class="why">列並列ADCのカウンタも制御ロジックも、この部の部品でできている</span></li>
         <li><b>センサ本体:</b> 第4部 00〜07 → PixelLab 第1〜3章<span class="r">12問</span><span class="why">光子→電子→電圧→数値→像の一本道。謎のカメラを測って当て、自分の画素を設計する</span></li>
         <li><b>床下:</b> 第4部 付録 A〜D とむすび<span class="r">読む</span><span class="why">トンネル・短チャネル・暗電流・ノイズ。すべて同じ欠陥と電界に戻る</span></li>
+        <li><b>センサの外へ:</b> 第5部 → PhotonLab<span class="r">8問</span><span class="why">像を結ばず数える一族（PMT・APD・MPPC）と共通の物差し。SNRの「最適な M」を自分で探す</span></li>
       </ol>
     </div>
 
     <div class="route">
       <span class="tag">CLASSIC — はじめての人・体系順</span>
-      <h3>第1部から第4部まで、下から通す</h3>
-      <p class="for">半導体を教科書の順で一周したい。工程 → 素子 → 論理 → 像の順で、前で作ったものが次の部品になる。</p>
+      <h3>第1部から第5部まで、下から通す</h3>
+      <p class="for">半導体を教科書の順で一周したい。工程 → 素子 → 論理 → 像 → 数える一族の順で、前で作ったものが次の部品になる。</p>
       <ol>
         <li><b>第1部</b> 参考書 01〜05 → ProcessLab 第1〜3章<span class="r">10問</span><span class="why">酸化・注入・拡散を並べて断面を育てる。接合が「部品」ではなく工程の結果だと分かる</span></li>
         <li><b>第2部</b> 2-1〜2-3 → SemiLab 第1〜3章<span class="r">13問</span><span class="why">不純物を塗った一片を隣に置くと接合が立つ。ポアソン方程式が解いた空乏層を見る</span></li>
@@ -583,6 +607,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
         <li><b>第2部</b> 2-4〜2-5 → SemiLab 第4〜5章<span class="r">9問</span><span class="why">フォトダイオードと MOSFET。最後の課題が「NAND の中身」</span></li>
         <li><b>第3部</b> NandLab 第1〜5章<span class="r">25問</span><span class="why">NAND だけから NOT・加算器・フリップフロップ・ALU まで</span></li>
         <li><b>第4部</b> 参考書 00〜07 → PixelLab 第1〜3章<span class="r">12問</span><span class="why">光子→電子→電圧→数値→像。付録 A〜D で床下の物理へ</span></li>
+        <li><b>第5部</b> 参考書 01〜08 → PhotonLab<span class="r">8問</span><span class="why">最後にセンサの外へ。PMT から光る半導体まで、検出器の系統樹を一巡</span></li>
       </ol>
     </div>
 
@@ -633,7 +658,8 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       <pre>node ProcessLab\tests\all.js      332 件
 node SemiLab\tests\all.js       1,074 件
 node NandLab\tests\all.js         642 件
-node PixelLab\tests\all.js        281 件</pre>
+node PixelLab\tests\all.js        281 件
+node PhotonLab\tests\all.js       173 件</pre>
       <div class="caveat">
         <span class="tag">配置の注意</span>
         <p>ProcessLab と PixelLab は <code>../SemiLab/src/*.js</code> を読み込む。<b>SemiLab・ProcessLab・PixelLab は必ずこのフォルダに兄弟として置く。</b>1本だけ別の場所へ動かすと、起動はするが物理が無くて動かない。</p>

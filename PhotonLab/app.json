@@ -1,0 +1,7 @@
+{
+  "name": "PhotonLab",
+  "version": "1.0.0",
+  "launch": "起動.vbs",
+  "kind": "web",
+  "description": "受光チェーン（波長・η・増倍・ノイズ）を設計して SNR・NEP・D*・MPPCの飽和を採点にかけるラボ（ブラウザのみ・依存ゼロ）"
+}

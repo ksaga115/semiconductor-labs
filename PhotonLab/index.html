@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>光子ラボ</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+  <header id="topbar">
+    <div id="brand">光子ラボ</div>
+    <div class="group">
+      <span class="note">受光チェーン（波長 → η → 増倍 → ノイズ）を設計して、SNR・NEP・D* を採点にかける。参考書は <a href="../第5部_光検出デバイス.html">第5部 光検出デバイス</a></span>
+    </div>
+  </header>
+
+  <main>
+    <aside id="left">
+      <section id="designBox">
+        <h2>受光チェーンを設計する</h2>
+        <div id="designForm"></div>
+        <h2>設計から出る数字</h2>
+        <div id="derived"></div>
+      </section>
+    </aside>
+
+    <div id="stage">
+      <canvas id="board"></canvas>
+      <div id="status"><span id="statLeft"></span><span id="statRight"></span></div>
+    </div>
+
+    <aside id="quests">
+      <h2>課題</h2>
+      <div id="questBody" class="hidden">
+        <h3 id="qName"></h3>
+        <p id="qDesc"></p>
+        <p id="qWhy" class="why-line"></p>
+        <details id="qHintWrap"><summary>ヒント</summary><p id="qHint"></p></details>
+        <button id="btnGrade" class="tb primary wide">採点する</button>
+        <button id="btnAnswer" class="tb wide">お手本を見る</button>
+        <div id="qResult"></div>
+      </div>
+      <div id="questList"></div>
+    </aside>
+  </main>
+</div>
+
+<script src="src/photon.js"></script>
+<script src="src/quest.js"></script>
+<script src="src/answer.js"></script>
+<script src="src/store.js"></script>
+<script src="src/ui.js"></script>
+<script src="src/main.js"></script>
+</body>
+</html>
