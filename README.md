@@ -63,7 +63,7 @@
 ```
 node ProcessLab\tests\all.js      332 件
 node SemiLab\tests\all.js       1,074 件
-node NandLab\tests\all.js         634 件
+node NandLab\tests\all.js         642 件
 node PixelLab\tests\all.js        281 件
 ```
 
@@ -73,6 +73,6 @@ node PixelLab\tests\all.js        281 件
 
 ## これから
 
-- NandLab「電圧で見る」のしきい値 0.7V・電源 3.3V は決め打ち。SemiLab 第5章で作った nMOS の Vth・Cox を渡せると2本が本当に地続きになる
+- ~~NandLab「電圧で見る」のしきい値 0.7V は決め打ち~~ → **SemiLab 第5章「NAND の中身へ」の採点を通すと、その nMOS の Vth が NandLab「電圧で見る」に渡る**ようになった（localStorage 経由・出どころを画面に明記）。渡るのは Vth だけ ― この素朴なモデルでは n と p の強さの比しか効かず比は 1 固定なので、Cox は坂の形を変えない。電源 3.3V は決め打ちのまま
 - NandLab に「原始部品を NOR にする」モードを足すか検討（第3部 01 章で NOR の万能性を説明しているが、ラボでは NAND からしか組めない）
 - 各ラボの「ここから先」（README）― BJT・降伏・反射防止膜の設計（SemiLab）、側壁と形状・TED（ProcessLab）、光学（PixelLab。HDR 合成は「長短合成で 100 dB」として課題化済み）、メモリ（NandLab。RAM16 を「実装部品」として追加済み ― 課題の採点では使えない）

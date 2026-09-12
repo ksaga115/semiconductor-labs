@@ -1051,7 +1051,11 @@
       if (!S.quest) return;
       var r = Q.grade(S.quest, S.stack, { T: S.T, ar: S.light.ar });
       showResult(r);
-      if (r.ok) { S.cleared[S.quest] = true; renderQuestList(); }
+      if (r.ok) {
+        S.cleared[S.quest] = true; renderQuestList();
+        /* 第5章の nMOS は NandLab「電圧で見る」へ渡す（課題の why に書いてある約束） */
+        if (S.quest === 'nand') STORE.saveNmos(DEV.mos(S.stack, S.T));
+      }
       persist();
     });
     document.getElementById('btnAnswer').addEventListener('click', function () {

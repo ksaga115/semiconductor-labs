@@ -456,5 +456,20 @@ group('0 と 1 の下にある連続量（analog.js）', () => {
   ok(m2 && m2.vil > m.vil, 'B が 2.0V なら A の切り替わりは右へずれる');
 });
 
+group('analog ― SemiLab から nMOS を受け取る', () => {
+  const A = NL.analog;
+  const VDD = A.VDD;
+  const m07 = A.margins(VDD);
+  eq(A.device().vth, A.VTH, '受け取る前は既定値 0.7V');
+  ok(A.setDevice({ vth: 0.5, from: 'SemiLab' }), 'Vth 0.5V は受け取れる');
+  eq(A.device().vth, 0.5, 'device() が受け取った Vth を返す');
+  eq(A.device().from, 'SemiLab', '出どころを覚えている');
+  const m05 = A.margins(VDD);
+  ok(m05 && m07 && m05.vil < m07.vil, 'Vth を下げると 0 と読める上限が左へ動く');
+  ok(!A.setDevice({ vth: 5 }), '範囲外（VDD/2 超）は受け取らない');
+  eq(A.device().vth, A.VTH, '受け取れなかったら既定値に戻る');
+  ok(!A.setDevice(null), 'null でも既定値に戻る（読めなかったときの経路）');
+});
+
 console.log(`\n${fail ? 'NG' : 'OK'}  合格 ${pass} / 失敗 ${fail}`);
 process.exit(fail ? 1 : 0);

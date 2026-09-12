@@ -116,10 +116,22 @@
     buildQuestList();
     selectQuest(S.questId);
     bindEvents();
+    loadHandoff();
     rebuild();
     resize();
     requestAnimationFrame(loop);
     say('パレットから部品を選んで、盤面をクリックすると置ける。出力の丸から入力の丸へドラッグで配線。');
+  }
+
+  /* SemiLab 第5章で作った nMOS（localStorage 'SemiLab.nmos'、SemiLab の store.js が書く）が
+   * あれば、「電圧で見る」がその Vth を使う。無い・読めない・範囲外なら既定値 0.7V に戻す */
+  function loadHandoff() {
+    var d = null;
+    try {
+      var raw = global.localStorage.getItem('SemiLab.nmos');
+      if (raw) d = JSON.parse(raw);
+    } catch (e) { d = null; }
+    NL.analog.setDevice(d && d.v === 1 ? { vth: d.vth, from: 'SemiLab' } : null);
   }
 
   /* ---------------- 回路を組み直す ---------------- */
@@ -907,8 +919,11 @@
     el.peekVolt.onclick = function () {
       if (!S.peek || S.peek.kind !== 'mos') return;
       S.peek.volt = !S.peek.volt;
+      if (S.peek.volt) loadHandoff();       /* 開くたびに SemiLab の最新の nMOS を拾い直す */
       el.peekVolt.textContent = S.peek.volt ? '0 / 1 で見る' : '電圧で見る';
-      say(S.peek.volt ? '0 と 1 は、この坂をしきい値で切っただけのもの。盤面の入力を切り替えると点が動く'
+      var dv = NL.analog.device();
+      say(S.peek.volt ? (dv.from ? 'SemiLab 第5章で作った nMOS（Vth ' + NL.analog.volts(dv.vth) + '）で坂を描いている。'
+                                 : '0 と 1 は、この坂をしきい値で切っただけのもの。') + '盤面の入力を切り替えると点が動く'
                       : 'スイッチの絵に戻した');
     };
     el.overlay.onclick = function (e) { if (e.target === el.overlay) closeModal(); };
@@ -1463,8 +1478,10 @@
     text(story[0], MOS_W / 2, 386, '#d7dee8', 12);
     text(story[1], MOS_W / 2, 406, '#8492a6', 11.5);
     text(A.FACTS[2], MOS_W / 2, 436, '#6b7688', 10.5);
-    text('二乗則の一番素朴なモデル。n と p は同じ強さ、しきい値 ' + A.volts(A.VTH) + '、電源 ' + A.volts(VDD),
-      MOS_W / 2, 456, '#6b7688', 10.5);
+    var dev = A.device();
+    text('二乗則の一番素朴なモデル。n と p は同じ強さ、しきい値 ' + A.volts(dev.vth)
+      + (dev.from ? '（SemiLab 第5章で作った nMOS）' : '（既定値）') + '、電源 ' + A.volts(VDD),
+      MOS_W / 2, 456, dev.from ? '#8ea86e' : '#6b7688', 10.5);
 
     c2.restore();
   }

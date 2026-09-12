@@ -32,23 +32,42 @@
   var NL = global.NL || (global.NL = {});
 
   var VDD = 3.3;        /* 電源電圧 */
-  var VTH = 0.7;        /* しきい値電圧。n も p も同じ大きさとして扱う */
+  var VTH = 0.7;        /* しきい値電圧の既定値。n も p も同じ大きさとして扱う */
   var K = 1;            /* 強さ。比だけが効くので 1 でよい */
   var STEPS = 60;       /* 二分法の刻み。3.3V を 60 回割ると 1nV 未満まで詰まる */
+
+  /* いま使っている素子。既定は決め打ちの 0.7V。SemiLab 第5章で作った nMOS が
+   * 渡されると from が立ち、画面はその出どころを名乗る（ui.js が localStorage から読んで渡す）。
+   * 渡るのは Vth だけ ― このモデルは n と p の強さの比しか効かず、比は 1 に固定して
+   * いるので、Cox や寸法は坂の形を変えない。電源 3.3V も決め打ちのまま */
+  var DEVICE = { vth: VTH, from: null };
+
+  /** SemiLab の nMOS を受け取る。まともな範囲（0.2V 〜 VDD/2）でなければ既定値に戻す */
+  function setDevice(d) {
+    if (d && typeof d.vth === 'number' && isFinite(d.vth) && d.vth >= 0.2 && d.vth <= VDD / 2) {
+      DEVICE.vth = d.vth;
+      DEVICE.from = d.from || null;
+      return true;
+    }
+    DEVICE.vth = VTH;
+    DEVICE.from = null;
+    return false;
+  }
+  function device() { return { vth: DEVICE.vth, vdd: VDD, from: DEVICE.from }; }
 
   var CUT = 'cut', LIN = 'lin', SAT = 'sat';
 
   /** その働き方（遮断 / 線形 / 飽和）。名前を出したいので電流とは別に返す */
   function region(vgs, vds) {
-    if (vgs <= VTH) return CUT;
-    return vds >= vgs - VTH ? SAT : LIN;
+    if (vgs <= DEVICE.vth) return CUT;
+    return vds >= vgs - DEVICE.vth ? SAT : LIN;
   }
 
   /** ソースから見た電流。vgs, vds はソース基準の大きさ（p 型は呼ぶ側で裏返す） */
   function current(vgs, vds) {
-    if (vgs <= VTH) return 0;
+    if (vgs <= DEVICE.vth) return 0;
     if (vds < 0) return 0;
-    var ov = vgs - VTH;
+    var ov = vgs - DEVICE.vth;
     if (vds >= ov) return K / 2 * ov * ov;
     return K * (ov * vds - vds * vds / 2);
   }
@@ -155,6 +174,7 @@
 
   NL.analog = {
     VDD: VDD, VTH: VTH, CUT: CUT, LIN: LIN, SAT: SAT, REGION_NAME: REGION_NAME, FACTS: FACTS,
+    setDevice: setDevice, device: device,
     current: current, region: region, solve: solve, curve: curve, margins: margins,
     asDigit: asDigit, volts: volts, pullUp: pullUp, pullDown: pullDown
   };

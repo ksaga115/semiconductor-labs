@@ -13,6 +13,7 @@
 
   var KEY = 'SemiLab.v1';
   var BACKUP = 'SemiLab.broken';
+  var NMOS_KEY = 'SemiLab.nmos';   /* 第5章「NAND の中身へ」を通した nMOS。NandLab「電圧で見る」が読む */
 
   function blank() {
     return {
@@ -101,6 +102,17 @@
     try { global.localStorage.removeItem(KEY); } catch (e) { /* 消せなくても続ける */ }
   }
 
+  /** 第5章の採点を通した nMOS を、NandLab へ渡す置き場に書く（最後に通したものが残る） */
+  function saveNmos(mm) {
+    if (!mm || typeof mm.vth !== 'number') return false;
+    try {
+      global.localStorage.setItem(NMOS_KEY, JSON.stringify({
+        v: 1, vth: mm.vth, swingmV: mm.swing * 1000, toxNm: mm.tox * 1e7
+      }));
+      return true;
+    } catch (e) { return false; }
+  }
+
   function toJSON(state) { return JSON.stringify(pack(state), null, 2); }
 
   /** 戻り値 { state } または { error } */
@@ -112,7 +124,7 @@
   }
 
   SL.store = {
-    KEY: KEY, BACKUP: BACKUP, blank: blank, save: save, load: load, clear: clear,
-    toJSON: toJSON, fromJSON: fromJSON, looksSane: looksSane
+    KEY: KEY, BACKUP: BACKUP, NMOS_KEY: NMOS_KEY, blank: blank, save: save, load: load, clear: clear,
+    saveNmos: saveNmos, toJSON: toJSON, fromJSON: fromJSON, looksSane: looksSane
   };
 })(typeof window !== 'undefined' ? window : globalThis);
