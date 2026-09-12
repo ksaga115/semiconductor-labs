@@ -73,6 +73,23 @@ T('Peck と Coffin-Manson', () => {
   const c2 = evalWith({ dtu: 30, dts: 120, ncm: 2, cyd: 1 }).ev;
   const c1 = evalWith({ dtu: 30, dts: 60, ncm: 2, cyd: 1 }).ev;
   near('ΔT ×2 で回数 1/4', c2.testCyc / c1.testCyc, 0.25, 1e-9);
+  /* HAST: 130℃/85% は AF ≒ 1,960 → 45h。85/85 に対する温度の上乗せは 17.4 倍 */
+  const h = evalWith({ thu: 40, rhu: 60, ths: 130, rhs: 85, npeck: 3, eah: 0.79, lifey: 10 }).ev;
+  within('HAST の AF ≒ 1,960', h.afh, 1958, 1.01);
+  within('10年 ≒ 45 h', h.testHh, 44.7, 1.01);
+  const thb = evalWith({ thu: 40, rhu: 60, ths: 85, rhs: 85, npeck: 3, eah: 0.79 }).ev;
+  within('HAST/THB の比は 17.4（JEDEC 96h↔1000h の中身）', h.afh / thb.afh, 17.4, 1.01);
+});
+
+T('GR&R ― 物差しの取り分', () => {
+  const { ev } = evalWith({ srpt: 0.007, srpd: 0.006, tol: 0.3 });
+  near('σ合成は二乗和', ev.sgrr, Math.sqrt(0.007 * 0.007 + 0.006 * 0.006), 1e-12);
+  near('%GR&R = 6σ/(2·tol)', ev.pgrr, 6 * ev.sgrr / 0.6, 1e-12);
+  within('9.2 %', ev.pgrr, 0.0922, 1.01);
+  /* 繰り返しをゼロにしても再現性の床が残る */
+  const floor2 = evalWith({ srpt: 0.0001, srpd: 0.006, tol: 0.3 }).ev;
+  within('床は 6 %', floor2.pgrr, 0.06, 1.01);
+  ok('床より下には行けない', floor2.pgrr > 0.0599);
 });
 
 T('Cpk と ppm ― 正規分布の検算', () => {

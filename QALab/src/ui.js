@@ -45,7 +45,9 @@
     ['dtu', '使用のΔT', 'K（1日の温度振幅）', 5, 100],
     ['dts', '試験のΔT', 'K', 30, 250],
     ['ncm', 'Coffin-Manson の n', '（はんだ ≈ 2）', 1, 6],
-    ['cyd', '使用のサイクル', '回/日', 0.1, 100]
+    ['cyd', '使用のサイクル', '回/日', 0.1, 100],
+    ['srpt', '測定の繰り返し σ', '', 0.0001, 0.5],
+    ['srpd', '測定の再現性 σ', '（人・日・器差）', 0.0001, 0.5]
   ];
 
   function num(t) {
@@ -218,7 +220,8 @@
       ['TEC の吸熱 Qc(ΔT)', ev.qc.toFixed(2) + ' W（負荷 ' + S.design.qload + ' W）', !ev.tecOk],
       ['Cpk', ev.cpk.toFixed(3)],
       ['予想不良率', (ev.ppm < 1 ? ev.ppm.toExponential(2) : ev.ppm.toFixed(1)) + ' ppm'],
-      ['合成誤差 √(A²+B²)', ev.stot.toFixed(3) + ' %']
+      ['合成誤差 √(A²+B²)', ev.stot.toFixed(3) + ' %'],
+      ['%GR&R（公差比）', (ev.pgrr * 100).toFixed(1) + ' %', ev.pgrr > 0.3]
     ];
     document.getElementById('derived').innerHTML = '<div class="dv">' + rows.map(function (r) {
       return '<span class="k">' + esc(r[0]) + '</span><span class="v' + (r[2] ? ' warn' : '') + '">' + esc(r[1]) + '</span>';

@@ -87,6 +87,14 @@ T('落ちるべきもの', () => {
   ok('transit: 薄い（RC 17.5GHz）と落ちる', !Q.grade('transit', { design: tr2 }).ok);
   const tr3 = Object.assign({}, A.get('transit').design(), { diamum: 10 });
   ok('transit: 受光径を勝手に小さくするのは反則', !Q.grade('transit', { design: tr3 }).ok);
+
+  /* TCSPC: 窓の両側と、光を勝手に絞る反則 */
+  const pl1 = Object.assign({}, A.get('pile').design(), { freps: 50 });
+  ok('pile: 50MHz（p=2.8%）は落ちる', !Q.grade('pile', { design: pl1 }).ok);
+  const pl2 = Object.assign({}, A.get('pile').design(), { freps: 120 });
+  ok('pile: 120MHz（尻尾を踏む）は落ちる', !Q.grade('pile', { design: pl2 }).ok);
+  const pl3 = Object.assign({}, A.get('pile').design(), { pw: -13 });
+  ok('pile: 光を勝手に絞るのは反則', !Q.grade('pile', { design: pl3 }).ok);
 });
 
 report();

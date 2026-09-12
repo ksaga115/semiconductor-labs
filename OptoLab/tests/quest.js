@@ -74,6 +74,14 @@ T('落ちるべきもの', () => {
   ok('cos4: 85mm は望遠逃げで落ちる', !Q.grade('cos4', { design: q2 }).ok);
   const q3 = Object.assign({}, A.get('cos4').design(), { hmm: 10 });
   ok('cos4: 像高を内側にずらすのは反則', !Q.grade('cos4', { design: q3 }).ok);
+
+  /* モード結合: 太すぎ・細すぎの両側と、MFD を都合よく変える反則 */
+  const md1 = Object.assign({}, A.get('mode').design(), { winmm: 4 });
+  ok('mode: w=4mm（91%）は落ちる ― fiber には入るのに', !Q.grade('mode', { design: md1 }).ok);
+  const md2 = Object.assign({}, A.get('mode').design(), { winmm: 8 });
+  ok('mode: w=8mm（87%）は落ちる', !Q.grade('mode', { design: md2 }).ok);
+  const md3 = Object.assign({}, A.get('mode').design(), { mfdum: 8 });
+  ok('mode: MFD を都合よく変えるのは反則', !Q.grade('mode', { design: md3 }).ok);
 });
 
 report();

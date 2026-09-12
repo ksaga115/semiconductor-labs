@@ -73,6 +73,15 @@
     transit: {
       note: 'w = 1.0 µm ― 走行 44 GHz と RC 44 GHz がほぼ釣り合い、合成 31 GHz。',
       design: function () { var d = PHO.defaults(); d.diamum = 30; d.wum = 1.0; return d; }
+    },
+    pile: {
+      note: '80 MHz（定番）。p = 1.38×10⁶/8×10⁷ = 1.7%、周期 12.5 ns で寿命 2.5 ns まで測れる。',
+      design: function () {
+        var d = PHO.defaults();
+        d.nm = 550; d.eta = 0.5; d.pw = -12; d.taufl = 2;
+        d.freps = 80;
+        return d;
+      }
     }
   };
 

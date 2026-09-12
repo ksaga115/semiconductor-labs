@@ -48,6 +48,10 @@
     cos4: {
       note: 'f = 50 mm。θ = atan(21.6/50) = 23.4°、cos⁴ = 71%。',
       design: function () { var d = O.defaults(); d.hmm = 21.6; d.fmm = 50; return d; }
+    },
+    mode: {
+      note: 'w = 5.5 mm。w₀ = 3.08 µm ≈ MFD/2 = 3.1 µm で η ≈ 100%。',
+      design: function () { var d = O.defaults(); d.nm = 1064; d.winmm = 5.5; return d; }
     }
   };
 

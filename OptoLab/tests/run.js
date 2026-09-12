@@ -84,6 +84,24 @@ T('エテンデュ ― 増やせない会計', () => {
   near('受けが余れば上限 100%', big.etaMax, 1, 1e-12);
 });
 
+T('モード結合 ― 重なり積分', () => {
+  /* w₁ = w₂ で 100% */
+  const eq2 = evalWith({ nm: 1064, winmm: 53.2 / (Math.PI * 3.1) * 1e-0, mfdum: 6.2 });
+  ok('w₁=w₂ でほぼ 100%', eq2.ev.etaMode > 0.9999);
+  /* お手本: w=5.5mm → w₀=3.08µm、η≈100% */
+  const a = evalWith({ nm: 1064, winmm: 5.5, mfdum: 6.2 }).ev;
+  near('w₀ = 16.9/5.5 µm', a.w0um, 1.064 * 50 / (Math.PI * 5.5), 1e-6);
+  ok('お手本は 99.9% 以上', a.etaMode > 0.999);
+  /* 式の対称性: w₁ を w₂ に合わせておけば、w₂ 半分と倍で同じ η（比 r と 1/r） */
+  const wEq = 53.2 / (Math.PI * 3.1);
+  const half = evalWith({ nm: 1064, winmm: wEq, mfdum: 3.1 }).ev;
+  const dbl = evalWith({ nm: 1064, winmm: wEq, mfdum: 12.4 }).ev;
+  near('w₂ を 1/2 と 2倍で同じ η（比の対称性）', half.etaMode, dbl.etaMode, 1e-9);
+  /* fiber の入場券とは別物: winmm=4 は fiber には入るが η は 91% */
+  const w4 = evalWith({ nm: 1064, winmm: 4, mfdum: 6.2 }).ev;
+  ok('w=4mm は入場（fibOk）するがモードは 91%', w4.fibOk && w4.etaMode > 0.90 && w4.etaMode < 0.92);
+});
+
 T('cos⁴則 ― 隅は4回割引', () => {
   /* 軸上は減光なし */
   near('像高 0 で 100%', evalWith({ hmm: 0, fmm: 50 }).ev.cos4, 1, 1e-12);

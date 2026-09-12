@@ -72,6 +72,22 @@ T('落ちるべきもの', () => {
   ok('cm: ΔT 200 K は槽の上限破りで落ちる', !Q.grade('cm', { design: m2 }).ok);
   const m3 = Object.assign({}, A.get('cm').design(), { ncm: 4 });
   ok('cm: べきを盛るのは反則', !Q.grade('cm', { design: m3 }).ok);
+
+  /* HAST: 加圧槽でも足りない温度は落ち、上限破りも落ちる */
+  const h1 = Object.assign({}, A.get('hast').design(), { ths: 110 });
+  ok('hast: 110℃（146h）では落ちる', !Q.grade('hast', { design: h1 }).ok);
+  const h2 = Object.assign({}, A.get('hast').design(), { ths: 150 });
+  ok('hast: 150℃ は槽の上限破りで落ちる', !Q.grade('hast', { design: h2 }).ok);
+  ok('hast: peck のお手本（85/85）では落ちる', !Q.grade('hast', { design: A.get('peck').design() }).ok);
+  ok('peck: hast のお手本（130℃）は 85℃ の槽に入らない', !Q.grade('peck', { design: A.get('hast').design() }).ok);
+
+  /* GR&R: 繰り返しが太いと落ち、再現性を都合よく消すのは反則 */
+  const g1 = Object.assign({}, A.get('grr').design(), { srpt: 0.01 });
+  ok('grr: σrpt 0.01（11.7%）は落ちる', !Q.grade('grr', { design: g1 }).ok);
+  const g2 = Object.assign({}, A.get('grr').design(), { srpd: 0.001 });
+  ok('grr: 再現性を都合よく消すのは反則', !Q.grade('grr', { design: g2 }).ok);
+  const g3 = Object.assign({}, A.get('grr').design(), { tol: 1 });
+  ok('grr: 公差を広げてごまかすのは反則', !Q.grade('grr', { design: g3 }).ok);
 });
 
 report();

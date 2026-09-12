@@ -120,6 +120,21 @@ T('走行と RC の綱引き', () => {
   near('径 ×2 で f_RC ×1/4', big.fRCw / ev.fRCw, 0.25, 1e-9);
 });
 
+T('TCSPC パイルアップ ― 繰り返しの窓', () => {
+  /* 1pW・550nm・PDE0.5 = 1.38×10⁶ c/s。80MHz で p=1.7% */
+  const { ev } = evalWith({ nm: 550, eta: 0.5, pw: -12, freps: 80, taufl: 2 });
+  near('p = 計数率/繰り返し', ev.pileP, 1.3842e6 / 8e7, 1e-5);
+  near('周期 12.5 ns', ev.perNs, 12.5, 1e-9);
+  near('測れる寿命は周期の 1/5', ev.tauMaxNs, 2.5, 1e-9);
+  /* 両側 */
+  const slow = evalWith({ nm: 550, eta: 0.5, pw: -12, freps: 50 }).ev;
+  ok('50MHz は p=2.8% で歪む側', slow.pileP > 0.02);
+  const fast2 = evalWith({ nm: 550, eta: 0.5, pw: -12, freps: 120 }).ev;
+  ok('120MHz は寿命 2ns の尻尾を踏む', fast2.tauMaxNs < 2);
+  /* 繰り返しを上げると p は反比例で下がる */
+  near('frep ×2 で p ×1/2', evalWith({ nm: 550, eta: 0.5, pw: -12, freps: 160 }).ev.pileP / ev.pileP, 0.5, 1e-9);
+});
+
 T('計数モード ― √t で買う', () => {
   const base = { nm: 550, eta: 0.5, pw: -16, dkcps: 500, bgnw: 0 };
   const { ev } = evalWith(Object.assign({ tsec: 5 }, base));

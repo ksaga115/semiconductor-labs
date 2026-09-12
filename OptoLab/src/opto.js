@@ -24,6 +24,7 @@
  *   srcum  面光源（LED など）の径 [µm]  エテンデュ G = (πD²/4)·(π·NA²)
  *   srcna  面光源の放射 NA             ランベルト光源の投影立体角 π·sin²θ = π·NA²
  *   hmm    像高（光軸からの距離）[mm]    cos⁴則: 周辺照度 = 中心 × cos⁴θ、tanθ = h/f
+ *   mfdum  SM ファイバのモードフィールド径 [µm]  結合効率 η = (2w₁w₂/(w₁²+w₂²))²（軸ずれ・角度ずれなし）
  *
  * 【約束】数値はすべてこの式から導出できる。乱数は使わない。
  * 【モデルの外】収差・ケラレ・cos⁴則・偏光・多層膜・モードフィールド整合は入れていない。
@@ -46,7 +47,7 @@
       coreu: 10, naf: 0.14,
       bin: 1000, blk: 10,
       srcum: 100, srcna: 0.9,
-      hmm: 5
+      hmm: 5, mfdum: 6.2
     };
   }
 
@@ -100,6 +101,11 @@
     var theta = Math.atan((d.hmm || 0) / d.fmm);
     var cos4 = Math.pow(Math.cos(theta), 4);
 
+    /* SM ファイバのモード結合: 集光ウェスト w₁ とモード半径 w₂ のガウス重なり積分（同軸・垂直） */
+    var w2m = (d.mfdum || 0) / 2;
+    var etaMode = (w0um > 0 && w2m > 0)
+      ? Math.pow(2 * w0um * w2m / (w0um * w0um + w2m * w2m), 2) : 0;
+
     return {
       Ew: Ew, L: L, Eimg: Eimg, EimgW: EimgW, phiUm: phiUm, Einv: Einv,
       bmm: bmm, mag: mag, airyUm: airyUm, resUm: resUm,
@@ -107,7 +113,8 @@
       Rfres: Rfres, Rar: Rar, nIdeal: nIdeal,
       fibOk: fibOk, snrGain: snrGain,
       gsrc: gsrc, gfib: gfib, etaMax: etaMax,
-      thetaDeg: theta * 180 / Math.PI, cos4: cos4
+      thetaDeg: theta * 180 / Math.PI, cos4: cos4,
+      etaMode: etaMode
     };
   }
 

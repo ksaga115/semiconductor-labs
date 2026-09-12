@@ -29,6 +29,9 @@
  *   dtu,dts  使用/試験の温度サイクル振幅 ΔT [K]
  *   ncm      Coffin-Manson のべき（はんだ ≈ 2）
  *   cyd      使用でのサイクル数 [回/日]
+ *   srpt     測定系の繰り返し σ（同じ人が同じ物を測り直したときのばらつき）
+ *   srpd     測定系の再現性 σ（人・日・器差のばらつき）
+ *            %GR&R = 6·√(srpt²+srpd²) / (2·tol) ― 公差に対する測定系の取り分
  *
  * 【約束】数値はすべてこの式から導出できる。乱数は使わない。
  * 【モデルの外】ワイブルの当てはめ（プロット）・TECの電流最適化・
@@ -50,7 +53,8 @@
       sigma: 0.1, muoff: 0.05, tol: 0.3,
       s1: 0.3, s2: 0.6,
       rhu: 60, rhs: 60, thu: 40, ths: 60, npeck: 3, eah: 0.79,
-      dtu: 30, dts: 60, ncm: 2, cyd: 1
+      dtu: 30, dts: 60, ncm: 2, cyd: 1,
+      srpt: 0.02, srpd: 0.006
     };
   }
 
@@ -111,6 +115,10 @@
     var cycUse = d.lifey * 365 * (d.cyd || 0);
     var testCyc = afcm > 0 ? cycUse / afcm : Infinity;
 
+    /* GR&R の入口: 測定系のばらつきは繰り返しと再現性の二乗和。公差に対する取り分で判定 */
+    var sgrr = Math.sqrt((d.srpt || 0) * (d.srpt || 0) + (d.srpd || 0) * (d.srpd || 0));
+    var pgrr = d.tol > 0 ? 6 * sgrr / (2 * d.tol) : Infinity;
+
     return {
       lamFit: lamFit, mttfH: mttfH, mttfY: mttfY,
       af: af, testH: testH, b10H: b10H,
@@ -118,7 +126,8 @@
       qc: qc, tecOk: tecOk,
       cpk: cpk, ppm: ppm, stot: stot,
       afh: afh, testHh: testHh,
-      afcm: afcm, cycUse: cycUse, testCyc: testCyc
+      afcm: afcm, cycUse: cycUse, testCyc: testCyc,
+      sgrr: sgrr, pgrr: pgrr
     };
   }
 

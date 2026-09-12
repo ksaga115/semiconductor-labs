@@ -29,6 +29,10 @@
       note: 'ΔT = 165 K（−40〜125 ℃）。AF = (165/30)² ≒ 30 → 3,650 回 ÷ 30 ≒ 121 回。',
       design: function () { var d = M.defaults(); d.dts = 165; return d; }
     },
+    hast: {
+      note: '130 ℃・85 %RH（加圧槽）。温度で 690 倍 × 湿度で 2.8 倍 = AF ≒ 1,960 → 45 時間。',
+      design: function () { var d = M.defaults(); d.ths = 130; d.rhs = 85; return d; }
+    },
     theta: {
       note: 'θsa = 15 K/W の放熱器。Tj = 40 + 2×(1.5+0.5+15) = 74 ℃。',
       design: function () { var d = M.defaults(); d.thsa = 15; return d; }
@@ -44,6 +48,10 @@
     prop: {
       note: 'B = 0.4%。√(0.3²+0.4²) = 0.5% ― 足し算の 0.7% ではない。',
       design: function () { var d = M.defaults(); d.s2 = 0.4; return d; }
+    },
+    grr: {
+      note: '繰り返し σ = 0.007。σ合成 = √(0.007²+0.006²) = 0.0092 → %GR&R = 9.2 %。',
+      design: function () { var d = M.defaults(); d.srpt = 0.007; return d; }
     }
   };
 

@@ -36,7 +36,8 @@
     ['blk', 'ロックインの帯域', 'Hz', 0.01, 1000],
     ['srcum', '面光源の径', 'µm（LED など）', 1, 10000],
     ['srcna', '面光源の NA', '（ランベルトなら〜1）', 0.05, 1],
-    ['hmm', '像高', 'mm（光軸からの距離）', 0, 30]
+    ['hmm', '像高', 'mm（光軸からの距離）', 0, 30],
+    ['mfdum', 'SM のモードフィールド径', 'µm', 2, 30]
   ];
 
   function num(t) {
@@ -215,7 +216,8 @@
       ['素の反射 / λ/4 後', (ev.Rfres * 100).toFixed(1) + ' % / ' + (ev.Rar * 100).toFixed(2) + ' %（理想 n=' + ev.nIdeal.toFixed(2) + '）'],
       ['ロックインの改善', ev.snrGain.toFixed(1) + ' 倍'],
       ['エテンデュ結合の上限', (ev.etaMax * 100).toFixed(ev.etaMax < 0.01 ? 3 : 1) + ' %（面光源→ファイバ）', ev.etaMax < 0.01],
-      ['cos⁴ の周辺減光', (ev.cos4 * 100).toFixed(1) + ' %（像高 ' + S.design.hmm + ' mm・θ ' + ev.thetaDeg.toFixed(1) + '°）', ev.cos4 < 0.5]
+      ['cos⁴ の周辺減光', (ev.cos4 * 100).toFixed(1) + ' %（像高 ' + S.design.hmm + ' mm・θ ' + ev.thetaDeg.toFixed(1) + '°）', ev.cos4 < 0.5],
+      ['SM モード結合', (ev.etaMode * 100).toFixed(1) + ' %（w₁ ' + ev.w0um.toFixed(2) + ' / w₂ ' + (S.design.mfdum / 2).toFixed(2) + ' µm）', ev.etaMode < 0.5]
     ];
     document.getElementById('derived').innerHTML = '<div class="dv">' + rows.map(function (r) {
       return '<span class="k">' + esc(r[0]) + '</span><span class="v' + (r[2] ? ' warn' : '') + '">' + esc(r[1]) + '</span>';

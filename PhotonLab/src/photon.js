@@ -22,6 +22,8 @@
  *   tsec   積分時間 [s]              計数の SNR = s·√t / √(s+b)（ポアソン。背景の平均は既知として引く）
  *   wum    空乏層の厚さ [µm]          走行 f_tr = 0.44·v_sat/w、容量 C = ε·A/w ― 綱引きの両端
  *   diamum 受光部の直径 [µm]          C = εA/w の A（円）
+ *   freps  TCSPC のレーザー繰り返し [MHz]  パイルアップ確率 p = 計数率/繰り返し（p≲2% が定石）
+ *   taufl  測りたい蛍光寿命 [ns]        繰り返し周期は寿命の5倍以上あける
  *
  * 【約束】数値はすべてこの式から導出できる。乱数は使わない（採点が毎回同じになるように）。
  * 【モデルの外】1/f 雑音・APD の暗電流の非増倍成分・MPPC のクロストーク／アフターパルス・
@@ -43,7 +45,8 @@
       idpa: 10, ifa: 5, bmhz: 1, amm2: 1, cpf: 1,
       ncell: 0, nph: 1000,
       bgnw: 0, dkcps: 0, tsec: 0.001,
-      wum: 3, diamum: 30
+      wum: 3, diamum: 30,
+      freps: 10, taufl: 2
     };
   }
 
@@ -106,12 +109,20 @@
     var ftot = (isFinite(fRCw) && isFinite(ftr))
       ? 1 / Math.sqrt(1 / (fRCw * fRCw) + 1 / (ftr * ftr)) : 0;
 
+    /* TCSPC のパイルアップ: 1周期に光子が2個来ると早い方しか測れず、減衰カーブが速い側に歪む。
+       検出確率 p = 計数率/繰り返し。周期は寿命の5倍あけないと前のパルスの尻尾を踏む */
+    var frep = (d.freps || 0) * 1e6;
+    var pileP = frep > 0 ? cps / frep : Infinity;
+    var perNs = frep > 0 ? 1e9 / frep : Infinity;
+    var tauMaxNs = perNs / 5;
+
     var out = {
       P: P, Eph: Eph, phi: phi, R: R, Iph: Iph, Ibg: Ibg,
       F: F, ishot: ishot, iamp: iamp, itot: itot, SNR: SNR,
       NEP: NEP, Dstar: Dstar, Pmin: Pmin, fRC: fRC,
       cps: cps, bcps: bcps, snrCount: snrCount,
-      cw: cw, fRCw: fRCw, ftr: ftr, ftot: ftot
+      cw: cw, fRCw: fRCw, ftr: ftr, ftot: ftot,
+      pileP: pileP, perNs: perNs, tauMaxNs: tauMaxNs
     };
 
     if (d.delta >= 2) {

@@ -35,7 +35,9 @@
     ['dkcps', 'ダークカウント', 'counts/s', 0, 1e7],
     ['tsec', '積分時間（計数）', 's', 1e-4, 1000],
     ['wum', '空乏層の厚さ', 'µm', 0.1, 50],
-    ['diamum', '受光部の直径', 'µm', 5, 1000]
+    ['diamum', '受光部の直径', 'µm', 5, 1000],
+    ['freps', 'TCSPC の繰り返し', 'MHz', 0.1, 1000],
+    ['taufl', '測りたい寿命', 'ns', 0.1, 1000]
   ];
 
   function num(t) {
@@ -225,6 +227,7 @@
       ['数えるなら', ev.cps.toExponential(2) + ' counts/s']
     ];
     rows.push(['走行×RC の合成帯域', (ev.ftot / 1e9).toFixed(1) + ' GHz（走行 ' + (ev.ftr / 1e9).toFixed(1) + ' / RC ' + (ev.fRCw / 1e9).toFixed(1) + '）']);
+    rows.push(['TCSPC パイルアップ', (ev.pileP * 100).toFixed(2) + ' %（周期 ' + ev.perNs.toFixed(1) + ' ns → 寿命〜' + ev.tauMaxNs.toFixed(1) + ' ns）', ev.pileP > 0.05]);
     if (S.design.bgnw > 0) rows.push(['背景光の電流', ev.Ibg.toExponential(2) + ' A（ショット床の主）', ev.Ibg > ev.Iph]);
     if (S.design.dkcps > 0 || S.design.bgnw > 0) rows.push(['計数 SNR（' + S.design.tsec + ' s）', ev.snrCount >= 100 ? ev.snrCount.toFixed(0) : ev.snrCount.toFixed(2)]);
     if (ev.pmtM !== undefined) rows.push(['PMT 換算 δⁿ / F', ev.pmtM.toExponential(2) + ' / ' + ev.pmtF.toFixed(3)]);
