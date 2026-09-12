@@ -441,6 +441,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li><a href="#sb"><span class="n">B</span><span>短チャネル効果</span></a></li>
     <li><a href="#sc"><span class="n">C</span><span>暗電流の出どころ</span></a></li>
     <li><a href="#sd"><span class="n">D</span><span>ばらつきの起源</span></a></li>
+    <li><a href="#sspad"><span class="n">—</span><span>降伏の先（SPAD）</span></a></li>
     <li class="dom"><span>むすび</span></li>
     <li><a href="#send"><span class="n">—</span><span>4つの境目に戻る</span></a></li>
     <li class="dom"><span>付録</span></li>
@@ -479,6 +480,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li><a href="#sb"><span class="n">B</span><span>短チャネル効果</span></a></li>
     <li><a href="#sc"><span class="n">C</span><span>暗電流の出どころ</span></a></li>
     <li><a href="#sd"><span class="n">D</span><span>ばらつきの起源</span></a></li>
+    <li><a href="#sspad"><span class="n">—</span><span>降伏の先（SPAD）</span></a></li>
     <li class="dom"><span>むすび</span></li>
     <li><a href="#send"><span class="n">—</span><span>4つの境目に戻る</span></a></li>
     <li class="dom"><span>付録</span></li>
@@ -2195,6 +2197,112 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   </div>
 </section>
 
+<!-- ================= SPAD ================= -->
+<section class="stage" id="sspad">
+  <div class="stage-head"><span class="stage-num">—</span>
+    <h2>降伏の先 — SPAD：雪崩を「壊れ」ではなく「検出器」にする</h2></div>
+  <p class="lede">付録Aで、なだれ降伏は「避けるもの」でした。ここではそれを<strong>わざと起こします</strong>。降伏電圧より上にバイアスしたフォトダイオードでは、たった1個のキャリアが自己維持する雪崩に育ち、目に見える電流パルスになる。<span class="key">光子1個 ＝ デジタルパルス1個</span>。アナログの蓄積をやめて「数える」に切り替えたこのデバイスが SPAD（単一光子アバランシェダイオード）です。このページの仮想センサとは別のデバイスですが、床下の物理は付録A〜Dの続きそのものです。</p>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">GEIGER MODE — 降伏電圧の「上」で待ち構える</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 900 300" role="img" aria-label="逆バイアスに対する電流の模式図。降伏電圧で電流が急峻に立ち上がる。降伏電圧より下がリニアなAPD領域、上が過剰バイアスをかけたガイガー領域で、そこに動作点を置き、1個のキャリアで自己維持する雪崩が起きる。" style="min-width:720px">
+        <g font-family="var(--mono)" font-size="10.5" fill="var(--ink-3)">
+          <text x="30" y="30" transform="rotate(-90 30 30) translate(-230 0)" text-anchor="middle">|電流|（対数）</text>
+          <text x="820" y="272">逆バイアス →</text>
+        </g>
+        <rect x="620" y="30" width="220" height="220" fill="var(--photon-soft)" opacity=".55"/>
+        <text x="730" y="52" text-anchor="middle" font-family="var(--sans)" font-size="12" fill="var(--photon-2)" font-weight="700">ガイガー領域（V<tspan font-size="9" baseline-shift="sub">BD</tspan> ＋ 過剰バイアス V<tspan font-size="9" baseline-shift="sub">ex</tspan>）</text>
+        <path d="M70,215 C240,212 420,208 560,200 C596,196 608,150 616,60" fill="none" stroke="var(--electron)" stroke-width="2.5"/>
+        <line x1="620" y1="30" x2="620" y2="250" stroke="var(--warn)" stroke-width="1.6" stroke-dasharray="6 4"/>
+        <text x="620" y="268" text-anchor="middle" font-family="var(--mono)" font-size="11" fill="var(--warn)">V<tspan font-size="8" baseline-shift="sub">BD</tspan></text>
+        <text x="300" y="196" text-anchor="middle" font-family="var(--sans)" font-size="11.5" fill="var(--ink-2)">漏れ（付録Cの暗電流）</text>
+        <text x="520" y="120" text-anchor="end" font-family="var(--sans)" font-size="11.5" fill="var(--ink-2)">V<tspan font-size="8" baseline-shift="sub">BD</tspan> の手前: 増倍が有限（APD、リニア増幅）</text>
+        <circle cx="730" cy="140" r="7" fill="var(--volt)"/>
+        <text x="730" y="126" text-anchor="middle" font-family="var(--sans)" font-size="11.5" fill="var(--volt)" font-weight="700">動作点: 電流ゼロのまま、張り詰めて待つ</text>
+        <path d="M730,150 L730,196" stroke="var(--volt)" stroke-width="2" marker-end="url(#spar)"/>
+        <defs><marker id="spar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--volt)"/></marker></defs>
+        <text x="742" y="216" font-family="var(--sans)" font-size="11.5" fill="var(--ink-2)">キャリア1個で</text>
+        <text x="742" y="232" font-family="var(--sans)" font-size="11.5" fill="var(--ink-2)"><tspan font-weight="700" fill="var(--warn)">自己維持する雪崩</tspan>へ</text>
+      </svg>
+    </div>
+    <figcaption>付録Aの表のとおり、なだれは「加速されたキャリアが衝突で新しい対を作る」連鎖です。V<sub>BD</sub> の手前では連鎖が減衰するので有限の増倍率 M を持つ増幅器（APD）になり、<b>V<sub>BD</sub> を超えると連鎖が自己維持</b>になります。増倍率という概念が壊れる（実質∞）ので、アナログ量としてはもう使えない ― 代わりに<b>起きたか起きなかったか</b>だけを数える。これがガイガーモードです。温度が上がると V<sub>BD</sub> も上がる（温度係数が正 ― 付録Aの判別法そのもの）ので、一定バイアスでは V<sub>ex</sub> が縮んで検出効率が落ち、SPADモジュールに温度補償が要るのでした。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>クエンチ — 雪崩を「止める」までが1カウント</h3>
+      <p>自己維持する雪崩は、放っておくと流れ続けて素子を焼きます。そこで<span class="key">消火（クエンチ）</span>が要ります。いちばん単純な受動クエンチは、<strong>直列に大きな抵抗 R<sub>Q</sub> を入れるだけ</strong>。雪崩電流が流れると R<sub>Q</sub> での電圧降下で SPAD の両端電圧が V<sub>BD</sub> 以下まで下がり、連鎖が維持できなくなって止まる。そのあと R<sub>Q</sub> を通ってゆっくり再充電され、動作点に戻ったらまた待ち構える ― この再充電のあいだ（<b>デッドタイム</b>、数十ns級）は次の光子が来ても数えられません。</p>
+      <p>能動クエンチは、発火を検出して回路が素早くバイアスを下げ・戻す方式で、デッドタイムを縮められます。どちらでも、出力は「発火した瞬間」を示す<strong>デジタルパルス列</strong>で、後段はもうコンパレータとカウンタ・タイマー ― 第3部の世界です。</p>
+      <h3>性能の言葉 — 付録C・Dの続きとして読める</h3>
+      <p><b>PDE</b>（光子検出効率）: 光子が「吸収され」「その電子が雪崩を起こす」確率まで含めた実効QE。<b>DCR</b>（暗計数率）: 光がなくても数えてしまう率。正体は付録Cの暗電流の発生源（SRH＋電界増強トンネル）が、1個ずつパルスとして見えているだけ ― だから<span class="key">およそ8〜10℃で倍</span>という温度依存もそのまま持ち込まれます。<b>アフターパルス</b>: 雪崩で流れた大電流の一部がトラップに捕まり、あとから放出されて偽の発火を起こす ― 付録Dのトラップの、また別の顔です。</p>
+    </div>
+    <div class="body-col">
+      <figure>
+        <div class="fig-head"><span class="fig-title">PASSIVE QUENCH — 受動クエンチの回路と電圧波形</span></div>
+        <div class="fig-body scroll-x">
+          <svg viewBox="0 0 560 330" role="img" aria-label="受動クエンチの回路図と波形。バイアスから抵抗を通ってSPADにつながる。ノード電圧は光子が来ると急落し、抵抗を通って指数関数的に再充電される。再充電のあいだがデッドタイム。" style="min-width:480px">
+            <!-- 回路 -->
+            <text x="60" y="28" font-family="var(--mono)" font-size="10.5" fill="var(--ink-3)">V<tspan font-size="8" baseline-shift="sub">bias</tspan>（V<tspan font-size="8" baseline-shift="sub">BD</tspan>+V<tspan font-size="8" baseline-shift="sub">ex</tspan>）</text>
+            <line x1="80" y1="34" x2="80" y2="58" stroke="var(--ink-2)" stroke-width="2"/>
+            <path d="M80,58 l-8,7 16,7 -16,7 16,7 -16,7 8,7" fill="none" stroke="var(--ink-2)" stroke-width="2"/>
+            <text x="98" y="86" font-family="var(--mono)" font-size="10.5" fill="var(--ink-2)">R<tspan font-size="8" baseline-shift="sub">Q</tspan>（大きい）</text>
+            <line x1="80" y1="100" x2="80" y2="130" stroke="var(--ink-2)" stroke-width="2"/>
+            <circle cx="80" cy="134" r="4" fill="var(--volt)"/>
+            <line x1="84" y1="134" x2="170" y2="134" stroke="var(--volt)" stroke-width="2"/>
+            <text x="176" y="138" font-family="var(--sans)" font-size="11" fill="var(--volt)">出力（この電圧を見る）</text>
+            <!-- SPAD ダイオード記号（逆バイアス） -->
+            <line x1="80" y1="138" x2="80" y2="162" stroke="var(--ink-2)" stroke-width="2"/>
+            <path d="M66,186 L94,186 L80,162 Z" fill="var(--surface)" stroke="var(--ink-2)" stroke-width="2"/>
+            <line x1="66" y1="162" x2="94" y2="162" stroke="var(--ink-2)" stroke-width="2.5"/>
+            <line x1="80" y1="186" x2="80" y2="208" stroke="var(--ink-2)" stroke-width="2"/>
+            <g stroke="var(--ink-3)" stroke-width="2"><line x1="66" y1="208" x2="94" y2="208"/><line x1="72" y1="213" x2="88" y2="213"/><line x1="77" y1="218" x2="83" y2="218"/></g>
+            <text x="104" y="180" font-family="var(--mono)" font-size="11" fill="var(--ink-2)">SPAD</text>
+            <g stroke="var(--photon)" stroke-width="1.8"><line x1="26" y1="160" x2="58" y2="172" marker-end="url(#spar2)"/><line x1="22" y1="178" x2="54" y2="184" marker-end="url(#spar2)"/></g>
+            <defs><marker id="spar2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--photon)"/></marker></defs>
+            <!-- 波形 -->
+            <g font-family="var(--mono)" font-size="10" fill="var(--ink-3)">
+              <text x="250" y="60">ノード電圧</text>
+              <text x="524" y="238" text-anchor="end">時間 →</text>
+            </g>
+            <line x1="250" y1="80" x2="530" y2="80" stroke="var(--line)" stroke-width="1" stroke-dasharray="3 4"/>
+            <text x="534" y="84" font-family="var(--mono)" font-size="9.5" fill="var(--ink-3)">動作点</text>
+            <line x1="250" y1="170" x2="530" y2="170" stroke="var(--line)" stroke-width="1" stroke-dasharray="3 4"/>
+            <text x="534" y="174" font-family="var(--mono)" font-size="9.5" fill="var(--ink-3)">V<tspan font-size="7" baseline-shift="sub">BD</tspan></text>
+            <rect x="298" y="80" width="86" height="150" fill="var(--volt-soft)" opacity=".5"/>
+            <text x="341" y="248" text-anchor="middle" font-family="var(--sans)" font-size="10.5" fill="var(--volt)">デッドタイム（再充電 τ = R<tspan font-size="8" baseline-shift="sub">Q</tspan>C）</text>
+            <path d="M250,80 L296,80 L300,168 C316,110 352,88 384,82 L430,80 L434,168 C450,110 486,88 518,82" fill="none" stroke="var(--volt)" stroke-width="2.5"/>
+            <g stroke="var(--photon)" stroke-width="2"><line x1="298" y1="46" x2="298" y2="72" marker-end="url(#spar2)"/><line x1="432" y1="46" x2="432" y2="72" marker-end="url(#spar2)"/></g>
+            <text x="298" y="40" text-anchor="middle" font-family="var(--sans)" font-size="10.5" fill="var(--photon-2)">光子</text>
+            <text x="432" y="40" text-anchor="middle" font-family="var(--sans)" font-size="10.5" fill="var(--photon-2)">光子</text>
+            <!-- パルス列 -->
+            <g stroke="var(--digital)" stroke-width="2.5" fill="none"><path d="M250,300 L296,300 L296,282 L306,282 L306,300 L430,300 L430,282 L440,282 L440,300 L530,300"/></g>
+            <text x="250" y="272" font-family="var(--mono)" font-size="10" fill="var(--digital)">コンパレータ出力（数える）</text>
+          </svg>
+        </div>
+        <figcaption>発火 → R<sub>Q</sub> の電圧降下で V<sub>BD</sub> 以下へ（消火）→ R<sub>Q</sub> 経由で再充電、の繰り返し。急落は雪崩の速さ（サブns）、戻りは RC の遅さ ― 波形が左右非対称なのはそのためです。</figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>時間を測る — dToF と「1 ns ＝ 15 cm」</h3>
+      <p>パルスであることの最大の御利益は、<span class="key">到着時刻が測れる</span>ことです。光を短パルスで打ち、SPADの発火までの往復時間を測れば距離になる（直接ToF）。光速 3×10⁸ m/s では<strong>往復 1 ns ＝ 距離 15 cm</strong>。1発ごとの時刻はばらつく（ジッタ＋背景光）ので、何千発ぶんもの到着時刻を<strong>ヒストグラム</strong>に積み、山の位置を読む ― 統計で精度を稼ぐ発想は PTC と同じ筋です。スマートフォンの深度センサや車載LiDARの受光部が、まさにこの構成です。</p>
+    </div>
+    <div class="body-col">
+      <h3>なぜ普通のカメラを置き換えないのか</h3>
+      <p>数える方式は暗所で圧倒的（読み出しノイズという概念が無い）ですが、代償があります。<b>面積</b>: ガード構造やクエンチ回路で画素が大きくなり、開口も稼ぎにくい。<b>デッドタイム</b>: 明るいシーンでは数え落としが起き、応答が飽和する。<b>DCR</b>: 室温で常に数えてしまうぶんが床になる。だから住み分けは「明るさを絵にするのは蓄積型、時間と極暗を扱うのはSPAD」でした ― ただし付録Bで見た<b>積層</b>がこの絵を変えつつあり、下の階にクエンチとTDCを押し込んだメガピクセル級SPADが実用になっています。</p>
+    </div>
+  </div>
+
+  <div class="caveat">
+    <span class="tag">この節が単純化していること</span>
+    <p><strong>数値は桁の目安です。</strong>V<sub>ex</sub>（数V）、デッドタイム（数十ns）、PDE・DCR は素子と波長・温度で桁が動きます。このページの仮想センサの諸元とは独立の話として読んでください。</p>
+    <p><strong>アナログSiPM（SPADの並列和）や、ガイガー確率・ジッタの中身（電界分布に依存）には踏み込みません。</strong>入口は下の Cova らの総説が定番です。</p>
+  </div>
+</section>
+
 
 <!-- ================= むすび ================= -->
 <section class="stage" id="send">
@@ -2435,6 +2543,9 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>1/f ノイズ</td><td>周波数に反比例するノイズ。時定数が対数一様に分布したRTSの重ね合わせ</td><td class="num">&prop; 1/(WL&middot;f)</td></tr>
           <tr><td>Pelgrom則</td><td>しきい値などのばらつきが素子面積の平方根に反比例するという経験則</td><td class="num">&sigma; = A/&radic;(WL)</td></tr>
           <tr><td>DSNU / PRNU</td><td>暗時の画素間ばらつき／感度の画素間ばらつき。どちらも固定パターンなので補正できる</td><td class="num">補正可能</td></tr>
+          <tr><td>SPAD</td><td>降伏電圧より上（ガイガーモード）で待ち、キャリア1個を自己維持の雪崩に育てて数えるフォトダイオード。出力はデジタルパルス</td><td class="num">V<sub>BD</sub>＋数V</td></tr>
+          <tr><td>PDE / DCR</td><td>SPADの実効検出効率（吸収×雪崩の起動確率×開口）／光がなくても数えてしまう率。DCRの起源は付録Cの暗電流と同じで、8〜10℃で倍</td><td class="num">素子で桁が動く</td></tr>
+          <tr><td>デッドタイム</td><td>発火後、クエンチと再充電が済んで次を数えられるようになるまでの時間。明所での数え落としの原因</td><td class="num">数十 ns</td></tr>
         </tbody>
       </table>
     </div>
@@ -2507,6 +2618,8 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
             <td>付録D。<strong>酸化膜中のトラップへのトンネル捕獲</strong>で 1/f を説明する立場。対抗説（Hooge の移動度ゆらぎ）との決着はついていません。</td></tr>
           <tr><td>電界増強を含む<br>生成・再結合モデル</td><td>G. A. M. Hurkx ほか<br>IEEE Trans. Electron Devices, 1992</td>
             <td>付録A / C。トラップ支援トンネルを、デバイスシミュレータに組み込める形にまとめた仕事です。</td></tr>
+          <tr><td>単一光子検出の<br>APDとクエンチ回路</td><td>S. Cova ほか<br>Applied Optics, 1996</td>
+            <td>「降伏の先 — SPAD」。ガイガーモード動作と受動／能動クエンチを整理した定番の総説です。</td></tr>
         </tbody>
       </table>
     </div>
@@ -2524,7 +2637,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <h3>このページが扱わなかったこと</h3>
       <p>一本道に絞ったので、外したものがあります。次に興味が向くとしたらこのあたりです。</p>
       <p><strong>像面位相差AF</strong>——画素の一部を遮光して瞳を分割し、センサ自身で距離を測る仕組み。<span class="key">このページで唯一、光→像の一本道から外れる話題</span>です（画質ではなく測距の話なので）。それが外してある理由でもあります。</p>
-      <p style="margin-top:12px"><strong>SPAD と光子計数</strong>——付録Aの降伏の話の先で、1個ずつ光子を数える領域です。ただし<span class="key">SPADは別のデバイス</span>で、このページの前提である「仮想センサ1台」から外れるため、ここでは扱いません。</p>
+      <p style="margin-top:12px"><strong>SPAD と光子計数</strong>——付録Aの降伏の話の先で、1個ずつ光子を数える領域。要望が多かったので<a href="#sspad">「降伏の先 — SPAD」</a>として本編に足しました（仮想センサ1台の枠の外である点は変わりません）。</p>
       <p style="margin-top:12px"><strong>読み出しの高速化</strong>——サブADC構成、圧縮、インターフェース（MIPI）。センサから先の話です。</p>
       <p style="margin-top:12px"><strong>イベントベースセンサ</strong>——明るさの<em>変化</em>だけを画素ごとに非同期で出す方式。フレームという概念そのものを持たないので、このページの構成では扱えません。</p>
     </div>
