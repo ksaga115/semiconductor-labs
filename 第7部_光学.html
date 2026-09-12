@@ -346,13 +346,27 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   .hero{padding-top:0}
 }
 </style>
+
+<style>
+/* ===== 第7部 追加分: 図解アニメーションの共通部品（reduced-motion では自動停止） ===== */
+@keyframes p7flow { to { stroke-dashoffset: -60; } }
+.flow{stroke-dasharray:7 5;animation:p7flow 1.6s linear infinite}
+.flow.slow{animation-duration:3s}
+@keyframes p7blink { 0%,100%{opacity:.15} 50%{opacity:1} }
+.blink{animation:p7blink 1.8s ease-in-out infinite}
+@keyframes p7draw { 0%{stroke-dashoffset:var(--len,600)} 55%{stroke-dashoffset:0} 100%{stroke-dashoffset:0} }
+.draw{stroke-dasharray:var(--len,600);animation:p7draw 4s linear infinite}
+@keyframes p7ring { 0%{transform:scale(.2);opacity:.9} 100%{transform:scale(1);opacity:0} }
+.ring{transform-origin:center;transform-box:fill-box;animation:p7ring 2.4s ease-out infinite}
+</style>
+
 <header class="wrap hero">
   <div class="hero-grid">
     <div>
       <a class="back" href="index.html">&larr; Labs / 半導体 ― 第7部 光学（実践: OptoLab）</a><br>
       <span class="eyebrow">Lux &rarr; Watt &rarr; Photon &rarr; Image</span>
       <h1>光学 ― 検出器の<span class="lit">相手側</span></h1>
-      <p class="sub">この一連の本の検出器たちは、必ず光学系の後ろに座っています。lx と W と光子の換算、レンズがセンサに落とす照度、回折が許す細かさ、レーザーの絞り方、ファイバの入り口、反射の会計 ― <a href="第4部_イメージセンサ.html">第4部</a>が仮定していた「センサに届く光」を、この部が自分の手で出せるようにします。研究・設計・製造・営業のどの席からでも、カタログの光学の数字が読めるようになるのが目標です。</p>
+      <p class="sub">この一連の本の検出器たちは、必ず光学系の後ろに座っています。lx と W と光子の換算、レンズがセンサに落とす照度、回折が許す細かさ、レーザーの絞り方、ファイバの入り口、反射の会計 ― <a href="第4部_イメージセンサ.html">第4部</a>が仮定していた「センサに届く光」を、この部が自分の手で出せるようにします。章の並びは光の旅の順です: <strong>単位</strong>（01）→ <strong>広がる</strong>（02）→ <strong>結ぶ</strong>（03）→ <strong>回折の壁</strong>（04）→ <strong>レーザーという別種</strong>（05）→ <strong>ファイバの門</strong>（06）→ <strong>面での目減り</strong>（07）→ <strong>測って検定</strong>（08）。研究・設計・製造・営業のどの席からでも、カタログの光学の数字が読めるようになるのが目標です。</p>
       <div class="depth-row">
         <div class="depth" role="group" aria-label="説明の深さ">
           <button id="dSimple" aria-pressed="true">かんたん</button>
@@ -362,11 +376,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       </div>
 
       <div class="guide">
-        <div class="guide-h"><span>読み方（役割別）</span><span>全部で 35〜55 分</span></div>
+        <div class="guide-h"><span>読み方（役割別）</span><span>全部で 55〜100 分</span></div>
         <div class="guide-b">
-          <div><b>営業・企画なら</b><span>01 換算 → 02 逆二乗 → 07 反射の 4%と31%。カタログの lm/W・F値・NA・ARコートが読める数字になります。</span><em>12 〜 18 分</em></div>
-          <div><b>設計・開発なら</b><span>03 カメラ方程式・04 回折・05 ガウス・06 ファイバを足す。仕様の行間が式で埋まります。</span><em>25 〜 40 分</em></div>
-          <div><b>研究・製造なら</b><span>08 測る現場と「くわしく」全部。焦点深度・エテンデュ・迷光 ― 現場で揉める話はここ。</span><em>35 〜 55 分</em></div>
+          <div><b>営業・企画なら</b><span>01 換算 → 02 逆二乗 → 07 反射の 4%と31%。カタログの lm/W・F値・NA・ARコートが読める数字になります。</span><em>15 〜 25 分</em></div>
+          <div><b>設計・開発なら</b><span>03 カメラ方程式・04 回折・05 ガウス・06 ファイバを足す。仕様の行間が式で埋まります。</span><em>35 〜 60 分</em></div>
+          <div><b>研究・製造なら</b><span>08 測る現場と「くわしく」全部。焦点深度・エテンデュ・迷光 ― 現場で揉める話はここ。</span><em>55 〜 100 分</em></div>
         </div>
       </div>
     </div>
@@ -376,7 +390,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
         <div><dt>カメラ方程式</dt><dd>ρET/4N²<small></small></dd></div>
         <div><dt>エアリー径</dt><dd>2.44λN<small></small></dd></div>
         <div><dt>分解能</dt><dd>0.61λ/NA<small></small></dd></div>
-        <div><dt>集光ウェスト</dt><dd>M²λf/πw<small></small></dd></div>
+        <div><dt>集光ウェスト</dt><dd>M²λf/(πw)<small></small></dd></div>
         <div><dt>ガラスの反射</dt><dd>4<small>%/面</small></dd></div>
         <div class="spec-cap">この部の式はすべて <a href="OptoLab/index.html">OptoLab</a> で数値にできます。<a href="第4部_イメージセンサ.html#snum">第4部「数字の根拠」</a>のセンサ面照度 0.52%・190光子/px/s/lx は、この部の 01〜03 の式から出ます（OptoLab の検査が突き合わせ済み）。</div>
       </dl>
@@ -442,9 +456,84 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     </div>
   </div>
 
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">V(&lambda;) — 「明るさ」は目のフィルタ越しの量</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 240" role="img" aria-label="視感度曲線V(λ)。555nmにピーク1があり、両側で急速に落ちる釣鐘型。虹色の帯が下に描かれ、緑のあたりが最も高い。1W=683lmはピークでの定義であることが示される。" style="min-width:700px;width:100%;display:block">
+        <g stroke="var(--line)" stroke-width="1" opacity="0.6">
+          <path d="M70 20 V180"/><path d="M70 180 H700"/>
+        </g>
+        <g font-size="9" fill="var(--ink-3)">
+          <text x="130" y="196" text-anchor="middle">400</text><text x="290" y="196" text-anchor="middle">500</text>
+          <text x="416" y="196" text-anchor="middle">555</text><text x="480" y="196" text-anchor="middle">600</text><text x="640" y="196" text-anchor="middle">700 nm</text>
+          <text x="62" y="184" text-anchor="end">0</text><text x="62" y="34" text-anchor="end">1</text>
+        </g>
+        <path d="M130 179 C 220 176, 280 120, 340 56 C 380 22, 452 22, 492 56 C 552 120, 600 174, 660 179"
+              stroke="var(--photon)" stroke-width="2.4" fill="none" class="draw" style="--len:800"/>
+        <path d="M416 180 V30" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="3 3"/>
+        <text x="416" y="22" font-size="10" fill="var(--photon-2)" text-anchor="middle">ピーク 555nm ― ここでだけ 1W = 683lm</text>
+        <g font-size="9.5" fill="var(--ink-3)">
+          <text x="150" y="150">青: 同じ W でも</text>
+          <text x="150" y="164">暗く「見える」</text>
+          <text x="600" y="150" text-anchor="end">赤: 700nm では</text>
+          <text x="600" y="164" text-anchor="end">V(λ) ≈ 0.004</text>
+        </g>
+        <g opacity="0.85">
+          <rect x="130" y="206" width="88" height="10" fill="#5661d6"/>
+          <rect x="218" y="206" width="60" height="10" fill="#3b9ad9"/>
+          <rect x="278" y="206" width="80" height="10" fill="#39b26a"/>
+          <rect x="358" y="206" width="70" height="10" fill="#a9c93b"/>
+          <rect x="428" y="206" width="60" height="10" fill="#e0b52f"/>
+          <rect x="488" y="206" width="70" height="10" fill="#d9772f"/>
+          <rect x="558" y="206" width="102" height="10" fill="#c94b3b"/>
+        </g>
+        <text x="716" y="215" font-size="9" fill="var(--ink-3)">可視域</text>
+      </svg>
+    </div>
+    <figcaption>lm・lx・cd はすべて<span class="key">この曲線を掛けたあとの量</span>。だから白色LEDの「lm/W」は効率だけでなくスペクトルの置き場所の関数で、赤外・UV には lm という概念自体がありません（放射量 W 系で語る ― サーモグラフィのカタログがそうである理由）。</figcaption>
+  </figure>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">FAMILY — 測光の4兄弟は「どこで測るか」が違う</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 210" role="img" aria-label="光束lm、光度cd、照度lx、輝度cd/m2の関係図。光源から出る総量が光束、方向への濃さが光度、面が受ける密度が照度、面が見せる明るさが輝度。" style="min-width:700px;width:100%;display:block">
+        <circle cx="120" cy="90" r="26" fill="var(--photon-soft)" stroke="var(--photon)"/>
+        <text x="120" y="95" font-size="11" fill="var(--photon-2)" text-anchor="middle">光源</text>
+        <g stroke="var(--photon)" stroke-width="1.5" class="flow">
+          <path d="M150 70 L250 40"/><path d="M152 84 L252 78"/><path d="M152 98 L252 118"/><path d="M148 112 L246 152"/>
+        </g>
+        <text x="200" y="26" font-size="10.5" fill="var(--ink)" font-weight="600">① 光束 [lm]</text>
+        <text x="200" y="40" font-size="9" fill="var(--ink-3)">出ていく総量</text>
+        <path d="M262 66 L342 84" stroke="var(--warn)" stroke-width="2.5" class="flow"/>
+        <text x="300" y="60" font-size="10.5" fill="var(--warn)" font-weight="600">② 光度 [cd = lm/sr]</text>
+        <text x="300" y="74" font-size="9" fill="var(--warn)">ある方向への濃さ</text>
+        <rect x="360" y="40" width="14" height="110" fill="var(--surface-2)" stroke="var(--si)"/>
+        <text x="367" y="170" font-size="10.5" fill="var(--si)" text-anchor="middle">面</text>
+        <text x="440" y="60" font-size="10.5" fill="var(--si)" font-weight="600">③ 照度 [lx = lm/m²]</text>
+        <text x="440" y="74" font-size="9" fill="var(--ink-3)">面が「受ける」密度 ― 照度計・カメラ方程式の左辺</text>
+        <g stroke="var(--electron)" stroke-width="1.4" class="flow slow">
+          <path d="M376 80 L470 110"/><path d="M376 100 L470 130"/>
+        </g>
+        <circle cx="520" cy="124" r="16" fill="none" stroke="var(--electron)" stroke-width="1.6"/>
+        <circle cx="520" cy="124" r="6" fill="var(--electron)"/>
+        <text x="560" y="112" font-size="10.5" fill="var(--electron-2)" font-weight="600">④ 輝度 [cd/m²]</text>
+        <text x="560" y="126" font-size="9" fill="var(--ink-3)">面が「見せる」明るさ ―</text>
+        <text x="560" y="140" font-size="9" fill="var(--ink-3)">目とカメラが見るのはこれ（03の主役）</text>
+        <text x="380" y="198" font-size="9.5" fill="var(--ink-3)" text-anchor="middle">放射量側にも同じ4兄弟（W・W/sr・W/m²・W/(sr·m²)）― 単位を見れば「どこで測った量か」が分かる</text>
+      </svg>
+    </div>
+    <figcaption>カタログ読解の第一歩は<span class="key">単位から測定位置を逆引きする</span>こと: LED は lm と cd、照明設計は lx、ディスプレイは cd/m²（ニト）。この4枚の地図があれば、光の仕様書で迷子になりません。</figcaption>
+  </figure>
+
   <div class="deep deep-note">
     <span class="tag">くわしく — カタログの測光量の読み分け</span>
-    <p>測光量は4兄弟です: <b>光束 lm</b>（光源が出す総量）、<b>光度 cd = lm/sr</b>（ある方向への濃さ）、<b>照度 lx = lm/m&sup2;</b>（面が受ける密度）、<b>輝度 cd/m&sup2;</b>（見た目の明るさ。ディスプレイのニトがこれ）。LED のカタログは lm と cd、照明設計は lx、ディスプレイは cd/m&sup2; ― <span class="key">単位を見れば「どこで測った量か」が分かります</span>。放射量側にも同じ4兄弟（W・W/sr・W/m&sup2;・W/(sr·m&sup2;)）がいて、赤外や UV ― 目に見えない光 ― では放射量しか意味を持ちません。サーモグラフィ（第5部）のカタログが W 系で書かれる理由です。</p>
+    <p>測光量は4兄弟です: <b>光束 lm</b>（光源が出す総量）、<b>光度 cd = lm/sr</b>（ある方向への濃さ）、<b>照度 lx = lm/m&sup2;</b>（面が受ける密度）、<b>輝度 cd/m&sup2;</b>（見た目の明るさ。ディスプレイのニトがこれ）。LED のカタログは lm と cd、照明設計は lx、ディスプレイは cd/m&sup2; ― <span class="key">単位を見れば「どこで測った量か」が分かります</span>。放射量側にも同じ4兄弟（W・W/sr・W/m&sup2;・W/(sr&middot;m&sup2;)）がいて、赤外や UV ― 目に見えない光 ― では放射量しか意味を持ちません。サーモグラフィ（第5部）のカタログが W 系で書かれる理由です。</p>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — OptoLab 第1章</span>
+    <p>lx→W→光子の換算を、第4部の 0.52%・190光子/px/s の出どころまで一気通貫で。</p>
+    <div class="qs"><a href="OptoLab/index.html?quest=lux">カメラ方程式でセンサを照らす</a></div>
   </div>
 </section>
 
@@ -454,15 +543,45 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <h2>立体角と逆二乗 — 光は薄まる</h2></div>
   <p class="lede">点光源の光は球面に広がります。面積は r&sup2; で増えるから、照度は r&sup2; で薄まる ― それだけの話が、照明設計と受光量見積もりのほぼ全部を支えます。</p>
 
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">INVERSE SQUARE — 同じ光束が、4倍の面積に薄まる</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 230" role="img" aria-label="点光源から広がる光の錐。距離rで面積A、距離2rで面積4Aに同じ光束が広がるので、照度は4分の1になる。" style="min-width:700px;width:100%;display:block">
+        <circle cx="90" cy="115" r="10" fill="var(--photon)" class="blink"/>
+        <text x="90" y="146" font-size="10" fill="var(--photon-2)" text-anchor="middle">点光源 I [cd]</text>
+        <g stroke="var(--photon)" stroke-width="1.4" class="flow">
+          <path d="M100 108 L330 60"/><path d="M100 122 L330 170"/>
+          <path d="M330 60 L620 8" opacity="0.6"/><path d="M330 170 L620 222" opacity="0.6"/>
+        </g>
+        <rect x="322" y="58" width="14" height="114" fill="var(--surface-2)" stroke="var(--si)" opacity="0.9"/>
+        <text x="329" y="48" font-size="10" fill="var(--si)" text-anchor="middle">r</text>
+        <text x="329" y="192" font-size="9.5" fill="var(--ink-2)" text-anchor="middle">面積 A・照度 E</text>
+        <rect x="612" y="20" width="16" height="190" fill="var(--surface-2)" stroke="var(--volt)" opacity="0.9"/>
+        <text x="600" y="204" font-size="9.5" fill="var(--ink-2)" text-anchor="end">面積 4A・照度 E/4</text>
+        <text x="620" y="14" font-size="10" fill="var(--volt)" text-anchor="middle">2r</text>
+        <text x="470" y="120" font-size="11" fill="var(--ink)" text-anchor="middle">同じ光束（同じ本数の光線）</text>
+      </svg>
+    </div>
+    <figcaption>E = I/r&sup2; の絵解き。<span class="key">光が「弱る」のではなく「同じ量が広い面に薄まる」</span> ― だから距離2倍で 1/4。破線の本数が変わらないことがすべてです。</figcaption>
+  </figure>
+
   <div class="two">
     <div class="body-col">
       <h3>E = I/r²</h3>
       <p>光度 I [cd] の点光源から距離 r [m] の面の照度は <span class="key">E = I/r&sup2; [lx]</span>。距離2倍で 1/4、10倍で 1/100。「検出器にどれだけ届くか」の一次見積もりはいつもここから始まります（<a href="OptoLab/index.html?quest=inv">OptoLab「逆二乗で照らす」</a>）。点光源とみなせるのは、距離が光源の大きさの5倍を超えるあたりから ― 近接照明では成り立ちません。</p>
+      <p>斜めから当たる場合はもう1枚、<strong>余弦則</strong>が挟まります: 面の法線から角度 &theta; で受けると E は cos&theta; 倍（同じ光束が 1/cos&theta; の面積へ伸びるから）。逆二乗×余弦が、照明シミュレーションの最小単位です。</p>
     </div>
     <div class="body-col">
       <h3>ランベルト面と輝度</h3>
       <p>紙や壁のような拡散面は、照度 E を受けると<span class="key">輝度 L = &rho;E/&pi;</span> で四方へ照り返します（&rho; は反射率）。この L が次の03の主役 ― カメラが見ているのは照度ではなく<strong>被写体の輝度</strong>です。そして重要な会計原則: <strong>レンズをどう組んでも輝度は増やせません</strong>（明るく「見せる」ことはできても、単位面積・単位立体角あたりの光は増えない）。その正体は06の「くわしく」で。</p>
+      <p>「ランベルト」の意味も一言: <span class="key">どの方向から見ても同じ明るさに見える</span>理想の拡散面のことです（月がほぼ円盤に見えるのはこの性質）。実物の紙・壁・拡散板はかなり良い近似でランベルト ― だから &pi; で割るだけの簡単な式が実務で通用します。</p>
     </div>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — OptoLab 第1章</span>
+    <p>光度→距離→照度の一次見積もり。距離の2乗が体に入る。</p>
+    <div class="qs"><a href="OptoLab/index.html?quest=inv">逆二乗で照らす</a></div>
   </div>
 </section>
 
@@ -471,6 +590,37 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   <div class="stage-head"><span class="stage-num">03</span>
     <h2>結像と照度 — カメラ方程式</h2></div>
   <p class="lede">レンズの仕事は2つ ― <strong>どこに・どの大きさで</strong>結ぶか（結像公式）と、<strong>どれだけ明るく</strong>結ぶか（カメラ方程式）。第4部が黙って使っていた「センサ面 0.52%」がここで導出されます。</p>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">IMAGING — どこに結ぶか（2f-2f の等倍を例に）</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 230" role="img" aria-label="薄肉レンズの結像光線図。物体からの光線がレンズで曲がり像を結ぶ。物体距離aと像距離b、焦点fの位置が示され、2f-2fの等倍配置。" style="min-width:700px;width:100%;display:block">
+        <path d="M40 120 H720" stroke="var(--line)" stroke-width="1"/>
+        <path d="M380 30 C 396 60, 396 180, 380 210 C 364 180, 364 60, 380 30 Z" fill="var(--surface-2)" stroke="var(--si)" stroke-width="1.4"/>
+        <text x="380" y="22" font-size="10" fill="var(--si)" text-anchor="middle">薄肉レンズ（焦点距離 f）</text>
+        <path d="M180 120 V64" stroke="var(--electron)" stroke-width="3"/>
+        <path d="M175 72 L180 60 L185 72 Z" fill="var(--electron)"/>
+        <text x="180" y="140" font-size="10" fill="var(--electron-2)" text-anchor="middle">物体（a = 2f）</text>
+        <g stroke="var(--photon)" stroke-width="1.4" fill="none" class="flow slow">
+          <path d="M180 64 H380 L580 176"/>
+          <path d="M180 64 L380 176 H580"/>
+          <path d="M180 64 L580 176"/>
+        </g>
+        <path d="M580 120 V176" stroke="var(--warn)" stroke-width="3"/>
+        <path d="M575 168 L580 180 L585 168 Z" fill="var(--warn)"/>
+        <text x="580" y="200" font-size="10" fill="var(--warn)" text-anchor="middle">像（b = 2f・倒立・等倍）</text>
+        <circle cx="480" cy="120" r="3" fill="var(--ink-2)"/><text x="480" y="110" font-size="9" fill="var(--ink-3)" text-anchor="middle">f</text>
+        <circle cx="280" cy="120" r="3" fill="var(--ink-2)"/><text x="280" y="110" font-size="9" fill="var(--ink-3)" text-anchor="middle">f</text>
+        <g font-size="10" fill="var(--ink-2)">
+          <text x="660" y="50">1/a + 1/b = 1/f</text>
+          <text x="660" y="70">m = b/a</text>
+          <text x="660" y="96" font-size="9" fill="var(--ink-3)">遠景: b→f</text>
+          <text x="660" y="110" font-size="9" fill="var(--ink-3)">等倍: a=b=2f</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>作図の約束は2本だけ ― <span class="key">光軸に平行に入った光は焦点へ、中心を通る光は直進</span>。この2本の交点が像の位置。倍率が決まれば「被写体の1mmがセンサ上で何画素か」＝検査光学の分解能予算が決まります（<a href="OptoLab/index.html?quest=lens">OptoLab「等倍で結ぶ」</a>）。</figcaption>
+  </figure>
 
   <div class="two">
     <div class="body-col">
@@ -487,6 +637,40 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <p>数字を入れると &rho;0.18・T0.9・F2.8 で <strong>0.52%</strong> ― 第4部の仮想カメラの前提そのもの（<a href="OptoLab/index.html?quest=lux">OptoLab「カメラ方程式」</a>）。1000 lx の部屋でセンサ面は約 5 lx。ここに01の換算と画素面積を掛けると、第4部の「190 光子/画素/s/lx」に着地します。</p>
     </div>
   </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">WHY — 距離が消えるからくり</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 210" role="img" aria-label="カメラ方程式で距離が消える理由の図。近い被写体と遠い被写体で、1画素が見る被写体面積は距離の2乗で増え、届く光は距離の2乗で減るので、掛け算が一定になる。" style="min-width:700px;width:100%;display:block">
+        <rect x="600" y="70" width="20" height="70" fill="var(--surface-2)" stroke="var(--warn)"/>
+        <text x="610" y="160" font-size="10" fill="var(--warn)" text-anchor="middle">1画素</text>
+        <path d="M600 75 L200 40 M600 135 L200 170" stroke="var(--photon)" stroke-width="1.2" stroke-dasharray="5 4" fill="none"/>
+        <path d="M600 78 L400 60 M600 132 L400 150" stroke="var(--volt)" stroke-width="1.2" stroke-dasharray="5 4" fill="none"/>
+        <rect x="192" y="38" width="12" height="134" fill="none" stroke="var(--photon)" stroke-width="1.6"/>
+        <rect x="394" y="58" width="12" height="94" fill="none" stroke="var(--volt)" stroke-width="1.6"/>
+        <text x="198" y="192" font-size="9.5" fill="var(--photon-2)" text-anchor="middle">遠い: 見る面積 大（∝r²）</text>
+        <text x="400" y="192" font-size="9.5" fill="var(--volt)" text-anchor="middle">近い: 見る面積 小</text>
+        <g font-size="10.5" fill="var(--ink-2)">
+          <text x="60" y="40">1画素が受ける光 =</text>
+          <text x="60" y="60">（見る面積 ∝ r²）×（1点から届く光 ∝ 1/r²）</text>
+          <text x="60" y="84" fill="var(--warn)">= 距離によらない ― 効くのは輝度 L と N だけ</text>
+        </g>
+        <text x="380" y="30" font-size="9.5" fill="var(--ink-3)" text-anchor="middle">（面の被写体に限る ― 星や点光源は面積が増やせないので逆二乗のまま）</text>
+      </svg>
+    </div>
+    <figcaption>「引いても暗くならない」は不思議ではなく<span class="key">r² と 1/r² の相殺</span>。この1枚が腹に落ちると、露出計・監視カメラ・検査照明の「距離の議論」で迷わなくなります。</figcaption>
+  </figure>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — cos⁴則：隅は4回割引される</span>
+    <p>カメラ方程式は光軸上の話で、軸を外れた像高では主光線角 &theta; のぶん暗くなります ― <span class="key">周辺照度 = 中心 × cos&#8308;&theta;</span>（距離が1回、面を斜めに見込む cos が2回、瞳が楕円に見えるのが1回）。tan&theta; = 像高/f なので<strong>広角ほど隅が暗い</strong>: フルサイズの隅（21.6mm）は 50mm で71%、35mm では53%。<a href="第4部_イメージセンサ.html">第4部</a>の現像が最初にやる「レンズシェーディング補正」の物理側の根拠で、補正はゲインで持ち上げる ― つまり<strong>隅は SNR でも損</strong>をしています。<a href="OptoLab/index.html?quest=cos4">OptoLab「隅を暗くしすぎない」</a>で窓ごと踏めます（実レンズはこの「自然な減光」にケラレが上乗せされます）。</p>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — OptoLab 第2章</span>
+    <p>結像の公式・カメラ方程式・cos⁴ ― 「どこに・どれだけ明るく・隅はどうか」の3点セット。</p>
+    <div class="qs"><a href="OptoLab/index.html?quest=lens">等倍で結ぶ</a><a href="OptoLab/index.html?quest=lux">カメラ方程式</a><a href="OptoLab/index.html?quest=cos4">隅を暗くしすぎない</a></div>
+  </div>
 </section>
 
 <!-- ================= 04 ================= -->
@@ -494,6 +678,38 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   <div class="stage-head"><span class="stage-num">04</span>
     <h2>回折の限界 — 絞りと NA の壁</h2></div>
   <p class="lede">レンズをどれだけ磨いても、点は点に結べません。開口で回折した光は必ず有限の大きさに広がる ― <a href="第4部_イメージセンサ.html#sopt">第4部「解像の限界」</a>で画素側から見た壁を、光学側から見直します。</p>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">AIRY — 点を結んだつもりの、その形</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 240" role="img" aria-label="エアリーパターン。左は同心円状の強度分布（中心の明るい円盤と暗環・明環）、右はその断面プロファイル。第1暗環の直径が2.44λN。" style="min-width:700px;width:100%;display:block">
+        <g transform="translate(180 118)">
+          <circle r="86" fill="none" stroke="var(--line)" stroke-width="1"/>
+          <circle r="64" fill="var(--photon)" opacity="0.06"/>
+          <circle r="46" fill="var(--photon)" opacity="0.10"/>
+          <circle r="30" fill="var(--photon)" opacity="0.35"/>
+          <circle r="16" fill="var(--photon)" opacity="0.8"/>
+          <circle r="30" fill="none" stroke="var(--bg, #fff)" stroke-width="0"/>
+          <circle r="38" fill="none" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="3 3"/>
+          <circle r="86" class="ring" fill="none" stroke="var(--photon)" stroke-width="1.5"/>
+        </g>
+        <path d="M142 118 H218" stroke="var(--warn)" stroke-width="1.6"/>
+        <text x="180" y="228" font-size="10" fill="var(--ink-2)" text-anchor="middle">第1暗環の径 = 2.44&lambda;N（エアリー径）</text>
+        <g>
+          <g stroke="var(--line)" stroke-width="1" opacity="0.6">
+            <path d="M380 30 V190"/><path d="M380 190 H720"/>
+          </g>
+          <path d="M390 188 C 420 186, 440 184, 460 160 C 490 110, 500 40, 550 40 C 600 40, 610 110, 640 160 C 660 184, 680 186, 710 188"
+                stroke="var(--photon)" stroke-width="2.2" fill="none" class="draw" style="--len:700"/>
+          <path d="M462 190 V150 M638 190 V150" stroke="var(--warn)" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <path d="M462 156 H638" stroke="var(--warn)" stroke-width="1.4"/>
+          <text x="550" y="148" font-size="9.5" fill="var(--warn)" text-anchor="middle">2.44&lambda;N</text>
+          <text x="550" y="210" font-size="10" fill="var(--ink-3)" text-anchor="middle">断面: 中心に84%、環に残り</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>F2.8・555nm でエアリー径 3.8µm ― 3µm 画素と同じ桁。<span class="key">「点」の最小サイズが画素と並んだとき、それ以上絞っても細部は増えません</span>。広がる輪のアニメーションは回折が「開口の縁から染み出す」イメージです。</figcaption>
+  </figure>
 
   <div class="two">
     <div class="body-col">
@@ -506,9 +722,41 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     </div>
   </div>
 
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">ONE KNOB — 絞り N という1つのつまみに、3本の綱</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 170" role="img" aria-label="絞りNの軸。Nを上げる（絞る）と、明るさは1/N2で下がり、回折は2.44λNで太り、焦点深度は2λN2で深くなる。3つの矢印が同じつまみにつながっている。" style="min-width:700px;width:100%;display:block">
+        <path d="M100 85 H660" stroke="var(--ink-2)" stroke-width="2"/>
+        <path d="M652 80 L662 85 L652 90 Z" fill="var(--ink-2)"/>
+        <text x="90" y="89" font-size="10.5" fill="var(--ink-2)" text-anchor="end">開く ← N（絞り）→ 絞る</text>
+        <g font-size="10">
+          <text x="240" y="40" fill="var(--photon-2)">明るさ E ∝ 1/N²（暗くなる）</text>
+          <path d="M300 48 L340 70" stroke="var(--photon)" stroke-width="1.5" class="flow"/>
+          <text x="420" y="40" fill="var(--warn)">回折 2.44λN（点が太る）</text>
+          <path d="M470 48 L470 70" stroke="var(--warn)" stroke-width="1.5" class="flow"/>
+          <text x="560" y="40" fill="var(--si)">深度 ±2λN²（楽になる）</text>
+          <path d="M610 48 L590 70" stroke="var(--si)" stroke-width="1.5" class="flow"/>
+        </g>
+        <g font-size="9.5" fill="var(--ink-3)">
+          <text x="120" y="130">開ける側の勝ち: 明るい・細かい</text>
+          <text x="120" y="146">開ける側の負け: ピントが薄い・収差が出る</text>
+          <text x="460" y="130">絞る側の勝ち: 深度・収差の隠蔽</text>
+          <text x="460" y="146">絞る側の負け: 暗い・回折で甘い</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>露出・解像・深度は独立なパラメータではなく、<span class="key">同じ N の3つの顔</span>。検査光学の照明・レンズ選定会議は、実はこの1本のつまみの置き場所会議です。</figcaption>
+  </figure>
+
   <div class="deep deep-note">
     <span class="tag">くわしく — 焦点深度：ピントの「厚み」も N が決める</span>
     <p>像側でピントが合っていると言える範囲（焦点深度）はおよそ <strong>&plusmn;2&lambda;N&sup2;</strong>（判定基準により係数は1〜2）。F2.8 なら &plusmn;9µm 程度 ― センサの取り付け公差はこの土俵で戦っています。N&sup2; で効くので、<span class="key">絞ると深度は急に楽になるが、04の回折で解像が死ぬ</span> ― 深度と解像はここでも同じ N を取り合います。物体側の被写界深度も同じ物理の相似形で、倍率の2乗で換算されます。</p>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — OptoLab 第2章</span>
+    <p>エアリー径を画素に収め、NA で 0.5µm を見分ける。N のつまみの両側を体験する2問。</p>
+    <div class="qs"><a href="OptoLab/index.html?quest=airy">絞りすぎない</a><a href="OptoLab/index.html?quest=res">0.5µm を見分ける</a></div>
   </div>
 </section>
 
@@ -518,17 +766,47 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <h2>ガウスビーム — レーザーの絞り方</h2></div>
   <p class="lede">レーザーの光は点光源でも面光源でもなく、<strong>ガウスビーム</strong>という別の生き物です。第5部・第8部の相手役（LD・VCSEL）を実際に使うときの、最小限の文法。</p>
 
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">WAIST — くびれと発散は同時に選べない</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 240" role="img" aria-label="ガウスビームの包絡線。中央にウェストw0のくびれがあり、両側へ双曲線状に広がる。レイリー長zRの範囲と遠方の発散半角θが示される。下段は細いウェストのビームで、くびれが細いほど速く開く比較。" style="min-width:700px;width:100%;display:block">
+        <path d="M60 60 C 240 78, 330 84, 380 84 C 430 84, 520 78, 700 60" stroke="var(--photon)" stroke-width="2" fill="none" class="draw" style="--len:700"/>
+        <path d="M60 120 C 240 102, 330 96, 380 96 C 430 96, 520 102, 700 120" stroke="var(--photon)" stroke-width="2" fill="none" class="draw" style="--len:700"/>
+        <path d="M380 82 V98" stroke="var(--warn)" stroke-width="2"/>
+        <text x="380" y="74" font-size="10" fill="var(--warn)" text-anchor="middle">w&#8320;（ウェスト）</text>
+        <path d="M300 90 H460" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="3 3"/>
+        <text x="380" y="116" font-size="9" fill="var(--ink-3)" text-anchor="middle">レイリー長 z<tspan font-size="7" dy="2">R</tspan> = &pi;w&#8320;&sup2;/&lambda;（この間は「ほぼ平行」）</text>
+        <text x="680" y="48" font-size="9.5" fill="var(--photon-2)" text-anchor="end">遠方の半角 &theta; = &lambda;/(&pi;w&#8320;)</text>
+        <path d="M60 190 C 240 178, 350 172, 380 172 C 410 172, 520 178, 700 190" stroke="var(--volt)" stroke-width="1.8" fill="none"/>
+        <path d="M60 214 C 240 202, 350 200, 380 200 C 410 200, 520 202, 700 214" stroke="var(--volt)" stroke-width="1.8" fill="none"/>
+        <path d="M60 152 C 200 168, 330 170, 380 171" stroke="none" fill="none"/>
+        <path d="M60 232 C 200 218, 330 202, 380 201" stroke="none" fill="none"/>
+        <text x="380" y="164" font-size="9" fill="var(--volt)" text-anchor="middle">太いウェスト → ゆっくり開く（平行が長持ち）</text>
+        <text x="120" y="238" font-size="9.5" fill="var(--ink-3)">w&#8320;·&theta; = &lambda;/&pi; ― 積は波長で固定の不変量</text>
+      </svg>
+    </div>
+    <figcaption>細く絞るほど速く開き、平行を保ちたければ太くする ― <span class="key">「細く」と「平行に」は同じ不変量の取り合い</span>。測長器のビームが太いのも、加工機が一度エキスパンダで太らせるのも、この1行が理由です。</figcaption>
+  </figure>
+
   <div class="two">
     <div class="body-col">
       <h3>ウェストと発散は反比例</h3>
       <div class="eq">w&#8320;&middot;&theta; = &lambda;/&pi;　（&theta; は遠方の半角）</div>
       <p>細く絞ったビームほど速く広がる ― 積が波長で決まった不変量になります。ウェスト w&#8320; の周りでビームとみなせる距離（レイリー長）は z<sub>R</sub> = &pi;w&#8320;&sup2;/&lambda;。<span class="key">「どこまで細く」と「どこまで平行に」は同時に選べません</span>。</p>
+      <p>数字の感覚をひとつ: 1064nm で w&#8320;=10µm に絞ると z<sub>R</sub>≒0.3mm ― <strong>ピントの奥行きはコンマ数ミリしかない</strong>。レーザー加工の焦点合わせがµm台の管理になるのは、この z<sub>R</sub> の狭さです。</p>
     </div>
     <div class="body-col">
       <h3>集光: 太いほど絞れる</h3>
       <div class="eq">w&#8320;&prime; = M&sup2;&middot;&lambda;f/(&pi;w)</div>
       <p>半径 w の平行ビームを焦点距離 f のレンズで絞ると、ウェストはこれだけ。<span class="key">入射ビームが太いほど小さく絞れる</span>（04の NA の話の言い換え）ので、加工機や顕微鏡はビームエキスパンダで太らせてから集光します。ビーム品質 M&sup2; はその倍数だけ絞れなくする係数 ― カタログの M&sup2; が金額になる理由（<a href="OptoLab/index.html?quest=gauss">OptoLab「20µm に絞る」</a>）。</p>
+      <p>M&sup2; の読み方も一言: 理想の単一横モードが M&sup2;=1、マルチモードの LD は数〜数十。<strong>「M&sup2;=2 のビームは、同じ光学系で2倍しか絞れない」</strong>という換算がそのまま効きます。ダイオードレーザーが「明るいのに絞れない」ことがあるのは、この税金です。</p>
     </div>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — OptoLab 第3章</span>
+    <p>1064nm・f50mm で 20µm に絞る。太さと M² の両方が効くことを数字で。</p>
+    <div class="qs"><a href="OptoLab/index.html?quest=gauss">レーザーを 20 µm に絞る</a></div>
   </div>
 </section>
 
@@ -538,16 +816,74 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <h2>ファイバ — 場所と角度の両方で入る</h2></div>
   <p class="lede">ファイバの入り口は2重の門です ― <strong>コアの中に（場所）</strong>、<strong>受け入れ角の中に（角度）</strong>。どちらか片方では入りません。</p>
 
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">TWO GATES — 場所の門と角度の門</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 240" role="img" aria-label="ファイバ結合の2重の門。左はコア断面にスポットが収まるかの場所の門。右は受け入れ円錐に集光円錐が収まるかの角度の門。太いビームで絞るとスポットは小さいが角度が開く。" style="min-width:700px;width:100%;display:block">
+        <g>
+          <text x="170" y="26" font-size="10.5" fill="var(--ink)" text-anchor="middle" font-weight="600">門① 場所 — スポット ≦ コア</text>
+          <circle cx="170" cy="120" r="62" fill="var(--surface-2)" stroke="var(--line)"/>
+          <circle cx="170" cy="120" r="26" fill="none" stroke="var(--si)" stroke-width="2"/>
+          <text x="170" y="196" font-size="9.5" fill="var(--si)" text-anchor="middle">コア（SM: 10µm 級 / MM: 50µm 級）</text>
+          <circle cx="182" cy="112" r="14" fill="var(--photon)" opacity="0.5" class="blink"/>
+          <text x="222" y="98" font-size="9.5" fill="var(--photon-2)">集光スポット 2w&#8320;</text>
+        </g>
+        <g>
+          <text x="530" y="26" font-size="10.5" fill="var(--ink)" text-anchor="middle" font-weight="600">門② 角度 — ビームの円錐 ≦ 受け入れ角</text>
+          <path d="M420 120 L700 50 M420 120 L700 190" stroke="var(--si)" stroke-width="1.6" fill="none"/>
+          <path d="M420 120 L660 76 M420 120 L660 164" stroke="var(--photon)" stroke-width="1.4" class="flow" fill="none"/>
+          <text x="700 " y="42" font-size="9.5" fill="var(--si)">受け入れ角 sin&theta; = NA = &radic;(n₁²−n₂²)</text>
+          <text x="670" y="210" font-size="9.5" fill="var(--photon-2)" text-anchor="end">ビームの半角 ≈ w/f（太く絞るほど開く）</text>
+          <circle cx="420" cy="120" r="4" fill="var(--warn)"/>
+        </g>
+        <text x="380" y="232" font-size="9.5" fill="var(--warn)" text-anchor="middle">w を太くする → スポット小（門①楽）× 角度大（門②苦） ― 窓は両側から閉じる</text>
+      </svg>
+    </div>
+    <figcaption>結合設計は2つの不等式の同時充足。<a href="OptoLab/index.html?quest=fiber">OptoLab「ファイバに入れる」</a>で 3.4〜7mm という窓の実感を、<a href="OptoLab/index.html?quest=mode">「モードを合わせる」</a>で入場券の先（重なり積分）まで踏めます。</figcaption>
+  </figure>
+
   <div class="two">
     <div class="body-col">
       <h3>NA — 受け入れ角の定義</h3>
       <div class="eq">NA = &radic;(n<sub>コア</sub>&sup2; &minus; n<sub>クラッド</sub>&sup2;)</div>
       <p>全反射で導波できる光線の最大角。マルチモードで 0.2〜0.29、シングルモードで 0.1〜0.14 級。集光ビームの円錐半角は w/f なので、<span class="key">太いビームで小さく絞るほど角度の門に引っかかる</span> ― 結合の窓は両側から閉じます（<a href="OptoLab/index.html?quest=fiber">OptoLab「ファイバに入れる」</a>）。シングルモードはさらにモードの形まで合わせる必要があり（MFD 整合）、許容ずれはµm級 ― 光通信のコネクタが精密部品である理由。</p>
+      <p>モード整合を式にすると、ガウス同士の重なりで <span class="key">&eta; = (2w&#8321;w&#8322;/(w&#8321;&sup2;+w&#8322;&sup2;))&sup2;</span> ― w&#8321;=w&#8322; でだけ100%。「入る」（fiber の2条件）と「よく入る」（モード整合）は別物で、w=4mm は入場はできてもモードでは91%止まり、という差が出ます（<a href="OptoLab/index.html?quest=mode">OptoLab「モードを合わせる」</a>）。</p>
     </div>
     <div class="body-col">
       <h3>会計原則 — エテンデュ</h3>
       <p>「場所×角度」（面積×立体角）は<strong>エテンデュ</strong>と呼ばれ、<span class="key">受動光学系では決して減らせません</span>（減らせたら02の輝度が増やせてしまう）。太いLEDの光を細いファイバへ「全部」入れることは原理的に不可能 ― できるのはエテンデュの小さい光源（レーザー）を選ぶことだけ。照明設計・集光設計の見積もりで最初に引くべき線で、<strong>「頑張れば入るはず」を式が止めてくれます</strong>。</p>
+      <p>数字にすると: 径100µm・NA0.9 の LED のエテンデュに対し、コア10µm・NA0.14 の SM ファイバは <strong>(10&times;0.14/(100&times;0.9))&sup2; ≒ 0.02%</strong> しか受けられない。コア×NA の積を4倍にすれば上限は16倍 ― <span class="key">結合の上限は (コア&times;NA / 光源径&times;NA)&sup2; という比の2乗</span>だけで決まります（<a href="OptoLab/index.html?quest=etd">OptoLab「LED をファイバに入れる」</a>）。</p>
     </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">ETENDUE — 面積×角度は、絞っても消えない</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 200" role="img" aria-label="エテンデュ保存の図。広い面から小さい角度で出た光をレンズで小さい面に集めると、角度が大きくなる。面積と立体角の積は一定。" style="min-width:700px;width:100%;display:block">
+        <rect x="80" y="50" width="14" height="100" fill="var(--photon-soft)" stroke="var(--photon)"/>
+        <text x="87" y="170" font-size="9.5" fill="var(--photon-2)" text-anchor="middle">広い面 A</text>
+        <g stroke="var(--photon)" stroke-width="1.3" class="flow slow">
+          <path d="M94 60 L330 88"/><path d="M94 100 L330 100"/><path d="M94 140 L330 112"/>
+        </g>
+        <text x="212" y="66" font-size="9" fill="var(--ink-3)">狭い角度 Ω</text>
+        <path d="M340 40 C 352 62, 352 138, 340 160 C 328 138, 328 62, 340 40 Z" fill="var(--surface-2)" stroke="var(--si)" stroke-width="1.3"/>
+        <g stroke="var(--photon)" stroke-width="1.3" class="flow slow">
+          <path d="M352 88 L560 92"/><path d="M352 100 L560 100"/><path d="M352 112 L560 108"/>
+          <path d="M560 92 L620 70"/><path d="M560 100 L622 100"/><path d="M560 108 L620 130"/>
+        </g>
+        <rect x="616" y="88" width="10" height="24" fill="var(--photon-soft)" stroke="var(--warn)"/>
+        <text x="621" y="130" font-size="9.5" fill="var(--warn)" text-anchor="middle" transform="translate(0 14)">小さい面 A/4</text>
+        <text x="676" y="76" font-size="9" fill="var(--ink-3)">広い角度 4Ω</text>
+        <text x="380" y="188" font-size="10" fill="var(--ink-2)" text-anchor="middle">A・Ω = 一定 ― 面を1/4にすれば、角度は4倍開く（輝度は増やせない、の別表現）</text>
+      </svg>
+    </div>
+    <figcaption>レンズは光を「濃く」しない ― <span class="key">形を交換するだけ</span>。この保存則が、照明の明るさの上限・プロジェクタの設計・LED結合の 0.02% を全部支配しています。</figcaption>
+  </figure>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — OptoLab 第3章</span>
+    <p>2重の門の窓・モードの重なり・エテンデュの上限 ― ファイバ結合の3層を全部数字で。</p>
+    <div class="qs"><a href="OptoLab/index.html?quest=fiber">ファイバに入れる</a><a href="OptoLab/index.html?quest=mode">モードを合わせる</a><a href="OptoLab/index.html?quest=etd">LED をファイバに入れる</a></div>
   </div>
 </section>
 
@@ -570,9 +906,69 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     </div>
   </div>
 
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">&lambda;/4 — 2つの反射が、半波長ずれて相殺する</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 240" role="img" aria-label="λ/4コートの打ち消しの図。空気、コート膜、基板の3層。上面の反射波と、膜を往復して出てくる下面の反射波が半波長ずれて逆位相になり、足すとゼロになる。" style="min-width:700px;width:100%;display:block">
+        <rect x="60" y="40" width="380" height="46" fill="none" stroke="var(--line)"/>
+        <rect x="60" y="86" width="380" height="40" fill="var(--photon)" opacity="0.10" stroke="var(--photon)"/>
+        <rect x="60" y="126" width="380" height="70" fill="var(--surface-2)" stroke="var(--line)"/>
+        <g font-size="9.5" fill="var(--ink-3)">
+          <text x="66" y="56">空気 n&#8321;=1</text>
+          <text x="66" y="102" fill="var(--photon-2)">コート n&#8322;・厚み &lambda;/4n&#8322;</text>
+          <text x="66" y="144">基板 n&#8323;（ガラス1.5 / Si 3.9）</text>
+        </g>
+        <path d="M150 20 L212 86" stroke="var(--ink-2)" stroke-width="1.8" class="flow"/>
+        <text x="140" y="16" font-size="9.5" fill="var(--ink-2)">入射</text>
+        <path d="M212 86 L268 24" stroke="var(--volt)" stroke-width="1.6" class="flow slow"/>
+        <text x="272" y="22" font-size="9" fill="var(--volt)">上面の反射 ①</text>
+        <path d="M212 86 L246 126 L286 86 L330 32" stroke="var(--warn)" stroke-width="1.6" class="flow slow" fill="none"/>
+        <text x="334" y="30" font-size="9" fill="var(--warn)">下面の反射 ②（膜を往復 = 位相 &pi; 遅れ）</text>
+        <g>
+          <path d="M480 70 q20 -26 40 0 q20 26 40 0 q20 -26 40 0 q20 26 40 0" stroke="var(--volt)" stroke-width="1.8" fill="none"/>
+          <path d="M480 110 q20 26 40 0 q20 -26 40 0 q20 26 40 0 q20 -26 40 0" stroke="var(--warn)" stroke-width="1.8" fill="none"/>
+          <path d="M480 160 H640" stroke="var(--ink-2)" stroke-width="2"/>
+          <text x="700" y="74" font-size="9.5" fill="var(--volt)" text-anchor="end">①</text>
+          <text x="700" y="114" font-size="9.5" fill="var(--warn)" text-anchor="end">②（逆位相）</text>
+          <text x="700" y="164" font-size="9.5" fill="var(--ink-2)" text-anchor="end">和 = 0</text>
+          <text x="560" y="186" font-size="9.5" fill="var(--ink-3)" text-anchor="middle">振幅まで等しければ完全に消える</text>
+        </g>
+        <text x="250" y="224" font-size="9.5" fill="var(--ink-3)" text-anchor="middle">振幅を等しくする条件が n&#8322; = &radic;(n&#8321;n&#8323;) ― 「厚みで位相、屈折率で振幅」の2条件</text>
+      </svg>
+    </div>
+    <figcaption>消えた4%は透過側に回る（エネルギーは保存）。<span class="key">厚みが波長依存なので、単層ARは設計波長で最良・離れると復活</span> ― カメラレンズの面がマゼンタや緑に見えるのは、その「復活した端の波長」の色です。</figcaption>
+  </figure>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">LEDGER — 面の数だけ、4%ずつ目減りする</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 200" role="img" aria-label="透過率の階段グラフ。空気ガラス面を通過するたびに0.96倍され、10面で67%まで落ちる。ARコート（99.5%/面）なら10面でも95%。" style="min-width:700px;width:100%;display:block">
+        <g stroke="var(--line)" stroke-width="1" opacity="0.6">
+          <path d="M70 20 V160"/><path d="M70 160 H700"/>
+        </g>
+        <g font-size="9" fill="var(--ink-3)">
+          <text x="62" y="164" text-anchor="end">60%</text><text x="62" y="96" text-anchor="end">80%</text><text x="62" y="28" text-anchor="end">100%</text>
+        </g>
+        <text x="385" y="186" font-size="10" fill="var(--ink-3)" text-anchor="middle">通過した空気-ガラス面の数 →（レンズ1枚 = 2面）</text>
+        <path d="M70 28 L133 28 L133 41 L196 41 L196 54 L259 54 L259 66 L322 66 L322 78 L385 78 L385 89 L448 89 L448 100 L511 100 L511 110 L574 110 L574 120 L637 120 L637 130 L700 130"
+              stroke="var(--warn)" stroke-width="2" fill="none" class="draw" style="--len:900"/>
+        <path d="M70 28 L700 45" stroke="var(--si)" stroke-width="2" class="draw" style="--len:640;animation-delay:.5s"/>
+        <text x="600" y="150" font-size="10" fill="var(--warn)">素のガラス（96%/面）: 10面で 67%</text>
+        <text x="600" y="40" font-size="10" fill="var(--si)">ARコート（99.5%/面）: 10面でも 95%</text>
+      </svg>
+    </div>
+    <figcaption>ズームレンズは10群20面級 ― コート無しなら半分近くが迷子です。<span class="key">ARコートの御利益は透過の数%より、迷子（下の「くわしく」）を桁で減らすこと</span>。</figcaption>
+  </figure>
+
   <div class="deep deep-note">
     <span class="tag">くわしく — 迷子の4%はどこへ行く：迷光とゴースト</span>
     <p>反射で失った光は消えません。<span class="key">鏡筒の中を彷徨って、あらぬ場所から像に混ざります</span>。面と面の間で2回反射した光が作る薄い像がゴースト（夜景の光源の対称位置に出るあれ）、方々で散った成分がベールのように黒を持ち上げるのがフレア ― <strong>コントラストの敵はレンズの枚数×R&sup2;</strong> で増えます。ARコートの本当の御利益は透過率の数%より、この迷光を桁で減らすこと。カメラ試験で黒がグレーに浮くとき、疑う順番は「コート・鏡筒の内面反射・センサのカバーガラス」です。</p>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — OptoLab 第3章</span>
+    <p>シリコンの31%をλ/4でほぼゼロに。√(n₁n₃) の窓（1.73〜2.25）を自分で探す。</p>
+    <div class="qs"><a href="OptoLab/index.html?quest=ar">λ/4 で反射を殺す</a></div>
   </div>
 </section>
 
@@ -586,6 +982,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <div class="body-col">
       <h3>絶対値: パワーメータと積分球</h3>
       <p>光パワーの物差しはフォトダイオード式（速い・感度が波長依存）とサーマル式（第5部の熱型 ― 遅いが波長を選ばない）。どちらも<span class="key">校正の連鎖（トレーサビリティ）で国家標準に繋がっている</span>ことが値の根拠です。広がる光や LED の全光束は<strong>積分球</strong> ― 内面の拡散反射で光を混ぜ切ってから測る白い球 ― で受けます。センサの QE 測定（<a href="第4部_イメージセンサ.html#sptc">第4部 PTC</a> の「QE はこの方法では出ない」の続き）も、校正済み光源＋積分球の仕事です。</p>
+      <p>積分球の理屈も1行で書けます: 内面（反射率&rho;&asymp;0.98の白色拡散材）で何十回も反射するうち入射の記憶が消え、<span class="key">球内のどの点の照度も入射光束だけで決まる</span>ようになる ― 置き方・ビーム形に鈍い「光の平均化器」。LED の配光がどれだけ偏っていても全光束が正しく測れるのはこの平均化のおかげです。</p>
     </div>
     <div class="body-col">
       <h3>微弱光: ロックインで床から引き上げる</h3>
@@ -593,10 +990,53 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     </div>
   </div>
 
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">LOCK-IN — 印を付けて、その印だけ聴く</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 220" role="img" aria-label="ロックイン検出のブロック図。光源をチョッパで変調し、検出器の出力を参照信号と掛け算し、ローパスフィルタで狭帯域だけ取り出す。周波数軸では1/fノイズの外の静かな場所に信号を置く。" style="min-width:700px;width:100%;display:block">
+        <circle cx="80" cy="70" r="18" fill="var(--photon-soft)" stroke="var(--photon)"/>
+        <text x="80" y="75" font-size="9.5" fill="var(--photon-2)" text-anchor="middle">光源</text>
+        <g transform="translate(150 70)">
+          <circle r="16" fill="var(--surface-2)" stroke="var(--ink-2)"/>
+          <path d="M-16 0 A16 16 0 0 1 16 0 Z" fill="var(--ink-2)" opacity="0.5"/>
+        </g>
+        <text x="150" y="104" font-size="9" fill="var(--ink-3)" text-anchor="middle">チョッパ（周波数 f で刻む）</text>
+        <path d="M98 70 H132" stroke="var(--photon)" stroke-width="1.8" class="flow"/>
+        <path d="M166 70 H230" stroke="var(--photon)" stroke-width="1.8" class="flow"/>
+        <rect x="234" y="50" width="90" height="40" rx="6" fill="var(--surface-2)" stroke="var(--electron)"/>
+        <text x="279" y="74" font-size="9.5" fill="var(--electron-2)" text-anchor="middle">試料・検出器</text>
+        <path d="M324 70 H388" stroke="var(--ink-2)" stroke-width="1.6" class="flow"/>
+        <circle cx="410" cy="70" r="18" fill="var(--surface-2)" stroke="var(--warn)"/>
+        <text x="410" y="75" font-size="13" fill="var(--warn)" text-anchor="middle">×</text>
+        <path d="M410 130 V90" stroke="var(--warn)" stroke-width="1.4" class="flow slow"/>
+        <text x="410" y="148" font-size="9" fill="var(--warn)" text-anchor="middle">参照（同じ f・位相同期）</text>
+        <path d="M428 70 H488" stroke="var(--ink-2)" stroke-width="1.6" class="flow"/>
+        <rect x="492" y="50" width="96" height="40" rx="6" fill="var(--surface-2)" stroke="var(--si)"/>
+        <text x="540" y="68" font-size="9.5" fill="var(--si)" text-anchor="middle">ローパス（B 0.1Hz級）</text>
+        <text x="540" y="82" font-size="8.5" fill="var(--ink-3)" text-anchor="middle">＝時定数 数秒</text>
+        <path d="M588 70 H650" stroke="var(--warn)" stroke-width="1.8" class="flow"/>
+        <text x="656" y="74" font-size="10" fill="var(--warn)">直流の答え</text>
+        <g>
+          <path d="M120 200 C 200 182, 300 178, 700 176" stroke="var(--si)" stroke-width="1.6" fill="none"/>
+          <rect x="470" y="164" width="10" height="24" fill="var(--photon)" opacity="0.7"/>
+          <text x="475" y="158" font-size="8.5" fill="var(--photon-2)" text-anchor="middle">信号は f の高台へ</text>
+          <text x="160" y="176" font-size="8.5" fill="var(--ink-3)">1/f の坂</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>掛け算＋ローパス = 「参照と同じ周波数・同じ位相の成分だけ通す、幅 0.1Hz の窓」。<span class="key">√(1kHz/0.1Hz)=100倍の SNR と、1/f の坂からの避難を同時に</span>買っています ― 第6部のチョッパ、第5部の√t と同じ「静けさは時間で買う」一族です。</figcaption>
+  </figure>
+
   <div class="caveat">
     <span class="tag">この部が単純化していること</span>
-    <p><strong>幾何光学は近軸・無収差、測光は555nm単色換算です。</strong>収差（球面・色・コマ…）、cos⁴則の周辺減光、偏光、部分コヒーレンスは扱っていません。実レンズの性能はレンズデータでの光線追跡（Zemax 等）の世界です。</p>
-    <p><strong>ファイバ結合はスポットとNAの2条件の近似。</strong>シングルモードの結合効率はモード重なり積分で、ここでの「入る/入らない」より滑らかに落ちます。多層膜・斜入射の膜設計も専用ツールの領分です。</p>
+    <p><strong>幾何光学は近軸・無収差、測光は555nm単色換算です。</strong>収差（球面・色・コマ…）、部分コヒーレンス、偏光は扱っていません。cos⁴則は「自然な減光」のみで、実レンズのケラレ・射出瞳位置の効果は乗りません。実レンズの性能はレンズデータでの光線追跡（Zemax 等）の世界です。</p>
+    <p><strong>ファイバ結合は2条件＋ガウス重なりの近似。</strong>軸ずれ・角度ずれ・非ガウスモードの結合、多層膜・斜入射の膜設計は専用ツールの領分です。</p>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — OptoLab 第1章</span>
+    <p>1kHz の床を 0.1Hz の窓で 100 倍引き上げる。時定数という代金つき。</p>
+    <div class="qs"><a href="OptoLab/index.html?quest=lockin">ロックインで床から引き上げる</a></div>
   </div>
 </section>
 
@@ -611,18 +1051,22 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
         <thead><tr><th>用語</th><th>意味</th><th>目安</th></tr></thead>
         <tbody>
           <tr><td>放射量 / 測光量</td><td>物理の W 系と、視感度 V(λ) で重みづけた lm 系。橋は 683 lm/W @555nm。目に見えない波長は放射量のみ</td><td class="num">1 lx = 1.46 mW/m²</td></tr>
+          <tr><td>視感度 V(λ)</td><td>目の感度カーブ。555nm で1、両端で急落（700nm で 0.004）。lm/W はこのカーブ越しの効率</td><td class="num">ピーク 555nm</td></tr>
           <tr><td>lm / cd / lx / cd/m²</td><td>光束（総量）・光度（方向密度）・照度（面密度）・輝度（見た目）。単位が測った場所を教える</td><td class="num">4兄弟</td></tr>
-          <tr><td>逆二乗則</td><td>点光源の照度 E = I/r²。距離が光源径の5倍を超えたあたりから成立</td><td class="num">2倍で1/4</td></tr>
+          <tr><td>逆二乗則</td><td>点光源の照度 E = I/r²。距離が光源径の5倍を超えたあたりから成立。斜め受けは ×cosθ</td><td class="num">2倍で1/4</td></tr>
           <tr><td>カメラ方程式</td><td>センサ面照度 = πLT/4N² = ρET/4N²。距離が消えるのが肝（面の被写体は引いても暗くならない）</td><td class="num">F2.8で 0.52%</td></tr>
+          <tr><td>cos⁴則</td><td>軸外の照度は cos⁴θ で減る（距離1・斜め2・楕円瞳1）。tanθ=像高/f ― 広角ほど隅が暗い。シェーディング補正の根拠</td><td class="num">50mm の隅で 71%</td></tr>
           <tr><td>F値 / NA</td><td>f/D と 光線円錐の開き。N ≈ 1/(2NA)。カメラと顕微鏡の同じもの</td><td class="num">明るさは 1/N²</td></tr>
-          <tr><td>エアリー径 / レイリー分解能</td><td>2.44λN と 0.61λ/NA ― 同じ回折の2つの書き方。第4部「解像の限界」と同一</td><td class="num">F2.8で3.8µm</td></tr>
+          <tr><td>エアリー径 / レイリー分解能</td><td>2.44λN と 0.61λ/NA ― 同じ回折の2つの書き方。第4部「解像の限界」と同一。中心の円盤にエネルギーの84%</td><td class="num">F2.8で3.8µm</td></tr>
           <tr><td>焦点深度</td><td>像側でピントと言える厚み ±2λN² 級。絞ると深く、解像は浅く ― 同じ N の取り合い</td><td class="num">F2.8で±9µm</td></tr>
-          <tr><td>ガウスビーム</td><td>w₀·θ = λ/π の不変量。集光は w₀′=M²λf/(πw) ― 太いほど絞れ、M² はその税</td><td class="num">レイリー長 πw₀²/λ</td></tr>
+          <tr><td>ガウスビーム / レイリー長</td><td>w₀·θ = λ/π の不変量と、平行とみなせる距離 πw₀²/λ。集光は w₀′=M²λf/(πw) ― 太いほど絞れ、M² はその税</td><td class="num">10µm絞りで zR 0.3mm</td></tr>
           <tr><td>ファイバの NA / MFD</td><td>√(n₁²−n₂²) の受け入れ角と、シングルモードのモード径。結合は場所と角度の2重の門</td><td class="num">SM: NA〜0.14</td></tr>
-          <tr><td>エテンデュ</td><td>面積×立体角。受動光学系で不減 ― 輝度が増やせない会計原則。「頑張れば入る」を止める線</td><td class="num">A·Ω 保存</td></tr>
-          <tr><td>フレネル反射 / λ/4</td><td>((n₂−n₁)/(n₂+n₁))² と、n=√(n₁n₃)・厚みλ/4 で消す単層AR。ガラス4%・シリコン35%</td><td class="num">理想でゼロ</td></tr>
+          <tr><td>モード結合</td><td>ガウス同士の重なり η=(2w₁w₂/(w₁²+w₂²))²。w₁=w₂ でだけ100% ― 「入る」と「よく入る」は別物</td><td class="num">合わせの作業</td></tr>
+          <tr><td>エテンデュ</td><td>面積×立体角。受動光学系で不減 ― 輝度が増やせない会計原則。結合上限は (コア×NA/光源×NA)²</td><td class="num">LED→SM は 0.02%</td></tr>
+          <tr><td>フレネル反射 / λ/4</td><td>((n₂−n₁)/(n₂+n₁))² と、n=√(n₁n₃)・厚みλ/4 で消す単層AR。ガラス4%・シリコン35%。厚みで位相・屈折率で振幅</td><td class="num">理想でゼロ</td></tr>
           <tr><td>迷光 / ゴースト</td><td>反射で迷子になった光が像に混ざる。面間2回反射の像がゴースト、散乱のベールがフレア</td><td class="num">面数×R²で増える</td></tr>
-          <tr><td>積分球 / ロックイン</td><td>拡散反射で光を混ぜ切って測る球と、変調＋同期検波で帯域を絞る計測。√(B/B)のSNR改善</td><td class="num">1kHz→0.1Hzで100倍</td></tr>
+          <tr><td>積分球</td><td>内面の拡散反射で光を混ぜ切る「平均化器」。配光によらず全光束が測れる。QE測定・全光束測定の土台</td><td class="num">内面 ρ≈0.98</td></tr>
+          <tr><td>ロックイン</td><td>変調＋同期検波で帯域を絞る計測。√(B/B) の SNR 改善と 1/f からの避難を同時に買う。代金は時定数</td><td class="num">1kHz→0.1Hzで100倍</td></tr>
         </tbody>
       </table>
     </div>
@@ -701,3 +1145,4 @@ if("IntersectionObserver" in window){
 </script>
 </body>
 </html>
+
