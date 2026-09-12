@@ -21,6 +21,14 @@
       note: 'm=2・η=16,000 h。B10 = 16,000×0.325 ≒ 5,190 h。',
       design: function () { var d = M.defaults(); d.mweib = 2; d.etah = 16000; return d; }
     },
+    peck: {
+      note: '85 ℃・85 %RH。AF = (85/60)³ × exp(0.79/k·(1/313−1/358)) ≒ 2.8×40 ≒ 113 → 778 h。',
+      design: function () { var d = M.defaults(); d.ths = 85; d.rhs = 85; return d; }
+    },
+    cm: {
+      note: 'ΔT = 165 K（−40〜125 ℃）。AF = (165/30)² ≒ 30 → 3,650 回 ÷ 30 ≒ 121 回。',
+      design: function () { var d = M.defaults(); d.dts = 165; return d; }
+    },
     theta: {
       note: 'θsa = 15 K/W の放熱器。Tj = 40 + 2×(1.5+0.5+15) = 74 ℃。',
       design: function () { var d = M.defaults(); d.thsa = 15; return d; }

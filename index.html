@@ -196,11 +196,11 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       <dl class="spec">
         <div><dt>参考書</dt><dd>8<small>部</small></dd></div>
         <div><dt>ラボ</dt><dd>8<small>本</small></dd></div>
-        <div><dt>採点つき課題</dt><dd>110<small>問</small></dd></div>
+        <div><dt>採点つき課題</dt><dd>112<small>問</small></dd></div>
         <div><dt>依存</dt><dd>0<small>ブラウザのみ</small></dd></div>
         <div><dt>通信</dt><dd>0<small>手元で完結</small></dd></div>
-        <div><dt>自動検査</dt><dd>3,113<small>件 (Node)</small></dd></div>
-        <div class="spec-cap">課題数は ProcessLab 13 ＋ SemiLab 22 ＋ NandLab 25 ＋ PixelLab 12 ＋ PhotonLab 10 ＋ AnalogLab 10 ＋ OptoLab 10 ＋ QALab 8。検査は8本の <code>node tests/all.js</code> の合計（2026-09-13 時点）。</div>
+        <div><dt>自動検査</dt><dd>3,149<small>件 (Node)</small></dd></div>
+        <div class="spec-cap">課題数は ProcessLab 13 ＋ SemiLab 22 ＋ NandLab 25 ＋ PixelLab 12 ＋ PhotonLab 10 ＋ AnalogLab 10 ＋ OptoLab 10 ＋ QALab 10。検査は8本の <code>node tests/all.js</code> の合計（2026-09-13 時点）。</div>
       </dl>
     </div>
   </div>
@@ -637,12 +637,12 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       </div>
       <div class="pair">
         <div><span class="kind read">参考書</span><a href="第8部_信頼性と品質.html">信頼性と品質 ― 壊れ方を数える</a><small>FIT → Arrhenius → Weibull → Cpk · 8章</small></div>
-        <div><span class="kind lab">ラボ</span><a href="QALab/index.html">QALab</a><small>原始部品 ＝ 故障率と分布 · 3章 8問 · <a href="QALab/README.md">README</a></small></div>
+        <div><span class="kind lab">ラボ</span><a href="QALab/index.html">QALab</a><small>原始部品 ＝ 故障率と分布 · 3章 10問 · <a href="QALab/README.md">README</a></small></div>
       </div>
     </div>
     <div class="chap">
       <div><span class="cn">01-03</span><div class="ct"><a href="第8部_信頼性と品質.html#s1">バスタブ・FIT / 加速 / ワイブル</a></div><div class="cd">λの足し算と1/λ、AF=exp[(Ea/k)(1/Tu−1/Ts)]、B10=η(−ln0.9)^{1/m}。0故障試験に言える上限まで。</div></div>
-      <div class="do"><span class="lbl">QALab 第1章</span><a class="q" href="QALab/index.html?quest=mttf">MTTFを20年に</a><a class="q" href="QALab/index.html?quest=series">部品を減らして稼ぐ</a><a class="q" href="QALab/index.html?quest=accel">10年を500時間で</a><a class="q" href="QALab/index.html?quest=weib">B10を5,000時間に</a></div>
+      <div class="do"><span class="lbl">QALab 第1章</span><a class="q" href="QALab/index.html?quest=mttf">MTTFを20年に</a><a class="q" href="QALab/index.html?quest=series">部品を減らして稼ぐ</a><a class="q" href="QALab/index.html?quest=accel">10年を500時間で</a><a class="q" href="QALab/index.html?quest=weib">B10を5,000時間に</a><a class="q" href="QALab/index.html?quest=peck">湿気の10年を1,000hで</a><a class="q" href="QALab/index.html?quest=cm">はんだの10年を200回で</a></div>
     </div>
     <div class="chap">
       <div><span class="cn">04-05</span><div class="ct"><a href="第8部_信頼性と品質.html#s4">熱の会計 / TEC</a></div><div class="cd">Tj=Tamb+PΣθ とディレーティング。Qc=Qmax(1−ΔT/ΔTmax) ― 第5部「冷却の請求書」の支払い窓口。</div></div>
@@ -676,7 +676,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
         <li><b>センサの外へ:</b> 第5部 → PhotonLab<span class="r">10問</span><span class="why">像を結ばず数える一族（PMT・APD・MPPC）と共通の物差し。SNRの「最適な M」を自分で探す</span></li>
         <li><b>読み出しの中身:</b> 第6部 → AnalogLab<span class="r">10問</span><span class="why">列アンプ・TIA・チャージアンプの正体。gm と Vov の九九から差動対と帰還まで</span></li>
         <li><b>光の入り口:</b> 第7部 → OptoLab<span class="r">10問</span><span class="why">センサに届く光を自分で出す。第4部の 0.52%・190光子/px/s の出どころ</span></li>
-        <li><b>出荷まで:</b> 第8部 → QALab<span class="r">8問</span><span class="why">10年もつか・百万個そろうか。FIT・アレニウス・θ・Cpk ― 保証書の中身</span></li>
+        <li><b>出荷まで:</b> 第8部 → QALab<span class="r">10問</span><span class="why">10年もつか・百万個そろうか。FIT・アレニウス・θ・Cpk ― 保証書の中身</span></li>
       </ol>
     </div>
 
@@ -694,7 +694,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
         <li><b>第5部</b> 参考書 01〜08 → PhotonLab<span class="r">10問</span><span class="why">センサの外へ。PMT から光る半導体まで、検出器の系統樹を一巡</span></li>
         <li><b>第6部</b> 参考書 01〜08 → AnalogLab<span class="r">10問</span><span class="why">最後にアナログ。読み出し回路の中身を、ラザビーの道順で</span></li>
         <li><b>第7部</b> 参考書 01〜08 → OptoLab<span class="r">10問</span><span class="why">検出器の相手側。lx と W の換算からファイバとARコートまで</span></li>
-        <li><b>第8部</b> 参考書 01〜08 → QALab<span class="r">8問</span><span class="why">仕上げは信頼性と品質。作った物を10年・百万個の側から見直す</span></li>
+        <li><b>第8部</b> 参考書 01〜08 → QALab<span class="r">10問</span><span class="why">仕上げは信頼性と品質。作った物を10年・百万個の側から見直す</span></li>
       </ol>
     </div>
 
@@ -762,7 +762,7 @@ node PixelLab\tests\all.js        281 件
 node PhotonLab\tests\all.js       213 件
 node AnalogLab\tests\all.js       200 件
 node OptoLab\tests\all.js         201 件
-node QALab\tests\all.js           170 件</pre>
+node QALab\tests\all.js           206 件</pre>
       <div class="caveat">
         <span class="tag">配置の注意</span>
         <p>ProcessLab と PixelLab は <code>../SemiLab/src/*.js</code> を読み込む。<b>SemiLab・ProcessLab・PixelLab は必ずこのフォルダに兄弟として置く。</b>1本だけ別の場所へ動かすと、起動はするが物理が無くて動かない。</p>

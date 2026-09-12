@@ -39,7 +39,7 @@
   PhotonLab\                     第5部 ラボ ― 原始部品 ＝ 光子とη（3章 10問。R・NEP・D*・最適なM・MPPCの飽和・背景光・計数）
   AnalogLab\                     第6部 ラボ ― 原始部品 ＝ 二乗則のMOS 1個（3章 10問。Vov・gm・利得・GBW・TIA・kTC・SC）
   OptoLab\                       第7部 ラボ ― 原始部品 ＝ 光線とその会計（3章 10問。カメラ方程式・回折・ガウス・ファイバ・λ/4・エテンデュ）
-  QALab\                         第8部 ラボ ― 原始部品 ＝ 故障率と分布（3章 8問。MTTF・加速試験・B10・Tj・TEC・Cpk・誤差の合成）
+  QALab\                         第8部 ラボ ― 原始部品 ＝ 故障率と分布（3章 10問。MTTF・加速3種・B10・Tj・TEC・Cpk・誤差の合成）
 ```
 
 **ProcessLab と PixelLab は `../SemiLab/src/*.js` を読み込む。SemiLab と必ず兄弟に置く（PhotonLab の実行は単独で可、検査は SemiLab の道具を共用）。**
@@ -79,7 +79,7 @@ node PixelLab\tests\all.js        281 件
 node PhotonLab\tests\all.js       213 件
 node AnalogLab\tests\all.js       200 件
 node OptoLab\tests\all.js         201 件
-node QALab\tests\all.js           170 件
+node QALab\tests\all.js           206 件
 ```
 
 （件数は 2026-09-13 時点）

@@ -56,6 +56,22 @@ T('落ちるべきもの', () => {
   ok('accel: 125℃（AF78・1123h）では届かない', !Q.grade('accel', { design: a1 }).ok);
   const th1 = Object.assign({}, A.get('theta').design(), { thsa: 25 });
   ok('theta: 放熱器が小さいと Tj で落ちる', !Q.grade('theta', { design: th1 }).ok);
+
+  /* Peck: 槽の上限破りは落ちる、湿度が足りないと落ちる、Ea を盛るのは反則 */
+  const p1 = Object.assign({}, A.get('peck').design(), { ths: 110 });
+  ok('peck: 110℃ は槽の上限破りで落ちる', !Q.grade('peck', { design: p1 }).ok);
+  const p2 = Object.assign({}, A.get('peck').design(), { rhs: 70 });
+  ok('peck: 70%RH（1,393h）では落ちる', !Q.grade('peck', { design: p2 }).ok);
+  const p3 = Object.assign({}, A.get('peck').design(), { eah: 1.1 });
+  ok('peck: Ea を盛るのは反則', !Q.grade('peck', { design: p3 }).ok);
+
+  /* C-M: ΔT 不足と上限破りとべき盛り */
+  const m1 = Object.assign({}, A.get('cm').design(), { dts: 100 });
+  ok('cm: ΔT 100 K（329回）では落ちる', !Q.grade('cm', { design: m1 }).ok);
+  const m2 = Object.assign({}, A.get('cm').design(), { dts: 200 });
+  ok('cm: ΔT 200 K は槽の上限破りで落ちる', !Q.grade('cm', { design: m2 }).ok);
+  const m3 = Object.assign({}, A.get('cm').design(), { ncm: 4 });
+  ok('cm: べきを盛るのは反則', !Q.grade('cm', { design: m3 }).ok);
 });
 
 report();

@@ -22,10 +22,17 @@
  *   muoff  平均の規格中心からのずれ
  *   tol    規格の片幅（±tol）
  *   s1,s2  独立な誤差 [%]             合成は2乗和の平方根
+ *   rhu,rhs  使用/試験の相対湿度 [%]    Peck: AF = (RHs/RHu)^n · exp(Ea_h/k(1/Tu−1/Ts))
+ *   thu,ths  湿度試験の使用/試験温度 [℃]
+ *   npeck    湿度のべき n（Peck の古典値 ≈ 3）
+ *   eah      湿度側の Ea [eV]（Peck の古典値 ≈ 0.79）
+ *   dtu,dts  使用/試験の温度サイクル振幅 ΔT [K]
+ *   ncm      Coffin-Manson のべき（はんだ ≈ 2）
+ *   cyd      使用でのサイクル数 [回/日]
  *
  * 【約束】数値はすべてこの式から導出できる。乱数は使わない。
  * 【モデルの外】ワイブルの当てはめ（プロット）・TECの電流最適化・
- * 非正規分布・系統誤差は入れていない。
+ * 非正規分布・系統誤差・電圧/電流密度の加速は入れていない。
  */
 (function (global) {
   'use strict';
@@ -41,7 +48,9 @@
       pwr: 2, thjc: 1.5, thcs: 0.5, thsa: 30, tamb: 40,
       qmax: 5, dtmax: 70, dtc: 60, qload: 1.2,
       sigma: 0.1, muoff: 0.05, tol: 0.3,
-      s1: 0.3, s2: 0.6
+      s1: 0.3, s2: 0.6,
+      rhu: 60, rhs: 60, thu: 40, ths: 60, npeck: 3, eah: 0.79,
+      dtu: 30, dts: 60, ncm: 2, cyd: 1
     };
   }
 
@@ -91,12 +100,25 @@
 
     var stot = Math.sqrt(d.s1 * d.s1 + d.s2 * d.s2);
 
+    /* Peck（湿度加速）: 温度の分は同じアレニウス、湿度の分は RH のべき乗 */
+    var Thu = (d.thu || 0) + 273.15, Ths = (d.ths || 0) + 273.15;
+    var afh = Math.pow((d.rhs || 1) / (d.rhu || 1), d.npeck || 0)
+            * Math.exp((d.eah || 0) / KB_EV * (1 / Thu - 1 / Ths));
+    var testHh = d.lifey * HOURS_Y / afh;
+
+    /* Coffin-Manson（温度サイクル）: 寿命サイクル数 ∝ ΔT^(−n) → AF = (ΔTs/ΔTu)^n */
+    var afcm = Math.pow((d.dts || 1) / (d.dtu || 1), d.ncm || 0);
+    var cycUse = d.lifey * 365 * (d.cyd || 0);
+    var testCyc = afcm > 0 ? cycUse / afcm : Infinity;
+
     return {
       lamFit: lamFit, mttfH: mttfH, mttfY: mttfY,
       af: af, testH: testH, b10H: b10H,
       tj: tj, thTot: thTot,
       qc: qc, tecOk: tecOk,
-      cpk: cpk, ppm: ppm, stot: stot
+      cpk: cpk, ppm: ppm, stot: stot,
+      afh: afh, testHh: testHh,
+      afcm: afcm, cycUse: cycUse, testCyc: testCyc
     };
   }
 

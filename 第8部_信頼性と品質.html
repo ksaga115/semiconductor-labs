@@ -475,14 +475,19 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   </div>
 
   <div class="deep deep-note">
+    <span class="tag">くわしく — 温度以外の早送り: 湿度（Peck）と温度サイクル（Coffin-Manson）</span>
+    <p>アレニウスが早送りするのは「時間」ですが、湿気と熱膨張の故障には別の為替レートがあります。湿気（腐食・マイグレーション）は <span class="key">Peck の式: AF = (RH比)ⁿ × アレニウス</span>（古典値 n≈3・Ea≈0.79 eV）― 定番の <strong>85℃/85%RH</strong> は使用 40℃/60%RH に対し湿度で2.8倍×温度で40倍 ≒ <strong>113倍</strong>で、「85/85 を1,000時間 ≒ 10年の湿気保証」という業界の相場の出自がこの掛け算です。はんだやワイヤの熱膨張差疲労は回数で数え、<span class="key">Coffin-Manson: 寿命サイクル数 ∝ ΔT⁻ⁿ</span>（はんだで n≈2）― 温度サイクル試験 −40〜125℃（ΔT165K）は日常のΔT30Kに対し (165/30)² ≒ <strong>30倍の回数早送り</strong>。どちらも QALab で数値にできます。</p>
+  </div>
+
+  <div class="deep deep-note">
     <span class="tag">くわしく — 「10℃で寿命半分」の出自</span>
     <p>現場でよく聞く10℃則は、アレニウスの式の影です。Ea = 0.7 eV のとき 55→65℃ の AF はちょうど 2.1 ― <span class="key">室温付近・Ea 0.7 eV なら本当に「10℃で約2倍」</span>。ただし同じ 10℃ でも 100→110℃ では 1.8倍、Ea 0.4 eV なら 1.5倍と、温度域と機構でレートは動きます。法則ではなく<strong>特定の Ea と温度域での近似</strong>だと知っていれば、「10℃則で見積もりました」という資料のどこを確かめればいいかが分かります。電解コンデンサの寿命式（105℃品・10℃半減）が同じ形をしているのも偶然ではありません。</p>
   </div>
 
   <div class="lab-go">
     <span class="tag">手を動かす — QALab 第1章</span>
-    <p>Ea・使用温度・実証したい寿命を固定したまま、試験温度だけで「500時間以内」の請求書を払う。試験温度と必要時間の対数プロットが、ラボの盤面に描かれる。</p>
-    <div class="qs"><a href="QALab/index.html?quest=accel">10 年を 500 時間で実証する</a></div>
+    <p>Ea・使用温度・実証したい寿命を固定したまま、試験温度だけで「500時間以内」の請求書を払う。湿気は 85/85 の槽の中で、はんだは −40〜125℃ のサイクルで、同じ早送りを別の通貨で払う。</p>
+    <div class="qs"><a href="QALab/index.html?quest=accel">10 年を 500 時間で実証する</a><a href="QALab/index.html?quest=peck">湿気の 10 年を 1,000 時間で</a><a href="QALab/index.html?quest=cm">はんだの 10 年を 200 サイクルで</a></div>
   </div>
 </section>
 
@@ -655,7 +660,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
 
   <div class="caveat">
     <span class="tag">この部が単純化していること</span>
-    <p><strong>加速は温度のみです。</strong>湿度加速（Peck の式: 相対湿度のべき乗×アレニウス）、温度サイクルの Coffin-Manson（寿命 &prop; &Delta;T<sup>&minus;n</sup>、はんだで n&asymp;2）、電圧・電流密度の加速は式ごとモデル外。実際の認定はこれらの組み合わせです。</p>
+    <p><strong>加速は温度（アレニウス）・湿度（Peck）・温度サイクル（Coffin-Manson）の3本です。</strong>電圧・電流密度の加速、加速どうしの組み合わせ（サイクル＋湿度など）、Coffin-Manson の周波数・保持時間補正（Norris-Landzberg）はモデル外。実際の認定計画は規格原文で。</p>
     <p><strong>Cpk→ppm は正規分布、θ は一次元定常、TEC は一次近似です。</strong>裾の厚い分布・過渡熱・TEC の電流依存は、それぞれ実測とシミュレーションの領分。この部の式は「桁と方向を最初に当てる」ための一次見積もりとして使ってください。</p>
   </div>
 </section>

@@ -54,6 +54,27 @@ T('熱と TEC', () => {
   ok('負荷を下回れば負け判定', !evalWith({ dtc: 60, qload: 1.2 }).ev.tecOk);
 });
 
+T('Peck と Coffin-Manson', () => {
+  /* 85/85 の定番: 40℃60% 使用・n=3・Ea0.79 → AF ≒ 113、10年 ≒ 778h */
+  const { ev } = evalWith({ thu: 40, rhu: 60, ths: 85, rhs: 85, npeck: 3, eah: 0.79, lifey: 10 });
+  within('85/85 の AF ≒ 113', ev.afh, 113, 1.02);
+  within('10年 ≒ 778 h', ev.testHh, 778, 1.02);
+  /* 湿度が同じなら純アレニウス */
+  const t = evalWith({ thu: 40, rhu: 60, ths: 85, rhs: 60, npeck: 3, eah: 0.79 }).ev;
+  near('RH 同じなら AF = exp 項のみ', t.afh, Math.exp(0.79 / M.KB_EV * (1 / 313.15 - 1 / 358.15)), 1e-6);
+  /* RH 比のべき乗 */
+  near('湿度の分は (85/60)³', ev.afh / t.afh, Math.pow(85 / 60, 3), 1e-9);
+  /* C-M: (165/30)² = 30.25、3650回 → 120.7回 */
+  const c = evalWith({ dtu: 30, dts: 165, ncm: 2, cyd: 1, lifey: 10 }).ev;
+  near('AF = (165/30)²', c.afcm, 30.25, 1e-9);
+  near('使用サイクル = 10年×365', c.cycUse, 3650, 1e-9);
+  within('必要 121 回', c.testCyc, 120.7, 1.01);
+  /* ΔT を倍にすると回数は 1/4 */
+  const c2 = evalWith({ dtu: 30, dts: 120, ncm: 2, cyd: 1 }).ev;
+  const c1 = evalWith({ dtu: 30, dts: 60, ncm: 2, cyd: 1 }).ev;
+  near('ΔT ×2 で回数 1/4', c2.testCyc / c1.testCyc, 0.25, 1e-9);
+});
+
 T('Cpk と ppm ― 正規分布の検算', () => {
   /* Φ の実装が正しいことを既知の点で確かめる */
   near('Φ(0) = 0.5', M.phi(0), 0.5, 1e-7);

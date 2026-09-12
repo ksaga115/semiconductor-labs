@@ -35,7 +35,17 @@
     ['muoff', '中心のずれ', '', 0, 1],
     ['tol', '規格の片幅 ±', '', 0.05, 2],
     ['s1', '誤差 A', '%', 0.01, 5],
-    ['s2', '誤差 B', '%', 0.01, 5]
+    ['s2', '誤差 B', '%', 0.01, 5],
+    ['rhu', '使用の湿度', '%RH', 10, 100, true],
+    ['rhs', '湿度試験の湿度', '%RH', 10, 100, true],
+    ['thu', '湿度試験の使用温度', '℃', 0, 60, true],
+    ['ths', '湿度試験の温度', '℃', 25, 130, true],
+    ['npeck', 'Peck のべき n', '（古典値 3）', 1, 5],
+    ['eah', '湿度側の Ea', 'eV', 0.3, 1.2],
+    ['dtu', '使用のΔT', 'K（1日の温度振幅）', 5, 100],
+    ['dts', '試験のΔT', 'K', 30, 250],
+    ['ncm', 'Coffin-Manson の n', '（はんだ ≈ 2）', 1, 6],
+    ['cyd', '使用のサイクル', '回/日', 0.1, 100]
   ];
 
   function num(t) {
@@ -202,6 +212,8 @@
       ['加速係数 AF', ev.af.toFixed(1) + '（' + S.design.tuse + '→' + S.design.tstr + '℃・Ea ' + S.design.ea + 'eV）'],
       ['必要な試験時間', ev.testH.toFixed(0) + ' h（寿命 ' + S.design.lifey + ' 年ぶん）'],
       ['ワイブル B10', ev.b10H.toFixed(0) + ' h（m=' + S.design.mweib + '）'],
+      ['湿度加速（Peck）', 'AF ' + ev.afh.toFixed(1) + ' → ' + ev.testHh.toFixed(0) + ' h（' + S.design.ths + '℃/' + S.design.rhs + '%RH）'],
+      ['温度サイクル（C-M）', 'AF ' + ev.afcm.toFixed(1) + ' → ' + ev.testCyc.toFixed(0) + ' 回（ΔT ' + S.design.dts + ' K）'],
       ['θ合計 / Tj', ev.thTot.toFixed(1) + ' K/W / ' + ev.tj.toFixed(1) + ' ℃', ev.tj > 85],
       ['TEC の吸熱 Qc(ΔT)', ev.qc.toFixed(2) + ' W（負荷 ' + S.design.qload + ' W）', !ev.tecOk],
       ['Cpk', ev.cpk.toFixed(3)],
