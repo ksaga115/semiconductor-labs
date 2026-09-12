@@ -363,11 +363,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       </div>
 
       <div class="guide">
-        <div class="guide-h"><span>読み方</span><span>図25点＋補助図・全部で 75〜100 分（下の「かんたん / くわしい」でも変わります）</span></div>
+        <div class="guide-h"><span>読み方</span><span>図25点＋補助図・全部で 80〜110 分（下の「かんたん / くわしい」でも変わります）</span></div>
         <div class="guide-b">
           <div><b>一本道だけ追う</b><span>00 から 07 まで、番号のついた段を順に。光が数値になるまでが繋がります。</span><em>16 〜 22 分</em></div>
           <div><b>限界の理由まで</b><span>番号のない節（解像の限界・位相差AF・CCD・列の回路・HDR・ノイズ・PTC）を足す。「なぜそこまでしかできないか」が入ります。</span><em>40 〜 55 分</em></div>
-          <div><b>床下まで開ける</b><span>付録 A〜D と SPAD・イベントベース、むすび。トンネル・短チャネル・暗電流・ノイズの起源から、数える画素まで。</span><em>90 〜 115 分</em></div>
+          <div><b>床下まで開ける</b><span>付録 A〜D と SPAD・PMT・APD・MPPC・イベントベース、むすび。トンネル・短チャネル・暗電流・ノイズの起源から、数える検出器の一族まで。</span><em>100 〜 125 分</em></div>
         </div>
       </div>
     </div>
@@ -444,6 +444,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li><a href="#sc"><span class="n">C</span><span>暗電流の出どころ</span></a></li>
     <li><a href="#sd"><span class="n">D</span><span>ばらつきの起源</span></a></li>
     <li><a href="#sspad"><span class="n">—</span><span>降伏の先（SPAD）</span></a></li>
+    <li><a href="#spmt"><span class="n">—</span><span>PMT・APD・MPPC</span></a></li>
     <li><a href="#sevt"><span class="n">—</span><span>イベントベース</span></a></li>
     <li class="dom"><span>むすび</span></li>
     <li><a href="#send"><span class="n">—</span><span>4つの境目に戻る</span></a></li>
@@ -486,6 +487,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li><a href="#sc"><span class="n">C</span><span>暗電流の出どころ</span></a></li>
     <li><a href="#sd"><span class="n">D</span><span>ばらつきの起源</span></a></li>
     <li><a href="#sspad"><span class="n">—</span><span>降伏の先（SPAD）</span></a></li>
+    <li><a href="#spmt"><span class="n">—</span><span>PMT・APD・MPPC</span></a></li>
     <li><a href="#sevt"><span class="n">—</span><span>イベントベース</span></a></li>
     <li class="dom"><span>むすび</span></li>
     <li><a href="#send"><span class="n">—</span><span>4つの境目に戻る</span></a></li>
@@ -2571,7 +2573,205 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   <div class="caveat">
     <span class="tag">この節が単純化していること</span>
     <p><strong>数値は桁の目安です。</strong>V<sub>ex</sub>（数V）、デッドタイム（数十ns）、PDE・DCR は素子と波長・温度で桁が動きます。このページの仮想センサの諸元とは独立の話として読んでください。</p>
-    <p><strong>アナログSiPM（SPADの並列和）や、ガイガー確率・ジッタの中身（電界分布に依存）には踏み込みません。</strong>入口は下の Cova らの総説が定番です。</p>
+    <p><strong>ガイガー確率・ジッタの中身（電界分布に依存）には踏み込みません。</strong>入口は下の Cova らの総説が定番です。SPADの並列和（SiPM / MPPC）は、次の節「光を数える仲間たち」で扱います。</p>
+  </div>
+</section>
+
+<!-- ================= 光電検出のファミリー ================= -->
+<section class="stage" id="spmt">
+  <div class="stage-head"><span class="stage-num">—</span>
+    <h2>光を数える仲間たち — PMT・APD・MPPC</h2></div>
+  <p class="lede">このページの検出器はすべて<span class="key">内部光電効果</span> ― 光子がシリコンの中で電子・正孔対を作る ― の上に建っていました。しかし「光を電気にして数える」道具はそれだけではありません。電子を<span class="key">真空へ叩き出して</span>増やす光電子増倍管（PMT）、なだれを<span class="key">壊れない範囲で</span>使うAPD、SPADを<span class="key">並べて足す</span>MPPC。イメージセンサの外に広がる光検出器の一族を、このページの言葉のまま並べて読みます。どれも「光子を電子にし、ノイズに埋もれる前に増やすか、数える」という同じ一つの問題への別解です。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>外部光電効果 — 電子を真空へ出す</h3>
+      <p>金属や半導体の表面に光を当てると、光子のエネルギーが<span class="key">表面の壁（仕事関数、半導体光電面では E<sub>g</sub>＋電子親和力）</span>を超えるとき、電子が<strong>物質の外＝真空中へ</strong>飛び出します。アインシュタインが1905年に説明した外部光電効果で、02の内部光電効果（結晶の中で対を作る。壁は E<sub>g</sub> だけ）とは壁の高さが違います。この「真空へ出た1個の電子」から始まるのがPMTです。</p>
+      <p>電子を出す膜を<strong>光電面</strong>と呼びます。代表はアンチモンとアルカリ金属の化合物で、バイアルカリ光電面は400nm付近で量子効率25%前後（高QE品で40%級）。赤外側はマルチアルカリで850nm付近まで、NEA型のGaAs系でさらに先まで届きますが、<span class="key">シリコンのQE（ピーク80〜90%）には及びません</span>。PMTの強さはQEではなく、その後の増やし方にあります。</p>
+    </div>
+    <div class="body-col">
+      <h3>ダイノード — 二次電子放出の雪だるま</h3>
+      <p>飛び出した光電子を100V程度の電位差で加速して電極（<strong>ダイノード</strong>）にぶつけると、1個の電子が<span class="key">3〜5個の二次電子</span>を叩き出します。これを8〜12段つなぐと、利得は &delta;<sup>n</sup> ― たとえば &delta;=4 で10段なら 4<sup>10</sup> ≒ 10<sup>6</sup>。<strong>光電子1個が百万個になってアノードに届く</strong>ので、後段の回路ノイズが問題にならず、光子1個が素のパルスとして見えます。SPADと同じ「1個を数える」に、なだれではなく真空中の雪だるまで到達しているわけです。</p>
+      <p>増倍が<strong>ほぼ無雑音</strong>（後述のAPDのような過剰雑音がごく小さい）なのもダイノードの美点です。代償は、電子が真空を飛ぶこと ― <span class="key">磁場で軌道が曲がる</span>、1〜2kVの高圧が要る、ガラス管なので大きく割れる、という形で現れます。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">PMT — 光子1個を百万個の電子にする管</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 210" role="img" aria-label="光電子増倍管の断面模式図。左から光子が光電面に当たり光電子1個が出て、ジグザグに並んだダイノードで段ごとに3から5倍に増え、右端のアノードに百万個級の電子が届く。" style="min-width:700px;width:100%;display:block">
+        <rect x="30" y="30" width="700" height="150" rx="40" fill="none" stroke="var(--line)" stroke-width="1.5"/>
+        <text x="60" y="22" font-size="9" fill="var(--ink-3)">真空のガラス管</text>
+        <path d="M8 105 H52" stroke="var(--photon)" stroke-width="2"/>
+        <path d="M44 100 L54 105 L44 110 Z" fill="var(--photon)"/>
+        <text x="8" y="96" font-size="10" fill="var(--photon-2)" font-weight="600">光子</text>
+        <rect x="58" y="60" width="8" height="90" fill="var(--volt)"/>
+        <text x="62" y="168" font-size="10" fill="var(--volt)" text-anchor="middle">光電面</text>
+        <text x="62" y="182" font-size="9" fill="var(--ink-3)" text-anchor="middle">QE 25%級</text>
+        <g fill="var(--si)">
+          <rect x="130" y="130" width="56" height="9" rx="2"/>
+          <rect x="210" y="62" width="56" height="9" rx="2"/>
+          <rect x="290" y="130" width="56" height="9" rx="2"/>
+          <rect x="370" y="62" width="56" height="9" rx="2"/>
+          <rect x="450" y="130" width="56" height="9" rx="2"/>
+          <rect x="530" y="62" width="56" height="9" rx="2"/>
+        </g>
+        <text x="358" y="185" font-size="10" fill="var(--ink-2)" text-anchor="middle">ダイノード（1個の電子 → 3〜5個。段ごとに +100V 程度）</text>
+        <g stroke="var(--electron)" fill="none" stroke-width="1.3">
+          <path d="M66 105 Q100 118 130 130"/>
+          <path d="M158 128 Q184 92 212 70"/>
+          <path d="M162 128 Q192 96 220 70"/>
+          <path d="M238 70 Q262 100 292 128"/>
+          <path d="M244 70 Q270 102 300 128"/>
+          <path d="M250 70 Q278 104 308 128"/>
+          <path d="M318 128 Q344 96 372 70"/>
+          <path d="M324 128 Q350 98 380 70"/>
+          <path d="M330 128 Q356 100 388 70"/>
+          <path d="M336 128 Q362 100 396 70"/>
+          <path d="M398 70 Q424 100 452 128"/>
+          <path d="M404 70 Q430 102 460 128"/>
+          <path d="M410 70 Q436 102 468 128"/>
+          <path d="M416 70 Q442 104 476 128"/>
+          <path d="M420 70 Q448 104 484 128"/>
+          <path d="M478 128 Q506 98 534 70"/>
+          <path d="M484 128 Q512 98 542 70"/>
+          <path d="M490 128 Q518 100 550 70"/>
+          <path d="M496 128 Q524 100 558 70"/>
+          <path d="M502 128 Q530 102 566 70"/>
+          <path d="M508 128 Q536 102 574 70"/>
+          <path d="M576 70 Q610 96 648 104"/>
+          <path d="M580 70 Q614 100 648 108"/>
+          <path d="M584 70 Q618 102 648 112"/>
+          <path d="M588 72 Q622 104 648 116"/>
+        </g>
+        <text x="158" y="155" font-size="9" fill="var(--electron-2)" text-anchor="middle">e&minus; ×1</text>
+        <text x="318" y="155" font-size="9" fill="var(--electron-2)" text-anchor="middle">×十</text>
+        <text x="478" y="155" font-size="9" fill="var(--electron-2)" text-anchor="middle">×千</text>
+        <rect x="650" y="80" width="10" height="50" fill="var(--warn)"/>
+        <text x="655" y="150" font-size="10" fill="var(--warn)" text-anchor="middle">アノード</text>
+        <text x="655" y="164" font-size="9" fill="var(--ink-3)" text-anchor="middle">×10⁶〜10⁷</text>
+      </svg>
+    </div>
+    <figcaption>電子は段ごとに &times;&delta;（3〜5）。10段で &delta;<sup>10</sup> ＝ 10<sup>6</sup>級になり、光子1個がオシロで見えるパルスになる。図の電子の本数は雰囲気で、実際は段ごとに桁で増えていきます。</figcaption>
+  </figure>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — 20インチの目玉：スーパーカミオカンデ</span>
+    <p>PMTにしかできない芸当のひとつが<strong>大面積</strong>です。半導体の受光面はウェーハとコストに縛られますが、真空管は吹けば大きくなる ― その極端が、岐阜県神岡の地下1000mで直径50cm（20インチ）の光電面を約1.1万本並べたスーパーカミオカンデです（浜松ホトニクス製。前身カミオカンデ用に開発された当時世界最大のPMT）。5万トンの純水中を走る荷電粒子が出すごく淡いチェレンコフ光を、この目玉たちが光子数個のレベルで捉えます。</p>
+    <p>1987年、カミオカンデが超新星1987Aからのニュートリノ11個を捉えたことが2002年の小柴昌俊のノーベル賞に、スーパーカミオカンデでのニュートリノ振動の発見が2015年の梶田隆章のノーベル賞につながりました。<span class="key">「光子を1個ずつ数える」という03の話の延長線上に、素粒子物理の観測装置がある</span>わけです。</p>
+  </div>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — 時間を写すカメラ：ストリークカメラ</span>
+    <p>光電面から出た電子が真空中を飛ぶ ― この仕組みには、増やす以外にもうひとつ使い道があります。<strong>電子は電圧で曲げられる</strong>ことです。細いスリット状に受けた光を光電面で電子に変え、飛んでいる最中に<span class="key">高速に掃引する偏向電圧</span>をかけると、早く来た電子と遅く来た電子が<strong>着地する場所（縦位置）</strong>で分かれます。到着時刻という「時間軸」を、蛍光面の上の「空間軸」に描き直すわけで、この縞（ストリーク）を撮るのがストリークカメラです。</p>
+    <p>電気回路のサンプリングでは届かない<strong>サブピコ秒〜100フェムト秒級の時間分解能</strong>が光学的に得られるので、超短パルスレーザーの波形計測、蛍光寿命、レーザー核融合のプラズマ診断などで使われます。SPADの節の dToF が「時刻を1点測る」道具なら、こちらは<span class="key">時間の形をまるごと1枚に写す</span>道具 ― 「光を数える」一族の中で、時間分解のチャンピオンです。</p>
+  </div>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>APD — なだれを「線形増幅器」として使う</h3>
+      <p>「降伏の先」の節では、降伏電圧より<b>上</b>で待って1個を数えるSPADを見ました。APD（アバランシェフォトダイオード）はその手前、<span class="key">降伏電圧のすこし下</span>で動かします。なだれは自己維持にならず、入った電子1個あたり平均 M 個（実用で10〜100）に増えて止まる ― つまり<strong>線形の増幅器</strong>です。百V級の逆バイアスで、PINフォトダイオードとSPADのあいだを埋めます。</p>
+      <p>ただしなだれの増え方は確率的で、<strong>増倍そのものがノイズを足します</strong>。これを過剰雑音指数 F で表し、マッキンタイアの式でこう書けます:</p>
+      <div class="eq">F(M) = kM + (1 &minus; k)(2 &minus; 1/M)</div>
+      <p>k は正孔と電子のなだれの起こしやすさの比（イオン化率比）。<span class="key">k が小さいほど（＝片方のキャリアだけがなだれを担うほど）静かに増える</span>。シリコンは k が0.1以下と小さく APD 向きの材料で、光通信用の InGaAs/InP 系は k が0.4級と大きく、そのぶん設計が難しくなります。もうひとつの実務の要点は温度で、<strong>降伏電圧が温度で動くので、M を保つにはバイアスの温度補償が要ります</strong>。</p>
+    </div>
+    <div class="body-col">
+      <h3>MPPC — SPADを並べて「数」を出す</h3>
+      <p>SPADの出力は「来た・来ない」の1bitで、同時に2個来ても区別できません。そこで<span class="key">小さなSPADセルを数百〜数万個並べ、それぞれにクエンチ抵抗を直列に付けて、全部を並列に足します</span>。これがSiPM ― 浜松ホトニクスの製品名で<strong>MPPC</strong>（Multi-Pixel Photon Counter）。同時に光子が来ると<strong>発火したセルの数だけ電荷が出る</strong>ので、出力パルスの高さが 1 p.e., 2 p.e., 3 p.e.… と<span class="key">飛び飛びに揃い、ヒストグラムに櫛の歯が立ちます</span>。1個ずつ数える能力を保ったまま、「何個来たか」というアナログ量が測れるわけです。</p>
+      <p>利得は10<sup>5</sup>〜10<sup>6</sup>とPMT級なのに、動作電圧は数十V、磁場は平気で、掌に載る ― <strong>MRIと同居するPET、車載LiDAR、素粒子実験の検出器</strong>で、PMTの椅子を次々に置き換えている理由です。固有の弱点は3つ: <b>クロストーク</b>（なだれが発する二次光子が隣のセルを発火させる。セル間の溝＝トレンチで抑える）、<b>アフターパルス</b>（トラップに捕まった電荷が遅れて再発火させる。付録Dのトラップの、また別の顔）、そして<b>飽和</b>（セル数が上限。同じセルに2個来ても1個ぶんしか出ないので、明るいほど非線形になる）。DCRと温度依存（降伏電圧が数十mV/℃で動く）はSPAD単体と同じ性質を引き継ぎます。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">MPPC — セルの並列和が「光子の個数」になる</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 230" role="img" aria-label="MPPCの模式図。左は4×4のSPADセルの配列で、各セルにクエンチ抵抗が付き全セルが1本の出力線に並列接続されている。3つのセルに光子が当たって発火している。右は出力パルスの高さが1光電子、2光電子、3光電子と飛び飛びに揃う様子。" style="min-width:700px;width:100%;display:block">
+        <g>
+          <text x="150" y="20" font-size="10" fill="var(--ink-2)" text-anchor="middle" font-weight="600">SPADセルの配列（各セル＝SPAD＋クエンチ抵抗）</text>
+          <g stroke="var(--line)" fill="var(--surface-2)">
+            <rect x="60" y="30" width="42" height="42"/><rect x="106" y="30" width="42" height="42"/><rect x="152" y="30" width="42" height="42"/><rect x="198" y="30" width="42" height="42"/>
+            <rect x="60" y="76" width="42" height="42"/><rect x="106" y="76" width="42" height="42"/><rect x="152" y="76" width="42" height="42"/><rect x="198" y="76" width="42" height="42"/>
+            <rect x="60" y="122" width="42" height="42"/><rect x="106" y="122" width="42" height="42"/><rect x="152" y="122" width="42" height="42"/><rect x="198" y="122" width="42" height="42"/>
+          </g>
+          <g fill="var(--photon-soft)" stroke="var(--photon)">
+            <rect x="106" y="30" width="42" height="42"/><rect x="152" y="76" width="42" height="42"/><rect x="60" y="122" width="42" height="42"/>
+          </g>
+          <text x="127" y="56" font-size="12" fill="var(--photon-2)" text-anchor="middle">&#9889;</text>
+          <text x="173" y="102" font-size="12" fill="var(--photon-2)" text-anchor="middle">&#9889;</text>
+          <text x="81" y="148" font-size="12" fill="var(--photon-2)" text-anchor="middle">&#9889;</text>
+          <text x="150" y="184" font-size="9.5" fill="var(--ink-3)" text-anchor="middle">3セルが発火 → 3セルぶんの電荷が出る</text>
+          <path d="M240 100 H286" stroke="var(--ink-2)" stroke-width="1.5"/>
+          <path d="M278 95 L288 100 L278 105 Z" fill="var(--ink-2)"/>
+          <text x="263" y="92" font-size="9" fill="var(--ink-3)" text-anchor="middle">並列和</text>
+        </g>
+        <g>
+          <text x="520" y="20" font-size="10" fill="var(--ink-2)" text-anchor="middle" font-weight="600">出力パルスの高さは飛び飛びに揃う</text>
+          <path d="M310 170 H740" stroke="var(--line)" stroke-width="1"/>
+          <g stroke="var(--electron)" stroke-width="2" fill="none">
+            <path d="M330 170 L338 130 L346 150 L360 170"/>
+            <path d="M400 170 L408 130 L416 150 L430 170"/>
+            <path d="M470 170 L478 90 L486 122 L504 170"/>
+            <path d="M560 170 L568 130 L576 150 L590 170"/>
+            <path d="M630 170 L638 50 L646 96 L672 170"/>
+          </g>
+          <g stroke="var(--ink-3)" stroke-dasharray="3 3" stroke-width="1">
+            <path d="M310 130 H740"/><path d="M310 90 H740"/><path d="M310 50 H740"/>
+          </g>
+          <text x="738" y="126" font-size="9" fill="var(--ink-3)" text-anchor="end">1 p.e.</text>
+          <text x="738" y="86" font-size="9" fill="var(--ink-3)" text-anchor="end">2 p.e.</text>
+          <text x="738" y="46" font-size="9" fill="var(--ink-3)" text-anchor="end">3 p.e.</text>
+          <text x="520" y="196" font-size="9.5" fill="var(--ink-3)" text-anchor="middle">高さがセル1個ぶんの整数倍 ― ヒストグラムに櫛の歯が立つ（p.e. = 光電子）</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>1セルの出力は「発火した／しない」の一定電荷。だから同時に来た光子の数が、パルスの高さの<strong>段</strong>として読める。これが「フォトンカウンティング」を名乗る理由で、PTCが分散から電子を数えたのと同じく、<span class="key">離散性そのものを目盛りにしています</span>。</figcaption>
+  </figure>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">FAMILY — 同じ問題への5つの答え</span></div>
+    <div class="scroll-x">
+      <table>
+        <thead><tr><th></th><th>PIN PD</th><th>APD</th><th>SPAD</th><th>MPPC (SiPM)</th><th>PMT</th></tr></thead>
+        <tbody>
+          <tr><td>増やし方</td><td>増やさない</td><td>なだれ（線形）</td><td>なだれ（自己維持）</td><td>SPADの並列和</td><td>二次電子放出</td></tr>
+          <tr><td>利得</td><td class="num">1</td><td class="num">10〜100</td><td class="num">&mdash;（1bit）</td><td class="num">10⁵〜10⁶</td><td class="num">10⁶〜10⁷</td></tr>
+          <tr><td>出力</td><td>連続（電流）</td><td>連続（電流）</td><td>来た/来ない</td><td>光子の個数</td><td>個数〜連続</td></tr>
+          <tr><td>電圧</td><td class="num">〜数V</td><td class="num">百V級</td><td class="num">V<sub>BD</sub>＋数V</td><td class="num">数十V</td><td class="num">1〜2 kV</td></tr>
+          <tr><td>増倍の雑音</td><td>なし</td><td>F(M) = kM＋…</td><td>&mdash;</td><td>クロストーク・アフターパルス</td><td>ごく小さい</td></tr>
+          <tr><td>磁場</td><td>平気</td><td>平気</td><td>平気</td><td>平気</td><td><b>弱い</b></td></tr>
+          <tr><td>面積</td><td>〜cm²</td><td>〜cm²</td><td>小さい</td><td>mm²〜cm²</td><td><b>〜20インチ</b></td></tr>
+          <tr><td>出番</td><td>照度計・受光全般</td><td>LiDAR・光通信</td><td>dToF・蛍光寿命</td><td>PET・LiDAR・素粒子</td><td>分析装置・素粒子・血液検査</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <figcaption>下に行くほど「暗い・速い・1個ずつ」に強く、上に行くほど「明るい・素直・安い」。<span class="key">選ぶ軸は03と同じで、信号の床（回路ノイズ）より先に信号を増やせるか、そして幾つ来たか数える必要があるか</span>です。数値はいずれも桁の代表値。</figcaption>
+  </figure>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — 検出器の物差し：感度 R・NEP・D*</span>
+    <p>イメージセンサの外の世界では、検出器を e&minus; や DN ではなく<strong>ワットとアンペア</strong>で語ります。物差しは3つ。まず<strong>感度（Responsivity）R</strong>は「1Wの光で何Aの電流が出るか」:</p>
+    <div class="eq">R = &eta;q/h&nu; = &eta;&middot;&lambda;[nm] / 1240　[A/W]</div>
+    <p>量子効率 &eta; と波長だけで決まります。&eta;=0.85・660nm なら 0.45 A/W。PMTのカタログにある「陰極感度 80 mA/W（400nm）」を逆算すると QE 25% ― <span class="key">同じ式が管球にも半導体にも効きます</span>。</p>
+    <p>次に<strong>NEP（雑音等価パワー）</strong>。検出器自身のノイズ電流（暗電流のショットノイズ &radic;(2qI<sub>d</sub>)、抵抗の熱雑音 &radic;(4kT/R<sub>sh</sub>) など。付録Dの床と同じ住人です）を R で割って光の単位に戻したもので、「S/N=1 になる光のパワー」（W/&radic;Hz）。<strong>D*（ディースター）</strong>はそれを面積で正規化した &radic;A/NEP で、<span class="key">大きさの違う素子を同じ土俵で比べる</span>ための数字です（単位 cm&middot;&radic;Hz/W はジョーンズと呼ばれます）。</p>
+    <p>手で一度たどっておくと: 暗電流 10 pA なら ショットノイズは &radic;(2&middot;1.6&times;10<sup>&minus;19</sup>&middot;10<sup>&minus;11</sup>) ≒ 1.8&times;10<sup>&minus;15</sup> A/&radic;Hz。R=0.5 A/W で割って NEP ≒ 3.6&times;10<sup>&minus;15</sup> W/&radic;Hz ― フェムトワットの光が測れる勘定です。<span class="key">暗電流を1桁下げると NEP は半桁（&radic;10）しか下がらない</span>のは、PTCでノイズが&radic;でしか効かなかったのと同じ算数です。</p>
+  </div>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — 赤外へ：バンドギャップの壁と冷却の理由</span>
+    <p>シリコンの感度は E<sub>g</sub>=1.12 eV が決める 1107nm（&lambda;<sub>c</sub>=1240/E<sub>g</sub>）で終わります。その先へ行く唯一の道は<strong>バンドギャップの狭い材料に乗り換える</strong>こと: InGaAs（E<sub>g</sub>≒0.74 eV, &lambda;<sub>c</sub>≒1.7&micro;m。組成を歪ませた拡張型で〜2.6&micro;m）、Ge（0.66 eV, 〜1.9&micro;m）、InSb（77Kで〜5.5&micro;m）、そして組成で E<sub>g</sub> を1〜14&micro;m超まで自由に選べる HgCdTe。光通信の1.31/1.55&micro;m帯やSWIRカメラが InGaAs の領分です。</p>
+    <p>ただし壁を低くした代償は、このページの読者ならもう言えるはずです。<strong>付録Cの暗電流の式は肩に E<sub>g</sub> を持っています</strong>（拡散成分 &prop; n<sub>i</sub>&sup2; &prop; exp(&minus;E<sub>g</sub>/kT)、生成成分 &prop; n<sub>i</sub> &prop; exp(&minus;E<sub>g</sub>/2kT)）。<span class="key">E<sub>g</sub> を半分にすると、指数の肩が半分になる ― 暗電流は桁で増えます</span>。だから InGaAs カメラは電子冷却（TE）を背負い、中赤外の InSb は77Kまで冷やす。冷却は贅沢品ではなく、狭いギャップを選んだ瞬間に決まる物理の請求書です。逆に「シリコンが室温で使えている」のは、E<sub>g</sub>=1.12 eV が可視光にちょうどよく、かつ暗電流的にも余裕がある、幸運な一致だと分かります。</p>
+  </div>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — シンチレータと組む：PETの中の光子計数</span>
+    <p>X線やガンマ線は光検出器では直接見えません（エネルギーが高すぎて、可視の検出器を素通りするか壊します）。そこで<strong>シンチレータ</strong> ― 放射線1個を吸収して、そのエネルギーに比例した数の可視光子に変換する結晶 ― を検出器の前に置きます。NaI(Tl) は 1keV あたり約38光子・減衰230ns、PET用の LYSO は約30光子・約40ns、BGO は約8光子・300ns。<span class="key">検出器に届く光はまとめて数百〜数千光子</span>なので、受けるのはPMTかMPPCの仕事になります。</p>
+    <p>PETでは、体内の陽電子が電子と対消滅して<strong>511keVのガンマ線を正反対の2方向へ</strong>出します。これをリング状に並べたシンチレータ＋光検出器で<strong>同時計数</strong>し、2点を結ぶ線の上に線源があると分かる。エネルギー分解能は光子計数の統計が床を決めます ― 511keV&times;30光子/keV≒1.5万光子、集光と PDE で2千個の光電子が残るなら、統計だけで FWHM 2.35/&radic;N ≒ 5%。実測が10%級なのは結晶の固有分が乗るからです。さらに<strong>TOF-PET</strong>は2つの検出器への到着時刻差から線上の位置まで絞ります ― &Delta;x = c&middot;&Delta;t/2、<span class="key">SPADの節の「1ns＝15cm」とまったく同じ式</span>で、数百psの時間分解能が数cmの位置情報になります。MRIと同居する装置でMPPCが必須になるのは、この節の表の「磁場」の行が理由です。</p>
+  </div>
+
+  <div class="caveat">
+    <span class="tag">この節が単純化していること</span>
+    <p><strong>数値はすべて桁の代表値です。</strong>光電面のQE・ダイノードの &delta;・APDのk・MPPCのPDEやDCRは、素子の型式と波長・温度で大きく動きます。設計に使う数字は必ずデータシートから。</p>
+    <p><strong>PMTの電子光学（収集効率・TTS＝走行時間ばらつきの中身）、APDの構造（リーチスルー型など）、MPPCの飽和の式には踏み込みません。</strong>PMTとMPPCの一次資料としては、浜松ホトニクスが無償公開している『光電子増倍管 ハンドブック』と各技術資料が事実上の教科書です。</p>
   </div>
 </section>
 
@@ -2899,6 +3099,13 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>曖昧距離</td><td>iToF で位相が 2&pi; を一周して距離が巻き戻る間隔 c/(2f)。2周波数の併用で解く</td><td class="num">1.5 m @100 MHz</td></tr>
           <tr><td>Cu-Cu ハイブリッド接合</td><td>バンプを使わず、絶縁膜と銅パッドの平面同士を直接貼り合わせる接続。画素直下の縦配線を可能にした</td><td class="num">ピッチ数µm→1µm級</td></tr>
           <tr><td>4:2:0</td><td>色差 Cb・Cr を縦横半分に間引く記法。目の色解像度の低さを使う ― Bayer と同じ判断の保存版</td><td class="num">データ量 1/2</td></tr>
+          <tr><td>外部光電効果 / 光電面</td><td>光子が電子を物質の外（真空）へ叩き出す現象と、そのための膜。PMT の入口。壁は仕事関数（半導体光電面では E<sub>g</sub>＋電子親和力）</td><td class="num">QE 25%級（バイアルカリ）</td></tr>
+          <tr><td>ダイノード</td><td>加速した電子1個から二次電子を3〜5個叩き出す電極。8〜12段の雪だるまで PMT の利得 &delta;<sup>n</sup> を作る</td><td class="num">10⁶〜10⁷</td></tr>
+          <tr><td>APD / 過剰雑音指数 F</td><td>降伏の手前でなだれを線形増幅（M=10〜100）に使うフォトダイオードと、その増倍が足すノイズ F(M)=kM+(1−k)(2−1/M)。k はイオン化率比で、小さいほど静か</td><td class="num">Si は k≲0.1</td></tr>
+          <tr><td>MPPC（SiPM）</td><td>クエンチ抵抗つき SPAD セルの並列和。発火セル数＝光子数がパルス高の段として読める。SiPM が一般名、MPPC は浜松ホトニクスの製品名</td><td class="num">利得 10⁵〜10⁶・数十V</td></tr>
+          <tr><td>クロストーク /<br>アフターパルス</td><td>なだれの二次光子が隣セルを発火させる（トレンチで抑制）／トラップに捕まった電荷が遅れて再発火させる。MPPC 固有の偽カウント</td><td class="num">数%級</td></tr>
+          <tr><td>感度 R / NEP / D*</td><td>R=&eta;&lambda;/1240 [A/W]。NEP はノイズ電流÷R（S/N=1 の光パワー）、D*=&radic;A/NEP は面積で正規化した比較用の物差し</td><td class="num">W/&radic;Hz・ジョーンズ</td></tr>
+          <tr><td>シンチレータ</td><td>放射線1個をエネルギー比例の可視光子団に変える結晶。NaI(Tl) 約38光子/keV、LYSO 約30、BGO 約8。PMT・MPPC と組んで X線・ガンマ線を数える</td><td class="num">数百〜数千光子/事象</td></tr>
         </tbody>
       </table>
     </div>
@@ -2938,6 +3145,8 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
             <td>ノイズと暗電流を、科学計測の要求水準で扱った本。付録CとD、および08の「どれを減らせばいいのか」に対応します。</td></tr>
           <tr><td>Introduction to<br>Fourier Optics</td><td>Joseph W. Goodman<br>McGraw-Hill / W. H. Freeman</td>
             <td><strong>「解像の限界」の後ろ盾です。</strong>回折のMTFの閉じた式、標本化と折り返し、たたみこみとフーリエ変換の関係が、光学の側から体系的に出てきます。</td></tr>
+          <tr><td>光電子増倍管<br>ハンドブック</td><td>浜松ホトニクス<br>（同社サイトで無償公開）</td>
+            <td><strong>「光を数える仲間たち」の一次資料です。</strong>光電面の種類とQE、ダイノードの利得、TTS、暗計数、シンチレーション計数まで ― PMT を実務で使うための事実上の教科書。MPPC・APD にも同様の技術資料があります。</td></tr>
         </tbody>
       </table>
     </div>
@@ -2973,6 +3182,10 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
             <td>付録A / C。トラップ支援トンネルを、デバイスシミュレータに組み込める形にまとめた仕事です。</td></tr>
           <tr><td>単一光子検出の<br>APDとクエンチ回路</td><td>S. Cova ほか<br>Applied Optics, 1996</td>
             <td>「降伏の先 — SPAD」。ガイガーモード動作と受動／能動クエンチを整理した定番の総説です。</td></tr>
+          <tr><td>なだれ増倍の<br>過剰雑音</td><td>R. J. McIntyre<br>IEEE Trans. Electron Devices, 1966</td>
+            <td>「光を数える仲間たち」。F(M)=kM+(1−k)(2−1/M) の出どころ。APD の設計が「k の小さい材料を選ぶ競争」になった原点です。</td></tr>
+          <tr><td>ガイガーモードAPD<br>アレイ（SiPM）の総説</td><td>D. Renker<br>Nucl. Instrum. Methods A, 2006</td>
+            <td>「光を数える仲間たち」。SiPM の歴史・特性・クロストークやアフターパルスなどの問題点を整理した入口の定番です。</td></tr>
           <tr><td>イベントベース視覚<br>（DVS）</td><td>P. Lichtsteiner, C. Posch,<br>T. Delbruck<br>IEEE J. Solid-State Circuits, 2008</td>
             <td>「イベントベースセンサ」。128×128 の DVS ― 対数画素＋変化検出＋非同期出力という原型を確立した仕事です。</td></tr>
         </tbody>
@@ -2995,6 +3208,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <p style="margin-top:12px"><strong>SPAD と光子計数</strong>——<a href="#sspad">「降伏の先 — SPAD」</a>へ（仮想センサ1台の枠の外である点は変わりません）。</p>
       <p style="margin-top:12px"><strong>イベントベースセンサ</strong>——<a href="#sevt">「イベントベースセンサ」</a>へ。フレームという概念ごと違う別方式として。</p>
       <p style="margin-top:12px"><strong>測距（ToF）</strong>——dToF と iToF は「降伏の先 — SPAD」の節内で扱いました（1 ns = 15 cm と、位相の巻き戻り）。</p>
+      <p style="margin-top:12px"><strong>イメージセンサ以外の光検出器</strong>——PMT・APD・MPPC（SiPM）・シンチレータ・NEP／D* は<a href="#spmt">「光を数える仲間たち」</a>へ。像を結ばず「数える」側の一族として。</p>
       <p style="margin-top:12px"><strong>読み出しの高速化</strong>——サブADC構成、インターフェース（MIPI）。センサから先の話で、引き続き扱いません（圧縮は 07 の「色は間引いても許される」で入り口だけ）。</p>
     </div>
   </div>
