@@ -240,6 +240,9 @@ code{font-family:var(--mono);font-size:.9em;background:var(--surface-2);padding:
 .qa h4{font-size:14px;margin-bottom:4px;color:var(--ink)}
 .qa p{font-size:14px;color:var(--ink-2)}
 table{width:100%;border-collapse:collapse;font-size:13.5px}
+/* 列を細くしすぎない ― 日本語が 1〜3 文字ずつ縦に積まれるのを防ぐ。入りきらない表は外側の .scroll-x の中で横に送る */
+th,td{min-width:6.5em}
+th{white-space:nowrap}
 th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line-2);vertical-align:top}
 th{font-family:var(--mono);font-size:10px;letter-spacing:.07em;color:var(--ink-3);font-weight:500;
   border-bottom:1px solid var(--line)}
@@ -373,6 +376,27 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
 @keyframes p5orbit { from{transform:translateX(0)} to{transform:translateX(640px)} }
 .fly{animation:p5orbit 2.6s linear infinite}
 .fig-note{font-size:12px;color:var(--ink-3);margin-top:6px}
+/* ===== 第5部 11〜13 章の追加: 段ごとに現れる電子・走査線・数えた光子の点滅（reduced-motion では止めて全部見せる） ===== */
+@keyframes p5c0{0%{opacity:0}4%{opacity:1}90%{opacity:1}100%{opacity:0}}
+@keyframes p5c1{0%,18%{opacity:0}24%{opacity:1}90%{opacity:1}100%{opacity:0}}
+@keyframes p5c2{0%,36%{opacity:0}42%{opacity:1}90%{opacity:1}100%{opacity:0}}
+@keyframes p5c3{0%,54%{opacity:0}60%{opacity:1}90%{opacity:1}100%{opacity:0}}
+@keyframes p5c4{0%,70%{opacity:0}76%{opacity:1}90%{opacity:1}100%{opacity:0}}
+.casc .c0{animation:p5c0 6s linear infinite}.casc .c1{animation:p5c1 6s linear infinite}.casc .c2{animation:p5c2 6s linear infinite}
+.casc .c3{animation:p5c3 6s linear infinite}.casc .c4{animation:p5c4 6s linear infinite}
+@keyframes p5scan{from{transform:translateX(0)}to{transform:translateX(660px)}}
+.scan{animation:p5scan 6.6s linear infinite}
+@keyframes p5fl{0%{opacity:1}14%{opacity:.3}100%{opacity:.3}}
+.fl{animation:p5fl 6.6s linear infinite}
+@media (prefers-reduced-motion:reduce){.casc g,.fl{animation:none!important;opacity:1!important}.scan{animation:none!important;display:none}}
+/* ===== 第5部 精査の波: 落とし穴と役割の箱（常に見せる） ===== */
+.pit{margin-top:20px;border:1px solid var(--line);border-left:2px solid var(--warn);border-radius:2px;background:var(--surface);padding:12px 16px;max-width:46em}
+.pit .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;color:var(--warn);display:block;margin-bottom:6px}
+.pit ul{margin:0;padding-left:1.2em;font-size:14px;line-height:1.75}
+.pit li + li{margin-top:4px}
+.pit .roles{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:4px 12px;margin:10px 0 0;font-size:13.5px;line-height:1.7}
+.pit .roles dt{font-family:var(--mono);font-size:11px;color:var(--ink-3);white-space:nowrap;padding-top:2px}
+.pit .roles dd{margin:0;color:var(--ink-2)}
 </style>
 
 <header class="wrap hero">
@@ -381,7 +405,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <a class="back" href="index.html">&larr; Labs / 半導体 ― 第5部 光を数える（実践: PhotonLab）</a><br>
       <span class="eyebrow">Photon &rarr; Electron &rarr; Multiply &rarr; Count</span>
       <h1>光検出デバイスの<span class="lit">系統</span>樹<br>― 数える一族</h1>
-      <p class="sub"><a href="第4部_イメージセンサ.html">第4部</a>は「像を結ぶ」検出器を一本道でたどりました。この部は像を結ばずに<strong>数える・測る</strong>側の一族 ― PMT・APD・MPPC から、赤外・X線・時間計測・故障解析まで ― を、同じ物理の言葉で系統立てて読みます。どれも「光子を電子にし、ノイズに埋もれる前に増やすか、数える」という同じ一つの問題への別解です。章の順番も物語です: まず<strong>見取り図</strong>（01）、次に<strong>増やし方の2つの家系</strong>（02 真空・03 半導体）、それを比べる<strong>共通の物差し</strong>（04）、そして応用の3軸 ― <strong>波長</strong>（05）・<strong>時間</strong>（06）・<strong>現場</strong>（07）― 最後に<strong>相手役の光源</strong>（08）で閉じます。</p>
+      <p class="sub"><a href="第4部_イメージセンサ.html">第4部</a>は「像を結ぶ」検出器を一本道でたどりました。この部は像を結ばずに<strong>数える・測る</strong>側の一族 ― PMT・APD・MPPC から、赤外・X線・時間計測・故障解析まで ― を、同じ物理の言葉で系統立てて読みます。どれも「光子を電子にし、ノイズに埋もれる前に増やすか、数える」という同じ一つの問題への別解です。章の順番も物語です: まず<strong>見取り図</strong>（01）、次に<strong>増やし方の2つの家系</strong>（02 真空・03 半導体）、それを比べる<strong>共通の物差し</strong>（04）、そして応用の3軸 ― <strong>波長</strong>（05）・<strong>時間</strong>（06）・<strong>現場</strong>（07）― <strong>相手役の光源</strong>（08）、放射線と波長の両端（09・10）を経て、最後に数える一族を数字で締めます ― <strong>光電面とパルスの統計</strong>（11）、<strong>数えられる速さ</strong>（12）、<strong>明るさで入れ替わる選び方</strong>（13）、そして一族でいちばん身近な<strong>フォトダイオードの正しい使い方</strong>（14）。</p>
       <div class="depth-row">
         <div class="depth" role="group" aria-label="説明の深さ">
           <button id="dSimple" aria-pressed="true">かんたん</button>
@@ -427,6 +451,10 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li><a href="#s8"><span class="n">08</span><span>光る半導体</span></a></li>
     <li><a href="#s10"><span class="n">09</span><span>放射線を数える</span></a></li>
     <li><a href="#s11"><span class="n">10</span><span>紫外とテラヘルツ</span></a></li>
+    <li><a href="#s12"><span class="n">11</span><span>光電面とパルス</span></a></li>
+    <li><a href="#s13"><span class="n">12</span><span>数えられる速さ</span></a></li>
+    <li><a href="#s14"><span class="n">13</span><span>明るさで選ぶ</span></a></li>
+    <li><a href="#s15"><span class="n">14</span><span>PD の使い方</span></a></li>
     <li class="dom"><span>付録</span></li>
     <li><a href="#scheck"><span class="n">—</span><span>理解の確認</span></a></li>
     <li><a href="#s9"><span class="n">—</span><span>用語表</span></a></li>
@@ -450,6 +478,10 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li><a href="#s8"><span class="n">08</span><span>光る半導体</span></a></li>
     <li><a href="#s10"><span class="n">09</span><span>放射線を数える</span></a></li>
     <li><a href="#s11"><span class="n">10</span><span>紫外とテラヘルツ</span></a></li>
+    <li><a href="#s12"><span class="n">11</span><span>光電面とパルス</span></a></li>
+    <li><a href="#s13"><span class="n">12</span><span>数えられる速さ</span></a></li>
+    <li><a href="#s14"><span class="n">13</span><span>明るさで選ぶ</span></a></li>
+    <li><a href="#s15"><span class="n">14</span><span>PD の使い方</span></a></li>
     <li class="dom"><span>付録</span></li>
     <li><a href="#scheck"><span class="n">—</span><span>理解の確認</span></a></li>
     <li><a href="#s9"><span class="n">—</span><span>用語表</span></a></li>
@@ -610,6 +642,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p><b>解.</b> 1 fW ÷ (2.25 eV × 1.602×10⁻¹⁹ J) = <b>2,770 光子/s</b>、検出は 2,210 cps。信号 1,000 cps・背景 100 cps なら SN 比 = s·√t / √(s+b) = 1,000/√1,100 = <b>30</b>（1 秒）、10 秒で <b>95</b>。<span class="key">計数の世界では、SN 比は時間の √ で買える</span>（PhotonLab「数えて待つ」）。</p>
   </div>
 
+  <div class="pit">
+    <span class="tag">落とし穴と、持ち帰る一言（01）</span>
+    <ul><li>「利得が大きい検出器ほど良い」と考える ― 増倍で救えるのは床が後段の回路にあるときだけ。明るい光では増倍しない PIN が勝つ（13）。</li><li>カタログの NEP を並べて比べる ― 波長・帯域・受光面積・温度がそろっていないと比べられない（04）。</li><li>ワットを個数に直さずに暗計数と比べる ― 1 fW の 550 nm は毎秒約 2,800 個。まず個数に直す。</li></ul>
+    <dl class="roles"><dt>営業・企画</dt><dd>顧客の光の強さ（何 W、または毎秒何個）と、「量を測るか・数えるか」の2つを最初に聞く。</dd><dt>設計・開発</dt><dd>後段の回路の床（A/√Hz）を先に見積もり、信号がその上か下かで家系を決める。</dd><dt>研究・製造</dt><dd>暗電流と暗計数は温度で桁で動くので、温度・帯域・面積の条件を必ず記録に残す。</dd></dl>
+  </div>
   <div class="lab-go">
     <span class="tag">手を動かす — PhotonLab 第1章</span>
     <p>ワットと個数の換算、R = ηλ/1240、そして NEP の床 ― この章の「はしご」を自分の数字で登り降りする。</p>
@@ -781,6 +818,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p><b>解.</b> QE = R × 1240/λ = 0.08 × 1240/400 = <b>24.8%</b>（バイアルカリの典型）。利得 4¹⁰ = <b>1.05×10⁶</b>、F = δ/(δ−1) = <b>1.33</b>。δ = 3 では 3¹⁰ = <b>5.9×10⁴</b>（10⁶ に届かない）、F = 1.5 ― 最初の一転がりが小さいと、利得も静かさも両方失う。δ が段間電圧のおよそ 0.7 乗なら、10 段の総利得は電圧の約 7 乗で動くので、<span class="key">電源の 1% のふらつきが利得の約 7%</span>。PMT の電源に高安定 HV が要る理由です。</p>
   </div>
 
+  <div class="pit">
+    <span class="tag">落とし穴と、持ち帰る一言（02）</span>
+    <ul><li>高圧をかけたまま光電面を明るい光に当てる ― 陽極電流が許容を超え、光電面とダイノードの劣化（感度の低下）を招く。開けるのは高圧を切ってから。</li><li>ブリーダの電流が平均の陽極電流の数十倍に足りない ― 明るいほど利得が下がる非線形になる。</li><li>暗箱に入れた直後に暗計数を測る ― 燐光などでしばらく高めに出る。落ち着くまで待つ。</li></ul>
+    <dl class="roles"><dt>営業・企画</dt><dd>PMT の売りどころは大面積・最低の暗計数・実績。磁場のある場所や小型化の要求では MPPC と比べる。</dd><dt>設計・開発</dt><dd>高圧電源の安定度（1% で利得が約 7〜10%）とブリーダの電流、パルス計測なら後段のコンデンサを最初に決める。</dd><dt>研究・製造</dt><dd>利得は電圧のべき乗で動くので、較正は使う電圧と温度で行い、保管は暗所で。</dd></dl>
+  </div>
   <div class="lab-go">
     <span class="tag">手を動かす — PhotonLab 第2章</span>
     <p>δ と段数から利得 δⁿ と過剰雑音 δ/(δ−1) を出す。δ=3 の10段では10⁶に届かない ― 雪だるまは最初の一転がりが大事、を数字で。</p>
@@ -969,15 +1011,20 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   <div class="ex">
     <span class="tag">例題 ― 手で一度解く（03 半導体で増やす）</span>
     <p><b>問1.</b> 850 nm の光 1 nW を Si APD（QE 0.8、k = 0.02、暗電流 100 pA）で受け、後段の雑音が 2 pA/√Hz、帯域 100 MHz。M = 1・10・100・300 の SN 比は？</p>
-    <p><b>解.</b> 光電流 0.55 nA に対し、M = 1 では後段の床 2 pA/√Hz × 10⁴ = 20 nA が支配して SN 比 <b>0.027</b>。M を上げると信号は M 倍、床はそのままなので M = 10 で 0.27、M = 100 で <b>1.57</b>。ところが M = 300 では F(M) が 8.0 に膨らんで <b>1.33</b> に下がる ― 最適は <b>M ≈ 130</b>（SN 比 1.6）。<span class="key">M で救えるのは床が後段にあるときだけで、救いすぎると過剰雑音で返ってくる</span>。k が 0.4（InGaAs/InP 級）なら F(10) = 5.1・F(100) = 41 で、同じ手は M = 10 前後までしか使えません。</p>
+    <p><b>解.</b> 光電流 0.55 nA に対し、M = 1 では後段の床 2 pA/√Hz × 10⁴ = 20 nA が支配して SN 比 <b>0.027</b>。M を上げると信号は M 倍、床はそのままなので M = 10 で 0.27、M = 100 で <b>1.57</b>。ところが M = 300 では F(M) が 8.0 に膨らんで <b>1.33</b> に下がる ― 最適は <b>M ≈ 125〜130</b>（頂上は平らで SN 比 1.6）。<span class="key">M で救えるのは床が後段にあるときだけで、救いすぎると過剰雑音で返ってくる</span>。k が 0.4（InGaAs/InP 級）なら F(10) = 5.1・F(100) = 41 で、同じ手は M = 10 前後までしか使えません。</p>
     <p><b>問2.</b> 3,600 セルの MPPC に、1 パルスで平均 1,000 個（PDE を掛けた後）の光子が来た。発火するセル数は？ 100 個なら？ 1 セルの容量 20 fF・オーバー電圧 3 V の利得は？</p>
     <p><b>解.</b> 発火数 = N(1 − e<sup>−µ/N</sup>)。µ = 1,000 で 3,600 × (1 − e<sup>−0.278</sup>) = <b>873</b>（12.7% 少なく出る）、µ = 100 で <b>98.6</b>（1.4%）。同じセルに2個来ても1個ぶんしか出ないので、<span class="key">セル数の 1/30 程度までが「数えられる明るさ」</span>。利得は C·V<sub>ov</sub>/q = 20 fF × 3 V / q = <b>3.7×10⁵</b>。</p>
   </div>
 
+  <div class="pit">
+    <span class="tag">落とし穴と、持ち帰る一言（03）</span>
+    <ul><li>APD のバイアスを固定したまま温度が変わる ― 降伏電圧が動いて M が変わる。温度補償が要る。</li><li>MPPC のクロストークを無視して p.e. の数から光子数を出す ― 見かけの数は 1 + P<sub>ct</sub> 倍ほどに増える（PhotonLab 第4章）。</li><li>明るい光で MPPC の出力が頭打ちになるのを検出器の故障と思う ― セル数による飽和（03 の例題で 1,000 個が 12.7% 少なく出る）。</li></ul>
+    <dl class="roles"><dt>営業・企画</dt><dd>MPPC は数十 V・磁場に強い・小さい、APD はアナログで速い、PMT は大面積で暗計数が低い ― 用途の言葉に置き換えて説明する。</dd><dt>設計・開発</dt><dd>オーバー電圧は PDE と暗計数・クロストークの綱引き。温度係数ぶんバイアスを追従させる回路を最初から入れる。</dd><dt>研究・製造</dt><dd>降伏電圧と暗計数の温度係数を測り、ロットのばらつきと一緒に記録する。</dd></dl>
+  </div>
   <div class="lab-go">
     <span class="tag">手を動かす — PhotonLab 第2章</span>
-    <p>F(M) の山を自分で探し、MPPC の飽和を数えられる明るさに収める。上の2枚の図の曲線は、この2つの課題の盤面と同じ式で描かれている。</p>
-    <div class="qs"><a href="PhotonLab/index.html?quest=apdopt">ちょうどいい M を探す</a><a href="PhotonLab/index.html?quest=mppc">数えられる明るさに収める</a></div>
+    <p>F(M) の山を自分で探し、MPPC の飽和を数えられる明るさに収める。上の2枚の図の曲線は、この2つの課題の盤面と同じ式で描かれている。第4章では k = 0.4 の InGaAs APD の山（M ≈ 15）と、MPPC のクロストークの偽の計数をしきい値で切る課題に進む。</p>
+    <div class="qs"><a href="PhotonLab/index.html?quest=apdopt">ちょうどいい M を探す</a><a href="PhotonLab/index.html?quest=mppc">数えられる明るさに収める</a><span class="lab">第4章</span><a href="PhotonLab/index.html?quest=ingaas">InGaAs の最適な M</a><a href="PhotonLab/index.html?quest=thresh">しきい値で偽の計数を切る</a></div>
   </div>
 </section>
 
@@ -1055,6 +1102,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p><b>解.</b> ノイズ電流 √(2q·10 pA + (5 fA)²) = √(1.8² + 5²) fA/√Hz = 5.3 fA/√Hz、÷R で <b>NEP = 1.5×10⁻¹⁴ W/√Hz</b>。D* = √(0.01 cm²)/NEP = <b>6.7×10¹² cm·√Hz/W</b>。暗電流を 1/10 にしても 5.3 → 5.0 fA/√Hz（<b>−5%</b>）にしかならないが、TIA を 2.5 fA/√Hz にすると 3.1 fA/√Hz で NEP は <b>8.7×10⁻¹⁵</b>（−42%）。<span class="key">二乗和は一番高い積み木が決める</span> ― 床がアンプ律速のとき冷却は効かない、という「くわしく」の結論の数値版です。</p>
   </div>
 
+  <div class="pit">
+    <span class="tag">落とし穴と、持ち帰る一言（04）</span>
+    <ul><li>NEP に √B を掛け忘れる ― W/√Hz は 1 Hz あたり。1 MHz の帯域なら床は 1,000 倍（01 の例題）。</li><li>感度 A/W と QE を取り違える ― R = &eta;&lambda;/1240 なので、同じ QE でも長い波長ほど A/W は大きい。</li><li>暗い部屋の NEP を昼の現場に使う ― 背景光のショット雑音（BLIP）が新しい床になる。</li></ul>
+    <dl class="roles"><dt>営業・企画</dt><dd>NEP・D* を比べるときは、波長・帯域・温度・面積の条件をそろえて見せる。</dd><dt>設計・開発</dt><dd>雑音の積み木（暗電流・R<sub>sh</sub>・アンプ・背景）を二乗和で並べ、いちばん高い項から手をつける。</dd><dt>研究・製造</dt><dd>暗電流と R<sub>sh</sub> は温度で桁で動くので、NEP は測定の温度とセットで記録する。</dd></dl>
+  </div>
   <div class="lab-go">
     <span class="tag">手を動かす — PhotonLab 第1・3章</span>
     <p>R の逆算、NEP の床づくり、M で床を沈める、背景光の床 ― 3つの物差しを全部自分の数字で。</p>
@@ -1110,7 +1162,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     </div>
     <div class="body-col">
       <h3>冷却の請求書 — 指数と払い方</h3>
-      <p>請求書の形も一度だけ描いておきます。暗電流は exp(&minus;E<sub>a</sub>/kT) の形 ― 片対数で描くと 1/T に対して直線です。活性化エネルギー E<sub>a</sub> は成分で違い、空乏層の<strong>生成電流</strong>なら E<sub>g</sub>/2（Si で約0.56 eV → 室温で<strong>約9℃ごとに2倍</strong>）、中性領域からの<strong>拡散電流</strong>なら E<sub>g</sub>（約1.12 eV → <strong>約5℃ごとに2倍</strong>）。実際のセンサはこの混合で、<a href="第4部_イメージセンサ.html#sc">第4部付録C</a>のとおり「何℃で倍か」を測れば、いまどちらが支配しているかが分かります。冷やすほど、活性化エネルギーの小さい生成電流が主役になります。TE クーラ1段で数十K、多段で70〜100K下げれば<strong>2〜3桁</strong>買えます。E<sub>g</sub> の狭い材料は直線の傾きが緩い（同じ冷却で買える桁が少ない）うえに出発点が高いので、InSb は TE では足りず<strong>スターリング冷凍機や液体窒素の77K</strong>まで行く ― 材料の選択が、そのまま冷却方式の選択になっています。</p>
+      <p>請求書の形も一度だけ描いておきます。暗電流は exp(&minus;E<sub>a</sub>/kT) の形 ― 片対数で描くと 1/T に対して直線です。活性化エネルギー E<sub>a</sub> は成分で違い、空乏層の<strong>生成電流</strong>なら E<sub>g</sub>/2（Si で約0.56 eV → 室温で<strong>約 8〜9 ℃ごとに2倍</strong>）、中性領域からの<strong>拡散電流</strong>なら E<sub>g</sub>（約1.12 eV → <strong>約 4〜5 ℃ごとに2倍</strong>。前指数の温度（生成は T<sup>3/2</sup>、拡散は T<sup>3</sup>）と E<sub>g</sub> の温度変化まで入れて計算すると 8.6 K と 4.3 K ― 第2部・CharLab と同じ計算）。実際のセンサはこの混合で、<a href="第4部_イメージセンサ.html#sc">第4部付録C</a>のとおり「何℃で倍か」を測れば、いまどちらが支配しているかが分かります。冷やすほど、活性化エネルギーの小さい生成電流が主役になります。TE クーラ1段で数十K、多段で70〜100K下げれば<strong>2〜3桁</strong>買えます。E<sub>g</sub> の狭い材料は直線の傾きが緩い（同じ冷却で買える桁が少ない）うえに出発点が高いので、InSb は TE では足りず<strong>スターリング冷凍機や液体窒素の77K</strong>まで行く ― 材料の選択が、そのまま冷却方式の選択になっています。</p>
       <p>この請求書の<strong>支払い窓口</strong>が TEC（ペルチェ素子）で、深く冷やすほど吸える熱が減る Q<sub>c</sub>=Q<sub>max</sub>(1&minus;&Delta;T/&Delta;T<sub>max</sub>) の直線に縛られます。窓口の実務 ― 何度まで冷やせて、何ワット吸えて、高温側に何が起きるか ― は<a href="第8部_信頼性と品質.html#s5">第8部05</a>と <a href="QALab/index.html?quest=tec">QALab</a> に置きました。</p>
     </div>
   </div>
@@ -1142,14 +1194,14 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
         <text x="465" y="36" font-size="9" fill="var(--photon-2)" text-anchor="middle">TE 冷却で届く範囲（〜−60℃級）</text>
       </svg>
     </div>
-    <figcaption>傾き（1℃あたりの倍率）は活性化エネルギー E<sub>a</sub> で決まる（生成電流なら E<sub>g</sub>/2）― <span class="key">狭いギャップは「高くて、しかも値切りにくい」請求書</span>。線は模式ですが、傾きの大小関係は式から出る事実です（Si の生成電流で約9℃、拡散電流で約5℃ごとに2倍）。</figcaption>
+    <figcaption>傾き（1℃あたりの倍率）は活性化エネルギー E<sub>a</sub> で決まる（生成電流なら E<sub>g</sub>/2）― <span class="key">狭いギャップは「高くて、しかも値切りにくい」請求書</span>。線は模式ですが、傾きの大小関係は式から出る事実です（Si の生成電流で約 8〜9 ℃、拡散電流で約 4〜5 ℃ごとに2倍）。</figcaption>
   </figure>
 
   <div class="two">
     <div class="body-col">
       <h3>道3: X線は可視光に翻訳する</h3>
       <p>X線やガンマ線は光検出器では直接見えません（エネルギーが高すぎて、素通りするか壊します）。そこで<strong>シンチレータ</strong> ― 放射線1個を吸収して、そのエネルギーに比例した数の可視光子に変換する結晶 ― を検出器の前に置きます。NaI(Tl) は 1keV あたり約38光子・減衰230ns、PET用の LYSO は約30光子・約40ns、BGO は約8光子・300ns。<span class="key">検出器に届く光はまとめて数百〜数千光子</span>なので、受けるのはPMTかMPPCの仕事になります。</p>
-      <p>結晶選びは3すくみです: <b>光量</b>（分解能の統計）・<b>減衰の速さ</b>（計数率と時間分解能）・<b>密度と実効原子番号</b>（511keVを止める力）。PET が LYSO に落ち着いたのは、BGO より桁速く、NaI より重くて速い ― 3すくみの真ん中を取ったからです。</p>
+      <p>結晶選びは3すくみです: <b>光量</b>（分解能の統計）・<b>減衰の速さ</b>（計数率と時間分解能）・<b>密度と実効原子番号</b>（511keVを止める力）。PET が LYSO に落ち着いたのは、BGO（約 300 ns）より約 7 倍速く、NaI より重くて速い ― 3すくみの真ん中を取ったからです。</p>
     </div>
     <div class="body-col">
       <h3>PET — 同時計数という幾何学</h3>
@@ -1224,6 +1276,16 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p><b>解.</b> λ<sub>c</sub> = 1240/0.74 = <b>1,680 nm</b>（光通信の 1.55 µm 帯が入る）。拡散暗電流 ∝ n<sub>i</sub>² ∝ exp(−E<sub>g</sub>/kT) なので、比は exp((1.12 − 0.74)/0.0259) = e<sup>14.7</sup> ≈ <b>2×10⁶ 倍</b>（前指数の違いを無視した桁の見積もり）。<span class="key">壁を 0.38 eV 下げた代金が 6 桁</span> ― InGaAs が TE 冷却を背負う理由です。</p>
     <p><b>問2.</b> PET の 511 keV を LYSO（約 30 光子/keV）で受け、集光と PDE を経て 2,000 個の光電子が残った。統計だけで決まるエネルギー分解能（FWHM）は？ 時刻差 250 ps の TOF は線上の何 cm に相当するか。</p>
     <p><b>解.</b> 511 × 30 ≈ 1.5×10⁴ 光子。分解能 2.35/√2,000 = <b>5.3%</b>（実測 10% 級との差は結晶固有の分）。Δx = cΔt/2 = 3×10¹⁰ cm/s × 250 ps / 2 = <b>3.75 cm</b>。</p>
+  </div>
+  <div class="pit">
+    <span class="tag">落とし穴と、持ち帰る一言（05）</span>
+    <ul><li>InGaAs の暗電流を室温の値のまま見積もる ― 狭いギャップほど温度で大きく動く。冷却の温度と一緒に仕様を読む。</li><li>シンチレータの発光の波長と光検出器の感度を合わせ忘れる ― NaI(Tl) は約 415 nm、LYSO は約 420 nm、BGO は約 480 nm で発光する（Knoll）。</li><li>511 keV の分解能を光電子の統計だけで見積もる ― 結晶の固有の分が二乗和で乗る（5% → 10% 級）。</li></ul>
+    <dl class="roles"><dt>営業・企画</dt><dd>波長を聞いた時点で、材料（Si・InGaAs・InSb・HgCdTe）と冷却の要否がほぼ決まる。</dd><dt>設計・開発</dt><dd>冷却の温度・消費電力・放熱を一組で見積もる（第8部 05）。</dd><dt>研究・製造</dt><dd>暗電流の温度依存を 1/T の片対数で測ると、生成と拡散のどちらが支配しているかが分かる。</dd></dl>
+  </div>
+  <div class="lab-go">
+    <span class="tag">手を動かす — PhotonLab 第4章</span>
+    <p>LYSO と MPPC で 511 keV を受け、光電子の数の統計とセルの数による飽和を両立させる。エネルギー分解能 10.5% 以下・飽和 5% 以下の窓を探す。</p>
+    <div class="qs"><a href="PhotonLab/index.html?quest=scint">シンチレータの分解能と飽和</a></div>
   </div>
 </section>
 
@@ -1364,6 +1426,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p><b>解.</b> 周期 12.5 ns、寿命の上限 <b>2.5 ns</b>（多くの蛍光色素の 1〜5 ns に合う ― 80 MHz が定番の理由）。検出確率 p = 1.1×10⁵/8×10⁷ = <b>0.14%</b>（十分安全）。2% なら 1.6×10⁶ cps で、10⁶ 個は <b>0.6 秒</b>。いまの 1.1×10⁵ cps のままなら 9 秒。<span class="key">パイルアップの上限が、そのまま測定時間の下限になる</span> ― 画素ごとに寿命を測る FLIM が遅いのはこのためです。</p>
   </div>
 
+  <div class="pit">
+    <span class="tag">落とし穴と、持ち帰る一言（06）</span>
+    <ul><li>平均の光量でパイルアップを判断する ― 決めるのは 1 周期あたりの検出の確率 µ。検出率を励起の 1〜数% に絞る。</li><li>IRF を測らずに寿命をフィットする ― 寿命が IRF に近いと、結果が大きくずれる。</li><li>繰り返しの周期を寿命に近く取る ― 前の減衰の尻尾が次の周期に重なる。周期は寿命の 5 倍以上。</li></ul>
+    <dl class="roles"><dt>営業・企画</dt><dd>「寿命は濃度に依らない」が FLIM の売り（定量イメージング・FRET）。</dd><dt>設計・開発</dt><dd>レーザーのパルス幅・検出器の TTS・TDC のジッタを二乗和で見積もり、最大の項を選び直す。</dd><dt>研究・製造</dt><dd>IRF は散乱体などで同じ条件で測っておき、再畳み込みのフィットに使う。</dd></dl>
+  </div>
   <div class="lab-go">
     <span class="tag">手を動かす — PhotonLab 第3章</span>
     <p>√t で買う計数のSNRと、繰り返しの両側窓。この章の「作法」を全部数字で踏む。</p>
@@ -1484,6 +1551,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p><b>解.</b> w = 1 µm: C = 0.073 pF、f<sub>RC</sub> = 43.5 GHz、f<sub>tr</sub> = 44 GHz → <b>31 GHz</b>。w = 2 µm: 0.037 pF、87 GHz、22 GHz → <b>21 GHz</b>。w = 3 µm: 0.024 pF、130 GHz、14.7 GHz → <b>14.6 GHz</b>。<span class="key">2 つの帯域が等しくなる w ≈ 1 µm が釣り合い</span>で、それより厚いと走行が、薄いと容量が律速する（PhotonLab「厚さの綱引き」）。ただし w = 1 µm では 850 nm の光の大半が素通りする（吸収長 19 µm）ので、QE を加えた三すくみになる ― 導波路型 PD が生まれた理由です。</p>
   </div>
 
+  <div class="pit">
+    <span class="tag">落とし穴と、持ち帰る一言（07）</span>
+    <ul><li>PD の容量にケーブルやアンプの入力の容量を足し忘れる ― RC の帯域は合計の容量で決まる。</li><li>薄い PD で速さを取ったつもりで QE を失う ― 850 nm の吸収長は約 19 µm。</li><li>TDI で被写体の速さと転送の速さがずれる ― 像が流れて MTF が落ちる。</li></ul>
+    <dl class="roles"><dt>営業・企画</dt><dd>現場の構成は「光学系 → 検出器 → 前置アンプ → 整形 → 数える」の鎖で、最初の弱い輪が性能を決める。</dd><dt>設計・開発</dt><dd>走行時間と RC の釣り合いの厚さを先に出し、QE を加えた三すくみで決める（07 の例題）。</dd><dt>研究・製造</dt><dd>故障解析では、発光の位置と電気の測定の結果を必ず突き合わせる。</dd></dl>
+  </div>
   <div class="lab-go">
     <span class="tag">手を動かす — PhotonLab 第3章</span>
     <p>RC の速さ、厚さの綱引き、M で床を沈める光通信の定石 ― この章の deep の数字を全部自分で出す。</p>
@@ -1575,6 +1647,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p><b>解.</b> λ ≈ 1240/E<sub>g</sub>: GaAs <b>873 nm</b>（近赤外 ― リモコンや 3D センシングの光源帯）、GaN <b>365 nm</b>（紫外。青色 LED は In を混ぜた InGaN で E<sub>g</sub> を 2.7 eV 付近まで下げて約 460 nm）。取り出しは 1/(4n²) = 1/49 = <b>2.0%</b>。<span class="key">検出器の λ<sub>c</sub> = 1240/E<sub>g</sub> と、光源の λ ≈ 1240/E<sub>g</sub> は同じ式の表と裏</span>で、光源側では残り 98% との闘いが製品開発の中心になります。</p>
   </div>
 
+  <div class="pit">
+    <span class="tag">落とし穴と、持ち帰る一言（08）</span>
+    <ul><li>LED や LD の波長が温度で動くのを忘れる ― 型式にもよるが 0.1〜0.3 nm/K 程度動き、検出側のフィルタの帯域や感度の端から外れることがある。</li><li>LD を定電流のまま温度を上げる ― しきい値が上がって出力が落ちる。APC か TEC で保つ（第9部 11）。</li><li>LED の取り出し効率と内部量子効率を混同する ― 平らな面から出られるのは約 2%。</li></ul>
+    <dl class="roles"><dt>営業・企画</dt><dd>光源と検出器はいつも組で使われる ― 波長・パルスの幅・繰り返しを同時に聞く。</dd><dt>設計・開発</dt><dd>光源の波長の温度ドリフトを、検出側のフィルタの帯域に含めて設計する。</dd><dt>研究・製造</dt><dd>LD の劣化は、APC の駆動の電流の増え方に先に現れる（第9部 11）。</dd></dl>
+  </div>
   <div class="caveat">
     <span class="tag">この部が単純化していること</span>
     <p><strong>数値はすべて桁の代表値です。</strong>光電面のQE・ダイノードの &delta;・APDのk・MPPCのPDEやDCRは、素子の型式と波長・温度で大きく動きます。設計に使う数字は必ずデータシートから。</p>
@@ -1607,14 +1684,14 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <div class="fig-body scroll-x">
       <svg viewBox="0 0 760 250" role="img" aria-label="放射線のエネルギーに対するエネルギー分解能（半値全幅の割合）の両対数グラフ。シリコンのファノの限界の直線、回路の雑音5電子と20電子を足した曲線は低エネルギー側で持ち上がる。662キロ電子ボルトでの目安として、NaI約7%、LaBr3約3%、CZT約1.5%、HPGe約0.2%の印がある。5.9キロ電子ボルトのSDDの点も示す。" style="min-width:700px;width:100%;display:block">
         <g stroke="var(--line)" stroke-width="1" fill="none"><path d="M90 50 V200 H660"/><path d="M90 150 H660 M90 100 H660 M280 50 V200 M470 50 V200" stroke-dasharray="2 4"/></g>
-        <path d="M90.0 115.9 L96.3 116.7 L102.7 117.6 L109.0 118.4 L115.3 119.2 L121.7 120.1 L128.0 120.9 L134.3 121.7 L140.7 122.6 L147.0 123.4 L153.3 124.2 L159.7 125.1 L166.0 125.9 L172.3 126.7 L178.7 127.6 L185.0 128.4 L191.3 129.2 L197.7 130.1 L204.0 130.9 L210.3 131.7 L216.7 132.6 L223.0 133.4 L229.3 134.2 L235.7 135.1 L242.0 135.9 L248.3 136.7 L254.7 137.6 L261.0 138.4 L267.3 139.2 L273.7 140.1 L280.0 140.9 L286.3 141.7 L292.7 142.6 L299.0 143.4 L305.3 144.2 L311.7 145.1 L318.0 145.9 L324.3 146.7 L330.7 147.6 L337.0 148.4 L343.3 149.2 L349.7 150.1 L356.0 150.9 L362.3 151.7 L368.7 152.6 L375.0 153.4 L381.3 154.2 L387.7 155.1 L394.0 155.9 L400.3 156.7 L406.7 157.6 L413.0 158.4 L419.3 159.2 L425.7 160.1 L432.0 160.9 L438.3 161.7 L444.7 162.6 L451.0 163.4 L457.3 164.2 L463.7 165.1 L470.0 165.9 L476.3 166.7 L482.7 167.6 L489.0 168.4 L495.3 169.2 L501.7 170.1 L508.0 170.9 L514.3 171.7 L520.7 172.6 L527.0 173.4 L533.3 174.2 L539.7 175.1 L546.0 175.9 L552.3 176.7 L558.7 177.6 L565.0 178.4 L571.3 179.2 L577.7 180.1 L584.0 180.9 L590.3 181.7 L596.7 182.6 L603.0 183.4 L609.3 184.2 L615.7 185.1 L622.0 185.9 L628.3 186.7 L634.7 187.6 L641.0 188.4 L647.3 189.2 L653.7 190.1 L660.0 190.9" stroke="var(--electron)" stroke-width="2" fill="none"/>
+        <path class="draw" style="--len:600" d="M90.0 115.9 L96.3 116.7 L102.7 117.6 L109.0 118.4 L115.3 119.2 L121.7 120.1 L128.0 120.9 L134.3 121.7 L140.7 122.6 L147.0 123.4 L153.3 124.2 L159.7 125.1 L166.0 125.9 L172.3 126.7 L178.7 127.6 L185.0 128.4 L191.3 129.2 L197.7 130.1 L204.0 130.9 L210.3 131.7 L216.7 132.6 L223.0 133.4 L229.3 134.2 L235.7 135.1 L242.0 135.9 L248.3 136.7 L254.7 137.6 L261.0 138.4 L267.3 139.2 L273.7 140.1 L280.0 140.9 L286.3 141.7 L292.7 142.6 L299.0 143.4 L305.3 144.2 L311.7 145.1 L318.0 145.9 L324.3 146.7 L330.7 147.6 L337.0 148.4 L343.3 149.2 L349.7 150.1 L356.0 150.9 L362.3 151.7 L368.7 152.6 L375.0 153.4 L381.3 154.2 L387.7 155.1 L394.0 155.9 L400.3 156.7 L406.7 157.6 L413.0 158.4 L419.3 159.2 L425.7 160.1 L432.0 160.9 L438.3 161.7 L444.7 162.6 L451.0 163.4 L457.3 164.2 L463.7 165.1 L470.0 165.9 L476.3 166.7 L482.7 167.6 L489.0 168.4 L495.3 169.2 L501.7 170.1 L508.0 170.9 L514.3 171.7 L520.7 172.6 L527.0 173.4 L533.3 174.2 L539.7 175.1 L546.0 175.9 L552.3 176.7 L558.7 177.6 L565.0 178.4 L571.3 179.2 L577.7 180.1 L584.0 180.9 L590.3 181.7 L596.7 182.6 L603.0 183.4 L609.3 184.2 L615.7 185.1 L622.0 185.9 L628.3 186.7 L634.7 187.6 L641.0 188.4 L647.3 189.2 L653.7 190.1 L660.0 190.9" stroke="var(--electron)" stroke-width="2" fill="none"/>
         <path d="M90.0 109.6 L96.3 110.8 L102.7 112.0 L109.0 113.1 L115.3 114.3 L121.7 115.4 L128.0 116.5 L134.3 117.6 L140.7 118.7 L147.0 119.8 L153.3 120.9 L159.7 121.9 L166.0 123.0 L172.3 124.0 L178.7 125.0 L185.0 126.0 L191.3 127.0 L197.7 128.0 L204.0 129.0 L210.3 129.9 L216.7 130.9 L223.0 131.8 L229.3 132.8 L235.7 133.7 L242.0 134.6 L248.3 135.6 L254.7 136.5 L261.0 137.4 L267.3 138.3 L273.7 139.2 L280.0 140.1 L286.3 141.0 L292.7 141.9 L299.0 142.8 L305.3 143.6 L311.7 144.5 L318.0 145.4 L324.3 146.3 L330.7 147.1 L337.0 148.0 L343.3 148.9 L349.7 149.7 L356.0 150.6 L362.3 151.4 L368.7 152.3 L375.0 153.1 L381.3 154.0 L387.7 154.9 L394.0 155.7 L400.3 156.6 L406.7 157.4 L413.0 158.2 L419.3 159.1 L425.7 159.9 L432.0 160.8 L438.3 161.6 L444.7 162.5 L451.0 163.3 L457.3 164.1 L463.7 165.0 L470.0 165.8 L476.3 166.7 L482.7 167.5 L489.0 168.3 L495.3 169.2 L501.7 170.0 L508.0 170.9 L514.3 171.7 L520.7 172.5 L527.0 173.4 L533.3 174.2 L539.7 175.0 L546.0 175.9 L552.3 176.7 L558.7 177.6 L565.0 178.4 L571.3 179.2 L577.7 180.1 L584.0 180.9 L590.3 181.7 L596.7 182.6 L603.0 183.4 L609.3 184.2 L615.7 185.1 L622.0 185.9 L628.3 186.7 L634.7 187.6 L641.0 188.4 L647.3 189.2 L653.7 190.1 L660.0 190.9" stroke="var(--electron)" stroke-width="1.6" stroke-dasharray="6 4" fill="none"/>
         <path d="M90.0 87.6 L96.3 89.2 L102.7 90.8 L109.0 92.4 L115.3 94.0 L121.7 95.5 L128.0 97.1 L134.3 98.7 L140.7 100.3 L147.0 101.8 L153.3 103.4 L159.7 104.9 L166.0 106.4 L172.3 108.0 L178.7 109.5 L185.0 111.0 L191.3 112.5 L197.7 114.0 L204.0 115.4 L210.3 116.9 L216.7 118.3 L223.0 119.8 L229.3 121.2 L235.7 122.6 L242.0 124.0 L248.3 125.4 L254.7 126.8 L261.0 128.1 L267.3 129.4 L273.7 130.8 L280.0 132.1 L286.3 133.4 L292.7 134.6 L299.0 135.9 L305.3 137.1 L311.7 138.4 L318.0 139.6 L324.3 140.8 L330.7 141.9 L337.0 143.1 L343.3 144.3 L349.7 145.4 L356.0 146.5 L362.3 147.6 L368.7 148.7 L375.0 149.8 L381.3 150.8 L387.7 151.9 L394.0 152.9 L400.3 154.0 L406.7 155.0 L413.0 156.0 L419.3 157.0 L425.7 158.0 L432.0 158.9 L438.3 159.9 L444.7 160.9 L451.0 161.8 L457.3 162.8 L463.7 163.7 L470.0 164.6 L476.3 165.6 L482.7 166.5 L489.0 167.4 L495.3 168.3 L501.7 169.2 L508.0 170.1 L514.3 171.0 L520.7 171.9 L527.0 172.8 L533.3 173.6 L539.7 174.5 L546.0 175.4 L552.3 176.3 L558.7 177.1 L565.0 178.0 L571.3 178.9 L577.7 179.7 L584.0 180.6 L590.3 181.4 L596.7 182.3 L603.0 183.1 L609.3 184.0 L615.7 184.9 L622.0 185.7 L628.3 186.5 L634.7 187.4 L641.0 188.2 L647.3 189.1 L653.7 189.9 L660.0 190.8" stroke="var(--warn)" stroke-width="1.6" stroke-dasharray="6 4" fill="none"/>
         <circle cx="626" cy="107.7" r="5" fill="var(--photon)"/>
         <circle cx="626" cy="126.1" r="5" fill="var(--volt)"/>
         <circle cx="626" cy="141.2" r="5" fill="var(--digital)"/>
         <circle cx="626" cy="184.9" r="5" fill="var(--ink)"/>
-        <circle cx="236.5" cy="133.9" r="5" fill="var(--electron)"/>
+        <circle class="blink" cx="236.5" cy="133.9" r="5" fill="var(--electron)"/>
         <g font-size="10">
           <path d="M478 42 H496" stroke="var(--electron)" stroke-width="2" fill="none"/><text x="502" y="46" fill="var(--electron-2)">Si のファノの限界（F = 0.115）</text>
           <path d="M478 58 H496" stroke="var(--electron)" stroke-width="1.6" stroke-dasharray="6 4" fill="none"/><text x="502" y="62" fill="var(--electron-2)">＋回路の雑音 ENC 5 e⁻</text>
@@ -1672,6 +1749,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p><b>問2.</b> 厚さ 450 µm のシリコンは 10 keV と 20 keV の X 線の何% を止めるか（1/e の距離 127 µm・0.96 mm）。</p>
     <p><b>解.</b> 1 − exp(−450/127) = <b>97%</b>、1 − exp(−450/961) = <b>37%</b>。<span class="key">20 keV を超えるとシリコンは素通りされ始める</span> ― 高いエネルギーを測るには、厚くするか、重い材料に替える。</p>
   </div>
+  <div class="pit">
+    <span class="tag">落とし穴と、持ち帰る一言（09）</span>
+    <ul><li>止まる割合を忘れて分解能だけで検出器を選ぶ ― 厚さ 450 µm のシリコンは 20 keV を 37% しか止めない。</li><li>CdTe の低いエネルギー側の裾を、ピークの一部と読む ― 正孔の捕獲による裾。</li><li>計数率を上げるために整形の時間を短くすると、回路の雑音 ENC が増えて分解能が落ちる ― 分解能と計数率の取り合い。</li></ul>
+    <dl class="roles"><dt>営業・企画</dt><dd>「何 keV を・どれくらいの分解能で・どれくらいの計数率で」を聞くと、材料と検出器の形が決まる。</dd><dt>設計・開発</dt><dd>FWHM = 2.355w√(FN + ENC²) で、ファノの限界と回路の雑音のどちらが支配かを先に見る。</dd><dt>研究・製造</dt><dd>分解能は ⁵⁵Fe（5.9 keV）や ¹³⁷Cs（662 keV）の線源で定期的に確かめる。</dd></dl>
+  </div>
 </section>
 
 <!-- ================= 10 ================= -->
@@ -1698,7 +1780,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
         <path d="M80 170 H680" stroke="var(--ink-2)" stroke-width="1.6" fill="none"/>
         <path d="M80 164 V176 M230 164 V176 M380 164 V176 M530 164 V176 M680 164 V176" stroke="var(--ink-3)" stroke-width="1" fill="none"/>
         <g stroke="var(--warn)" stroke-width="2" fill="none">
-          <path d="M119 156 V170"/><path d="M152 156 V170"/><path d="M222.6 156 V170"/><path d="M249.6 156 V170"/><path d="M468 156 V170"/><path d="M587.4 156 V170"/>
+          <path d="M119 156 V170"/><path d="M152 156 V170"/><path d="M222.6 156 V170"/><path d="M249.6 156 V170"/><path class="blink" d="M468 156 V170"/><path d="M587.4 156 V170"/>
         </g>
         <g font-size="10" fill="var(--warn)" text-anchor="middle">
           <text x="119" y="150">①</text><text x="152" y="150">②</text><text x="222.6" y="150">③</text><text x="249.6" y="150">④</text><text x="468" y="150">⑤</text><text x="587.4" y="150">⑥</text>
@@ -1746,12 +1828,450 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p><b>問2.</b> 0.5 THz の光子のエネルギーと波長は？ 室温の kT の何分の 1 か。</p>
     <p><b>解.</b> 4.14 meV × 0.5 = <b>2.07 meV</b>、波長 300 µm × 2 = <b>600 µm</b>。kT（25.9 meV）の約 <b>1/12.5</b>。1 個の光子より熱の揺らぎのほうが大きいので、光子を数えるのではなく、熱か電界として測る。</p>
   </div>
+  <div class="pit">
+    <span class="tag">落とし穴と、持ち帰る一言（10）</span>
+    <ul><li>窓の材料で紫外の感度が切れているのを、検出器の限界と思う ― ホウケイ酸ガラスは約 300 nm まで。</li><li>紫外の長い照射で感度が少しずつ落ちる（劣化）のを見逃す ― 感度の変化を定期的に確かめる。</li><li>テラヘルツで大気の水蒸気の吸収を忘れる ― 強い吸収線があるので、乾いた窒素で光路を満たす（パージ）。</li></ul>
+    <dl class="roles"><dt>営業・企画</dt><dd>太陽光の下で炎や放電を見る要求なら、ソーラーブラインドの Cs-Te の光電面や AlGaN が候補。</dd><dt>設計・開発</dt><dd>窓・フィルタ・検出器の分光特性を掛け合わせて、実効の感度を出す。</dd><dt>研究・製造</dt><dd>紫外の較正は、窓の汚れと劣化まで含めて行う。</dd></dl>
+  </div>
+</section>
+
+
+<!-- ================= 11 ================= -->
+<section class="stage" id="s12">
+  <div class="stage-head"><span class="stage-num">11</span>
+    <h2>光電面の家系と、1個の光電子のパルス</h2></div>
+  <p class="lede"><a href="#s2">02</a> で PMT の骨組み ― 光電面で電子を出し、ダイノードで増やす ― を見ました。この章はその入口と途中を、カタログを読むための数字で掘ります。どの光電面がどの波長まで見えるのか、なぜ「負の電子親和力」で赤外まで届くのか、そして<strong>同じ光電子1個が、なぜ毎回ちがう高さのパルスになるのか</strong>。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>光電面の家系 ― 何でできていて、どこまで見えるか</h3>
+      <p>光電面が電子を出すまでには3つの段があります。①光子が吸われて電子が励起される、②その電子が表面まで歩く、③表面の壁（電子親和力）を越えて真空へ出る ― スパイサーの3段モデルです。QE はこの3つの確率の掛け算になります。アルカリ金属とアンチモンの化合物（バイアルカリ・マルチアルカリ）は光をよく吸い、壁が低いので、紫外から可視で QE 25% 前後が出ます。</p>
+      <p>長い波長の側の限界は、光子のエネルギーが「バンドギャップ＋電子親和力」を下回るところです。そこへ近づくほど、励起された電子のうち壁を越えられる割合が減るので、<span class="key">QE は長波長の側で急に落ちる</span>。どの光電面を選ぶかは、測る光の色でまず決まります（下の表）。紫外だけに感じて太陽光に鈍い Cs-Te から、900 nm 近くまで届く GaAs まで、同じ「電子を真空へ出す」膜が材料で守備範囲を分けています。</p>
+    </div>
+    <div class="body-col">
+      <h3>負の電子親和力（NEA） ― 壁を消して赤外まで</h3>
+      <p>GaAs や GaAsP の結晶の表面に、セシウムと酸素をごく薄く付けると、真空の準位が結晶の伝導帯の底より下がります ― 電子親和力が負（NEA: Negative Electron Affinity）の状態です。すると、結晶の中でいったん落ち着いてしまった電子でも外へ出られる。従来の光電面では表面から数十 nm 以内で生まれた「熱い」電子しか出られなかったのに対し、<strong>拡散で表面まで歩ける µm 級の深さから電子を集められる</strong>ので、QE が高く（GaAsP で 40% 級）、GaAs は 900 nm 付近まで届きます。</p>
+      <p>代償もはっきりしています。壁が低いぶん<span class="key">熱で壁を越える電子（暗計数）も多く、冷やして使うのが基本</span>になり、表面のセシウムの層が繊細なので、強い光や管の中の残留ガスで感度が落ちやすい。「高い QE と引き換えに、扱いに気を遣う」光電面です。単一分子の蛍光やフォトンカウンティングの GaAsP 管が、たいてい冷却つきのモジュールで売られているのはこのためです。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">PHOTOCATHODES — 光電面の家系（代表例）</span></div>
+    <div class="scroll-x">
+      <table>
+        <thead><tr><th>光電面</th><th>主な材料</th><th>感じる範囲の目安</th><th>ピーク QE の代表例</th><th>向いている用途</th></tr></thead>
+        <tbody>
+          <tr><td>Cs-Te</td><td>Cs₂Te</td><td class="num">160〜320 nm</td><td class="num">10〜20% 級</td><td>地上の太陽光が届かない紫外（ソーラーブラインド、<a href="#s11">10</a>）。炎・放電の検出</td></tr>
+          <tr><td>バイアルカリ</td><td>Sb-K-Cs</td><td class="num">300〜650 nm</td><td class="num">25% 前後（420 nm 付近）</td><td>シンチレーション計数・一般の微弱光。紫外を通すガラスの窓なら 185 nm から</td></tr>
+          <tr><td>高 QE バイアルカリ</td><td>Sb-K-Cs（改良）</td><td class="num">300〜650 nm</td><td class="num">35%（SBA）・43%（UBA）級</td><td>シンチレーション計数・PET・高エネルギー物理</td></tr>
+          <tr><td>マルチアルカリ</td><td>Sb-Na-K-Cs</td><td class="num">300〜850 nm</td><td class="num">20% 前後（400 nm 付近）</td><td>分光・広い波長。赤外拡張型は 900 nm を超える</td></tr>
+          <tr><td>GaAsP（NEA）</td><td>GaAsP(Cs-O)</td><td class="num">300〜720 nm</td><td class="num">40% 級（500〜550 nm）</td><td>蛍光・単一分子・フォトンカウンティング</td></tr>
+          <tr><td>GaAs（NEA）</td><td>GaAs(Cs-O)</td><td class="num">300〜900 nm</td><td class="num">10〜15% 級（ほぼ平ら）</td><td>赤い蛍光・ラマン散乱</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <figcaption>値は浜松ホトニクス『光電子増倍管 ハンドブック』の分光感度特性に基づく<b>代表例</b>で、窓の材料・型式・製造の差で動きます。設計にはデータシートの分光感度曲線を使い、陰極感度 R [A/W] は QE = 1240·R/λ[nm] で QE に読み替えます（<a href="#s2">02</a> の例題）。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>1個の光電子は、毎回ちがう高さになる</h3>
+      <p>ダイノードが叩き出す二次電子の数は、平均 δ のまわりにばらつきます。各段で叩き出される数がポアソン分布に従うと仮定すると、利得の相対分散（分散 ÷ 平均²）は段ごとの寄与の足し算になり、</p>
+      <div class="eq">v<sub>G</sub> = (1/δ₁)·(1 + 1/δ + 1/δ² + …) = <b>(1/δ₁)·δ/(δ − 1)</b></div>
+      <p>です（δ₁ は第1段、δ は2段目以降）。第1段の 1/δ₁ が全体に効き、2段目から後ろは、すでに δ₁ 倍に増えた電子の数で割られて小さくしか効かない。<a href="#s2">02</a> の雑音指数 F = 1 + v<sub>G</sub> は、全部の段が同じ δ のときの特別な場合（F = δ/(δ − 1)）です。</p>
+    </div>
+    <div class="body-col">
+      <h3>第1段で大きく増やすと、光子の数が読める</h3>
+      <p>この v<sub>G</sub> が、<strong>1個の光電子が作るパルスの高さの広がり</strong>そのものです。δ₁ = δ = 4 なら v<sub>G</sub> = 0.33、標準偏差は平均の 0.58、正規分布で近似した半値全幅は平均の <b>136%</b> ― 1個と2個のパルスの山はほとんど見分けられません。第1段の電圧だけを高くして δ₁ = 10 にすると v<sub>G</sub> = 0.13（半値全幅 86%）、GaP のような NEA の結晶を第1ダイノードに使って δ₁ = 30 にすると 0.044（半値全幅 50%）になり、1・2・3 個の山が櫛の歯のように分かれて見えます。</p>
+      <p><span class="key">光子の数を数えたいなら、第1段で大きく増やす</span> ― <a href="#s2">02</a> の「最初の一転がり」を、分布の形で言い直したものです。実際の二次電子の数はポアソンより広く散ることが多いので、ここの値は<strong>広がりの下限の目安</strong>です。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">CASCADE — 光電子 1 個が、段ごとに δ 倍になる（δ = 4）</span><span class="fig-title">点の数は実数どおり</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 232" role="img" aria-label="ダイノードの段ごとに電子の数が増える様子。光子が光電面に当たって出た光電子1個が、第1段で4個、第2段で16個、第3段で64個、第4段で256個になる。点の数は実際の個数どおりで、段ごとに順に現れる。10段なら4の10乗でおよそ100万個。" style="min-width:700px;width:100%;display:block">
+        <path d="M14 110 H50" stroke="var(--photon)" stroke-width="2" fill="none" class="flow"/>
+        <path d="M46 105 L56 110 L46 115 Z" fill="var(--photon)"/>
+        <text x="14" y="98" font-size="10" fill="var(--photon-2)" font-weight="600">光子</text>
+        <g stroke="var(--ink-3)" stroke-width="1.2" fill="none" class="flow slow">
+          <path d="M84 110 H140"/><path d="M194 110 H258"/><path d="M322 110 H398"/><path d="M484 110 H552"/>
+        </g>
+        <g fill="var(--si)">
+          <rect x="150" y="176" width="40" height="5" rx="1"/><rect x="266" y="176" width="48" height="5" rx="1"/>
+          <rect x="406" y="176" width="68" height="5" rx="1"/><rect x="560" y="176" width="120" height="5" rx="1"/>
+        </g>
+        <g class="casc"><g class="c0" fill="var(--electron)"><circle cx="70.0" cy="110.0" r="4"/></g><g class="c1" fill="var(--electron)"><circle cx="165.0" cy="105.0" r="3.4"/><circle cx="165.0" cy="115.0" r="3.4"/><circle cx="175.0" cy="105.0" r="3.4"/><circle cx="175.0" cy="115.0" r="3.4"/></g><g class="c2" fill="var(--electron)"><circle cx="276.5" cy="96.5" r="3"/><circle cx="276.5" cy="105.5" r="3"/><circle cx="276.5" cy="114.5" r="3"/><circle cx="276.5" cy="123.5" r="3"/><circle cx="285.5" cy="96.5" r="3"/><circle cx="285.5" cy="105.5" r="3"/><circle cx="285.5" cy="114.5" r="3"/><circle cx="285.5" cy="123.5" r="3"/><circle cx="294.5" cy="96.5" r="3"/><circle cx="294.5" cy="105.5" r="3"/><circle cx="294.5" cy="114.5" r="3"/><circle cx="294.5" cy="123.5" r="3"/><circle cx="303.5" cy="96.5" r="3"/><circle cx="303.5" cy="105.5" r="3"/><circle cx="303.5" cy="114.5" r="3"/><circle cx="303.5" cy="123.5" r="3"/></g><g class="c3" fill="var(--electron)"><circle cx="412.0" cy="82.0" r="2.6"/><circle cx="412.0" cy="90.0" r="2.6"/><circle cx="412.0" cy="98.0" r="2.6"/><circle cx="412.0" cy="106.0" r="2.6"/><circle cx="412.0" cy="114.0" r="2.6"/><circle cx="412.0" cy="122.0" r="2.6"/><circle cx="412.0" cy="130.0" r="2.6"/><circle cx="412.0" cy="138.0" r="2.6"/><circle cx="420.0" cy="82.0" r="2.6"/><circle cx="420.0" cy="90.0" r="2.6"/><circle cx="420.0" cy="98.0" r="2.6"/><circle cx="420.0" cy="106.0" r="2.6"/><circle cx="420.0" cy="114.0" r="2.6"/><circle cx="420.0" cy="122.0" r="2.6"/><circle cx="420.0" cy="130.0" r="2.6"/><circle cx="420.0" cy="138.0" r="2.6"/><circle cx="428.0" cy="82.0" r="2.6"/><circle cx="428.0" cy="90.0" r="2.6"/><circle cx="428.0" cy="98.0" r="2.6"/><circle cx="428.0" cy="106.0" r="2.6"/><circle cx="428.0" cy="114.0" r="2.6"/><circle cx="428.0" cy="122.0" r="2.6"/><circle cx="428.0" cy="130.0" r="2.6"/><circle cx="428.0" cy="138.0" r="2.6"/><circle cx="436.0" cy="82.0" r="2.6"/><circle cx="436.0" cy="90.0" r="2.6"/><circle cx="436.0" cy="98.0" r="2.6"/><circle cx="436.0" cy="106.0" r="2.6"/><circle cx="436.0" cy="114.0" r="2.6"/><circle cx="436.0" cy="122.0" r="2.6"/><circle cx="436.0" cy="130.0" r="2.6"/><circle cx="436.0" cy="138.0" r="2.6"/><circle cx="444.0" cy="82.0" r="2.6"/><circle cx="444.0" cy="90.0" r="2.6"/><circle cx="444.0" cy="98.0" r="2.6"/><circle cx="444.0" cy="106.0" r="2.6"/><circle cx="444.0" cy="114.0" r="2.6"/><circle cx="444.0" cy="122.0" r="2.6"/><circle cx="444.0" cy="130.0" r="2.6"/><circle cx="444.0" cy="138.0" r="2.6"/><circle cx="452.0" cy="82.0" r="2.6"/><circle cx="452.0" cy="90.0" r="2.6"/><circle cx="452.0" cy="98.0" r="2.6"/><circle cx="452.0" cy="106.0" r="2.6"/><circle cx="452.0" cy="114.0" r="2.6"/><circle cx="452.0" cy="122.0" r="2.6"/><circle cx="452.0" cy="130.0" r="2.6"/><circle cx="452.0" cy="138.0" r="2.6"/><circle cx="460.0" cy="82.0" r="2.6"/><circle cx="460.0" cy="90.0" r="2.6"/><circle cx="460.0" cy="98.0" r="2.6"/><circle cx="460.0" cy="106.0" r="2.6"/><circle cx="460.0" cy="114.0" r="2.6"/><circle cx="460.0" cy="122.0" r="2.6"/><circle cx="460.0" cy="130.0" r="2.6"/><circle cx="460.0" cy="138.0" r="2.6"/><circle cx="468.0" cy="82.0" r="2.6"/><circle cx="468.0" cy="90.0" r="2.6"/><circle cx="468.0" cy="98.0" r="2.6"/><circle cx="468.0" cy="106.0" r="2.6"/><circle cx="468.0" cy="114.0" r="2.6"/><circle cx="468.0" cy="122.0" r="2.6"/><circle cx="468.0" cy="130.0" r="2.6"/><circle cx="468.0" cy="138.0" r="2.6"/></g><g class="c4" fill="var(--electron)"><circle cx="567.5" cy="57.5" r="2.1"/><circle cx="567.5" cy="64.5" r="2.1"/><circle cx="567.5" cy="71.5" r="2.1"/><circle cx="567.5" cy="78.5" r="2.1"/><circle cx="567.5" cy="85.5" r="2.1"/><circle cx="567.5" cy="92.5" r="2.1"/><circle cx="567.5" cy="99.5" r="2.1"/><circle cx="567.5" cy="106.5" r="2.1"/><circle cx="567.5" cy="113.5" r="2.1"/><circle cx="567.5" cy="120.5" r="2.1"/><circle cx="567.5" cy="127.5" r="2.1"/><circle cx="567.5" cy="134.5" r="2.1"/><circle cx="567.5" cy="141.5" r="2.1"/><circle cx="567.5" cy="148.5" r="2.1"/><circle cx="567.5" cy="155.5" r="2.1"/><circle cx="567.5" cy="162.5" r="2.1"/><circle cx="574.5" cy="57.5" r="2.1"/><circle cx="574.5" cy="64.5" r="2.1"/><circle cx="574.5" cy="71.5" r="2.1"/><circle cx="574.5" cy="78.5" r="2.1"/><circle cx="574.5" cy="85.5" r="2.1"/><circle cx="574.5" cy="92.5" r="2.1"/><circle cx="574.5" cy="99.5" r="2.1"/><circle cx="574.5" cy="106.5" r="2.1"/><circle cx="574.5" cy="113.5" r="2.1"/><circle cx="574.5" cy="120.5" r="2.1"/><circle cx="574.5" cy="127.5" r="2.1"/><circle cx="574.5" cy="134.5" r="2.1"/><circle cx="574.5" cy="141.5" r="2.1"/><circle cx="574.5" cy="148.5" r="2.1"/><circle cx="574.5" cy="155.5" r="2.1"/><circle cx="574.5" cy="162.5" r="2.1"/><circle cx="581.5" cy="57.5" r="2.1"/><circle cx="581.5" cy="64.5" r="2.1"/><circle cx="581.5" cy="71.5" r="2.1"/><circle cx="581.5" cy="78.5" r="2.1"/><circle cx="581.5" cy="85.5" r="2.1"/><circle cx="581.5" cy="92.5" r="2.1"/><circle cx="581.5" cy="99.5" r="2.1"/><circle cx="581.5" cy="106.5" r="2.1"/><circle cx="581.5" cy="113.5" r="2.1"/><circle cx="581.5" cy="120.5" r="2.1"/><circle cx="581.5" cy="127.5" r="2.1"/><circle cx="581.5" cy="134.5" r="2.1"/><circle cx="581.5" cy="141.5" r="2.1"/><circle cx="581.5" cy="148.5" r="2.1"/><circle cx="581.5" cy="155.5" r="2.1"/><circle cx="581.5" cy="162.5" r="2.1"/><circle cx="588.5" cy="57.5" r="2.1"/><circle cx="588.5" cy="64.5" r="2.1"/><circle cx="588.5" cy="71.5" r="2.1"/><circle cx="588.5" cy="78.5" r="2.1"/><circle cx="588.5" cy="85.5" r="2.1"/><circle cx="588.5" cy="92.5" r="2.1"/><circle cx="588.5" cy="99.5" r="2.1"/><circle cx="588.5" cy="106.5" r="2.1"/><circle cx="588.5" cy="113.5" r="2.1"/><circle cx="588.5" cy="120.5" r="2.1"/><circle cx="588.5" cy="127.5" r="2.1"/><circle cx="588.5" cy="134.5" r="2.1"/><circle cx="588.5" cy="141.5" r="2.1"/><circle cx="588.5" cy="148.5" r="2.1"/><circle cx="588.5" cy="155.5" r="2.1"/><circle cx="588.5" cy="162.5" r="2.1"/><circle cx="595.5" cy="57.5" r="2.1"/><circle cx="595.5" cy="64.5" r="2.1"/><circle cx="595.5" cy="71.5" r="2.1"/><circle cx="595.5" cy="78.5" r="2.1"/><circle cx="595.5" cy="85.5" r="2.1"/><circle cx="595.5" cy="92.5" r="2.1"/><circle cx="595.5" cy="99.5" r="2.1"/><circle cx="595.5" cy="106.5" r="2.1"/><circle cx="595.5" cy="113.5" r="2.1"/><circle cx="595.5" cy="120.5" r="2.1"/><circle cx="595.5" cy="127.5" r="2.1"/><circle cx="595.5" cy="134.5" r="2.1"/><circle cx="595.5" cy="141.5" r="2.1"/><circle cx="595.5" cy="148.5" r="2.1"/><circle cx="595.5" cy="155.5" r="2.1"/><circle cx="595.5" cy="162.5" r="2.1"/><circle cx="602.5" cy="57.5" r="2.1"/><circle cx="602.5" cy="64.5" r="2.1"/><circle cx="602.5" cy="71.5" r="2.1"/><circle cx="602.5" cy="78.5" r="2.1"/><circle cx="602.5" cy="85.5" r="2.1"/><circle cx="602.5" cy="92.5" r="2.1"/><circle cx="602.5" cy="99.5" r="2.1"/><circle cx="602.5" cy="106.5" r="2.1"/><circle cx="602.5" cy="113.5" r="2.1"/><circle cx="602.5" cy="120.5" r="2.1"/><circle cx="602.5" cy="127.5" r="2.1"/><circle cx="602.5" cy="134.5" r="2.1"/><circle cx="602.5" cy="141.5" r="2.1"/><circle cx="602.5" cy="148.5" r="2.1"/><circle cx="602.5" cy="155.5" r="2.1"/><circle cx="602.5" cy="162.5" r="2.1"/><circle cx="609.5" cy="57.5" r="2.1"/><circle cx="609.5" cy="64.5" r="2.1"/><circle cx="609.5" cy="71.5" r="2.1"/><circle cx="609.5" cy="78.5" r="2.1"/><circle cx="609.5" cy="85.5" r="2.1"/><circle cx="609.5" cy="92.5" r="2.1"/><circle cx="609.5" cy="99.5" r="2.1"/><circle cx="609.5" cy="106.5" r="2.1"/><circle cx="609.5" cy="113.5" r="2.1"/><circle cx="609.5" cy="120.5" r="2.1"/><circle cx="609.5" cy="127.5" r="2.1"/><circle cx="609.5" cy="134.5" r="2.1"/><circle cx="609.5" cy="141.5" r="2.1"/><circle cx="609.5" cy="148.5" r="2.1"/><circle cx="609.5" cy="155.5" r="2.1"/><circle cx="609.5" cy="162.5" r="2.1"/><circle cx="616.5" cy="57.5" r="2.1"/><circle cx="616.5" cy="64.5" r="2.1"/><circle cx="616.5" cy="71.5" r="2.1"/><circle cx="616.5" cy="78.5" r="2.1"/><circle cx="616.5" cy="85.5" r="2.1"/><circle cx="616.5" cy="92.5" r="2.1"/><circle cx="616.5" cy="99.5" r="2.1"/><circle cx="616.5" cy="106.5" r="2.1"/><circle cx="616.5" cy="113.5" r="2.1"/><circle cx="616.5" cy="120.5" r="2.1"/><circle cx="616.5" cy="127.5" r="2.1"/><circle cx="616.5" cy="134.5" r="2.1"/><circle cx="616.5" cy="141.5" r="2.1"/><circle cx="616.5" cy="148.5" r="2.1"/><circle cx="616.5" cy="155.5" r="2.1"/><circle cx="616.5" cy="162.5" r="2.1"/><circle cx="623.5" cy="57.5" r="2.1"/><circle cx="623.5" cy="64.5" r="2.1"/><circle cx="623.5" cy="71.5" r="2.1"/><circle cx="623.5" cy="78.5" r="2.1"/><circle cx="623.5" cy="85.5" r="2.1"/><circle cx="623.5" cy="92.5" r="2.1"/><circle cx="623.5" cy="99.5" r="2.1"/><circle cx="623.5" cy="106.5" r="2.1"/><circle cx="623.5" cy="113.5" r="2.1"/><circle cx="623.5" cy="120.5" r="2.1"/><circle cx="623.5" cy="127.5" r="2.1"/><circle cx="623.5" cy="134.5" r="2.1"/><circle cx="623.5" cy="141.5" r="2.1"/><circle cx="623.5" cy="148.5" r="2.1"/><circle cx="623.5" cy="155.5" r="2.1"/><circle cx="623.5" cy="162.5" r="2.1"/><circle cx="630.5" cy="57.5" r="2.1"/><circle cx="630.5" cy="64.5" r="2.1"/><circle cx="630.5" cy="71.5" r="2.1"/><circle cx="630.5" cy="78.5" r="2.1"/><circle cx="630.5" cy="85.5" r="2.1"/><circle cx="630.5" cy="92.5" r="2.1"/><circle cx="630.5" cy="99.5" r="2.1"/><circle cx="630.5" cy="106.5" r="2.1"/><circle cx="630.5" cy="113.5" r="2.1"/><circle cx="630.5" cy="120.5" r="2.1"/><circle cx="630.5" cy="127.5" r="2.1"/><circle cx="630.5" cy="134.5" r="2.1"/><circle cx="630.5" cy="141.5" r="2.1"/><circle cx="630.5" cy="148.5" r="2.1"/><circle cx="630.5" cy="155.5" r="2.1"/><circle cx="630.5" cy="162.5" r="2.1"/><circle cx="637.5" cy="57.5" r="2.1"/><circle cx="637.5" cy="64.5" r="2.1"/><circle cx="637.5" cy="71.5" r="2.1"/><circle cx="637.5" cy="78.5" r="2.1"/><circle cx="637.5" cy="85.5" r="2.1"/><circle cx="637.5" cy="92.5" r="2.1"/><circle cx="637.5" cy="99.5" r="2.1"/><circle cx="637.5" cy="106.5" r="2.1"/><circle cx="637.5" cy="113.5" r="2.1"/><circle cx="637.5" cy="120.5" r="2.1"/><circle cx="637.5" cy="127.5" r="2.1"/><circle cx="637.5" cy="134.5" r="2.1"/><circle cx="637.5" cy="141.5" r="2.1"/><circle cx="637.5" cy="148.5" r="2.1"/><circle cx="637.5" cy="155.5" r="2.1"/><circle cx="637.5" cy="162.5" r="2.1"/><circle cx="644.5" cy="57.5" r="2.1"/><circle cx="644.5" cy="64.5" r="2.1"/><circle cx="644.5" cy="71.5" r="2.1"/><circle cx="644.5" cy="78.5" r="2.1"/><circle cx="644.5" cy="85.5" r="2.1"/><circle cx="644.5" cy="92.5" r="2.1"/><circle cx="644.5" cy="99.5" r="2.1"/><circle cx="644.5" cy="106.5" r="2.1"/><circle cx="644.5" cy="113.5" r="2.1"/><circle cx="644.5" cy="120.5" r="2.1"/><circle cx="644.5" cy="127.5" r="2.1"/><circle cx="644.5" cy="134.5" r="2.1"/><circle cx="644.5" cy="141.5" r="2.1"/><circle cx="644.5" cy="148.5" r="2.1"/><circle cx="644.5" cy="155.5" r="2.1"/><circle cx="644.5" cy="162.5" r="2.1"/><circle cx="651.5" cy="57.5" r="2.1"/><circle cx="651.5" cy="64.5" r="2.1"/><circle cx="651.5" cy="71.5" r="2.1"/><circle cx="651.5" cy="78.5" r="2.1"/><circle cx="651.5" cy="85.5" r="2.1"/><circle cx="651.5" cy="92.5" r="2.1"/><circle cx="651.5" cy="99.5" r="2.1"/><circle cx="651.5" cy="106.5" r="2.1"/><circle cx="651.5" cy="113.5" r="2.1"/><circle cx="651.5" cy="120.5" r="2.1"/><circle cx="651.5" cy="127.5" r="2.1"/><circle cx="651.5" cy="134.5" r="2.1"/><circle cx="651.5" cy="141.5" r="2.1"/><circle cx="651.5" cy="148.5" r="2.1"/><circle cx="651.5" cy="155.5" r="2.1"/><circle cx="651.5" cy="162.5" r="2.1"/><circle cx="658.5" cy="57.5" r="2.1"/><circle cx="658.5" cy="64.5" r="2.1"/><circle cx="658.5" cy="71.5" r="2.1"/><circle cx="658.5" cy="78.5" r="2.1"/><circle cx="658.5" cy="85.5" r="2.1"/><circle cx="658.5" cy="92.5" r="2.1"/><circle cx="658.5" cy="99.5" r="2.1"/><circle cx="658.5" cy="106.5" r="2.1"/><circle cx="658.5" cy="113.5" r="2.1"/><circle cx="658.5" cy="120.5" r="2.1"/><circle cx="658.5" cy="127.5" r="2.1"/><circle cx="658.5" cy="134.5" r="2.1"/><circle cx="658.5" cy="141.5" r="2.1"/><circle cx="658.5" cy="148.5" r="2.1"/><circle cx="658.5" cy="155.5" r="2.1"/><circle cx="658.5" cy="162.5" r="2.1"/><circle cx="665.5" cy="57.5" r="2.1"/><circle cx="665.5" cy="64.5" r="2.1"/><circle cx="665.5" cy="71.5" r="2.1"/><circle cx="665.5" cy="78.5" r="2.1"/><circle cx="665.5" cy="85.5" r="2.1"/><circle cx="665.5" cy="92.5" r="2.1"/><circle cx="665.5" cy="99.5" r="2.1"/><circle cx="665.5" cy="106.5" r="2.1"/><circle cx="665.5" cy="113.5" r="2.1"/><circle cx="665.5" cy="120.5" r="2.1"/><circle cx="665.5" cy="127.5" r="2.1"/><circle cx="665.5" cy="134.5" r="2.1"/><circle cx="665.5" cy="141.5" r="2.1"/><circle cx="665.5" cy="148.5" r="2.1"/><circle cx="665.5" cy="155.5" r="2.1"/><circle cx="665.5" cy="162.5" r="2.1"/><circle cx="672.5" cy="57.5" r="2.1"/><circle cx="672.5" cy="64.5" r="2.1"/><circle cx="672.5" cy="71.5" r="2.1"/><circle cx="672.5" cy="78.5" r="2.1"/><circle cx="672.5" cy="85.5" r="2.1"/><circle cx="672.5" cy="92.5" r="2.1"/><circle cx="672.5" cy="99.5" r="2.1"/><circle cx="672.5" cy="106.5" r="2.1"/><circle cx="672.5" cy="113.5" r="2.1"/><circle cx="672.5" cy="120.5" r="2.1"/><circle cx="672.5" cy="127.5" r="2.1"/><circle cx="672.5" cy="134.5" r="2.1"/><circle cx="672.5" cy="141.5" r="2.1"/><circle cx="672.5" cy="148.5" r="2.1"/><circle cx="672.5" cy="155.5" r="2.1"/><circle cx="672.5" cy="162.5" r="2.1"/></g></g>
+        <g font-size="10" fill="var(--ink-2)" text-anchor="middle">
+          <text x="70" y="200">光電子</text><text x="170" y="200">第1段</text><text x="290" y="200">第2段</text><text x="440" y="200">第3段</text><text x="620" y="200">第4段</text>
+        </g>
+        <g font-family="var(--mono)" font-size="9.5" fill="var(--electron-2)" text-anchor="middle">
+          <text x="70" y="216">1 個</text><text x="170" y="216">4 個</text><text x="290" y="216">16 個</text><text x="440" y="216">64 個</text><text x="620" y="216">256 個</text>
+        </g>
+        <text x="748" y="28" font-size="10" fill="var(--ink-2)" text-anchor="end">… 10 段で 4¹⁰ ≈ 1.05×10⁶ 個</text>
+      </svg>
+    </div>
+    <figcaption>点は段ごとに順に現れます（灰色の板がダイノード）。<b>点の数は実数どおり</b> ― 第4段の 256 個まで描くと、ここから先の 6 段で残り 4,096 倍になることが実感できます。1 段ごとの数はポアソン的に揺れますが、揺れが全体に効くのは最初の段だけです（上の式）。</figcaption>
+  </figure>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">SINGLE-PE SPECTRUM — 1 個の光電子のパルスの高さの分布</span><span class="fig-title">相対分散 v<sub>G</sub> から計算（ガンマ分布で近似）</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 236" role="img" aria-label="光電子1個が作るパルスの高さの分布を、第1ダイノードの利得δ1が4、10、30の3通りで比べたグラフ。δ1が大きいほど分布が細く鋭くなる。左の低い位置に弁別のしきい値の破線がある。" style="min-width:700px;width:100%;display:block">
+        <path d="M70 30 V190 H720" stroke="var(--line)" stroke-width="1" fill="none"/>
+        <path d="M286.7 30 V190 M503.3 30 V190" stroke="var(--line-2)" stroke-width="1" stroke-dasharray="2 4" fill="none"/>
+        <path d="M124.2 44 V190" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="4 3" fill="none"/>
+        <text x="130" y="42" font-size="9.5" fill="var(--ink-3)">弁別のしきい値（0.25）</text>
+        <path d="M71.1 190.0 L73.3 189.8 L75.4 189.5 L77.6 189.0 L79.8 188.3 L81.9 187.6 L84.1 186.7 L86.3 185.8 L88.4 184.7 L90.6 183.6 L92.8 182.4 L94.9 181.1 L97.1 179.9 L99.3 178.5 L101.4 177.1 L103.6 175.7 L105.8 174.3 L107.9 172.9 L110.1 171.4 L112.3 170.0 L114.4 168.5 L116.6 167.1 L118.8 165.6 L120.9 164.2 L123.1 162.8 L125.3 161.4 L127.4 160.0 L129.6 158.7 L131.8 157.4 L133.9 156.1 L136.1 154.8 L138.3 153.6 L140.4 152.4 L142.6 151.2 L144.8 150.0 L146.9 148.9 L149.1 147.9 L151.3 146.9 L153.4 145.9 L155.6 144.9 L157.8 144.0 L159.9 143.1 L162.1 142.3 L164.3 141.5 L166.4 140.8 L168.6 140.0 L170.8 139.4 L172.9 138.7 L175.1 138.1 L177.3 137.6 L179.4 137.0 L181.6 136.5 L183.8 136.1 L185.9 135.7 L188.1 135.3 L190.3 134.9 L192.4 134.6 L194.6 134.3 L196.8 134.1 L198.9 133.9 L201.1 133.7 L203.3 133.5 L205.4 133.4 L207.6 133.3 L209.8 133.2 L211.9 133.2 L214.1 133.2 L216.3 133.2 L218.4 133.2 L220.6 133.3 L222.8 133.3 L224.9 133.4 L227.1 133.6 L229.3 133.7 L231.4 133.9 L233.6 134.1 L235.8 134.3 L237.9 134.5 L240.1 134.7 L242.3 135.0 L244.4 135.3 L246.6 135.6 L248.8 135.9 L250.9 136.2 L253.1 136.5 L255.3 136.9 L257.4 137.2 L259.6 137.6 L261.8 138.0 L263.9 138.4 L266.1 138.8 L268.3 139.2 L270.4 139.6 L272.6 140.0 L274.8 140.4 L276.9 140.9 L279.1 141.3 L281.3 141.8 L283.4 142.3 L285.6 142.7 L287.8 143.2 L289.9 143.7 L292.1 144.1 L294.3 144.6 L296.4 145.1 L298.6 145.6 L300.8 146.1 L302.9 146.6 L305.1 147.1 L307.3 147.6 L309.4 148.1 L311.6 148.6 L313.8 149.1 L315.9 149.6 L318.1 150.1 L320.3 150.6 L322.4 151.1 L324.6 151.6 L326.7 152.1 L328.9 152.6 L331.1 153.1 L333.2 153.6 L335.4 154.1 L337.6 154.5 L339.7 155.0 L341.9 155.5 L344.1 156.0 L346.2 156.5 L348.4 157.0 L350.6 157.4 L352.8 157.9 L354.9 158.4 L357.1 158.8 L359.3 159.3 L361.4 159.8 L363.6 160.2 L365.8 160.7 L367.9 161.1 L370.1 161.6 L372.3 162.0 L374.4 162.4 L376.6 162.9 L378.7 163.3 L380.9 163.7 L383.1 164.1 L385.2 164.6 L387.4 165.0 L389.6 165.4 L391.7 165.8 L393.9 166.2 L396.1 166.6 L398.2 167.0 L400.4 167.3 L402.6 167.7 L404.8 168.1 L406.9 168.5 L409.1 168.8 L411.3 169.2 L413.4 169.6 L415.6 169.9 L417.8 170.3 L419.9 170.6 L422.1 170.9 L424.3 171.3 L426.4 171.6 L428.6 171.9 L430.8 172.3 L432.9 172.6 L435.1 172.9 L437.3 173.2 L439.4 173.5 L441.6 173.8 L443.8 174.1 L445.9 174.4 L448.1 174.7 L450.3 175.0 L452.4 175.2 L454.6 175.5 L456.8 175.8 L458.9 176.0 L461.1 176.3 L463.3 176.6 L465.4 176.8 L467.6 177.1 L469.8 177.3 L471.9 177.5 L474.1 177.8 L476.3 178.0 L478.4 178.2 L480.6 178.5 L482.8 178.7 L484.9 178.9 L487.1 179.1 L489.3 179.3 L491.4 179.5 L493.6 179.8 L495.8 180.0 L497.9 180.2 L500.1 180.3 L502.3 180.5 L504.4 180.7 L506.6 180.9 L508.8 181.1 L510.9 181.3 L513.1 181.4 L515.3 181.6 L517.4 181.8 L519.6 181.9 L521.8 182.1 L523.9 182.3 L526.1 182.4 L528.3 182.6 L530.4 182.7 L532.6 182.9 L534.8 183.0 L536.9 183.2 L539.1 183.3 L541.3 183.4 L543.4 183.6 L545.6 183.7 L547.8 183.8 L549.9 184.0 L552.1 184.1 L554.3 184.2 L556.4 184.3 L558.6 184.5 L560.8 184.6 L562.9 184.7 L565.1 184.8 L567.3 184.9 L569.4 185.0 L571.6 185.1 L573.8 185.2 L575.9 185.3 L578.1 185.4 L580.3 185.5 L582.4 185.6 L584.6 185.7 L586.7 185.8 L588.9 185.9 L591.1 186.0 L593.3 186.1 L595.4 186.2 L597.6 186.2 L599.8 186.3 L601.9 186.4 L604.1 186.5 L606.3 186.5 L608.4 186.6 L610.6 186.7 L612.8 186.8 L614.9 186.8 L617.1 186.9 L619.3 187.0 L621.4 187.0 L623.6 187.1 L625.8 187.2 L627.9 187.2 L630.1 187.3 L632.2 187.4 L634.4 187.4 L636.6 187.5 L638.8 187.5 L640.9 187.6 L643.1 187.6 L645.2 187.7 L647.4 187.7 L649.6 187.8 L651.8 187.8 L653.9 187.9 L656.1 187.9 L658.3 188.0 L660.4 188.0 L662.6 188.1 L664.8 188.1 L666.9 188.2 L669.1 188.2 L671.3 188.2 L673.4 188.3 L675.6 188.3 L677.8 188.4 L679.9 188.4 L682.1 188.4 L684.3 188.5 L686.4 188.5 L688.6 188.5 L690.7 188.6 L692.9 188.6 L695.1 188.6 L697.3 188.7 L699.4 188.7 L701.6 188.7 L703.7 188.8 L705.9 188.8 L708.1 188.8 L710.3 188.8 L712.4 188.9 L714.6 188.9 L716.8 188.9 L718.9 188.9" stroke="var(--warn)" stroke-width="2" fill="none" class="draw" style="--len:900"/>
+        <path d="M71.1 190.0 L73.3 190.0 L75.4 190.0 L77.6 190.0 L79.8 190.0 L81.9 190.0 L84.1 190.0 L86.3 190.0 L88.4 190.0 L90.6 190.0 L92.8 190.0 L94.9 190.0 L97.1 189.9 L99.3 189.9 L101.4 189.8 L103.6 189.8 L105.8 189.7 L107.9 189.6 L110.1 189.4 L112.3 189.2 L114.4 189.0 L116.6 188.8 L118.8 188.4 L120.9 188.1 L123.1 187.7 L125.3 187.2 L127.4 186.7 L129.6 186.1 L131.8 185.4 L133.9 184.6 L136.1 183.8 L138.3 182.9 L140.4 182.0 L142.6 180.9 L144.8 179.8 L146.9 178.6 L149.1 177.4 L151.3 176.0 L153.4 174.6 L155.6 173.1 L157.8 171.6 L159.9 170.0 L162.1 168.3 L164.3 166.6 L166.4 164.8 L168.6 163.0 L170.8 161.2 L172.9 159.3 L175.1 157.4 L177.3 155.4 L179.4 153.5 L181.6 151.5 L183.8 149.5 L185.9 147.6 L188.1 145.6 L190.3 143.6 L192.4 141.7 L194.6 139.8 L196.8 137.9 L198.9 136.0 L201.1 134.2 L203.3 132.4 L205.4 130.7 L207.6 129.0 L209.8 127.3 L211.9 125.7 L214.1 124.2 L216.3 122.7 L218.4 121.3 L220.6 120.0 L222.8 118.7 L224.9 117.6 L227.1 116.4 L229.3 115.4 L231.4 114.4 L233.6 113.5 L235.8 112.7 L237.9 112.0 L240.1 111.4 L242.3 110.8 L244.4 110.3 L246.6 109.9 L248.8 109.5 L250.9 109.3 L253.1 109.1 L255.3 108.9 L257.4 108.9 L259.6 108.9 L261.8 109.0 L263.9 109.2 L266.1 109.4 L268.3 109.7 L270.4 110.0 L272.6 110.4 L274.8 110.9 L276.9 111.4 L279.1 112.0 L281.3 112.6 L283.4 113.3 L285.6 114.0 L287.8 114.7 L289.9 115.5 L292.1 116.4 L294.3 117.3 L296.4 118.2 L298.6 119.1 L300.8 120.1 L302.9 121.0 L305.1 122.1 L307.3 123.1 L309.4 124.1 L311.6 125.2 L313.8 126.3 L315.9 127.4 L318.1 128.5 L320.3 129.7 L322.4 130.8 L324.6 131.9 L326.7 133.1 L328.9 134.2 L331.1 135.4 L333.2 136.5 L335.4 137.7 L337.6 138.8 L339.7 140.0 L341.9 141.1 L344.1 142.2 L346.2 143.4 L348.4 144.5 L350.6 145.6 L352.8 146.7 L354.9 147.8 L357.1 148.8 L359.3 149.9 L361.4 150.9 L363.6 152.0 L365.8 153.0 L367.9 154.0 L370.1 155.0 L372.3 156.0 L374.4 156.9 L376.6 157.9 L378.7 158.8 L380.9 159.7 L383.1 160.6 L385.2 161.5 L387.4 162.3 L389.6 163.2 L391.7 164.0 L393.9 164.8 L396.1 165.6 L398.2 166.3 L400.4 167.1 L402.6 167.8 L404.8 168.5 L406.9 169.2 L409.1 169.9 L411.3 170.6 L413.4 171.2 L415.6 171.9 L417.8 172.5 L419.9 173.1 L422.1 173.7 L424.3 174.2 L426.4 174.8 L428.6 175.3 L430.8 175.8 L432.9 176.3 L435.1 176.8 L437.3 177.3 L439.4 177.7 L441.6 178.2 L443.8 178.6 L445.9 179.0 L448.1 179.4 L450.3 179.8 L452.4 180.2 L454.6 180.6 L456.8 180.9 L458.9 181.3 L461.1 181.6 L463.3 181.9 L465.4 182.2 L467.6 182.5 L469.8 182.8 L471.9 183.1 L474.1 183.4 L476.3 183.6 L478.4 183.9 L480.6 184.1 L482.8 184.4 L484.9 184.6 L487.1 184.8 L489.3 185.0 L491.4 185.2 L493.6 185.4 L495.8 185.6 L497.9 185.8 L500.1 186.0 L502.3 186.1 L504.4 186.3 L506.6 186.4 L508.8 186.6 L510.9 186.7 L513.1 186.9 L515.3 187.0 L517.4 187.1 L519.6 187.3 L521.8 187.4 L523.9 187.5 L526.1 187.6 L528.3 187.7 L530.4 187.8 L532.6 187.9 L534.8 188.0 L536.9 188.1 L539.1 188.2 L541.3 188.2 L543.4 188.3 L545.6 188.4 L547.8 188.5 L549.9 188.5 L552.1 188.6 L554.3 188.7 L556.4 188.7 L558.6 188.8 L560.8 188.8 L562.9 188.9 L565.1 188.9 L567.3 189.0 L569.4 189.0 L571.6 189.1 L573.8 189.1 L575.9 189.2 L578.1 189.2 L580.3 189.2 L582.4 189.3 L584.6 189.3 L586.7 189.3 L588.9 189.4 L591.1 189.4 L593.3 189.4 L595.4 189.5 L597.6 189.5 L599.8 189.5 L601.9 189.5 L604.1 189.5 L606.3 189.6 L608.4 189.6 L610.6 189.6 L612.8 189.6 L614.9 189.6 L617.1 189.7 L619.3 189.7 L621.4 189.7 L623.6 189.7 L625.8 189.7 L627.9 189.7 L630.1 189.8 L632.2 189.8 L634.4 189.8 L636.6 189.8 L638.8 189.8 L640.9 189.8 L643.1 189.8 L645.2 189.8 L647.4 189.8 L649.6 189.8 L651.8 189.8 L653.9 189.9 L656.1 189.9 L658.3 189.9 L660.4 189.9 L662.6 189.9 L664.8 189.9 L666.9 189.9 L669.1 189.9 L671.3 189.9 L673.4 189.9 L675.6 189.9 L677.8 189.9 L679.9 189.9 L682.1 189.9 L684.3 189.9 L686.4 189.9 L688.6 189.9 L690.7 189.9 L692.9 189.9 L695.1 189.9 L697.3 189.9 L699.4 190.0 L701.6 190.0 L703.7 190.0 L705.9 190.0 L708.1 190.0 L710.3 190.0 L712.4 190.0 L714.6 190.0 L716.8 190.0 L718.9 190.0" stroke="var(--volt)" stroke-width="2" fill="none" class="draw" style="--len:900;animation-delay:.4s"/>
+        <path d="M71.1 190.0 L73.3 190.0 L75.4 190.0 L77.6 190.0 L79.8 190.0 L81.9 190.0 L84.1 190.0 L86.3 190.0 L88.4 190.0 L90.6 190.0 L92.8 190.0 L94.9 190.0 L97.1 190.0 L99.3 190.0 L101.4 190.0 L103.6 190.0 L105.8 190.0 L107.9 190.0 L110.1 190.0 L112.3 190.0 L114.4 190.0 L116.6 190.0 L118.8 190.0 L120.9 190.0 L123.1 190.0 L125.3 190.0 L127.4 190.0 L129.6 190.0 L131.8 190.0 L133.9 190.0 L136.1 190.0 L138.3 190.0 L140.4 190.0 L142.6 190.0 L144.8 190.0 L146.9 189.9 L149.1 189.9 L151.3 189.9 L153.4 189.8 L155.6 189.8 L157.8 189.7 L159.9 189.6 L162.1 189.4 L164.3 189.3 L166.4 189.0 L168.6 188.8 L170.8 188.4 L172.9 188.0 L175.1 187.5 L177.3 186.9 L179.4 186.2 L181.6 185.4 L183.8 184.4 L185.9 183.3 L188.1 182.1 L190.3 180.6 L192.4 179.0 L194.6 177.2 L196.8 175.2 L198.9 173.0 L201.1 170.6 L203.3 168.0 L205.4 165.1 L207.6 162.0 L209.8 158.7 L211.9 155.3 L214.1 151.6 L216.3 147.7 L218.4 143.7 L220.6 139.5 L222.8 135.1 L224.9 130.7 L227.1 126.2 L229.3 121.6 L231.4 117.0 L233.6 112.3 L235.8 107.7 L237.9 103.1 L240.1 98.6 L242.3 94.2 L244.4 89.9 L246.6 85.7 L248.8 81.8 L250.9 78.0 L253.1 74.5 L255.3 71.2 L257.4 68.2 L259.6 65.5 L261.8 63.1 L263.9 61.0 L266.1 59.2 L268.3 57.7 L270.4 56.5 L272.6 55.7 L274.8 55.2 L276.9 55.0 L279.1 55.2 L281.3 55.6 L283.4 56.4 L285.6 57.4 L287.8 58.7 L289.9 60.3 L292.1 62.1 L294.3 64.2 L296.4 66.5 L298.6 68.9 L300.8 71.6 L302.9 74.4 L305.1 77.4 L307.3 80.5 L309.4 83.6 L311.6 86.9 L313.8 90.3 L315.9 93.7 L318.1 97.1 L320.3 100.6 L322.4 104.1 L324.6 107.5 L326.7 111.0 L328.9 114.4 L331.1 117.8 L333.2 121.1 L335.4 124.4 L337.6 127.6 L339.7 130.8 L341.9 133.8 L344.1 136.8 L346.2 139.7 L348.4 142.5 L350.6 145.2 L352.8 147.8 L354.9 150.3 L357.1 152.6 L359.3 154.9 L361.4 157.1 L363.6 159.2 L365.8 161.2 L367.9 163.1 L370.1 164.9 L372.3 166.6 L374.4 168.2 L376.6 169.7 L378.7 171.2 L380.9 172.5 L383.1 173.8 L385.2 175.0 L387.4 176.1 L389.6 177.2 L391.7 178.2 L393.9 179.1 L396.1 179.9 L398.2 180.7 L400.4 181.5 L402.6 182.2 L404.8 182.8 L406.9 183.4 L409.1 184.0 L411.3 184.5 L413.4 184.9 L415.6 185.4 L417.8 185.8 L419.9 186.1 L422.1 186.5 L424.3 186.8 L426.4 187.1 L428.6 187.3 L430.8 187.6 L432.9 187.8 L435.1 188.0 L437.3 188.2 L439.4 188.4 L441.6 188.5 L443.8 188.7 L445.9 188.8 L448.1 188.9 L450.3 189.0 L452.4 189.1 L454.6 189.2 L456.8 189.3 L458.9 189.3 L461.1 189.4 L463.3 189.5 L465.4 189.5 L467.6 189.6 L469.8 189.6 L471.9 189.7 L474.1 189.7 L476.3 189.7 L478.4 189.8 L480.6 189.8 L482.8 189.8 L484.9 189.8 L487.1 189.8 L489.3 189.9 L491.4 189.9 L493.6 189.9 L495.8 189.9 L497.9 189.9 L500.1 189.9 L502.3 189.9 L504.4 189.9 L506.6 189.9 L508.8 190.0 L510.9 190.0 L513.1 190.0 L515.3 190.0 L517.4 190.0 L519.6 190.0 L521.8 190.0 L523.9 190.0 L526.1 190.0 L528.3 190.0 L530.4 190.0 L532.6 190.0 L534.8 190.0 L536.9 190.0 L539.1 190.0 L541.3 190.0 L543.4 190.0 L545.6 190.0 L547.8 190.0 L549.9 190.0 L552.1 190.0 L554.3 190.0 L556.4 190.0 L558.6 190.0 L560.8 190.0 L562.9 190.0 L565.1 190.0 L567.3 190.0 L569.4 190.0 L571.6 190.0 L573.8 190.0 L575.9 190.0 L578.1 190.0 L580.3 190.0 L582.4 190.0 L584.6 190.0 L586.7 190.0 L588.9 190.0 L591.1 190.0 L593.3 190.0 L595.4 190.0 L597.6 190.0 L599.8 190.0 L601.9 190.0 L604.1 190.0 L606.3 190.0 L608.4 190.0 L610.6 190.0 L612.8 190.0 L614.9 190.0 L617.1 190.0 L619.3 190.0 L621.4 190.0 L623.6 190.0 L625.8 190.0 L627.9 190.0 L630.1 190.0 L632.2 190.0 L634.4 190.0 L636.6 190.0 L638.8 190.0 L640.9 190.0 L643.1 190.0 L645.2 190.0 L647.4 190.0 L649.6 190.0 L651.8 190.0 L653.9 190.0 L656.1 190.0 L658.3 190.0 L660.4 190.0 L662.6 190.0 L664.8 190.0 L666.9 190.0 L669.1 190.0 L671.3 190.0 L673.4 190.0 L675.6 190.0 L677.8 190.0 L679.9 190.0 L682.1 190.0 L684.3 190.0 L686.4 190.0 L688.6 190.0 L690.7 190.0 L692.9 190.0 L695.1 190.0 L697.3 190.0 L699.4 190.0 L701.6 190.0 L703.7 190.0 L705.9 190.0 L708.1 190.0 L710.3 190.0 L712.4 190.0 L714.6 190.0 L716.8 190.0 L718.9 190.0" stroke="var(--electron)" stroke-width="2.2" fill="none" class="draw" style="--len:1000;animation-delay:.8s"/>
+        <g font-size="10">
+          <text x="325.7" y="60" fill="var(--electron-2)">δ₁ = 30（GaP の第1段など）: 半値全幅 50%</text>
+          <text x="395.0" y="100" fill="var(--volt)">δ₁ = 10（第1段の電圧を上げる）: 86%</text>
+          <text x="481.7" y="140" fill="var(--warn)">δ₁ = δ = 4（全部の段が同じ）: 136%</text>
+        </g>
+        <g font-family="var(--mono)" font-size="9.5" fill="var(--ink-3)" text-anchor="middle">
+          <text x="70" y="206">0</text><text x="286.7" y="206">1</text><text x="503.3" y="206">2</text><text x="720" y="206">3</text>
+        </g>
+        <text x="395" y="226" font-size="10" fill="var(--ink-3)" text-anchor="middle">パルスの高さ（光電子 1 個の平均を 1 とする）</text>
+        <text x="40" y="110" font-size="10" fill="var(--ink-3)" text-anchor="middle" transform="rotate(-90 40 110)">頻度（面積を 1 に）</text>
+      </svg>
+    </div>
+    <figcaption>曲線は平均 1・相対分散 v<sub>G</sub> = (1/δ₁)·δ/(δ − 1)（δ = 4）のガンマ分布で、面積をそろえて描いています。<span class="key">分布が細いほど、しきい値より下に落ちる光電子が減り、1 個と 2 個の山が分かれる</span>。フォトンカウンティングでしきい値を谷（1 個の山の手前）に置くのは、暗いノイズを捨てつつ本物の光電子を落とさないためです。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>磁場 ― 地磁気でも電子は曲がる</h3>
+      <p>真空を飛ぶ電子は、磁場の中で円を描きます。半径は r = m·v/(q·B)。加速の途中の平均として 100 eV の電子（速さ 5.93×10⁶ m/s）を考えると、地磁気（約 0.05 mT）の中で半径 <b>0.67 m</b>。小さな管なら気にならない曲がりでも、光電面から第1ダイノードまで数十 cm を飛ぶ<strong>大口径の管では、小さな曲がりの近似 L²/(2r) で L = 30 cm なら 6.7 cm もずれて</strong>、第1ダイノードを外します。</p>
+      <p>だから大口径の PMT は向きで感度が変わり、μ メタル（透磁率の高い合金）の筒で囲むか、装置ごと地磁気を打ち消すコイルを置きます ― スーパーカミオカンデ（<a href="#s2">02</a>）の水槽のまわりにも、そのためのコイルが巻かれています。1 mT（小さな永久磁石のそば）なら半径は 3.4 cm で、小型の管でも利得が大きく落ちる。<span class="key">MPPC が「磁場は平気」なのは、電子が真空を飛ばない（µm の中でなだれる）から</span>です（<a href="#s3">03</a>）。</p>
+    </div>
+    <div class="body-col">
+      <h3>電圧で利得を決める ― べき乗の式</h3>
+      <p>ブリーダ（<a href="#s2">02</a>）が高圧 V を n 段に等しく分けると、段間の電圧は V/(n + 1)。1段の利得が段間電圧の k 乗（k = 0.7〜0.8）で δ = a·(V/(n + 1))<sup>k</sup> なら、全体の利得は</p>
+      <div class="eq">G = δ<sup>n</sup> = a<sup>n</sup>·(V/(n + 1))<sup>kn</sup> ∝ <b>V<sup>kn</sup></b></div>
+      <p>n = 10・k = 0.75 なら V の 7.5 乗。電圧を 10% 上げると利得は 1.1<sup>7.5</sup> = <b>2.04 倍</b>、利得を 2 桁動かすのに電圧は 1.85 倍で足ります。<span class="key">電圧ひとつで利得を大きく動かせる ― そして電源の揺れもそのまま 7.5 倍に拡大される</span>。1 kV で 10⁶ の管を 2×10⁶ にするなら V = 1000 × 2<sup>1/7.5</sup> = <b>1097 V</b>。</p>
+    </div>
+  </div>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — 計数とアナログ、そしてプラトー</span>
+    <p>フォトンカウンティングでは、パルスの高さの分布（上の図）の<strong>谷</strong>に弁別のしきい値を置き、それを越えたパルスを1個と数えます。高圧を少しずつ上げながら数を記録すると、はじめは利得が足りずにしきい値を越えるパルスが増えていき、やがて<span class="key">電圧を上げても数がほとんど変わらない平らな所（プラトー）</span>が現れます。ここで使えば、電源の揺れで利得が 7.5 倍に揺れても、数はほとんど動かない ― 計数が電流の読みより安定しやすい理由です。上げすぎると、今度はガラスの発光や電界放出による偽のパルスが増えて、プラトーが右肩上がりに崩れます。</p>
+    <p>電流（アナログ）で読むときは逆に、利得そのものが読みに掛かるので、<a href="#s2">02</a> の高安定の電源と、利得の温度係数（型式によって % /℃ 級）の管理が効いてきます。どちらで読むかの目安は次の章（<a href="#s13">12</a>）で数字にします。</p>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（11 光電面とパルス）</span>
+    <p><b>問.</b> δ = 4 の 10 段の管で、第1段だけ電圧を上げて δ₁ = 12 にした。利得の相対分散・雑音指数 F・1 個の光電子の半値全幅は？ 2 個の光電子のパルスの標準偏差は？</p>
+    <p><b>解.</b> v<sub>G</sub> = (1/12)·(4/3) = <b>0.111</b>、F = 1 + v<sub>G</sub> = <b>1.11</b>（全段 δ = 4 の 1.33 より静か）。標準偏差 √0.111 = 0.333、半値全幅は 2.355 × 0.333 = <b>78.5%</b>。2 個のときは平均 2・分散 2 × 0.111 で標準偏差 <b>0.47</b>。2 つの山の中心の間隔 1 は、標準偏差の和 0.80 より大きいので、1 個と 2 個の間に浅い谷が見えます（目安）。全部の段が δ = 4 の管では標準偏差の和が 1.39 で間隔 1 を超え、谷はほとんど見えません。利得そのものは δ₁/δ = 3 倍になるので、同じ出力なら全体の電圧を下げられる、というおまけも付きます。</p>
+  </div>
+  <div class="pit">
+    <span class="tag">落とし穴と、持ち帰る一言（11）</span>
+    <ul><li>陰極感度 A/W を QE と取り違える ― QE = 1240·R/&lambda; で、波長を必ず添える。</li><li>大口径の PMT の向きを変えて感度が変わるのを故障と思う ― 地磁気で電子が曲がる（μ メタル・打ち消しのコイル）。</li><li>プラトーの外で数える ― 電源の揺れがそのまま数に効く。しきい値は分布の谷に置く。</li></ul>
+    <dl class="roles"><dt>営業・企画</dt><dd>光電面は測る光の色で選ぶ（表）。GaAsP は QE が高いが、冷却と取り扱いに気を遣う。</dd><dt>設計・開発</dt><dd>1 個の光電子を数えるなら、第1段の利得を大きくする分圧を選ぶ。</dd><dt>研究・製造</dt><dd>単一光電子のスペクトルで利得と谷の深さを測り、ロットごとに記録する。</dd></dl>
+  </div>
+</section>
+
+<!-- ================= 12 ================= -->
+<section class="stage" id="s13">
+  <div class="stage-head"><span class="stage-num">12</span>
+    <h2>数えられる速さ ― 不感時間・パイルアップ・計数と電流</h2></div>
+  <p class="lede">数える検出器（PMT の計数・SPAD・MPPC・計数型の X 線検出器）は、光が弱すぎると暗計数に、強すぎると<strong>数え落とし</strong>に負けます。この章は上の壁 ― 1 個を数えたあとの、数えられない時間 ― を2つの型で式にし、補正の限界と、計数と電流の読み方を切り替える目安までを数字で押さえます。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>2つの型 ― 数えたあと、何が起きるか</h3>
+      <p>1 個を数えたあと、しばらく次を数えられない時間 τ を<strong>不感時間</strong>と呼びます。ふるまいには2つの極があります。<b>非拡張型</b>: 数えたあと τ だけ休み、その間に来た光子は無視されるだけで休みは延びない ― 計数の回路が一定時間ふさがる型。<b>拡張型</b>: 休みの間に来た光子も、数えられないのに休みをそこから τ だけ延ばす ― パルスが重なって1つに見える型です。真の率 n に対して数えられる率 m は</p>
+      <div class="eq">非拡張型 m = n/(1 + nτ)　　拡張型 m = n·e<sup>−nτ</sup></div>
+      <p>弱い光（nτ ≪ 1）ではどちらも m ≈ n(1 − nτ) で同じです ― <span class="key">1% の数え落としは nτ ≈ 0.01</span>。τ = 20 ns なら <b>5.05×10⁵ /s</b>（非拡張型）、5.03×10⁵ /s（拡張型）。強くなると別れます。非拡張型は 1/τ = 5×10⁷ /s に張り付くだけですが、拡張型は n = 1/τ で山（m = 1/(eτ) = <b>1.84×10⁷ /s</b>）を越えると、<strong>明るくするほど数が減る</strong>。</p>
+    </div>
+    <div class="body-col">
+      <h3>補正と、その限界</h3>
+      <p>非拡張型は n = m/(1 − mτ) で戻せます。τ = 20 ns で m = 4.55×10⁶ /s（真の率 5.0×10⁶ /s から 9.1% 落ちている）を読んだら、n = 4.55×10⁶/(1 − 0.0909) = 5.0×10⁶ /s。拡張型は、同じ m に n が2つ対応する（山の手前と向こう）ので、m だけではどちらか分かりません ― 明るすぎて減っているのか、ほどほどなのかは、光を少し弱めて m が増えるか減るかで確かめます。</p>
+      <p>実際の検出器は2つの型の間にあり、たとえば受動クエンチの SPAD は回復の途中でも小さく発火しうる（<a href="#s3">03</a> の図）。どちらの式で近似できるかは、データシートの直線性の図で確かめます。<span class="key">補正は 10% 程度の数え落としまでを目安にとどめ、それより強い光は減光するか、読み方を変える</span>のが実務の作法です。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">DEAD TIME — 同じ 13 個の光子を、2つの型で数える</span><span class="fig-title">走査線が通ると、数えた光子が光る</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 232" role="img" aria-label="同じ13個の光子の到着を、非拡張型と拡張型の不感時間で数える比較。非拡張型は数えるたびに一定の時間τだけ休み8個を数える。拡張型は休みの間に来た光子でも休みが延び6個しか数えない。左から右へ走査線が動き、数えた光子が順に光る。" style="min-width:700px;width:100%;display:block">
+        <text x="66" y="30" font-size="10" fill="var(--ink-2)">到着した光子（13 個・真の率）</text>
+        <text x="66" y="95" font-size="10" fill="var(--electron-2)">非拡張型 ― 数えたら τ だけ休む（8 個を数える）</text>
+        <text x="66" y="160" font-size="10" fill="var(--warn)">拡張型 ― 休みの間の光子も休みを延ばす（6 個を数える）</text>
+        <path d="M60 50 H720 M60 115 H720 M60 180 H720" stroke="var(--line-2)" stroke-width="1" fill="none"/>
+        <path d="M80 40 V60" stroke="var(--photon)" stroke-width="2" fill="none"/><path d="M105 40 V60" stroke="var(--photon)" stroke-width="2" fill="none"/><path d="M190 40 V60" stroke="var(--photon)" stroke-width="2" fill="none"/><path d="M215 40 V60" stroke="var(--photon)" stroke-width="2" fill="none"/><path d="M225 40 V60" stroke="var(--photon)" stroke-width="2" fill="none"/><path d="M310 40 V60" stroke="var(--photon)" stroke-width="2" fill="none"/><path d="M390 40 V60" stroke="var(--photon)" stroke-width="2" fill="none"/><path d="M405 40 V60" stroke="var(--photon)" stroke-width="2" fill="none"/><path d="M433 40 V60" stroke="var(--photon)" stroke-width="2" fill="none"/><path d="M530 40 V60" stroke="var(--photon)" stroke-width="2" fill="none"/><path d="M610 40 V60" stroke="var(--photon)" stroke-width="2" fill="none"/><path d="M622 40 V60" stroke="var(--photon)" stroke-width="2" fill="none"/><path d="M655 40 V60" stroke="var(--photon)" stroke-width="2" fill="none"/><rect x="80" y="107" width="40" height="16" fill="var(--electron-soft)" stroke="var(--electron)" stroke-width="0.8"/><rect x="190" y="107" width="40" height="16" fill="var(--electron-soft)" stroke="var(--electron)" stroke-width="0.8"/><rect x="310" y="107" width="40" height="16" fill="var(--electron-soft)" stroke="var(--electron)" stroke-width="0.8"/><rect x="390" y="107" width="40" height="16" fill="var(--electron-soft)" stroke="var(--electron)" stroke-width="0.8"/><rect x="433" y="107" width="40" height="16" fill="var(--electron-soft)" stroke="var(--electron)" stroke-width="0.8"/><rect x="530" y="107" width="40" height="16" fill="var(--electron-soft)" stroke="var(--electron)" stroke-width="0.8"/><rect x="610" y="107" width="40" height="16" fill="var(--electron-soft)" stroke="var(--electron)" stroke-width="0.8"/><rect x="655" y="107" width="40" height="16" fill="var(--electron-soft)" stroke="var(--electron)" stroke-width="0.8"/><rect x="80" y="172" width="65" height="16" fill="var(--photon-soft)" stroke="var(--warn)" stroke-width="0.8"/><rect x="190" y="172" width="75" height="16" fill="var(--photon-soft)" stroke="var(--warn)" stroke-width="0.8"/><rect x="310" y="172" width="40" height="16" fill="var(--photon-soft)" stroke="var(--warn)" stroke-width="0.8"/><rect x="390" y="172" width="83" height="16" fill="var(--photon-soft)" stroke="var(--warn)" stroke-width="0.8"/><rect x="530" y="172" width="40" height="16" fill="var(--photon-soft)" stroke="var(--warn)" stroke-width="0.8"/><rect x="610" y="172" width="85" height="16" fill="var(--photon-soft)" stroke="var(--warn)" stroke-width="0.8"/><circle cx="80" cy="115" r="4.5" fill="var(--electron)" class="fl" style="animation-delay:0.20s"/><circle cx="80" cy="180" r="4.5" fill="var(--warn)" class="fl" style="animation-delay:0.20s"/><circle cx="105" cy="115" r="3.5" fill="var(--surface)" stroke="var(--electron)" stroke-width="1.3"/><circle cx="105" cy="180" r="3.5" fill="var(--surface)" stroke="var(--warn)" stroke-width="1.3"/><circle cx="190" cy="115" r="4.5" fill="var(--electron)" class="fl" style="animation-delay:1.30s"/><circle cx="190" cy="180" r="4.5" fill="var(--warn)" class="fl" style="animation-delay:1.30s"/><circle cx="215" cy="115" r="3.5" fill="var(--surface)" stroke="var(--electron)" stroke-width="1.3"/><circle cx="215" cy="180" r="3.5" fill="var(--surface)" stroke="var(--warn)" stroke-width="1.3"/><circle cx="225" cy="115" r="3.5" fill="var(--surface)" stroke="var(--electron)" stroke-width="1.3"/><circle cx="225" cy="180" r="3.5" fill="var(--surface)" stroke="var(--warn)" stroke-width="1.3"/><circle cx="310" cy="115" r="4.5" fill="var(--electron)" class="fl" style="animation-delay:2.50s"/><circle cx="310" cy="180" r="4.5" fill="var(--warn)" class="fl" style="animation-delay:2.50s"/><circle cx="390" cy="115" r="4.5" fill="var(--electron)" class="fl" style="animation-delay:3.30s"/><circle cx="390" cy="180" r="4.5" fill="var(--warn)" class="fl" style="animation-delay:3.30s"/><circle cx="405" cy="115" r="3.5" fill="var(--surface)" stroke="var(--electron)" stroke-width="1.3"/><circle cx="405" cy="180" r="3.5" fill="var(--surface)" stroke="var(--warn)" stroke-width="1.3"/><circle cx="433" cy="115" r="4.5" fill="var(--electron)" class="fl" style="animation-delay:3.73s"/><circle cx="433" cy="180" r="3.5" fill="var(--surface)" stroke="var(--warn)" stroke-width="1.3"/><circle cx="530" cy="115" r="4.5" fill="var(--electron)" class="fl" style="animation-delay:4.70s"/><circle cx="530" cy="180" r="4.5" fill="var(--warn)" class="fl" style="animation-delay:4.70s"/><circle cx="610" cy="115" r="4.5" fill="var(--electron)" class="fl" style="animation-delay:5.50s"/><circle cx="610" cy="180" r="4.5" fill="var(--warn)" class="fl" style="animation-delay:5.50s"/><circle cx="622" cy="115" r="3.5" fill="var(--surface)" stroke="var(--electron)" stroke-width="1.3"/><circle cx="622" cy="180" r="3.5" fill="var(--surface)" stroke="var(--warn)" stroke-width="1.3"/><circle cx="655" cy="115" r="4.5" fill="var(--electron)" class="fl" style="animation-delay:5.95s"/><circle cx="655" cy="180" r="3.5" fill="var(--surface)" stroke="var(--warn)" stroke-width="1.3"/>
+        <path d="M60 38 V62 M60 103 V127 M60 168 V192" stroke="var(--photon)" stroke-width="1.6" fill="none" class="scan"/>
+        <path d="M60 206 H720" stroke="var(--line)" stroke-width="1" fill="none"/>
+        <text x="390" y="224" font-size="10" fill="var(--ink-3)" text-anchor="middle">時間 →　塗った帯 ＝ 数えられない時間（非拡張型は τ ずつ、拡張型は延びる）・● 数えた・○ 落とした</text>
+      </svg>
+    </div>
+    <figcaption>到着の並びは同じなのに、<b>拡張型は 2 個多く落とす</b>（9 番目と 13 番目の光子 ― 直前に落とした光子が休みを延ばしていた）。光が強くなって光子が詰まるほど、この差は開き、拡張型はついに「数が減る」側へ回ります（下の図）。</figcaption>
+  </figure>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">COUNTING LOSS — 数えた率 m と真の率 n（τ = 20 ns）</span><span class="fig-title">両対数・式から計算</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 252" role="img" aria-label="真の率に対する数えた率の両対数グラフ。不感時間20ナノ秒。理想の直線、非拡張型は毎秒5×10の7乗に張り付き、拡張型は毎秒1.84×10の7乗の山を越えると減っていく。毎秒5×10の5乗で1%の数え落としの点が示されている。" style="min-width:700px;width:100%;display:block">
+        <path d="M80 50 V210 H700" stroke="var(--line)" stroke-width="1" fill="none"/>
+        <path d="M204.0 50 V210 M80 178.0 H700 M328.0 50 V210 M80 146.0 H700 M452.0 50 V210 M80 114.0 H700 M576.0 50 V210 M80 82.0 H700 M700.0 50 V210 M80 50.0 H700" stroke="var(--line-2)" stroke-width="1" stroke-dasharray="2 4" fill="none"/>
+        <path d="M80.0 210.0 L700.0 50.0" stroke="var(--ink-3)" stroke-width="1.4" stroke-dasharray="5 4" fill="none"/>
+        <path d="M82.5 209.4 L85.0 208.7 L87.4 208.1 L89.9 207.4 L92.4 206.8 L94.9 206.2 L97.4 205.5 L99.8 204.9 L102.3 204.2 L104.8 203.6 L107.3 203.0 L109.8 202.3 L112.2 201.7 L114.7 201.0 L117.2 200.4 L119.7 199.8 L122.2 199.1 L124.6 198.5 L127.1 197.8 L129.6 197.2 L132.1 196.6 L134.6 195.9 L137.0 195.3 L139.5 194.6 L142.0 194.0 L144.5 193.4 L147.0 192.7 L149.4 192.1 L151.9 191.5 L154.4 190.8 L156.9 190.2 L159.4 189.5 L161.8 188.9 L164.3 188.3 L166.8 187.6 L169.3 187.0 L171.8 186.3 L174.2 185.7 L176.7 185.1 L179.2 184.4 L181.7 183.8 L184.2 183.1 L186.6 182.5 L189.1 181.9 L191.6 181.2 L194.1 180.6 L196.6 179.9 L199.0 179.3 L201.5 178.7 L204.0 178.0 L206.5 177.4 L209.0 176.8 L211.4 176.1 L213.9 175.5 L216.4 174.8 L218.9 174.2 L221.4 173.6 L223.8 172.9 L226.3 172.3 L228.8 171.6 L231.3 171.0 L233.8 170.4 L236.2 169.7 L238.7 169.1 L241.2 168.5 L243.7 167.8 L246.2 167.2 L248.6 166.5 L251.1 165.9 L253.6 165.3 L256.1 164.6 L258.6 164.0 L261.0 163.4 L263.5 162.7 L266.0 162.1 L268.5 161.5 L271.0 160.8 L273.4 160.2 L275.9 159.5 L278.4 158.9 L280.9 158.3 L283.4 157.6 L285.8 157.0 L288.3 156.4 L290.8 155.7 L293.3 155.1 L295.8 154.5 L298.2 153.8 L300.7 153.2 L303.2 152.6 L305.7 151.9 L308.2 151.3 L310.6 150.7 L313.1 150.0 L315.6 149.4 L318.1 148.8 L320.6 148.2 L323.0 147.5 L325.5 146.9 L328.0 146.3 L330.5 145.6 L333.0 145.0 L335.4 144.4 L337.9 143.8 L340.4 143.1 L342.9 142.5 L345.4 141.9 L347.8 141.3 L350.3 140.7 L352.8 140.0 L355.3 139.4 L357.8 138.8 L360.2 138.2 L362.7 137.6 L365.2 136.9 L367.7 136.3 L370.2 135.7 L372.6 135.1 L375.1 134.5 L377.6 133.9 L380.1 133.3 L382.6 132.7 L385.0 132.1 L387.5 131.5 L390.0 130.9 L392.5 130.3 L395.0 129.7 L397.4 129.1 L399.9 128.5 L402.4 127.9 L404.9 127.3 L407.4 126.7 L409.8 126.1 L412.3 125.5 L414.8 124.9 L417.3 124.3 L419.8 123.8 L422.2 123.2 L424.7 122.6 L427.2 122.1 L429.7 121.5 L432.2 120.9 L434.6 120.4 L437.1 119.8 L439.6 119.2 L442.1 118.7 L444.6 118.2 L447.0 117.6 L449.5 117.1 L452.0 116.5 L454.5 116.0 L457.0 115.5 L459.4 115.0 L461.9 114.4 L464.4 113.9 L466.9 113.4 L469.4 112.9 L471.8 112.4 L474.3 111.9 L476.8 111.4 L479.3 110.9 L481.8 110.5 L484.2 110.0 L486.7 109.5 L489.2 109.1 L491.7 108.6 L494.2 108.2 L496.6 107.7 L499.1 107.3 L501.6 106.9 L504.1 106.4 L506.6 106.0 L509.0 105.6 L511.5 105.2 L514.0 104.8 L516.5 104.4 L519.0 104.0 L521.4 103.7 L523.9 103.3 L526.4 102.9 L528.9 102.6 L531.4 102.2 L533.8 101.9 L536.3 101.6 L538.8 101.2 L541.3 100.9 L543.8 100.6 L546.2 100.3 L548.7 100.0 L551.2 99.7 L553.7 99.5 L556.2 99.2 L558.6 98.9 L561.1 98.7 L563.6 98.4 L566.1 98.2 L568.6 97.9 L571.0 97.7 L573.5 97.5 L576.0 97.3 L578.5 97.1 L581.0 96.9 L583.4 96.7 L585.9 96.5 L588.4 96.3 L590.9 96.1 L593.4 95.9 L595.8 95.8 L598.3 95.6 L600.8 95.4 L603.3 95.3 L605.8 95.1 L608.2 95.0 L610.7 94.9 L613.2 94.7 L615.7 94.6 L618.2 94.5 L620.6 94.4 L623.1 94.3 L625.6 94.2 L628.1 94.1 L630.6 94.0 L633.0 93.9 L635.5 93.8 L638.0 93.7 L640.5 93.6 L643.0 93.5 L645.4 93.4 L647.9 93.4 L650.4 93.3 L652.9 93.2 L655.4 93.1 L657.8 93.1 L660.3 93.0 L662.8 93.0 L665.3 92.9 L667.8 92.8 L670.2 92.8 L672.7 92.7 L675.2 92.7 L677.7 92.6 L680.2 92.6 L682.6 92.6 L685.1 92.5 L687.6 92.5 L690.1 92.4 L692.6 92.4 L695.0 92.4 L697.5 92.3 L700.0 92.3" stroke="var(--electron)" stroke-width="2.2" fill="none" class="draw" style="--len:800"/>
+        <path d="M82.5 209.4 L85.0 208.7 L87.4 208.1 L89.9 207.4 L92.4 206.8 L94.9 206.2 L97.4 205.5 L99.8 204.9 L102.3 204.2 L104.8 203.6 L107.3 203.0 L109.8 202.3 L112.2 201.7 L114.7 201.0 L117.2 200.4 L119.7 199.8 L122.2 199.1 L124.6 198.5 L127.1 197.8 L129.6 197.2 L132.1 196.6 L134.6 195.9 L137.0 195.3 L139.5 194.6 L142.0 194.0 L144.5 193.4 L147.0 192.7 L149.4 192.1 L151.9 191.5 L154.4 190.8 L156.9 190.2 L159.4 189.5 L161.8 188.9 L164.3 188.3 L166.8 187.6 L169.3 187.0 L171.8 186.3 L174.2 185.7 L176.7 185.1 L179.2 184.4 L181.7 183.8 L184.2 183.1 L186.6 182.5 L189.1 181.9 L191.6 181.2 L194.1 180.6 L196.6 179.9 L199.0 179.3 L201.5 178.7 L204.0 178.0 L206.5 177.4 L209.0 176.8 L211.4 176.1 L213.9 175.5 L216.4 174.8 L218.9 174.2 L221.4 173.6 L223.8 172.9 L226.3 172.3 L228.8 171.6 L231.3 171.0 L233.8 170.4 L236.2 169.7 L238.7 169.1 L241.2 168.5 L243.7 167.8 L246.2 167.2 L248.6 166.5 L251.1 165.9 L253.6 165.3 L256.1 164.6 L258.6 164.0 L261.0 163.4 L263.5 162.7 L266.0 162.1 L268.5 161.5 L271.0 160.8 L273.4 160.2 L275.9 159.5 L278.4 158.9 L280.9 158.3 L283.4 157.6 L285.8 157.0 L288.3 156.4 L290.8 155.7 L293.3 155.1 L295.8 154.5 L298.2 153.8 L300.7 153.2 L303.2 152.6 L305.7 151.9 L308.2 151.3 L310.6 150.7 L313.1 150.1 L315.6 149.4 L318.1 148.8 L320.6 148.2 L323.0 147.5 L325.5 146.9 L328.0 146.3 L330.5 145.7 L333.0 145.0 L335.4 144.4 L337.9 143.8 L340.4 143.1 L342.9 142.5 L345.4 141.9 L347.8 141.3 L350.3 140.7 L352.8 140.0 L355.3 139.4 L357.8 138.8 L360.2 138.2 L362.7 137.6 L365.2 137.0 L367.7 136.3 L370.2 135.7 L372.6 135.1 L375.1 134.5 L377.6 133.9 L380.1 133.3 L382.6 132.7 L385.0 132.1 L387.5 131.5 L390.0 130.9 L392.5 130.3 L395.0 129.7 L397.4 129.1 L399.9 128.5 L402.4 127.9 L404.9 127.3 L407.4 126.7 L409.8 126.2 L412.3 125.6 L414.8 125.0 L417.3 124.4 L419.8 123.8 L422.2 123.3 L424.7 122.7 L427.2 122.2 L429.7 121.6 L432.2 121.0 L434.6 120.5 L437.1 119.9 L439.6 119.4 L442.1 118.9 L444.6 118.3 L447.0 117.8 L449.5 117.3 L452.0 116.8 L454.5 116.3 L457.0 115.8 L459.4 115.3 L461.9 114.8 L464.4 114.3 L466.9 113.8 L469.4 113.4 L471.8 112.9 L474.3 112.4 L476.8 112.0 L479.3 111.6 L481.8 111.2 L484.2 110.7 L486.7 110.3 L489.2 109.9 L491.7 109.6 L494.2 109.2 L496.6 108.8 L499.1 108.5 L501.6 108.2 L504.1 107.9 L506.6 107.6 L509.0 107.3 L511.5 107.0 L514.0 106.8 L516.5 106.6 L519.0 106.4 L521.4 106.2 L523.9 106.0 L526.4 105.9 L528.9 105.7 L531.4 105.7 L533.8 105.6 L536.3 105.5 L538.8 105.5 L541.3 105.5 L543.8 105.6 L546.2 105.7 L548.7 105.8 L551.2 105.9 L553.7 106.1 L556.2 106.3 L558.6 106.6 L561.1 106.9 L563.6 107.3 L566.1 107.7 L568.6 108.1 L571.0 108.6 L573.5 109.2 L576.0 109.8 L578.5 110.5 L581.0 111.2 L583.4 112.0 L585.9 112.9 L588.4 113.8 L590.9 114.8 L593.4 115.9 L595.8 117.1 L598.3 118.3 L600.8 119.7 L603.3 121.1 L605.8 122.6 L608.2 124.3 L610.7 126.0 L613.2 127.9 L615.7 129.8 L618.2 131.9 L620.6 134.2 L623.1 136.5 L625.6 139.0 L628.1 141.7 L630.6 144.5 L633.0 147.4 L635.5 150.6 L638.0 153.9 L640.5 157.4 L643.0 161.1 L645.4 165.0 L647.9 169.1 L650.4 173.5 L652.9 178.0 L655.4 182.8 L657.8 187.9 L660.3 193.3 L662.8 198.9 L665.3 204.8" stroke="var(--warn)" stroke-width="2.2" fill="none" class="draw" style="--len:900;animation-delay:.5s"/>
+        <circle cx="291.2" cy="155.6" r="4.5" fill="var(--electron)"/>
+        <path d="M538.7 99.5 L544.7 105.5 L538.7 111.5 L532.7 105.5 Z" fill="var(--warn)"/>
+        <g font-size="10">
+          <path d="M96 58 H118" stroke="var(--ink-3)" stroke-width="1.4" stroke-dasharray="5 4" fill="none"/><text x="124" y="62" fill="var(--ink-3)">理想（数え落としなし）m = n</text>
+          <path d="M96 76 H118" stroke="var(--electron)" stroke-width="2.2" fill="none"/><text x="124" y="80" fill="var(--electron-2)">非拡張型 m = n/(1 + nτ)（1/τ に張り付く）</text>
+          <path d="M96 94 H118" stroke="var(--warn)" stroke-width="2.2" fill="none"/><text x="124" y="98" fill="var(--warn)">拡張型 m = n·e^(−nτ)（山を越えると減る）</text>
+          <circle cx="107" cy="108" r="4" fill="var(--electron)"/><text x="124" y="112" fill="var(--ink-2)">1% の数え落とし（5.05×10⁵ /s）</text>
+          <path d="M107 120 L112 125 L107 130 L102 125 Z" fill="var(--warn)"/><text x="124" y="129" fill="var(--ink-2)">拡張型の山 1/(eτ) = 1.84×10⁷ /s</text>
+        </g>
+        <g font-family="var(--mono)" font-size="9.5" fill="var(--ink-3)"><text x="80.0" y="226" text-anchor="middle">10⁴</text><text x="72" y="213.0" text-anchor="end">10⁴</text><text x="204.0" y="226" text-anchor="middle">10⁵</text><text x="72" y="181.0" text-anchor="end">10⁵</text><text x="328.0" y="226" text-anchor="middle">10⁶</text><text x="72" y="149.0" text-anchor="end">10⁶</text><text x="452.0" y="226" text-anchor="middle">10⁷</text><text x="72" y="117.0" text-anchor="end">10⁷</text><text x="576.0" y="226" text-anchor="middle">10⁸</text><text x="72" y="85.0" text-anchor="end">10⁸</text><text x="700.0" y="226" text-anchor="middle">10⁹</text><text x="72" y="53.0" text-anchor="end">10⁹</text></g>
+        <text x="390" y="246" font-size="10" fill="var(--ink-3)" text-anchor="middle">真の率 n [/s]</text>
+        <text x="22" y="130" font-size="10" fill="var(--ink-3)" text-anchor="middle" transform="rotate(-90 22 130)">数えた率 m [/s]</text>
+      </svg>
+    </div>
+    <figcaption>曲線は上の2つの式そのものです。<span class="key">1% の数え落としで済むのは 1/τ の 1% まで</span> ― τ = 20 ns の回路で 5×10⁵ /s。計数の直線性の表で「何 cps まで」と書かれる数字の中身がこれで、そこから上は補正か、電流の読み（次の段）の出番です。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>計数と電流 ― 読み方を切り替える</h3>
+      <p>PMT は同じ管を2通りに読めます。<b>計数（フォトンカウンティング）</b>はパルスを弁別器で数える読み方で、利得の揺らぎ（F）も後段の雑音も数に入らず、暗いノイズもしきい値で捨てられるので、暗いところで強い。上限は不感時間で、パルスの幅が数 ns〜数十 ns の回路では 10⁶〜10⁷ /s 程度が目安です。<b>電流（アナログ）</b>はアノードの平均電流を読む読み方で、上限はブリーダ電流（<a href="#s2">02</a>）と管の許容電流。明るいところで強い一方、F と回路の雑音が乗ります。</p>
+      <p><span class="key">「数えられる」の上端と「電流で読める」の下端が重なる範囲で、つなぎ換えの較正をとる</span> ― 広いダイナミックレンジを売る装置が、2つの読み方を内部で切り替えている理由です。</p>
+    </div>
+    <div class="body-col">
+      <h3>計数の窓 ― 暗計数と不感時間のあいだ</h3>
+      <p>数える検出器の使える範囲は、下が暗計数、上が不感時間で閉じます。暗計数 50 /s で、1% の直線性の 5×10⁵ /s まで数えるなら、窓は <b>1 万倍（4 桁）</b>。1 秒の計測で信号 m・暗計数 d なら SN 比は m/√(m + d)（<a href="第0部_基礎.html">第0部</a> 02 の √N）で、m = d = 50 /s で 5.0、m = 5×10⁵ /s で 707。</p>
+      <p><a href="#s6">06</a> の TCSPC は、この「重なり」を別の形で踏みます。1 周期の平均の検出数を µ とすると、2 個以上来た周期の、1 個以上来た周期に対する割合は (1 − e<sup>−µ</sup> − µe<sup>−µ</sup>)/(1 − e<sup>−µ</sup>) ≈ µ/2 ― µ = 1% で 0.50%、5% で 2.5%、10% で 4.9%。<span class="key">検出率を励起の 1〜数% に絞る作法の根拠</span>がこの式です。</p>
+    </div>
+  </div>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — 不感時間を測る：2 つの光源の方法</span>
+    <p>τ はデータシートの値を信じるより、使う回路ごと測るのが確実です。定番は<strong>2つの光源（放射線源）の方法</strong>: 光源 1 だけで m₁、2 だけで m₂、両方同時で m₁₂ を数えます。数え落としが無ければ m₁₂ = m₁ + m₂ のはずで、足りない分が不感時間の証拠です。背景を無視した近似では、非拡張型で</p>
+    <div class="eq">τ ≈ (m₁ + m₂ − m₁₂)/(2·m₁·m₂)</div>
+    <p>（Knoll 4 章）。差の小さな引き算なので、それぞれの数の統計の揺らぎ（√m）が τ の誤差に大きく効きます ― 数え落としが数 % 出る程度の強さで、十分に長く数えるのがこつです。</p>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（12 数えられる速さ）</span>
+    <p><b>問.</b> 不感時間 30 ns の計数器で m = 2.0×10⁶ /s を読んだ。非拡張型なら真の率は？ 何% 落ちているか。拡張型ならどうか。</p>
+    <p><b>解.</b> 非拡張型: n = m/(1 − mτ) = 2.0×10⁶/(1 − 0.06) = <b>2.13×10⁶ /s</b>、数え落とし <b>6.0%</b>。拡張型: n·e<sup>−nτ</sup> = 2.0×10⁶ を解くと、山の手前の解は <b>2.13×10⁶ /s</b>（6.2% 落ち）、山の向こうにもう一つ <b>1.4×10⁸ /s</b> の解がある。<span class="key">拡張型は、光を弱めて数が増えたら「向こう側」</span> ― 補正する前に、どちらの側かを確かめます。</p>
+  </div>
+  <div class="pit">
+    <span class="tag">落とし穴と、持ち帰る一言（12）</span>
+    <ul><li>拡張型の検出器で、読んだ m だけから補正する ― 同じ m に真の率が2つある。光を弱めて側を確かめる。</li><li>10% を超える数え落としを式で補正する ― 減光するか、電流の読みに切り替える。</li><li>暗計数と不感時間の窓の外で測定を計画する ― 下は暗計数、上は数え落としで閉じる。</li></ul>
+    <dl class="roles"><dt>営業・企画</dt><dd>「何 cps まで直線か」は不感時間で決まる ― 仕様の数字の中身を説明できるようにする。</dd><dt>設計・開発</dt><dd>計数と電流の読みを、重なる範囲で較正してつなぐ。</dd><dt>研究・製造</dt><dd>τ は 2 つの光源の方法で、使う回路ごとに測る。</dd></dl>
+  </div>
+</section>
+
+<!-- ================= 13 ================= -->
+<section class="stage" id="s14">
+  <div class="stage-head"><span class="stage-num">13</span>
+    <h2>同じ光を 4 つの目で ― 明るさで入れ替わる選び方</h2></div>
+  <p class="lede"><a href="#s1">01</a> の選び方の図を、数字で確かめます。同じ 500 nm の光を、同じ 1 ms の積分で、フォトダイオード＋TIA・Si APD・PMT・MPPC の4つで受けると、<strong>SN 比の順位は明るさで入れ替わる</strong>。前提（仮定）を表に並べ、式は <a href="#s4">04</a> と <a href="#s13">12</a> のものだけを使います。</p>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">ASSUMPTIONS — 4 つの目の代表値（この章の仮定）</span></div>
+    <div class="scroll-x">
+      <table>
+        <thead><tr><th>検出器</th><th>効率（500 nm）</th><th>増倍・雑音</th><th>暗い側の床</th><th>読み方</th></tr></thead>
+        <tbody>
+          <tr><td>PD＋TIA</td><td>QE 0.70（R = 0.282 A/W）</td><td>増倍なし。帰還抵抗 1 GΩ の熱雑音 4.07 fA/√Hz</td><td>暗電流 10 pA</td><td>電流</td></tr>
+          <tr><td>Si APD</td><td>QE 0.70</td><td>M = 50・k = 0.02（F = 2.94）、同じ TIA</td><td>増倍される暗電流 0.1 pA・されない暗電流 1 nA</td><td>電流</td></tr>
+          <tr><td>PMT</td><td>QE 0.18（バイアルカリ）</td><td>F = 1.33（δ = 4）。収集効率は 1 と仮定</td><td>暗計数 50 /s</td><td>5×10⁵ /s までは計数、その上は電流</td></tr>
+          <tr><td>MPPC</td><td>PDE 0.40</td><td>クロストークとアフターパルスは無視（仮定）</td><td>暗計数 5×10⁴ /s</td><td>計数</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <figcaption>どれも<b>この章のための仮定</b>で、実際の値は型式・温度・受光面積で桁で動きます。雑音の帯域は積分時間 T = 1 ms に合わせて B = 1/(2T) = 500 Hz（こうすると、ショット雑音だけのとき SN 比がちょうど √N になる）。</figcaption>
+  </figure>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">WHO WINS — 明るさ 3 段で比べた SN 比</span><span class="fig-title">縦軸は対数・1 ms の積分</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 262" role="img" aria-label="1フェムトワット、1ピコワット、1ナノワットの3つの明るさで、フォトダイオード、Si APD、PMT、MPPCのSN比を比べた棒グラフ。縦軸は対数。1フェムトワットではPMTだけがSN比1に近く、1ピコワットではMPPCが最も高く、1ナノワットではフォトダイオードが最も高い。" style="min-width:700px;width:100%;display:block">
+        <g font-size="10">
+          <rect x="90" y="16" width="12" height="10" fill="var(--volt)"/><text x="108" y="25" fill="var(--ink-2)">PD＋TIA</text>
+          <rect x="230" y="16" width="12" height="10" fill="var(--digital)"/><text x="248" y="25" fill="var(--ink-2)">Si APD</text>
+          <rect x="360" y="16" width="12" height="10" fill="var(--photon)"/><text x="378" y="25" fill="var(--ink-2)">PMT</text>
+          <rect x="470" y="16" width="12" height="10" fill="var(--electron)"/><text x="488" y="25" fill="var(--ink-2)">MPPC</text>
+        </g>
+        <path d="M80 40 V220 H720" stroke="var(--line)" stroke-width="1" fill="none"/>
+        <path d="M80 220.0 H720 M80 194.3 H720 M80 168.6 H720 M80 142.9 H720 M80 117.1 H720 M80 91.4 H720 M80 65.7 H720 M80 40.0 H720" stroke="var(--line-2)" stroke-width="1" stroke-dasharray="2 4" fill="none"/>
+        <path d="M80 142.9 H720" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="5 4" fill="none"/>
+        <rect x="136" y="208.3" width="26" height="11.7" fill="var(--volt)" class="rise" style="animation-delay:0.00s"/><rect x="170" y="183.5" width="26" height="36.5" fill="var(--digital)" class="rise" style="animation-delay:0.15s"/><rect x="204" y="147.9" width="26" height="72.1" fill="var(--photon)" class="rise" style="animation-delay:0.30s"/><rect x="238" y="164.7" width="26" height="55.3" fill="var(--electron)" class="rise" style="animation-delay:0.45s"/><rect x="336" y="131.2" width="26" height="88.8" fill="var(--volt)" class="rise" style="animation-delay:0.60s"/><rect x="370" y="110.6" width="26" height="109.4" fill="var(--digital)" class="rise" style="animation-delay:0.75s"/><rect x="404" y="108.7" width="26" height="111.3" fill="var(--photon)" class="rise" style="animation-delay:0.90s"/><rect x="438" y="104.5" width="26" height="115.5" fill="var(--electron)" class="rise" style="animation-delay:1.05s"/><rect x="536" y="63.7" width="26" height="156.3" fill="var(--volt)" class="rise" style="animation-delay:1.20s"/><rect x="570" y="68.6" width="26" height="151.4" fill="var(--digital)" class="rise" style="animation-delay:1.35s"/><rect x="604" y="71.7" width="26" height="148.3" fill="var(--photon)" class="rise" style="animation-delay:1.50s"/>
+        <g font-family="var(--mono)" font-size="9.5" fill="var(--ink-3)" text-anchor="end"><text x="74" y="223.0">10⁻³</text><text x="74" y="197.3">10⁻²</text><text x="74" y="171.6">0.1</text><text x="74" y="145.9">1</text><text x="74" y="120.1">10</text><text x="74" y="94.4">100</text><text x="74" y="68.7">10³</text><text x="74" y="43.0">10⁴</text></g>
+        <g font-size="10" fill="var(--ink-2)" text-anchor="middle">
+          <text x="200" y="238">1 fW（毎秒 2,517 光子）</text><text x="400" y="238">1 pW（2.5×10⁶ /s）</text><text x="600" y="238">1 nW（2.5×10⁹ /s）</text>
+        </g>
+        <text x="651" y="214" font-size="9" fill="var(--ink-3)" text-anchor="middle">比べない</text>
+        <text x="30" y="130" font-size="10" fill="var(--ink-3)" text-anchor="middle" transform="rotate(-90 30 130)">SN 比（破線が 1）</text>
+      </svg>
+    </div>
+    <figcaption>棒は下の表の値です。<span class="key">暗いところは暗計数、中ほどは効率と床、明るいところは効率と F</span> ― 同じ4つの目の順位が、明るさの3段で3回入れ替わります。1 nW の MPPC は、毎秒 10⁹ 個が検出されて利得 10⁶ なら平均 0.16 mA ― 素子の許容電流と発熱を確かめる領域なので、ここでは比べていません。</figcaption>
+  </figure>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">RESULTS — 1 ms の SN 比（上の仮定から計算）</span></div>
+    <div class="scroll-x">
+      <table>
+        <thead><tr><th>光の強さ</th><th>PD＋TIA</th><th>Si APD</th><th>PMT</th><th>MPPC</th><th>勝つ目</th></tr></thead>
+        <tbody>
+          <tr><td>1 fW</td><td class="num">0.0028</td><td class="num">0.026</td><td class="num">0.639</td><td class="num">0.141</td><td>PMT（暗計数が 1,000 分の 1）</td></tr>
+          <tr><td>1 pW</td><td class="num">2.83</td><td class="num">17.9</td><td class="num">21.3</td><td class="num">31.0</td><td>MPPC（効率が PMT の 2.2 倍）</td></tr>
+          <tr><td>1 nW</td><td class="num">1202</td><td class="num">774</td><td class="num">584（電流）</td><td class="num">―</td><td>PD（増倍の F を払わない）</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>暗いところ ― 暗計数の差が全部</h3>
+      <p>1 fW は毎秒 2,517 個の光子で、1 ms に PMT が数えるのは 0.45 個、MPPC は 1.0 個。効率は MPPC が上でも、1 ms に暗計数が PMT は 0.05 個、MPPC は 50 個来るので、<strong>PMT の 0.639 に対して MPPC は 0.141</strong>。フォトダイオードと APD は、TIA の床と暗電流の揺らぎ（1 ms で 10⁻¹³ A 級）のはるか下です。1 秒積めば PMT は 20.2 まで上がる ― <span class="key">いちばん暗い所では、効率より暗計数で選ぶ</span>。冷やした MPPC なら暗計数は桁で下がり、この差は縮みます（<a href="#s5">05</a>）。</p>
+    </div>
+    <div class="body-col">
+      <h3>中ほどと明るいところ ― 効率と F</h3>
+      <p>1 pW では信号が暗計数に勝つので、<strong>効率の高い MPPC（31.0）が PMT（21.3）を抜き</strong>、APD（17.9）も M = 50 で TIA の床を越えて並びます。フォトダイオードは TIA の床の上にやっと出たところ（2.83）。</p>
+      <p>1 nW まで明るくなると、どれもショット雑音が支配し、SN 比は √(N/F) で決まります。F を払わないフォトダイオードが <b>1202</b> で勝ち、APD は F = 2.94 のぶん 774、PMT は QE 0.18 と F = 1.33 のぶん 584（計数では数えきれないので電流で読み、平均の電流を抑えるため利得は 10⁵ 程度に下げる）。<span class="key">明るい光に増倍は要らない</span> ― 01 の選び方の最初の問い「床より強いか」が、この表の3行目です。</p>
+    </div>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（13 4 つの目）</span>
+    <p><b>問.</b> 1 pW の条件で、PMT の暗計数を 50 /s から 5,000 /s（冷やさないマルチアルカリを想定）にすると SN 比はどうなるか。MPPC を冷やして暗計数を 5,000 /s に下げたら？</p>
+    <p><b>解.</b> PMT: 1 ms の信号 453 個・暗計数 5 個で 453/√(453 + 5) = <b>21.2</b>（ほとんど変わらない ― この明るさでは暗計数は支配項でない）。MPPC: 信号 1007 個・暗計数 5 個で <b>31.7</b>（50 個のときの 31.0 から少し良くなる）。<span class="key">暗計数が効くのは、信号が同じくらい小さいときだけ</span> ― 1 fW の行で差が付き、1 pW の行ではほとんど付かない理由です。</p>
+  </div>
+  <div class="pit">
+    <span class="tag">落とし穴と、持ち帰る一言（13）</span>
+    <ul><li>波長・積分時間・面積・温度をそろえずに勝ち負けを言う ― この章の表も、仮定の上の比較。</li><li>明るい光に増倍型を使う ― F のぶん損をする（1 nW の行）。</li><li>暗い光で効率だけを見て選ぶ ― 決めるのは暗計数（1 fW の行）。</li></ul>
+    <dl class="roles"><dt>営業・企画</dt><dd>顧客の光の強さが決まれば、この表の行が決まる ― 行ごとに勝つ家系が違う。</dd><dt>設計・開発</dt><dd>自分の条件で同じ表を計算し直す（式は 04 と 12 のもの）。</dd><dt>研究・製造</dt><dd>暗計数と効率は温度とロットで動くので、実測の値で表を作り直す。</dd></dl>
+  </div>
+</section>
+
+<!-- ================= 14 ================= -->
+<section class="stage" id="s15">
+  <div class="stage-head"><span class="stage-num">14</span>
+    <h2>フォトダイオードを正しく使う ― 等価回路・零バイアスと逆バイアス・直線性</h2></div>
+  <p class="lede">一族でいちばん数が出ているのは、増やさないフォトダイオード（PD）です。増やさないぶん、<span class="key">性能は「どう受けるか」でほとんど決まる</span> ― 同じ PD でも、電圧で読むか電流で読むか、逆バイアスをかけるか、負荷をいくつにするかで、直線性の上限は 3 桁、速さは 3 倍変わります。この章はそれを等価回路 1 枚から数字で出します（受ける回路そのものの設計は<a href="第6部_アナログ回路.html#s17">第6部 16</a>）。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>等価回路 ― 電流源と、それを横取りする3つの道</h3>
+      <p>PD は「光電流 I<sub>ph</sub> を出す電流源」に、理想ダイオード（逆方向の飽和電流 I<sub>s</sub>）・接合容量 C<sub>j</sub>・並列抵抗 R<sub>sh</sub> が並び、直列抵抗 R<sub>s</sub> を通って外へ出る模型で書けます（下の図）。I<sub>ph</sub> そのものは光の強さに比例する ― 1 個の光子が 1 組の対を作る割合 &eta; のぶんだけ（04 の R = &eta;&lambda;/1240）。直線性が崩れるのは I<sub>ph</sub> のせいではなく、<b>外へ出る前に、並んだ道へ電流が逃げる</b>からです。</p>
+      <p>逃げ道の開き具合は、接合にかかる電圧 V<sub>j</sub> で決まります。ダイオードは V<sub>j</sub> が順方向に数百 mV まで上がると指数関数的に電流を通し、R<sub>sh</sub> は V<sub>j</sub>/R<sub>sh</sub> を通し、C<sub>j</sub> は速い変化のぶんを抱え込む。だから <span class="key">V<sub>j</sub> を 0 付近に保てば、I<sub>ph</sub> はほぼ全部外へ出る</span> ― これが「電流で受けよ」の中身です。</p>
+    </div>
+    <div class="body-col">
+      <h3>電圧で読むと対数、電流で読むと直線</h3>
+      <p>負荷をつながない（開放の）とき、I<sub>ph</sub> は全部ダイオードに流れ込み、そこで釣り合う電圧が開放電圧です。</p>
+      <div class="eq">V<sub>oc</sub> = nV<sub>t</sub>&middot;ln(1 + I<sub>ph</sub>/I<sub>s</sub>)</div>
+      <p>1 mm² 級の Si PIN を仮定して I<sub>s</sub> = 25.9 pA（R<sub>sh</sub> = 1 GΩ の理想ダイオードに相当、n = 1）とすると、1 µA で 0.273 V、10 µA で 0.333 V ― <b>光を 10 倍にしても電圧は 59.5 mV しか増えない</b>対数の読みです。反対に、TIA の仮想接地（第6部 16）で端子の電圧を 0 V に押さえて電流を読めば、V<sub>j</sub> = I<sub>ph</sub>·R<sub>s</sub> しか立たないので、R<sub>s</sub> = 10 Ω なら 1% の目減りまで 43 mA ― 実際には TIA の出力の振れ幅のほうが先に上限を決めるほど、広く直線です。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">EQUIVALENT CIRCUIT — 光電流と、それを横取りする3つの道</span><span class="fig-title">破線の流れ ＝ 外へ出る電流</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 240" role="img" aria-label="フォトダイオードの等価回路。光電流の電流源に、ダイオード、接合容量、並列抵抗が並列につながり、直列抵抗を通って負荷へ電流が出る。上の線がアノード側、下の線がカソード側。" style="min-width:700px;width:100%;display:block">
+        <text x="60" y="22" font-size="10" fill="var(--ink-3)">上の線 ＝ アノード側　下の線 ＝ カソード側（零バイアスで光を受けたときの電流の向き）</text>
+        <path d="M130 60 H560 M616 60 H690 V100 M690 150 V190 H130" stroke="var(--ink-2)" stroke-width="1.4" fill="none"/>
+        <rect x="560" y="52" width="56" height="16" fill="var(--surface)" stroke="var(--ink-2)" stroke-width="1.4"/>
+        <rect x="682" y="100" width="16" height="50" fill="var(--surface)" stroke="var(--ink-2)" stroke-width="1.4"/>
+        <path d="M130 60 V103 M130 147 V190" stroke="var(--ink-2)" stroke-width="1.4" fill="none"/>
+        <circle cx="130" cy="125" r="22" fill="var(--surface)" stroke="var(--photon)" stroke-width="1.6"/>
+        <path d="M130 137 V113 M124 119 L130 111 L136 119" stroke="var(--photon)" stroke-width="1.6" fill="none"/>
+        <path d="M250 60 V110 M250 130 V190 M238 130 H262" stroke="var(--ink-2)" stroke-width="1.4" fill="none"/>
+        <path d="M238 110 H262 L250 130 Z" fill="var(--surface)" stroke="var(--ink-2)" stroke-width="1.4"/>
+        <path d="M370 60 V119 M370 131 V190 M354 119 H386 M354 131 H386" stroke="var(--ink-2)" stroke-width="1.4" fill="none"/>
+        <path d="M490 60 V100 M490 150 V190" stroke="var(--ink-2)" stroke-width="1.4" fill="none"/>
+        <rect x="482" y="100" width="16" height="50" fill="var(--surface)" stroke="var(--ink-2)" stroke-width="1.4"/>
+        <path class="flow slow" d="M130 103 V60 H560 M616 60 H690 V100 M690 150 V190 H130 V147" stroke="var(--photon)" stroke-width="2" fill="none" opacity="0.85"/>
+        <circle cx="650" cy="60" r="3.5" fill="var(--surface)" stroke="var(--ink-2)" stroke-width="1.4"/>
+        <circle cx="650" cy="190" r="3.5" fill="var(--surface)" stroke="var(--ink-2)" stroke-width="1.4"/>
+        <g font-size="10.5" fill="var(--ink-2)">
+          <text x="158" y="129">光電流 I<tspan font-size="8" dy="2">ph</tspan></text>
+          <text x="272" y="124">ダイオード I<tspan font-size="8" dy="2">s</tspan></text>
+          <text x="394" y="129">接合容量 C<tspan font-size="8" dy="2">j</tspan></text>
+          <text x="508" y="129">並列抵抗 R<tspan font-size="8" dy="2">sh</tspan></text>
+          <text x="588" y="44" text-anchor="middle">直列抵抗 R<tspan font-size="8" dy="2">s</tspan></text>
+          <text x="706" y="129">負荷 R<tspan font-size="8" dy="2">L</tspan></text>
+          <text x="650" y="82" text-anchor="middle">出力</text>
+        </g>
+        <text x="100" y="222" font-size="10" fill="var(--ink-3)">TIA で受けるときは、負荷の代わりに仮想接地（0 V）の入力が来る ― 第6部 16</text>
+      </svg>
+    </div>
+    <figcaption>光電流 I<sub>ph</sub> は光に厳密に比例するが、外へ出る前にダイオード・C<sub>j</sub>・R<sub>sh</sub> の3本の道へ逃げうる。逃げる量を決めるのは、接合にかかる電圧 V<sub>j</sub> ひとつ ― <span class="key">V<sub>j</sub> を 0 付近に保つ受け方ほど、直線に広く読める</span>。数値の例（仮定）: 1 mm² 級の Si PIN で I<sub>s</sub> 25.9 pA（R<sub>sh</sub> 1 GΩ の理想ダイオード、n = 1）・R<sub>s</sub> 10 Ω・C<sub>j</sub> 15 pF。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>負荷と逆バイアス ― 直線性の上限はどこで決まるか</h3>
+      <p>TIA ではなく抵抗 R<sub>L</sub> で受ける（電圧に直すいちばん簡単な方法）と、V<sub>j</sub> ≈ I<sub>ph</sub>·R<sub>L</sub> が順方向に立ち、ダイオードが電流を横取りし始めます。R<sub>L</sub> = 10 kΩ・零バイアスでは、1% の目減りの上限は <b>23.8 µA</b>（そのとき V<sub>j</sub> ≈ 0.24 V）。</p>
+      <p>逆バイアス V<sub>R</sub> をかけると、接合は −V<sub>R</sub> から出発するので、順方向に振られるまでの余裕が V<sub>R</sub> ぶん増えます。5 V なら上限は <b>0.536 mA</b> ― 23 倍。上限の目安は I<sub>max</sub> ≈ (V<sub>R</sub> + V<sub>f</sub>)/(R<sub>L</sub> + R<sub>s</sub>) で、V<sub>f</sub> は 1% の目減りに当たる順方向の電圧（この例で 0.24〜0.32 V。光電流とともに対数で少しずつ上がる）です。</p>
+    </div>
+    <div class="body-col">
+      <h3>零バイアスと逆バイアス ― 何を得て、何を払うか</h3>
+      <p>逆バイアスの得は2つです。① 直線性の上限が上がる（左）。② 空乏層が広がって C<sub>j</sub> が減る ― 階段接合で V<sub>bi</sub> = 0.6 V と仮定すると、5 V で C<sub>j</sub> は 15 → 4.91 pF（1/3.1）、50 Ω 受けの RC 帯域は 212 → 648 MHz、10 kΩ 受けなら 1.06 → 3.24 MHz。</p>
+      <p>払うのは暗電流です。零バイアスでは（理想的には）暗電流が流れず、雑音の床は R<sub>sh</sub> の熱雑音 √(4kT/R<sub>sh</sub>) = 4.07 fA/√Hz（1 GΩ・300 K）。5 V で暗電流 50 pA（仮定）が流れると床はそのショット雑音 √(2qI<sub>d</sub>) = 4.00 fA/√Hz で、この例では高さはほぼ同じですが、逆バイアスの暗電流には低い周波数で 1/f の雑音が乗り、温度で指数関数的に増えます（05）。<span class="key">微弱な光を遅く測るなら零バイアス、速く・明るい光まで直線に測るなら逆バイアス</span>が定石です。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">LINEARITY — 負荷に届く割合 I<sub>L</sub>/I<sub>ph</sub></span><span class="fig-title">横軸は対数・上の等価回路の式から計算・点は 1% の目減り</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 250" role="img" aria-label="光電流に対して、負荷に届く電流の割合を描いたグラフ。零バイアスで10キロオームの負荷では約23.8マイクロアンペアで1%目減りし、逆バイアス5ボルトでは約0.536ミリアンペアまで伸び、TIAの仮想接地では直列抵抗だけが効いて約43ミリアンペアまで直線。" style="min-width:700px;width:100%;display:block">
+        <g stroke="var(--line)" stroke-width="1" fill="none"><path d="M80 50 V210 H680"/><path d="M180.0 50 V210 M280.0 50 V210 M380.0 50 V210 M580.0 50 V210 M80 135 H680" stroke-dasharray="2 4"/></g>
+        <path class="draw" style="--len:665" d="M80.0 60.0 L82.0 60.0 L84.0 60.0 L86.0 60.0 L88.0 60.0 L90.0 60.0 L92.0 60.0 L94.0 60.0 L96.0 60.0 L98.0 60.0 L100.0 60.0 L102.0 60.0 L104.0 60.0 L106.0 60.0 L108.0 60.0 L110.0 60.0 L112.0 60.0 L114.0 60.0 L116.0 60.0 L118.0 60.0 L120.0 60.0 L122.0 60.0 L124.0 60.0 L126.0 60.0 L128.0 60.0 L130.0 60.0 L132.0 60.0 L134.0 60.0 L136.0 60.0 L138.0 60.0 L140.0 60.0 L142.0 60.0 L144.0 60.0 L146.0 60.0 L148.0 60.0 L150.0 60.0 L152.0 60.0 L154.0 60.0 L156.0 60.0 L158.0 60.0 L160.0 60.0 L162.0 60.0 L164.0 60.0 L166.0 60.0 L168.0 60.0 L170.0 60.0 L172.0 60.0 L174.0 60.0 L176.0 60.0 L178.0 60.0 L180.0 60.0 L182.0 60.0 L184.0 60.0 L186.0 60.0 L188.0 60.0 L190.0 60.0 L192.0 60.0 L194.0 60.1 L196.0 60.1 L198.0 60.1 L200.0 60.1 L202.0 60.1 L204.0 60.2 L206.0 60.2 L208.0 60.3 L210.0 60.4 L212.0 60.6 L214.0 60.8 L216.0 61.1 L218.0 61.6 L220.0 62.2 L222.0 63.2 L224.0 64.4 L226.0 66.1 L228.0 68.1 L230.0 70.7 L232.0 73.6 L234.0 76.8 L236.0 80.3 L238.0 84.0 L240.0 87.8 L242.0 91.6 L244.0 95.5 L246.0 99.4 L248.0 103.3 L250.0 107.1 L252.0 110.8 L254.0 114.4 L256.0 118.0 L258.0 121.5 L260.0 124.8 L262.0 128.1 L264.0 131.3 L266.0 134.4 L268.0 137.3 L270.0 140.2 L272.0 143.0 L274.0 145.6 L276.0 148.2 L278.0 150.7 L280.0 153.1 L282.0 155.4 L284.0 157.6 L286.0 159.7 L288.0 161.8 L290.0 163.8 L292.0 165.6 L294.0 167.5 L296.0 169.2 L298.0 170.9 L300.0 172.5 L302.0 174.1 L304.0 175.5 L306.0 177.0 L308.0 178.3 L310.0 179.6 L312.0 180.9 L314.0 182.1 L316.0 183.3 L318.0 184.4 L320.0 185.5 L322.0 186.5 L324.0 187.5 L326.0 188.4 L328.0 189.3 L330.0 190.2 L332.0 191.0 L334.0 191.8 L336.0 192.6 L338.0 193.3 L340.0 194.0 L342.0 194.7 L344.0 195.3 L346.0 195.9 L348.0 196.5 L350.0 197.1 L352.0 197.6 L354.0 198.2 L356.0 198.7 L358.0 199.1 L360.0 199.6 L362.0 200.0 L364.0 200.5 L366.0 200.9 L368.0 201.2 L370.0 201.6 L372.0 202.0 L374.0 202.3 L376.0 202.6 L378.0 203.0 L380.0 203.2 L382.0 203.5 L384.0 203.8 L386.0 204.1 L388.0 204.3 L390.0 204.6 L392.0 204.8 L394.0 205.0 L396.0 205.2 L398.0 205.4 L400.0 205.6 L402.0 205.8 L404.0 206.0 L406.0 206.2 L408.0 206.3 L410.0 206.5 L412.0 206.6 L414.0 206.8 L416.0 206.9 L418.0 207.0 L420.0 207.2 L422.0 207.3 L424.0 207.4 L426.0 207.5 L428.0 207.6 L430.0 207.7 L432.0 207.8 L434.0 207.9 L436.0 208.0 L438.0 208.1 L440.0 208.2 L442.0 208.2 L444.0 208.3 L446.0 208.4 L448.0 208.5 L450.0 208.5 L452.0 208.6 L454.0 208.6 L456.0 208.7 L458.0 208.8 L460.0 208.8 L462.0 208.9 L464.0 208.9 L466.0 209.0 L468.0 209.0 L470.0 209.0 L472.0 209.1 L474.0 209.1 L476.0 209.2 L478.0 209.2 L480.0 209.2 L482.0 209.3 L484.0 209.3 L486.0 209.3 L488.0 209.4 L490.0 209.4 L492.0 209.4 L494.0 209.4 L496.0 209.5 L498.0 209.5 L500.0 209.5 L502.0 209.5 L504.0 209.5 L506.0 209.6 L508.0 209.6 L510.0 209.6 L512.0 209.6 L514.0 209.6 L516.0 209.7 L518.0 209.7 L520.0 209.7 L522.0 209.7 L524.0 209.7 L526.0 209.7 L528.0 209.7 L530.0 209.7 L532.0 209.8 L534.0 209.8 L536.0 209.8 L538.0 209.8 L540.0 209.8 L542.0 209.8 L544.0 209.8 L546.0 209.8 L548.0 209.8 L550.0 209.8 L552.0 209.8 L554.0 209.8 L556.0 209.9 L558.0 209.9 L560.0 209.9 L562.0 209.9 L564.0 209.9 L566.0 209.9 L568.0 209.9 L570.0 209.9 L572.0 209.9 L574.0 209.9 L576.0 209.9 L578.0 209.9 L580.0 209.9 L582.0 209.9 L584.0 209.9 L586.0 209.9 L588.0 209.9 L590.0 209.9 L592.0 209.9 L594.0 209.9 L596.0 209.9 L598.0 209.9 L600.0 209.9 L602.0 209.9 L604.0 209.9 L606.0 210.0 L608.0 210.0 L610.0 210.0 L612.0 210.0 L614.0 210.0 L616.0 210.0 L618.0 210.0 L620.0 210.0 L622.0 210.0 L624.0 210.0 L626.0 210.0 L628.0 210.0 L630.0 210.0 L632.0 210.0 L634.0 210.0 L636.0 210.0 L638.0 210.0 L640.0 210.0 L642.0 210.0 L644.0 210.0 L646.0 210.0 L648.0 210.0 L650.0 210.0 L652.0 210.0 L654.0 210.0 L656.0 210.0 L658.0 210.0 L660.0 210.0 L662.0 210.0 L664.0 210.0 L666.0 210.0 L668.0 210.0 L670.0 210.0 L672.0 210.0 L674.0 210.0 L676.0 210.0 L678.0 210.0 L680.0 210.0" stroke="var(--warn)" stroke-width="2" fill="none"/>
+        <path class="draw" style="--len:676" d="M80.0 60.0 L82.0 60.0 L84.0 60.0 L86.0 60.0 L88.0 60.0 L90.0 60.0 L92.0 60.0 L94.0 60.0 L96.0 60.0 L98.0 60.0 L100.0 60.0 L102.0 60.0 L104.0 60.0 L106.0 60.0 L108.0 60.0 L110.0 60.0 L112.0 60.0 L114.0 60.0 L116.0 60.0 L118.0 60.0 L120.0 60.0 L122.0 60.0 L124.0 60.0 L126.0 60.0 L128.0 60.0 L130.0 60.0 L132.0 60.0 L134.0 60.0 L136.0 60.0 L138.0 60.0 L140.0 60.0 L142.0 60.0 L144.0 60.0 L146.0 60.0 L148.0 60.0 L150.0 60.0 L152.0 60.0 L154.0 60.0 L156.0 60.0 L158.0 60.0 L160.0 60.0 L162.0 60.0 L164.0 60.0 L166.0 60.0 L168.0 60.0 L170.0 60.0 L172.0 60.0 L174.0 60.0 L176.0 60.0 L178.0 60.0 L180.0 60.0 L182.0 60.0 L184.0 60.0 L186.0 60.0 L188.0 60.0 L190.0 60.0 L192.0 60.0 L194.0 60.0 L196.0 60.0 L198.0 60.0 L200.0 60.0 L202.0 60.0 L204.0 60.0 L206.0 60.0 L208.0 60.0 L210.0 60.0 L212.0 60.0 L214.0 60.0 L216.0 60.0 L218.0 60.0 L220.0 60.0 L222.0 60.0 L224.0 60.0 L226.0 60.0 L228.0 60.0 L230.0 60.0 L232.0 60.0 L234.0 60.0 L236.0 60.0 L238.0 60.0 L240.0 60.0 L242.0 60.0 L244.0 60.0 L246.0 60.0 L248.0 60.0 L250.0 60.0 L252.0 60.0 L254.0 60.0 L256.0 60.0 L258.0 60.0 L260.0 60.0 L262.0 60.0 L264.0 60.0 L266.0 60.0 L268.0 60.0 L270.0 60.0 L272.0 60.0 L274.0 60.0 L276.0 60.0 L278.0 60.0 L280.0 60.0 L282.0 60.0 L284.0 60.0 L286.0 60.0 L288.0 60.0 L290.0 60.0 L292.0 60.0 L294.0 60.0 L296.0 60.0 L298.0 60.0 L300.0 60.0 L302.0 60.0 L304.0 60.0 L306.0 60.0 L308.0 60.0 L310.0 60.0 L312.0 60.0 L314.0 60.0 L316.0 60.0 L318.0 60.0 L320.0 60.0 L322.0 60.0 L324.0 60.0 L326.0 60.0 L328.0 60.0 L330.0 60.0 L332.0 60.0 L334.0 60.0 L336.0 60.0 L338.0 60.0 L340.0 60.0 L342.0 60.0 L344.0 60.0 L346.0 60.0 L348.0 60.0 L350.0 60.0 L352.0 60.1 L354.0 64.3 L356.0 70.2 L358.0 76.2 L360.0 82.0 L362.0 87.6 L364.0 93.0 L366.0 98.1 L368.0 103.1 L370.0 107.8 L372.0 112.4 L374.0 116.7 L376.0 120.8 L378.0 124.8 L380.0 128.6 L382.0 132.2 L384.0 135.7 L386.0 139.0 L388.0 142.2 L390.0 145.2 L392.0 148.1 L394.0 150.9 L396.0 153.5 L398.0 156.0 L400.0 158.4 L402.0 160.7 L404.0 163.0 L406.0 165.1 L408.0 167.1 L410.0 169.0 L412.0 170.8 L414.0 172.6 L416.0 174.2 L418.0 175.8 L420.0 177.4 L422.0 178.8 L424.0 180.2 L426.0 181.6 L428.0 182.8 L430.0 184.0 L432.0 185.2 L434.0 186.3 L436.0 187.4 L438.0 188.4 L440.0 189.4 L442.0 190.3 L444.0 191.2 L446.0 192.0 L448.0 192.8 L450.0 193.6 L452.0 194.3 L454.0 195.0 L456.0 195.7 L458.0 196.3 L460.0 196.9 L462.0 197.5 L464.0 198.1 L466.0 198.6 L468.0 199.1 L470.0 199.6 L472.0 200.1 L474.0 200.5 L476.0 201.0 L478.0 201.4 L480.0 201.7 L482.0 202.1 L484.0 202.5 L486.0 202.8 L488.0 203.1 L490.0 203.4 L492.0 203.7 L494.0 204.0 L496.0 204.3 L498.0 204.5 L500.0 204.8 L502.0 205.0 L504.0 205.2 L506.0 205.4 L508.0 205.7 L510.0 205.8 L512.0 206.0 L514.0 206.2 L516.0 206.4 L518.0 206.5 L520.0 206.7 L522.0 206.8 L524.0 207.0 L526.0 207.1 L528.0 207.3 L530.0 207.4 L532.0 207.5 L534.0 207.6 L536.0 207.7 L538.0 207.8 L540.0 207.9 L542.0 208.0 L544.0 208.1 L546.0 208.2 L548.0 208.3 L550.0 208.3 L552.0 208.4 L554.0 208.5 L556.0 208.6 L558.0 208.6 L560.0 208.7 L562.0 208.7 L564.0 208.8 L566.0 208.8 L568.0 208.9 L570.0 209.0 L572.0 209.0 L574.0 209.0 L576.0 209.1 L578.0 209.1 L580.0 209.2 L582.0 209.2 L584.0 209.2 L586.0 209.3 L588.0 209.3 L590.0 209.3 L592.0 209.4 L594.0 209.4 L596.0 209.4 L598.0 209.4 L600.0 209.5 L602.0 209.5 L604.0 209.5 L606.0 209.5 L608.0 209.6 L610.0 209.6 L612.0 209.6 L614.0 209.6 L616.0 209.6 L618.0 209.7 L620.0 209.7 L622.0 209.7 L624.0 209.7 L626.0 209.7 L628.0 209.7 L630.0 209.7 L632.0 209.7 L634.0 209.8 L636.0 209.8 L638.0 209.8 L640.0 209.8 L642.0 209.8 L644.0 209.8 L646.0 209.8 L648.0 209.8 L650.0 209.8 L652.0 209.8 L654.0 209.8 L656.0 209.9 L658.0 209.9 L660.0 209.9 L662.0 209.9 L664.0 209.9 L666.0 209.9 L668.0 209.9 L670.0 209.9 L672.0 209.9 L674.0 209.9 L676.0 209.9 L678.0 209.9 L680.0 209.9" stroke="var(--electron)" stroke-width="2" fill="none"/>
+        <path class="draw" style="--len:669" d="M80.0 60.0 L82.0 60.0 L84.0 60.0 L86.0 60.0 L88.0 60.0 L90.0 60.0 L92.0 60.0 L94.0 60.0 L96.0 60.0 L98.0 60.0 L100.0 60.0 L102.0 60.0 L104.0 60.0 L106.0 60.0 L108.0 60.0 L110.0 60.0 L112.0 60.0 L114.0 60.0 L116.0 60.0 L118.0 60.0 L120.0 60.0 L122.0 60.0 L124.0 60.0 L126.0 60.0 L128.0 60.0 L130.0 60.0 L132.0 60.0 L134.0 60.0 L136.0 60.0 L138.0 60.0 L140.0 60.0 L142.0 60.0 L144.0 60.0 L146.0 60.0 L148.0 60.0 L150.0 60.0 L152.0 60.0 L154.0 60.0 L156.0 60.0 L158.0 60.0 L160.0 60.0 L162.0 60.0 L164.0 60.0 L166.0 60.0 L168.0 60.0 L170.0 60.0 L172.0 60.0 L174.0 60.0 L176.0 60.0 L178.0 60.0 L180.0 60.0 L182.0 60.0 L184.0 60.0 L186.0 60.0 L188.0 60.0 L190.0 60.0 L192.0 60.0 L194.0 60.0 L196.0 60.0 L198.0 60.0 L200.0 60.0 L202.0 60.0 L204.0 60.0 L206.0 60.0 L208.0 60.0 L210.0 60.0 L212.0 60.0 L214.0 60.0 L216.0 60.0 L218.0 60.0 L220.0 60.0 L222.0 60.0 L224.0 60.0 L226.0 60.0 L228.0 60.0 L230.0 60.0 L232.0 60.0 L234.0 60.0 L236.0 60.0 L238.0 60.0 L240.0 60.0 L242.0 60.0 L244.0 60.0 L246.0 60.0 L248.0 60.0 L250.0 60.0 L252.0 60.0 L254.0 60.0 L256.0 60.0 L258.0 60.0 L260.0 60.0 L262.0 60.0 L264.0 60.0 L266.0 60.0 L268.0 60.0 L270.0 60.0 L272.0 60.0 L274.0 60.0 L276.0 60.0 L278.0 60.0 L280.0 60.0 L282.0 60.0 L284.0 60.0 L286.0 60.0 L288.0 60.0 L290.0 60.0 L292.0 60.0 L294.0 60.0 L296.0 60.0 L298.0 60.0 L300.0 60.0 L302.0 60.0 L304.0 60.0 L306.0 60.0 L308.0 60.0 L310.0 60.0 L312.0 60.0 L314.0 60.0 L316.0 60.0 L318.0 60.0 L320.0 60.0 L322.0 60.0 L324.0 60.0 L326.0 60.0 L328.0 60.0 L330.0 60.0 L332.0 60.0 L334.0 60.0 L336.0 60.0 L338.0 60.0 L340.0 60.0 L342.0 60.0 L344.0 60.0 L346.0 60.0 L348.0 60.0 L350.0 60.0 L352.0 60.0 L354.0 60.0 L356.0 60.0 L358.0 60.0 L360.0 60.0 L362.0 60.0 L364.0 60.0 L366.0 60.0 L368.0 60.0 L370.0 60.0 L372.0 60.0 L374.0 60.0 L376.0 60.0 L378.0 60.0 L380.0 60.0 L382.0 60.0 L384.0 60.0 L386.0 60.0 L388.0 60.0 L390.0 60.0 L392.0 60.0 L394.0 60.0 L396.0 60.0 L398.0 60.0 L400.0 60.0 L402.0 60.0 L404.0 60.0 L406.0 60.0 L408.0 60.0 L410.0 60.0 L412.0 60.0 L414.0 60.0 L416.0 60.0 L418.0 60.0 L420.0 60.0 L422.0 60.0 L424.0 60.0 L426.0 60.0 L428.0 60.0 L430.0 60.0 L432.0 60.0 L434.0 60.0 L436.0 60.0 L438.0 60.0 L440.0 60.0 L442.0 60.0 L444.0 60.0 L446.0 60.0 L448.0 60.0 L450.0 60.0 L452.0 60.0 L454.0 60.0 L456.0 60.0 L458.0 60.0 L460.0 60.0 L462.0 60.0 L464.0 60.0 L466.0 60.0 L468.0 60.0 L470.0 60.0 L472.0 60.0 L474.0 60.0 L476.0 60.0 L478.0 60.0 L480.0 60.0 L482.0 60.0 L484.0 60.0 L486.0 60.0 L488.0 60.0 L490.0 60.0 L492.0 60.0 L494.0 60.0 L496.0 60.0 L498.0 60.0 L500.0 60.0 L502.0 60.0 L504.0 60.0 L506.0 60.0 L508.0 60.0 L510.0 60.0 L512.0 60.0 L514.0 60.0 L516.0 60.0 L518.0 60.0 L520.0 60.0 L522.0 60.0 L524.0 60.0 L526.0 60.0 L528.0 60.0 L530.0 60.0 L532.0 60.0 L534.0 60.1 L536.0 60.1 L538.0 60.2 L540.0 60.5 L542.0 60.9 L544.0 61.6 L546.0 62.9 L548.0 64.9 L550.0 67.6 L552.0 71.0 L554.0 74.8 L556.0 78.9 L558.0 83.2 L560.0 87.6 L562.0 91.9 L564.0 96.3 L566.0 100.6 L568.0 104.7 L570.0 108.8 L572.0 112.8 L574.0 116.7 L576.0 120.4 L578.0 124.0 L580.0 127.5 L582.0 130.9 L584.0 134.1 L586.0 137.2 L588.0 140.2 L590.0 143.1 L592.0 145.9 L594.0 148.6 L596.0 151.1 L598.0 153.6 L600.0 156.0 L602.0 158.2 L604.0 160.4 L606.0 162.5 L608.0 164.5 L610.0 166.4 L612.0 168.3 L614.0 170.0 L616.0 171.7 L618.0 173.4 L620.0 174.9 L622.0 176.4 L624.0 177.8 L626.0 179.2 L628.0 180.5 L630.0 181.8 L632.0 183.0 L634.0 184.1 L636.0 185.2 L638.0 186.3 L640.0 187.3 L642.0 188.3 L644.0 189.2 L646.0 190.1 L648.0 191.0 L650.0 191.8 L652.0 192.6 L654.0 193.3 L656.0 194.0 L658.0 194.7 L660.0 195.4 L662.0 196.0 L664.0 196.6 L666.0 197.2 L668.0 197.7 L670.0 198.3 L672.0 198.8 L674.0 199.2 L676.0 199.7 L678.0 200.1 L680.0 200.6" stroke="var(--digital)" stroke-width="2" fill="none"/>
+        <circle cx="217.7" cy="61.5" r="4" fill="var(--warn)"/><circle cx="353.0" cy="61.5" r="4" fill="var(--electron)"/><circle cx="543.8" cy="61.5" r="4" fill="var(--digital)"/>
+        <g font-size="10" fill="var(--ink-2)"><text x="217.7" y="46" text-anchor="middle">23.8 µA</text><text x="353.0" y="46" text-anchor="middle">0.536 mA</text><text x="543.8" y="46" text-anchor="middle">43 mA</text></g>
+        <g font-size="10">
+          <path d="M390 84 H410" stroke="var(--warn)" stroke-width="2" fill="none"/><text x="416" y="88" fill="var(--warn)">0 V・負荷 10 kΩ</text>
+          <path d="M390 102 H410" stroke="var(--electron)" stroke-width="2" fill="none"/><text x="416" y="106" fill="var(--electron-2)">5 V・負荷 10 kΩ</text>
+          <path d="M390 120 H410" stroke="var(--digital)" stroke-width="2" fill="none"/><text x="416" y="124" fill="var(--digital)">0 V・TIA（R<tspan font-size="8" dy="2">s</tspan><tspan dy="-2"> だけ）</tspan></text>
+        </g>
+        <g font-family="var(--mono)" font-size="9.5" fill="var(--ink-3)">
+          <text x="74" y="63" text-anchor="end">1</text><text x="74" y="138" text-anchor="end">0.5</text><text x="74" y="213" text-anchor="end">0</text>
+          <text x="80" y="226" text-anchor="middle">1 µA</text><text x="180" y="226" text-anchor="middle">10 µA</text><text x="280" y="226" text-anchor="middle">100 µA</text><text x="380" y="226" text-anchor="middle">1 mA</text><text x="480" y="226" text-anchor="middle">10 mA</text><text x="580" y="226" text-anchor="middle">100 mA</text><text x="680" y="226" text-anchor="middle">1 A</text>
+        </g>
+        <text x="380" y="244" font-size="10" fill="var(--ink-3)" text-anchor="middle">光電流 I<tspan font-size="8" dy="2">ph</tspan><tspan dy="-2"> →（対数）</tspan></text>
+      </svg>
+    </div>
+    <figcaption>曲線は I<sub>ph</sub> = I<sub>s</sub>(e<sup>V<sub>j</sub>/V<sub>t</sub></sup> − 1) + I<sub>L</sub>、V<sub>j</sub> = I<sub>L</sub>(R<sub>s</sub> + R<sub>L</sub>) − V<sub>R</sub> を解いたもの（R<sub>sh</sub> 1 GΩ の分は 10 kΩ 受けで 10⁻⁵ なので省いた）。零バイアス → 逆バイアス 5 V で上限は 23 倍、TIA で端子を 0 V に押さえるとさらに 2 桁 ― <span class="key">直線性はダイオードの性質ではなく、受け方の性質</span>です。</figcaption>
+  </figure>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — 温度で何が動くか</span>
+    <p>I<sub>s</sub> は拡散電流なので、温度で急に増えます（05 の請求書: 前指数の T³ と E<sub>g</sub> の温度変化まで入れて約 4.3 K ごとに 2 倍）。理想的なダイオードでは R<sub>sh</sub> = nV<sub>t</sub>/I<sub>s</sub> なので R<sub>sh</sub> も同じ割合で下がり、零バイアスの熱雑音の床は √ で上がる ― 10 ℃ 上がると R<sub>sh</sub> は約 1/4.8、床は約 2.2 倍（理想式からの目安。実際の素子は生成電流や表面の漏れが混ざるので、データシートの温度特性で確かめます）。感度 R のほうは、長波長の端（Si で 1,000 nm 付近）で、温度が上がると E<sub>g</sub> が縮んで吸収が増え、感度も上がる（正の温度係数）。可視の中ほどでは、この効きは小さい。</p>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（14 フォトダイオードを正しく使う）</span>
+    <p><b>問.</b> 上の仮定の PD（I<sub>s</sub> 25.9 pA・R<sub>s</sub> 10 Ω・C<sub>j</sub> 15 pF）を R<sub>L</sub> = 10 kΩ で電圧に直し、0〜100 µA の光を 1% の直線性で測りたい。零バイアスで足りるか。足りなければ逆バイアスは何 V 要るか。そのとき 10 kΩ 受けの帯域はいくつか。</p>
+    <p><b>解.</b> 零バイアスの上限は 23.8 µA で足りない。100 µA を 1% の目減りで通すのに要る逆バイアスは、上の式を解いて <b>0.72 V</b>（100 µA × 10.01 kΩ ≈ 1.0 V から、1% の目減りの順方向の電圧のぶんを引いた値）。余裕を見て 1〜2 V をかけるのが実務です。0.72 V のとき C<sub>j</sub> は 10.1 pF で、10 kΩ 受けの帯域は 1.57 MHz。直線性のために逆バイアスをかけると、速さもついてくる。TIA で受けるなら、逆バイアスをかけなくても 100 µA は十分に直線です（上限 43 mA）。</p>
+  </div>
+
+  <div class="pit">
+    <span class="tag">落とし穴と、持ち帰る一言（14）</span>
+    <ul><li>光起電力の電圧をそのまま光量として読む ― 開放電圧は光の対数。直線に読むなら電流（TIA）で。</li><li>負荷の抵抗を大きくして感度を稼ぎ、直線性の上限を下げる ― 零バイアス・10 kΩ では約 24 µA で 1% 目減りする。</li><li>逆バイアスで暗電流が増えるのを忘れて微弱光を測る ― 低い周波数では 1/f の雑音も乗る。</li></ul>
+    <dl class="roles"><dt>営業・企画</dt><dd>「微弱で遅い光には零バイアス、明るく速い光には逆バイアス」を、用途の言葉で説明できるようにする。</dd><dt>設計・開発</dt><dd>受け方（TIA か負荷か、逆バイアス何 V か）を先に決め、直線性の上限と帯域を等価回路で確かめる。</dd><dt>研究・製造</dt><dd>R<sub>sh</sub> と暗電流は温度で大きく動くので、零バイアスの雑音の床は温度とセットで測る。</dd></dl>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — AnalogLab・PhotonLab</span>
+    <p>PD の容量と受けの抵抗が速さを決める、を TIA と 50 Ω 受けの両方で。</p>
+    <div class="qs"><span class="lab">AnalogLab</span><a href="AnalogLab/index.html?quest=tia">TIA の Rf を選ぶ</a><span class="lab">PhotonLab</span><a href="PhotonLab/index.html?quest=fast">速さの敵は容量</a></div>
+  </div>
 </section>
 
 <!-- ================= 理解の確認 ================= -->
 <section class="stage" id="scheck">
   <div class="stage-head"><span class="stage-num">—</span>
-    <h2>理解の確認 ― 14問で一族を並べ直す</h2></div>
+    <h2>理解の確認 ― 23問で一族を並べ直す</h2></div>
   <p class="lede">答えを開く前に、どの章の何を使うかを先に言ってみてください。後ろの問いほど、前の章を組み合わせます。</p>
   <div class="chk">
     <details><summary><span class="qn">Q1 · 01</span>検出器選定の最初の2問は何か。</summary><p>①光は後段の回路の床より十分強いか（弱ければ床の手前で増やす家系へ）。②「何ワット」で足りるか、「何個」まで要るか（個数なら PMT・SPAD・MPPC）。そのあとに磁場・体積・電圧（Q3）、波長、速さ、値段が続く。</p></details>
@@ -1768,6 +2288,15 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <details><summary><span class="qn">Q12 · 09</span>低いエネルギーの X 線で分解能を決めるのは何か。SDD はそれにどう答えたか。</summary><p>回路の雑音（ENC）。FWHM = 2.355w√(FN + ENC²) で、N が小さいと ENC² が効く。SDD は電子を小さな陽極に集めて容量を小さくし、短い整形時間でも ENC を小さくした。</p></details>
     <details><summary><span class="qn">Q13 · 10</span>紫外用のシリコンのフォトダイオードで、表面の作り方が特に重要なのはなぜか。</summary><p>300 nm の光は深さ約 6 nm で吸われるので、対が表面のすぐ近くで生まれ、表面の再結合で失われやすいから。不感層を薄くし、表面を不活性化する。</p></details>
     <details><summary><span class="qn">Q14 · 10</span>テラヘルツで光子を 1 個ずつ数える検出器が使えないのはなぜか。</summary><p>1 THz の光子は 4.14 meV で、室温の kT（25.9 meV）より小さく、熱の揺らぎに埋もれるから。熱型の検出器か、THz-TDS のように電界の波形を測る方法を使う。</p></details>
+      <details><summary><span class="qn">Q15 · 11</span>NEA の光電面は赤外まで届き QE も高いのに、冷やして使うことが多いのはなぜか。</summary><p>電子親和力が負で表面の壁がほとんど無いので、光で出る電子だけでなく熱で壁を越える電子（暗計数）も多いから。壁が低いほど暗計数は温度に敏感で、冷やすとよく効く。</p></details>
+    <details><summary><span class="qn">Q16 · 11</span>光子の数を数えたいとき、第1ダイノードの利得を大きくするのはなぜか。</summary><p>利得の相対分散 v<sub>G</sub> = (1/δ₁)·δ/(δ − 1) で、第1段の 1/δ₁ が支配するから。δ₁ = δ = 4 で半値全幅 136%、δ₁ = 30 で 50% になり、1・2・3 個のパルスの山が分かれる。</p></details>
+    <details><summary><span class="qn">Q17 · 11</span>大口径の PMT を磁気シールドで囲むのはなぜか。MPPC ではなぜ要らないのか。</summary><p>真空を飛ぶ電子は r = mv/(qB) の円を描き、100 eV の電子でも地磁気（0.05 mT）で半径約 0.67 m ― 数十 cm 飛ぶ大口径管では数 cm ずれて第1ダイノードを外すから。MPPC の電子は µm の中でなだれるだけで、真空を飛ばない。</p></details>
+    <details><summary><span class="qn">Q18 · 12</span>非拡張型と拡張型の不感時間で、光を強くし続けたとき数えた率はどう違うか。</summary><p>非拡張型は 1/τ に張り付くだけ。拡張型は n = 1/τ で山（1/(eτ)）を越えると、明るくするほど数が減る。だから拡張型は m だけでは真の率が2通りに読め、光を弱めて m が増えるか減るかで側を確かめる。</p></details>
+    <details><summary><span class="qn">Q19 · 12</span>TCSPC で 1 周期の検出を µ = 5% にすると、2 個以上来た周期はどれくらいか。</summary><p>(1 − e<sup>−µ</sup> − µe<sup>−µ</sup>)/(1 − e<sup>−µ</sup>) ≈ µ/2 ＝ 約 2.5%。これが先着だけ記録される歪み（パイルアップ）の大きさで、検出率を 1〜数% に絞る根拠。</p></details>
+    <details><summary><span class="qn">Q20 · 13</span>1 fW では PMT が MPPC に勝つのに、1 pW では逆転するのはなぜか。</summary><p>1 fW では信号が 1 ms に 1 個前後で、暗計数（PMT 0.05 個・MPPC 50 個）が SN 比を決めるから。1 pW では信号が暗計数よりずっと大きく、効率（PDE 0.40 と QE 0.18）の差が効く。</p></details>
+    <details><summary><span class="qn">Q21 · 13</span>明るい光（1 nW）でフォトダイオードが PMT や APD より良い SN 比になるのはなぜか。</summary><p>どれもショット雑音の限界で SN 比 = √(N/F) になり、効率が高く（QE 0.70）、増倍の過剰雑音 F を払わないフォトダイオードが最も大きいから。増倍が得になるのは、床が後段の回路にあるときだけ。</p></details>
+      <details><summary><span class="qn">Q22 · 14</span>フォトダイオードの開放電圧で光を測ると直線にならないのはなぜか。直線に読むにはどうするか。</summary><p>開放では光電流が全部ダイオードに流れ込み、V<sub>oc</sub> = nV<sub>t</sub>·ln(1 + I<sub>ph</sub>/I<sub>s</sub>) の対数になるから（10 倍で 59.5 mV）。TIA の仮想接地で端子の電圧を 0 V に押さえて電流を読めば、接合に V<sub>j</sub> = I<sub>ph</sub>·R<sub>s</sub> しか立たず、光電流がほぼ全部外へ出る。</p></details>
+    <details><summary><span class="qn">Q23 · 14</span>フォトダイオードに逆バイアスをかける得と代償は何か。</summary><p>得: 接合容量が減って速くなり（5 V で 15 → 4.91 pF の例）、負荷で受けるときの直線性の上限が上がる（10 kΩ で 23.8 µA → 0.536 mA）。代償: 暗電流とそのショット雑音が流れ、低い周波数では 1/f の雑音も乗り、温度で増える。微弱な光を遅く測るなら零バイアスが向く。</p></details>
   </div>
 </section>
 
@@ -1818,6 +2347,18 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>UVA / UVB / UVC / 真空紫外</td><td>315〜400 / 280〜315 / 100〜280 nm と、空気（酸素）に吸われる約 200 nm 以下</td><td class="num">波長で分ける</td></tr>
           <tr><td>ソーラーブラインド</td><td>地上の太陽光がオゾンで消える約 290 nm 以下の帯。昼でも炎や放電を検出できる</td><td class="num">Cs-Te・AlGaN</td></tr>
           <tr><td>テラヘルツ / THz-TDS</td><td>0.1〜10 THz の帯と、フェムト秒のレーザーで電界の波形を測る分光法</td><td class="num">1 THz ＝ 4.14 meV ＝ 300 µm</td></tr>
+                  <tr><td>NEA 光電面</td><td>GaAs・GaAsP の表面にセシウムと酸素を付けて電子親和力を負にした光電面。落ち着いた電子まで出られるので QE が高く赤外まで届くが、暗計数が多く冷やして使う</td><td class="num">GaAsP 40%・GaAs 〜900 nm</td></tr>
+          <tr><td>3 段モデル</td><td>光電面の QE を「吸収 × 表面への輸送 × 壁を越える脱出」の掛け算で考える見方（スパイサー）</td><td class="num">長波長の端は Eg＋電子親和力</td></tr>
+          <tr><td>単一光電子スペクトル</td><td>光電子 1 個が作るパルスの高さの分布。利得の相対分散 v<sub>G</sub> = (1/δ₁)·δ/(δ − 1) で広がり、第1段の利得で細くなる</td><td class="num">δ₁ = 30 で半値全幅 50%</td></tr>
+          <tr><td>プラトー</td><td>フォトンカウンティングで高圧を上げても数がほとんど変わらない範囲。ここで使えば利得の揺れが数に効かない</td><td class="num">しきい値は分布の谷に</td></tr>
+          <tr><td>磁気シールド（μ メタル）</td><td>透磁率の高い合金の筒で PMT を囲み、地磁気などで電子の軌道が曲がるのを防ぐ。r = mv/(qB)</td><td class="num">100 eV・0.05 mT で r ≈ 0.67 m</td></tr>
+          <tr><td>不感時間（非拡張型 / 拡張型）</td><td>1 個を数えたあと数えられない時間 τ。休みが延びない型は m = n/(1 + nτ)、延びる型は m = n·e<sup>−nτ</sup></td><td class="num">1% 落ちは nτ ≈ 0.01</td></tr>
+          <tr><td>計数 / アナログ（電流）</td><td>パルスを弁別して数える読み方と、平均電流を読む読み方。暗い側は計数、明るい側は電流で、重なる範囲で較正してつなぐ</td><td class="num">計数は 10⁶〜10⁷ /s 級まで</td></tr>
+          <tr><td>ショット雑音の限界</td><td>光子の数の揺らぎ √N だけが残った状態。SN 比 = √(N/F) で、効率と過剰雑音 F だけで決まる</td><td class="num">明るい所は PD が勝つ</td></tr>
+                  <tr><td>等価回路（R<sub>sh</sub>・R<sub>s</sub>・C<sub>j</sub>）</td><td>光電流の電流源に、理想ダイオード・接合容量・並列抵抗を並べ、直列抵抗を通して外へ出すフォトダイオードの模型。外へ出る割合は接合の電圧で決まる</td><td class="num">1 GΩ・10 Ω・15 pF（仮定の例）</td></tr>
+          <tr><td>光起電力モード / 光導電モード</td><td>零バイアスで使うか、逆バイアスで使うか。零バイアスは暗電流が無く微弱光・低周波向き、逆バイアスは速く、明るい光まで直線</td><td class="num">5 V で C<sub>j</sub> 約 1/3.1</td></tr>
+          <tr><td>開放電圧 V<sub>oc</sub></td><td>負荷をつながないときの電圧 nV<sub>t</sub>·ln(1 + I<sub>ph</sub>/I<sub>s</sub>)。光の対数になる</td><td class="num">10 倍で 59.5 mV</td></tr>
+          <tr><td>直線性の上限（飽和）</td><td>負荷と直列抵抗で接合が順方向に振られ、光電流がダイオードへ逃げ始める点。上限 ≈ (V<sub>R</sub> + V<sub>f</sub>)/(R<sub>L</sub> + R<sub>s</sub>)</td><td class="num">10 kΩ 零バイアスで約 23.8 µA</td></tr>
         </tbody>
       </table>
     </div>
@@ -1843,7 +2384,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>ガイガーモードAPD<br>アレイ（SiPM）の総説</td><td>D. Renker<br>Nucl. Instrum. Methods A 567, 48 (2006)</td>
             <td>03。SiPM の歴史・特性・クロストークやアフターパルスなどの問題点を整理した入口の定番です。</td></tr>
           <tr><td>放射線計測の<br>教科書</td><td>Glenn F. Knoll<br>Radiation Detection and Measurement, 4th ed., Wiley (2010)</td>
-            <td>05。シンチレータの光量・減衰時定数・エネルギー分解能の統計など、この部で使った標準値の多くはこの本が基準です。</td></tr>
+            <td>05・09・12。シンチレータの光量・減衰時定数・エネルギー分解能の統計（05）、w 値・ファノ因子・半導体の検出器（09）、不感時間の2つの型と2つの光源による測り方（4 章、12）。この部で使った放射線計測の標準値の多くはこの本が基準です。</td></tr>
           <tr><td>単一光子検出の<br>APDとクエンチ回路</td><td>S. Cova ほか<br>Appl. Opt. 35, 1956 (1996)</td>
             <td>03・06。SPAD の本籍地は<a href="第4部_イメージセンサ.html#sspad">第4部</a>ですが、クエンチ・リチャージの回路とTCSPC の検出器としての性格はこの総説が入口です。</td></tr>
           <tr><td>SNSPD の原典</td><td>G. N. Gol'tsman ほか<br>Appl. Phys. Lett. 79, 705 (2001)</td>
@@ -1858,9 +2399,13 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
             <td>08 と第7部。半導体光源（LED・LD・VCSEL）と検出器を同じ枠組みで通す教科書。E-k と利得の物理はこの本の領分です。</td></tr>
                   <tr><td>ファノ因子</td><td>U. Fano<br>Phys. Rev. 72, 26 (1947)</td><td>09。電離で生じるイオン対の数の揺らぎがポアソンより小さいことの理論。</td></tr>
           <tr><td>シリコンドリフト検出器</td><td>E. Gatti &amp; P. Rehak<br>Nucl. Instrum. Methods 225, 608 (1984)</td><td>09。横向きの電界で電荷を小さな陽極に集める検出器の提案。</td></tr>
-          <tr><td>放射線計測の教科書</td><td>G. F. Knoll『Radiation Detection and Measurement』4th ed., Wiley (2010)</td><td>09。w 値・ファノ因子・半導体とシンチレータの検出器・エネルギー分解能の標準的な教科書。</td></tr>
           <tr><td>X 線の減衰係数</td><td>NIST XCOM: Photon Cross Sections Database</td><td>09。シリコンの 10 keV・20 keV の減衰の距離。</td></tr>
           <tr><td>テラヘルツ</td><td>Y.-S. Lee『Principles of Terahertz Science and Technology』Springer (2009)</td><td>10。光伝導アンテナ・電気光学サンプリング・THz-TDS。</td></tr>
+                  <tr><td>光電面の 3 段モデル</td><td>W. E. Spicer<br>Phys. Rev. 112, 114 (1958)</td><td>11。アルカリアンチモン系の光電面の光電子放出を、吸収・輸送・脱出の3段で説明した論文。</td></tr>
+          <tr><td>NEA 光電面</td><td>J. J. Scheer &amp; J. van Laar<br>Solid State Commun. 3, 189 (1965)</td><td>11。GaAs の表面にセシウムを付けて電子親和力を負にした光電面の最初の報告。</td></tr>
+                  <tr><td>Si フォトダイオードの<br>技術資料</td><td>浜松ホトニクス<br>Opto-semiconductor handbook, Chapter 2: Si photodiodes（同社サイトで公開）</td><td>14。等価回路・零バイアスと逆バイアス・直線性・温度特性。実際の素子の値はここと各データシートで。</td></tr>
+          <tr><td>半導体素子の教科書</td><td>S. M. Sze &amp; K. K. Ng<br>Physics of Semiconductor Devices, 3rd ed., Wiley (2007) 13 章</td><td>14。pn 接合の光電流・開放電圧・光検出器の雑音。</td></tr>
+          <tr><td>フォトダイオードの<br>増幅回路</td><td>J. G. Graeme<br>Photodiode Amplifiers: Op Amp Solutions, McGraw-Hill (1996)</td><td>14 と第6部 16。TIA で受けるときの帯域・雑音・安定性。</td></tr>
         </tbody>
       </table>
     </div>
