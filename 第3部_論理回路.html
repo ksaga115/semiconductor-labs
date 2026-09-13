@@ -173,6 +173,21 @@ table.tt td.x{color:var(--ink-3)}
 .lab-go .qs a:hover{border-color:var(--digital);color:var(--digital)}
 .lab-go .qs .lab{font-family:var(--mono);font-size:10px;color:var(--ink-3);letter-spacing:.07em;margin-left:4px}
 .lab-go .qs .lab:first-child{margin-left:0}
+.ex{margin-top:20px;border:1px solid var(--line);border-left:2px solid var(--photon);border-radius:2px;background:var(--surface);padding:12px 16px;max-width:46em}
+.ex .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;color:var(--photon-2);display:block;margin-bottom:6px}
+.ex p{font-size:14px;line-height:1.8}
+.ex p + p{margin-top:8px}
+.qa{margin-top:18px;max-width:52em}
+.qa details{border-top:1px solid var(--line-2);padding:11px 0}
+.qa details:last-child{border-bottom:1px solid var(--line-2)}
+.qa summary{cursor:pointer;font-weight:700;font-size:14.5px}
+.qa summary .qn{font-family:var(--mono);font-size:10.5px;color:var(--volt);margin-right:8px;font-weight:600}
+.qa details p{margin-top:8px;color:var(--ink-2);font-size:14px;line-height:1.75}
+@keyframes p3dot{from{transform:translateX(0)}to{transform:translateX(359px)}}
+.p3dot{animation:p3dot 2.6s linear infinite}
+@keyframes p3blink{0%,100%{opacity:1}50%{opacity:.15}}
+.p3blink{animation:p3blink 1.2s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){.p3dot,.p3blink{animation:none}}
 .foot{margin-top:54px;padding-top:22px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-3);display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 @media print{.rail,.lab-go,.back,.btns{display:none!important}.main{display:block!important}figure,.caveat,.deep-note,.eq{break-inside:avoid}}
 </style>
@@ -225,6 +240,7 @@ table.tt td.x{color:var(--ink-3)}
     <li><a href="#s5"><span class="n">05</span><span>組み上げる</span></a></li>
     <li><a href="#smem"><span class="n">—</span><span>メモリの物理</span></a></li>
     <li class="dom">付録</li>
+    <li><a href="#scheck"><span class="n">—</span><span>理解の確認</span></a></li>
     <li><a href="#snum"><span class="n">—</span><span>数字の根拠</span></a></li>
     <li><a href="#smodel"><span class="n">—</span><span>どこまでがモデルか</span></a></li>
     <li><a href="#sref"><span class="n">—</span><span>参考文献</span></a></li>
@@ -384,6 +400,12 @@ table.tt td.x{color:var(--ink-3)}
     <p><b>V が2乗で効く</b>ので、低消費電力化の王道は電源電圧を下げることでした。ところが下げるとオン電流が減って遅くなる。取り戻すには V<sub>th</sub> も下げたいが、下げたぶんオフリーク I<sub>off</sub> は S 値の指数でまっすぐ増える（第2部 05・第4部 付録 B の 59.5 mV/桁 の壁）。<span class="key">「速く・低電圧で・漏らさず」が三すくみになる</span> ― 現代の CPU が周波数と電圧を場面ごとに動かし（DVFS）、使っていないブロックの電源ごと切るのは、この式の帰結です。</p>
   </div>
 
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（第1章）</span>
+    <p><b>問.</b> 1 回の切り替えで充電する容量を 1 fF とする。電源 0.8 V で 0→1 に上げるとき、電源が払うエネルギーと、熱になるエネルギーは？ そういう節点が 10⁹ 個、周波数 3 GHz、1 拍あたり 10% が切り替わる（α = 0.1）チップの動的電力は？ 電源を 1.0 V から 0.8 V に下げると何割減るか。</p>
+    <p><b>解.</b> 電源が払うのは <b>CV² = 10⁻¹⁵ × 0.8² = 0.64 fJ</b>。そのうち半分の 0.32 fJ は充電中に p 側のスイッチで熱になり、残り半分はコンデンサに溜まって、放電のとき n 側で熱になる ― 1往復で全部が熱です。チップ全体では P = αCV²f × 個数 = 0.1 × 10⁻¹⁵ × 0.64 × 3×10⁹ × 10⁹ = <b>192 W</b>（数字はすべて仮定の桁です）。電源を 1.0 → 0.8 V にすると V² が 0.64 倍で <b>36% 減</b>。周波数も電圧もいじらずに電力を 1/3 以上削れる手は他に無い ― だから電圧が最初に下げられてきました（Dennard ほか 1974 のスケーリング則）。そして下げ続けられなくなった理由が、第2部 05 の S 値の壁です。</p>
+  </div>
+
   <div class="lab-go">
     <span class="tag">手を動かす — NandLab 第1章</span>
     <p>盤面に NAND を1個置き、両方の入力に同じスイッチを繋ぐ。それが NOT。「チップにする」で名前を付けると次から部品として置ける ― あとはこの繰り返しで AND・OR・XOR・NOR・XNOR。NAND をダブルクリックすると4石の中身が出て、盤面のスイッチを切り替えると中のスイッチが開け閉めされる。</p>
@@ -503,6 +525,13 @@ table.tt td.x{color:var(--ink-3)}
     </div>
   </div>
 
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（第2章）</span>
+    <p><b>問.</b> 3 入力の多数決（2 つ以上が 1 なら 1）を、真理値表 → 積和形 → カルノー図の順で縮め、NAND 2 段の形にせよ。</p>
+    <p><b>解.</b> 出力が 1 の行は 011・101・110・111 の4行。積和形そのままなら Y = ĀBC + AB̄C + ABC̄ + ABC で、4項・反転3つ。カルノー図に置くと、111 のマスを共有する縦横の島が3つできて、それぞれ1変数が消える: 011+111 → <b>BC</b>、101+111 → <b>AC</b>、110+111 → <b>AB</b>。</p>
+    <p>Y = <b>AB + BC + CA</b>。ド・モルガンで <b>Y = NAND( NAND(A,B), NAND(B,C), NAND(C,A) )</b>。4項が3項になっただけでなく、<span class="key">反転が要らなくなった</span>（どの項にも否定の変数が残らない）ので、反転用の NAND がまるごと消えます。多数決は第2章のパリティ・ハミング符号と並ぶ「冗長で間違いを打ち消す」回路の基本形で、三重化した装置の出力を多数決で決める設計（TMR）にそのまま使われています。</p>
+  </div>
+
   <div class="lab-go">
     <span class="tag">手を動かす — NandLab 第2章</span>
     <p>第1章で作った NOT・AND・OR・XNOR のチップを部品として使う。セレクタは4個で組めるが、AND と OR のチップで素直に組めば8個 ― 通ればどちらでもよい。右の「論理式」で自分の回路が S̄·A + S·B まで戻るのを見ると、積和形が回路の中にそのまま居るのが分かる。</p>
@@ -605,6 +634,16 @@ table.tt td.x{color:var(--ink-3)}
     <p>どの桁の C も<span class="key">「入力と最下位の C だけの積和形」＝第2章の2段 NAND</span> で書けてしまう ― 待ちが消えます。代償は項の数と、1つのゲートに入る入力の本数が桁とともに増えること。だから実物は4桁ぶんずつブロックにし、ブロックの G・P を作ってその上でもう一度先読みする、という階層にします。深さは桁数に対して対数でしか伸びません。<b>リップルの「桁数に比例」が「桁数の対数」に化ける</b> ― これが桁上げ先読み（CLA）で、Kogge-Stone などの並列加算器はこの考えの徹底です。NandLab で組むなら、まず G・P を作る2:1 の部品をチップにするところからです（採点は表しか見ないので、通ります）。</p>
   </div>
 
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（第3章）</span>
+    <p><b>問1.</b> 4 ビットの減算器で 5 − 7 と 7 − 5 を計算し、最上位から出る桁上がりを確かめよ。</p>
+    <p><b>解.</b> 5 − 7: B = 0111 を反転して 1000、最下位に 1 を足し込んで 0101 + 1000 + 1 = <b>1110</b>。内側の読み（2の補数）で −2、桁上がりは <b>0</b>。7 − 5: 0111 + 1010 + 1 = <b>1 0010</b>、下4桁が 2、桁上がりは <b>1</b>。本文のとおり、減算では「上に出た桁上がり ＝ 借りが出なかった（A ≥ B）」になっています。</p>
+    <p><b>問2.</b> 7 + 1 を 4 ビットの 2 の補数で計算するとどうなるか。回路はそれをどう見分けられるか。</p>
+    <p><b>解.</b> 0111 + 0001 = <b>1000</b> ＝ −8。文字盤の図の「+7 と −8 の境目」をまたいだオーバーフローです。見分け方は、<b>最上位の桁へ入る桁上がりと、最上位から出る桁上がりが違う</b>こと: ここでは入る側が 1、出る側が 0。この2本の XOR が 1 ならオーバーフロー ― NAND 4個を1つ足すだけで検出できます（この部の課題には含めていません）。</p>
+    <p><b>問3.</b> 32 ビットのリップルキャリー加算器で、桁上げは何段の NAND を通るか。</p>
+    <p><b>解.</b> P<sub>i</sub> = A<sub>i</sub>⊕B<sub>i</sub> を先に作っておけば、1桁の桁上げは C<sub>i+1</sub> = NAND( NAND(A<sub>i</sub>,B<sub>i</sub>), NAND(P<sub>i</sub>,C<sub>i</sub>) ) で、C<sub>i</sub> からは <b>NAND 2 段</b>。32 桁で <b>約 64 段</b>。桁上げ先読みを木にした並列加算器（Kogge–Stone）なら、前置きの段は log₂32 = <b>5 段</b>（各段が NAND 2 段程度）で済む ― 桁数に比例する遅れが、桁数の対数に縮みます。</p>
+  </div>
+
   <div class="lab-go">
     <span class="tag">手を動かす — NandLab 第3章</span>
     <p>半加算器 → 全加算器 → 4個並べる、の順にチップを積む。4ビット加算器で入力を「束」にして数で表示させ、7 + 5 が 12 になるところを見る。減算器は B の前に NOT を4つ、最下位の桁上がりに定数 1。上に出た桁上がりが「A ≥ B」の印になっているのを確かめる。</p>
@@ -697,6 +736,80 @@ table.tt td.x{color:var(--ink-3)}
     <figcaption>前段（主）の E には <b>NOT C</b>、後段（従）の E には <b>C</b> が入っているので、<b>2つの門が開きっぱなしで重なることはありません</b>。C が 0 のあいだ前段だけが D を追いかけ、立ち上がりで前段が閉じ・後段が開く ― その瞬間に前段が持っていた値だけが外へ出ます。C が 1 のあいだに D がどれだけ暴れても、閉じた前段が受け止めて出力には届かない。厳密には、NOT を1個挟むこの作りでは切り替わりの一瞬（NOT 1段ぶん）だけ両方が開きますが、<b>ラッチの中を値が通り抜けるには2段かかる</b>ので突き抜けられない ― NandLab の単位遅延でも、実物の設計（重なりの短いクロック）でも、この不等式が「エッジで1段だけ」を守っています。</figcaption>
   </figure>
 
+  <h3 style="margin-top:40px">1拍の予算 ― クロックの速さは、最長の経路で決まる</h3>
+  <p class="body-col" style="margin-top:8px">フリップフロップとクロックが揃ったので、「CPU の周波数は何で決まるか」に答えられます。NandLab は遅延を 1 歩ずつの理想化で扱いますが、実物では<b>1拍の長さに、取り込み・計算・待ちの3つが収まるか</b>がすべてです。</p>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">TIMING — 1拍の予算と、非同期の入力の受け方</span><span class="fig-title">単位 ＝ NAND 1段の遅延（数値は例）</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 1120 266" role="img" aria-label="左: クロック1周期の中に、送り出すフリップフロップの遅れ、組合せ回路の最長経路、受け取るフリップフロップのセットアップ時間、余裕が収まる予算図。右: 非同期の入力を2段のフリップフロップで受ける同期化回路。1段目は準安定になり得るが、2段目が取り込むまでの1拍で落ち着く。" style="min-width:900px">
+        <line x1="640" y1="14" x2="640" y2="256" stroke="var(--line)" stroke-width="1"/>
+        <!-- 左: 予算 -->
+        <text x="40" y="22" font-family="var(--sans)" font-size="13" font-weight="700" fill="var(--ink)">① 1拍の予算 ― 最長の経路が間に合うか</text>
+        <text x="140" y="64" text-anchor="end" font-family="var(--mono)" font-size="10.5" fill="var(--ink-3)">クロック</text>
+        <path d="M150,70 L150,44 L355,44 L355,70 L560,70 L560,44 L600,44" fill="none" stroke="var(--one)" stroke-width="2"/>
+        <line x1="150" y1="44" x2="150" y2="136" stroke="var(--ink-3)" stroke-dasharray="3 3"/>
+        <line x1="560" y1="44" x2="560" y2="136" stroke="var(--ink-3)" stroke-dasharray="3 3"/>
+        <line x1="150" y1="88" x2="509" y2="88" stroke="var(--line)" stroke-width="1.5" stroke-dasharray="4 4"/>
+        <circle class="p3dot" cx="150" cy="88" r="5" fill="var(--volt)"/>
+        <rect x="150" y="100" width="68.3" height="28" fill="var(--photon-soft)" stroke="var(--photon-2)"/>
+        <rect x="218.3" y="100" width="227.8" height="28" fill="var(--one-soft)" stroke="var(--one)"/>
+        <rect x="446.1" y="100" width="68.3" height="28" fill="var(--volt-soft)" stroke="var(--volt)"/>
+        <rect x="514.4" y="100" width="45.6" height="28" fill="var(--surface-2)" stroke="var(--line)"/>
+        <g font-family="var(--mono)" font-size="10.5" fill="var(--ink)" text-anchor="middle">
+          <text x="184.2" y="118">clk→Q</text>
+          <text x="332.2" y="118" font-family="var(--sans)">組合せ回路（最長の経路）</text>
+          <text x="480.3" y="118">setup</text>
+          <text x="537.2" y="118" font-family="var(--sans)">余裕</text>
+        </g>
+        <text x="154" y="148" font-family="var(--sans)" font-size="10.5" fill="var(--ink-3)">送り出す FF の ↑</text>
+        <text x="556" y="148" text-anchor="end" font-family="var(--sans)" font-size="10.5" fill="var(--ink-3)">受け取る FF の ↑</text>
+        <g font-size="11.5" fill="var(--ink-2)">
+          <text x="40" y="174" font-family="var(--mono)" font-weight="600" fill="var(--ink)">T ≥ t(clk→Q) + t(最長の組合せ) + t(setup)</text>
+          <text x="40" y="194" font-family="var(--sans)">間に合わない → 周波数を下げるか、途中に FF を挟んで経路を切る（パイプライン）</text>
+          <text x="40" y="214" font-family="var(--sans)">逆向きの約束 hold: t(clk→Q) + t(最短の組合せ) ≥ t(hold) ― 速すぎても壊れる</text>
+          <text x="40" y="234" font-family="var(--sans)">例: 3 + 10 + 3 + 余裕 2 ＝ 18 段。仮に 1 段 20 ps なら 360 ps（約 2.8 GHz）</text>
+        </g>
+        <!-- 右: 同期化 -->
+        <text x="664" y="22" font-family="var(--sans)" font-size="13" font-weight="700" fill="var(--ink)">② 非同期の入力は、2段の FF で受ける</text>
+        <text x="775" y="114" text-anchor="middle" font-family="var(--sans)" font-size="10.5" fill="var(--warn)">準安定になり得る</text>
+        <text x="905" y="114" text-anchor="middle" font-family="var(--sans)" font-size="10.5" fill="var(--one)">落ち着いた値</text>
+        <text x="668" y="142" font-family="var(--sans)" font-size="10.5" fill="var(--ink-2)">非同期入力</text>
+        <g stroke="var(--ink-2)" stroke-width="1.8" fill="none">
+          <line x1="668" y1="150" x2="740" y2="150"/><line x1="810" y1="150" x2="870" y2="150"/><line x1="940" y1="150" x2="990" y2="150"/>
+          <line x1="730" y1="214" x2="950" y2="214"/><line x1="775" y1="214" x2="775" y2="176"/><line x1="905" y1="214" x2="905" y2="176"/>
+        </g>
+        <rect x="740" y="124" width="70" height="52" fill="var(--surface)" stroke="var(--warn)" stroke-width="1.8"/>
+        <rect x="870" y="124" width="70" height="52" fill="var(--surface)" stroke="var(--one)" stroke-width="1.8"/>
+        <g font-family="var(--mono)" font-size="11.5" text-anchor="middle" font-weight="600">
+          <text x="775" y="146" fill="var(--ink)">FF1</text>
+          <text class="p3blink" x="775" y="168" fill="var(--warn)">？</text>
+          <text x="905" y="146" fill="var(--ink)">FF2</text>
+        </g>
+        <text x="996" y="154" font-family="var(--sans)" font-size="10.5" fill="var(--ink-2)">同期済み</text>
+        <text x="722" y="218" text-anchor="end" font-family="var(--mono)" font-size="10.5" fill="var(--ink-3)">C</text>
+        <g font-family="var(--sans)" font-size="11.5" fill="var(--ink-2)">
+          <text x="664" y="238">FF1 が迷っても、FF2 が取り込むまでの1拍で落ち着く確率は指数で上がる</text>
+          <text x="664" y="256">τ = 20 ps で待ち時間を 0.2 → 1 ns にすると MTBF は e⁴⁰ ≈ 2×10¹⁷ 倍</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>左: 送り出す FF がクロックの ↑ で値を出し（clk→Q）、組合せ回路を最長の経路で抜け、受け取る FF の次の ↑ より setup 時間だけ前に着いていなければならない。<b>余裕が負になる経路が1本でもあれば、その周波数では動かない</b> ― 第3章の桁上げの段数が周波数に直結する理由です。右: 外から来た信号はクロックと無関係に変わるので、FF1 がいつか必ず setup を破り、準安定（第4章の丘の頂）になり得る。2段目を置いて<b>1拍ぶん落ち着く時間を与える</b>のが定石の同期化回路です。段数と時間の数値は説明用の例です。</figcaption>
+  </figure>
+
+  <div class="deep-note">
+    <span class="tag">くわしく — 準安定を「確率」で設計する（MTBF の式）</span>
+    <p>丘の頂に置かれたラッチは、ずれ（電圧差）が時定数 τ で指数的に増幅されて谷へ落ちます ― 利得が 1 を超える坂の真ん中にいるので、ずれは e<sup>t/τ</sup> で育つ。だから「待ち時間 t<sub>r</sub> のあいだに落ち着かない確率」は e<sup>−t<sub>r</sub>/τ</sup> で減り、平均故障間隔は</p>
+    <div class="eq">MTBF = e<sup><b>t<sub>r</sub>/&tau;</b></sup> / ( T<sub>w</sub> &middot; f<sub>clk</sub> &middot; f<sub>data</sub> )　　T<sub>w</sub> ＝ setup を破ってしまう時間の窓</div>
+    <p>τ = T<sub>w</sub> = 20 ps、f<sub>clk</sub> = 1 GHz、入力が 1 秒に 10⁸ 回変わるとします（どれも桁の例）。待ち時間 0.2 ns なら e¹⁰/(2×10⁶) = <b>0.011 秒に1回</b>失敗 ― 1 秒に 90 回壊れる。2段目の FF を足して待ち時間を 1 拍（1 ns）にすると e⁵⁰/(2×10⁶) = 2.6×10¹⁵ 秒 ≈ <b>8×10⁷ 年に1回</b>。<span class="key">待ち時間を5倍にしただけで、失敗は 10¹⁷ 分の 1</span>。準安定は「無くす」ことはできず（Chaney &amp; Molnar 1973 が実測で示した）、指数の肩に時間を積んで<b>実用上起きない確率まで下げる</b>ものです。</p>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（第4章）</span>
+    <p><b>問.</b> 第3章の例題の形（P<sub>i</sub> = A<sub>i</sub>⊕B<sub>i</sub> を NAND 3 段の XOR で作り、桁上げは 1 桁 NAND 2 段）の 4 ビットリップル加算器を FF で挟む。clk→Q を 3 段、setup を 3 段とすると、1拍に最低何段ぶんの時間が要るか。32 ビットなら？</p>
+    <p><b>解.</b> 最長の経路は、最下位の P<sub>0</sub>（3 段）→ 桁上げ C<sub>1</sub>・C<sub>2</sub>・C<sub>3</sub>（2 段 × 3）→ 最上位の和 S<sub>3</sub> = P<sub>3</sub>⊕C<sub>3</sub>（XOR 3 段）で <b>12 段</b>。前後の FF を足して 3 + 12 + 3 = <b>18 段</b>。32 ビットでは 3 + 2 × 31 + 3 = 68 段、FF を足して <b>74 段</b> ― 4 ビットの約 4 倍遅いクロックしか使えない。これを 4 ビットずつの 8 区間に FF で切れば（パイプライン）、1拍は再び 20 段前後に戻り、代わりに答えが出るまでの拍数が増えます。<b>「周波数」と「1つの答えが出るまでの時間」は別物</b> ― 並列加算器（第3章）と同様、回路の段数をどう配るかの設計です。</p>
+  </div>
+
   <div class="lab-go">
     <span class="tag">手を動かす — NandLab 第4章</span>
     <p>NAND を2つ互い違いに繋ぐ。上の「時間」を止めて Space で1歩ずつ進めると、S を 0 にした値が輪を回って落ち着くのが見える。両方 0 → 両方 1 で発振させてみる。D ラッチ、D フリップフロップの課題は「入力を順に与えて、そのつど出力が合っているか」で採点される ― 前の状態を保っていること自体が見たい性質だから。</p>
@@ -758,6 +871,12 @@ table.tt td.x{color:var(--ink-3)}
   <div class="deep-note">
     <span class="tag">くわしく — 第2部・第4部へ戻る</span>
     <p>この部で「石」と呼んできたスイッチは、第2部第5章の nMOS（p 基板・V<sub>th</sub> 0.4〜0.6 V・S 値 80 mV/桁以下）です。第1章の伝達特性で坂の急さを決めていたのは、その V<sub>th</sub> と二乗則の強さ。S 値は「オフのとき、しきい値の下でどれだけ漏れるか」で、これが CPU の待機電力の下限を決めます（第4部 付録 B「S 値の 59.5 mV/桁 という壁」）。第4部の画素の中にも、転送・リセット・ソースフォロワ・選択の4個の MOSFET がいて、同じ物理で動いています。</p>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（第5章）</span>
+    <p><b>問.</b> 腕時計の水晶は 32,768 Hz で振動する。これを 1 Hz（秒の刻み）にするには、カウンタの FF が何段要るか。4 ビットカウンタの最上位 Q3 は、クロックの何分の1の周波数で変わるか。</p>
+    <p><b>解.</b> カウンタの各桁は、下の桁が全部 1 のときだけ反転する ― つまり<b>1段ごとに周波数が半分</b>になる（分周）。Q0 は f/2、Q1 は f/4、…、Q3 は <b>f/16</b>。32,768 = 2¹⁵ なので <b>15 段</b>で 1 Hz。時計の水晶が 32,768 Hz という半端な値なのは、<span class="key">FF を並べるだけで秒が作れる 2 のべき乗</span>だからです。同じカウンタに「好きな値を入れる口」を足したものが CPU のプログラムカウンタ、比較器で「ある値で 0 に戻す」を足したものが 10 進カウンタや分周比を変えられるタイマ ― 第2章の部品を1個足すたびに用途が1つ増えます。</p>
   </div>
 
   <div class="lab-go">
@@ -875,6 +994,24 @@ table.tt td.x{color:var(--ink-3)}
   <div class="qs"><span class="lab">NandLab</span><a href="NandLab/index.html">RAM を使って自由制作（パレットの RAM16。「実装部品」― NAND からは組んでおらず、課題の採点では使えない）</a></div>
 </section>
 
+<!-- ================= 理解の確認 ================= -->
+<section class="stage" id="scheck">
+  <div class="stage-head"><span class="stage-num">—</span><h2>理解の確認 ― 10問で章をつなぎ直す</h2></div>
+  <p class="lede">答えを開く前に、どの章の何を使うかを先に言ってみてください。後ろの問いほど、前の章の結果を使います。</p>
+  <div class="qa">
+    <details><summary><span class="qn">Q1 · 1章</span>AND と OR だけでは NOT が作れないのはなぜか。</summary><p>AND も OR も<b>単調</b>（入力を 0→1 に上げても出力は下がらない）で、単調な部品をどう繋いでも単調なまま。NOT は入力を上げると出力が下がるので出てこない。否定を内蔵している NAND・NOR だけが万能になれる。</p></details>
+    <details><summary><span class="qn">Q2 · 1章</span>同じ4石なのに、CMOS で NAND が NOR より好まれるのはなぜか。</summary><p>直列に並ぶスイッチが遅い。NAND は <b>nMOS（電子）を直列</b>、NOR は pMOS（正孔）を直列にする。電子の移動度は正孔の約3倍（第2部 1章: 1164 対 386）なので、同じ大きさなら NAND が速い。</p></details>
+    <details><summary><span class="qn">Q3 · 1章</span>何千段つないでも 0 と 1 が濁らないのはなぜか。</summary><p>伝達特性の坂の<b>利得が 1 を超える</b>ので、V<sub>IL</sub>・V<sub>IH</sub> の外側では入力の揺れが出力で小さくなる（押し戻される）。雑音余裕 1.28 / 1.04 V はその押し戻しの幅。</p></details>
+    <details><summary><span class="qn">Q4 · 2章</span>3入力の多数決の最小の積和形は？</summary><p>カルノー図で 111 を共有する島が3つ → <b>AB + BC + CA</b>。否定の変数が消えるので、NAND( NAND(A,B), NAND(B,C), NAND(C,A) ) と反転なしで書ける。</p></details>
+    <details><summary><span class="qn">Q5 · 3章</span>4ビットで 3 − 5 を2の補数で計算せよ。最上位の桁上がりは？</summary><p>0011 + 1010 + 1 = <b>1110</b>（−2）。桁上がりは <b>0</b> ＝ 借りが出た（A &lt; B）。</p></details>
+    <details><summary><span class="qn">Q6 · 3章</span>7 + 1 が −8 になるのを、回路はどう検出できるか。</summary><p>最上位へ<b>入る</b>桁上がり（1）と最上位から<b>出る</b>桁上がり（0）が違う。その XOR ＝ オーバーフロー。</p></details>
+    <details><summary><span class="qn">Q7 · 4章</span>D ラッチを4つ数珠つなぎにしたシフトレジスタが動かないのはなぜか。</summary><p>E が 1 のあいだラッチは素通しなので、値が1拍で最後まで<b>突き抜けて</b>全段が同じになる。主従の D-FF は2つの門が同時に開かないので、1拍で1段しか進まない。</p></details>
+    <details><summary><span class="qn">Q8 · 4章</span>最高クロック周波数を決めているのは何か。速すぎる経路でも壊れるのはなぜか。</summary><p>1/T で、T ≥ t(clk→Q) + t(<b>最長</b>の組合せ) + t(setup)。逆に最短の経路が t(hold) より速いと、前の値を取り込み終わる前に次の値が届いて壊れる（hold 違反）。</p></details>
+    <details><summary><span class="qn">Q9 · 4章</span>外部からのボタン入力を FF で受けるとき、FF を2段にするのはなぜか。</summary><p>1段目は必ずいつか setup を破って準安定になり得る。2段目までの1拍を「落ち着く時間」にすると、失敗の確率が <b>e<sup>−t<sub>r</sub>/τ</sup></b> で指数的に下がる（MTBF の式）。無くすのではなく、実用上起きない確率まで下げる。</p></details>
+    <details><summary><span class="qn">Q10 · 通し</span>電源電圧を 1.0 V から 0.8 V にすると動的電力は何倍か。なぜ下げ続けられないのか。</summary><p>αCV²f なので <b>0.64 倍</b>。電圧を下げるとオン電流が減って遅くなり、取り戻すために V<sub>th</sub> を下げるとオフ電流が S 値（≥ 59.5 mV/桁、第2部 5章）の指数で増える。速さ・電圧・漏れの三すくみ。</p></details>
+  </div>
+</section>
+
 <!-- ================= 数字の根拠 ================= -->
 <section class="stage" id="snum">
   <div class="stage-head"><span class="stage-num">—</span><h2>数字はどこから来たか</h2></div>
@@ -899,6 +1036,13 @@ table.tt td.x{color:var(--ink-3)}
         <tr><td>V<sub>OH</sub> / V<sub>OL</sub></td><td class="num">3.03 / 0.24 V</td><td>V<sub>IL</sub> と V<sub>IH</sub> を入れたときの出力。</td></tr>
         <tr><td>雑音余裕 NM<sub>L</sub> / NM<sub>H</sub></td><td class="num">1.28 / 1.04 V</td><td>NM<sub>L</sub> = V<sub>IL</sub> − V<sub>OL</sub>、NM<sub>H</sub> = V<sub>OH</sub> − V<sub>IH</sub>。前の段の出力がこれだけ汚れても、次の段が読み違えない。</td></tr>
         <tr><td>坂の最大利得</td><td class="num">−100 以下</td><td>二乗則で上下が飽和領域に入る点の傾き。理想化した二乗則では刻みを細かくするほど大きく出る（上の図の 220 点で −112、600 点で −290）。実物は数十。1 を超えていれば議論は同じ。</td></tr>
+        <tr class="grp"><td colspan="3">例題の数字（仮定を置いた桁の例）</td></tr>
+        <tr><td>0.64 fJ / 192 W</td><td class="num">CV² / αCV²f·N</td><td>C = 1 fF、V = 0.8 V で CV² = 6.4×10⁻¹⁶ J。α = 0.1、f = 3 GHz、節点 10⁹ 個で 0.1 × 6.4×10⁻¹⁶ × 3×10⁹ × 10⁹ = 192 W。C・α・個数は仮定。</td></tr>
+        <tr><td>電圧 1.0 → 0.8 V</td><td class="num">36% 減</td><td>動的電力は V² に比例: 0.8² = 0.64。</td></tr>
+        <tr><td>32 ビットの桁上げ</td><td class="num">64 段 / 5 段</td><td>リップルは 1 桁 NAND 2 段 × 32。Kogge–Stone の前置き段は log₂32 = 5（各段は NAND 2 段程度）。</td></tr>
+        <tr><td>1拍 18 段</td><td class="num">≈ 2.8 GHz</td><td>clk→Q 3 ＋ 組合せ 10 ＋ setup 3 ＋ 余裕 2。1 段 20 ps は説明用の仮定で、18 × 20 ps = 360 ps → 1/360 ps = 2.78 GHz。</td></tr>
+        <tr><td>MTBF</td><td class="num">0.011 s → 8×10⁷ 年</td><td>e<sup>t<sub>r</sub>/τ</sup>/(T<sub>w</sub>f<sub>clk</sub>f<sub>data</sub>)、τ = T<sub>w</sub> = 20 ps、f<sub>clk</sub> = 1 GHz、f<sub>data</sub> = 10⁸ /s。t<sub>r</sub> = 0.2 ns で e¹⁰/2×10⁶ = 0.011 s、1 ns で e⁵⁰/2×10⁶ = 2.6×10¹⁵ s。比は e⁴⁰ = 2.4×10¹⁷。</td></tr>
+        <tr><td>32,768 Hz → 1 Hz</td><td class="num">15 段</td><td>32,768 = 2¹⁵。FF 1 段で周波数が 1/2。</td></tr>
         <tr class="grp"><td colspan="3">第2部から</td></tr>
         <tr><td>µ<sub>n</sub> / µ<sub>p</sub></td><td class="num">1164 / 386</td><td>10¹⁶ の移動度（cm²/V·s）。NAND が NOR より速い理由。第2部第1章の表。</td></tr>
         <tr><td>nMOS の V<sub>th</sub></td><td class="num">0.4〜0.6 V</td><td>SemiLab「NAND の中身へ」の課題の範囲。酸化膜 7 nm・基板 2.5×10¹⁷ で 0.427 V。</td></tr>
@@ -938,8 +1082,14 @@ table.tt td.x{color:var(--ink-3)}
         <tr><td>Digital Integrated Circuits</td><td>Jan M. Rabaey ほか<br>Prentice Hall</td><td>1章の物理層。CMOS インバータの伝達特性・雑音余裕・遅延・消費電力を、この部より本気で導出している。第2部第5章との橋。</td></tr>
         <tr><td>CODE</td><td>Charles Petzold<br>Microsoft Press</td><td>リレーから CPU まで、数式なしで積み上げる読み物。この部の「なぜ」を別の語り口で。</td></tr>
         <tr><td>Introduction to<br>the Theory of Computation</td><td>Michael Sipser<br>Cengage</td><td>第1章の「万能性」と「単調性」の先。何が計算できて何ができないか。</td></tr>
-        <tr><td>浮遊ゲートメモリの提案<br>（論文）</td><td>D. Kahng &amp; S. M. Sze<br>Bell Syst. Tech. J., 1967</td><td>「メモリの物理」。絶縁体に電荷を閉じ込めて覚える、というアイデアの初出です。</td></tr>
-        <tr><td>NAND型フラッシュ<br>（論文）</td><td>舛岡富士雄 ほか<br>IEDM, 1987</td><td>「メモリの物理」。セルを直列に繋いで面積を割る NAND アレイの提案。ストレージの現在につながる分岐点です。</td></tr>
+        <tr><td>A floating gate and its<br>application to memory devices</td><td>D. Kahng &amp; S. M. Sze<br>Bell Syst. Tech. J. 46, 1288 (1967)</td><td>「メモリの物理」。絶縁体に電荷を閉じ込めて覚える、というアイデアの初出です。</td></tr>
+        <tr><td>New ultra high density EPROM<br>and flash EEPROM with<br>NAND structure cell</td><td>F. Masuoka（舛岡富士雄）ほか<br>IEDM Tech. Dig., pp. 552–555 (1987)</td><td>「メモリの物理」。セルを直列に繋いで面積を割る NAND アレイの提案。ストレージの現在につながる分岐点です。</td></tr>
+        <tr><td>A Symbolic Analysis of Relay<br>and Switching Circuits</td><td>C. E. Shannon<br>Trans. AIEE 57, 713 (1938)</td><td>1章。スイッチの直列・並列がブール代数の AND・OR になる、という対応の原典。</td></tr>
+        <tr><td>Nanowatt logic using field-effect<br>metal-oxide semiconductor triodes</td><td>F. M. Wanlass &amp; C. T. Sah<br>ISSCC Dig. Tech. Papers, pp. 32–33 (1963)</td><td>1章。CMOS（p と n を相補に組む）の原典。「切り替わる瞬間以外は流れない」の出どころ。</td></tr>
+        <tr><td>Design of ion-implanted MOSFET's<br>with very small physical dimensions</td><td>R. H. Dennard ほか<br>IEEE J. Solid-State Circuits 9, 256 (1974)</td><td>1章の例題。寸法と電圧を同じ比で縮めると電力密度が保たれる、というスケーリング則。</td></tr>
+        <tr><td>The map method for synthesis of<br>combinational logic circuits</td><td>M. Karnaugh<br>Trans. AIEE Pt. I 72, 593 (1953)</td><td>2章。カルノー図の原典。</td></tr>
+        <tr><td>A parallel algorithm for the efficient<br>solution of a general class of<br>recurrence equations</td><td>P. M. Kogge &amp; H. S. Stone<br>IEEE Trans. Comput. C-22, 786 (1973)</td><td>3章。桁上げを log₂n 段で求める並列前置き計算（Kogge–Stone 加算器）。</td></tr>
+        <tr><td>Anomalous behavior of synchronizer<br>and arbiter circuits</td><td>T. J. Chaney &amp; C. E. Molnar<br>IEEE Trans. Comput. C-22, 421 (1973)</td><td>4章。準安定が実在し、有限時間で必ず決着するとは言えないことを実測で示した論文。</td></tr>
       </tbody>
     </table></div>
   </figure>
