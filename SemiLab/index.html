@@ -40,6 +40,12 @@
         反射 <input id="arSlider" type="range" min="-1" max="60" step="1" value="-1">
         <input id="arVal" class="num" type="text" value="" placeholder="裸"><span class="unit">%</span>
       </label>
+      <label title="シリコンの表面に付ける反射防止膜（単層・正規入射で干渉を計算）。膜を選ぶと「反射」の直接の値は外れ、「反射」を動かすと膜は外れる">
+        膜 <select id="coatMat"><option value="">なし</option><option value="sio2">SiO₂</option><option value="sin">Si₃N₄</option><option value="custom">n を数値で</option></select>
+        n <input id="coatN" class="num" type="text" value="">
+        <input id="coatNm" class="num" type="text" value="" placeholder="厚み"><span class="unit">nm</span>
+      </label>
+      <span id="coatR" class="unit"></span>
     </div>
 
     <div class="group" id="toolGroup">

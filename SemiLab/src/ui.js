@@ -87,7 +87,7 @@
     if (S.light.on) {
       ph = LIGHT.photo(st, sol, {
         nm: S.light.nm, power: S.light.power,
-        ar: S.light.ar, sFront: S.light.sFront
+        ar: S.light.ar, coat: S.light.coat, sFront: S.light.sFront
       });
     }
     var warn = limits(st, m, sol, js);
@@ -862,6 +862,8 @@
     V: [-200, 20],                  /* V。摘みは −50〜+10、数値ならここまで */
     nm: [250, 1200],                /* 吸収係数の表の範囲 */
     ar: [0, 100],                   /* % */
+    coatN: [1, 4],                  /* 膜の屈折率（空気〜シリコンのあいだ） */
+    coatNm: [0, 2000],              /* 膜の厚み [nm] */
     tnm: [0.5, 1e6],                /* nm。0.5nm〜1mm */
     dope: [1e10, 1e21]              /* cm^-3（0 は「入れない」として別扱い） */
   };
@@ -933,6 +935,22 @@
     var arEl = document.getElementById('arSlider');
     arEl.addEventListener('input', function () {
       S.light.ar = (+arEl.value) < 0 ? null : (+arEl.value) / 100;
+      S.light.coat = null;          /* 反射を直接いじったら膜は外す（どちらか一方） */
+      syncControls(); invalidate(); persist();
+    });
+    /* 反射防止膜。材料を選ぶと直接の反射は外れる。厚みの初期値は今の波長の λ/4 */
+    var coatEl = document.getElementById('coatMat');
+    coatEl.addEventListener('change', function () {
+      var mat = coatEl.value;
+      if (!mat) { S.light.coat = null; }
+      else {
+        var old = S.light.coat || {};
+        var co = { mat: mat, n: typeof old.n === 'number' ? old.n : 2.0, dnm: 0 };
+        co.dnm = typeof old.dnm === 'number' && old.mat === mat ? old.dnm
+               : Math.round(LIGHT.quarterNm(co, S.light.nm) * 10) / 10;
+        S.light.coat = co;
+        S.light.ar = null;
+      }
       syncControls(); invalidate(); persist();
     });
 
@@ -953,7 +971,13 @@
     bindNum('nmVal', parseNum, function (v) { S.light.nm = clampv(Math.round(v), LIM.nm[0], LIM.nm[1]); });
     bindNum('arVal',
       function (t) { var s = norm(t); return (s === '' || s === '裸') ? null : parseNum(s); },
-      function (v) { S.light.ar = v === null ? null : clampv(v, LIM.ar[0], LIM.ar[1]) / 100; });
+      function (v) { S.light.ar = v === null ? null : clampv(v, LIM.ar[0], LIM.ar[1]) / 100; S.light.coat = null; });
+    bindNum('coatN', parseNum, function (v) {
+      if (S.light.coat && S.light.coat.mat === 'custom' && v !== null) S.light.coat.n = clampv(Math.round(v * 1000) / 1000, LIM.coatN[0], LIM.coatN[1]);
+    });
+    bindNum('coatNm', parseNum, function (v) {
+      if (S.light.coat && v !== null) S.light.coat.dnm = clampv(Math.round(v * 10) / 10, LIM.coatNm[0], LIM.coatNm[1]);
+    });
 
     var zoomEl = document.getElementById('zoomSlider');
     zoomEl.addEventListener('input', function () {
@@ -1002,6 +1026,13 @@
     document.getElementById('arSlider').value = bare ? -1 : clampv(Math.round(S.light.ar * 100), 0, 60);
     setNum('arVal', bare ? '' : String(Math.round(S.light.ar * 1000) / 10)).placeholder =
       '裸 ' + Math.round(P.reflect(S.light.nm) * 100);
+    var co = S.light.coat || null;
+    document.getElementById('coatMat').value = co ? co.mat : '';
+    var cn = setNum('coatN', co ? (co.mat === 'custom' ? String(co.n) : LIGHT.coatIndex(co, S.light.nm).toFixed(3)) : '');
+    cn.disabled = !(co && co.mat === 'custom');
+    setNum('coatNm', co ? String(co.dnm) : '');
+    document.getElementById('coatR').textContent = '表面の反射 ' + (LIGHT.reflectOf(S.light.nm, S.light) * 100).toFixed(2) + ' %'
+      + (co ? '（この波長の λ/4 は ' + LIGHT.quarterNm(co, S.light.nm).toFixed(1) + ' nm）' : '');
     document.getElementById('lightGroup').style.opacity = S.light.on ? 1 : .55;
 
     var z = S.view.zoom === undefined ? 1 : S.view.zoom;
@@ -1061,7 +1092,7 @@
   function bindQuests() {
     document.getElementById('btnGrade').addEventListener('click', function () {
       if (!S.quest) return;
-      var r = Q.grade(S.quest, S.stack, { T: S.T, ar: S.light.ar });
+      var r = Q.grade(S.quest, S.stack, { T: S.T, ar: S.light.ar, coat: S.light.coat });
       showResult(r);
       if (r.ok) {
         S.cleared[S.quest] = true; renderQuestList();
@@ -1076,7 +1107,8 @@
       if (!a) { alert('この課題にはお手本がありません。'); return; }
       if (!confirm('お手本を作業台に出します。今の構造は置き換わります。よろしいですか？')) return;
       S.stack = a.make();
-      if (a.ar !== undefined) S.light.ar = a.ar;
+      if (a.coat !== undefined) { S.light.coat = JSON.parse(JSON.stringify(a.coat)); S.light.ar = null; }
+      else if (a.ar !== undefined) { S.light.ar = a.ar; S.light.coat = null; }
       S.sel = -1;
       var note = document.getElementById('qResult');
       note.innerHTML = '<p class="mnote">' + esc(a.note) + '</p>';

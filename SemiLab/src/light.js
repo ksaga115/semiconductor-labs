@@ -47,10 +47,84 @@
   /** 電力密度 [W/cm^2] → 光子束 [cm^-2 s^-1] */
   function fluxFromPower(pw, nm) { return pw / photonJ(nm); }
 
+  /* ---- 反射防止膜 ― 単層・正規入射（特性行列） ----
+   *
+   *   空気 n0 / 膜 n1（厚み d、吸収なし）/ シリコン Ns = n − ik
+   *
+   *   δ = 2π n1 d / λ
+   *   [B]   [ cos δ        i sin δ / n1 ] [ 1  ]
+   *   [C] = [ i n1 sin δ   cos δ        ] [ Ns ]
+   *   r = (n0 B − C)/(n0 B + C)、R = |r|²
+   *
+   * 膜が吸収しないので、シリコンへ入る割合は 1 − R。
+   * 確かめられる形（tests/run.js が突き合わせる）:
+   *   d = 0 と λ/2 膜（n1 d = λ/2）… 裸と同じ ((n−1)² + k²)/((n+1)² + k²)
+   *   λ/4 膜（n1 d = λ/4）          … ((n0 Ns − n1²)/(n0 Ns + n1²))²（Ns が実数のとき）
+   *   n1 = √(n0 Ns) の λ/4 膜        … 0
+   *
+   * シリコンの n は phys.nIndex、k は吸収係数から k = αλ/4π（phys.alpha と同じ表から出すので、
+   * 反射と吸収が同じ材料の値でそろう）。膜なし（opt.coat も opt.ar も無い）ときは、
+   * これまでどおり実部だけの phys.reflect を使う（k の効きは 400 nm でも 0.1% 程度）。
+   */
+  var COAT_MAT = {
+    /* 石英ガラスの Sellmeier 式（I. H. Malitson, J. Opt. Soc. Am. 55, 1205 (1965)）。
+     * 熱酸化膜もほぼ同じ値（600 nm で 1.458）。λ は µm */
+    sio2: {
+      name: 'SiO₂', note: 'Malitson (1965) の Sellmeier 式（600 nm で 1.458）',
+      n: function (nm) {
+        var l2 = Math.pow(nm / 1000, 2);
+        return Math.sqrt(1 + 0.6961663 * l2 / (l2 - 0.0684043 * 0.0684043)
+                           + 0.4079426 * l2 / (l2 - 0.1162414 * 0.1162414)
+                           + 0.8974794 * l2 / (l2 - 9.896161 * 9.896161));
+      }
+    },
+    /* 窒化膜は成膜法（LPCVD / プラズマ CVD）と組成で 1.9〜2.05 と幅がある。
+     * ここでは目安の 2.00 で一定（波長による変化は入れていない） */
+    sin: { name: 'Si₃N₄', note: '目安 2.00（成膜法と組成で 1.9〜2.05。分散は入れていない）', n: function () { return 2.0; } }
+  };
+
+  /** 膜の屈折率。coat = { mat: 'sio2' | 'sin' | 'custom', n, dnm } */
+  function coatIndex(coat, nm) {
+    var m = COAT_MAT[coat.mat];
+    return m ? m.n(nm) : coat.n;
+  }
+
+  /** シリコンの消衰係数 k = αλ/4π（α は cm⁻¹、λ は cm） */
+  function siK(nm) { return P.alpha(nm) * nm * 1e-7 / (4 * Math.PI); }
+
+  /**
+   * 単層膜の反射率。ns を渡すと基板をその {n, k} にする（検査で実数の基板と突き合わせるため）
+   */
+  function filmReflect(nm, n1, dnm, n0, ns) {
+    n0 = n0 || 1;
+    var a = ns ? ns.n : P.nIndex(nm), b = ns ? (ns.k || 0) : siK(nm);
+    var dl = 2 * Math.PI * n1 * dnm / nm, c = Math.cos(dl), s = Math.sin(dl);
+    var Br = c + b * s / n1, Bi = a * s / n1;          /* B = cos δ + i sin δ · Ns / n1 */
+    var Cr = a * c, Ci = n1 * s - b * c;               /* C = i n1 sin δ + cos δ · Ns */
+    var nr = n0 * Br - Cr, ni_ = n0 * Bi - Ci, dr = n0 * Br + Cr, di = n0 * Bi + Ci;
+    return (nr * nr + ni_ * ni_) / (dr * dr + di * di);
+  }
+
+  /**
+   * その波長で表面が跳ね返す割合。
+   *   opt.ar（数）   … 反射率を直接（画面の「直接」）
+   *   opt.coat       … 膜から計算
+   *   どちらも無し   … 裸のシリコン
+   */
+  function reflectOf(nm, opt) {
+    opt = opt || {};
+    if (opt.ar !== undefined && opt.ar !== null) return opt.ar;
+    if (opt.coat) return filmReflect(nm, coatIndex(opt.coat, nm), opt.coat.dnm);
+    return P.reflect(nm);
+  }
+
+  /** λ/4 の厚み [nm]（その波長で反射が最小になる最も薄い膜） */
+  function quarterNm(coat, nm) { return nm / (4 * coatIndex(coat, nm)); }
+
   /**
    * 生成率の分布 G(x) [cm^-3 s^-1]。
-   * 光は左（x=0）から入る。酸化膜は透明として素通りさせる ―
-   * 実際の反射防止膜の設計はここでは扱わない（opt.ar で反射だけ差し替えられる）。
+   * 光は左（x=0）から入る。構造の中の酸化膜は透明として素通りさせる。
+   * 表面の反射は ar で渡す（膜から計算した値も reflectOf が数にしてから渡す）。
    */
   function generation(m, nm, flux, ar) {
     var a = P.alpha(nm);
@@ -155,7 +229,7 @@
     var ev = HC_EV_NM / nm;
     var below = ev < P.eg(T);
 
-    var G = generation(m, nm, flux, opt.ar);
+    var G = generation(m, nm, flux, reflectOf(nm, opt));
     var g = G.g, i;
 
     /* 空乏層の範囲。接合が無ければ全域を中性として扱う */
@@ -250,6 +324,8 @@
   SL.light = {
     HC_EV_NM: HC_EV_NM, photonJ: photonJ, fluxFromPower: fluxFromPower,
     generation: generation, diffuse: diffuse, photo: photo, qeCurve: qeCurve,
-    minorityProps: minorityProps, regionType: regionType, FACTS: FACTS
+    minorityProps: minorityProps, regionType: regionType, FACTS: FACTS,
+    COAT_MAT: COAT_MAT, coatIndex: coatIndex, siK: siK, filmReflect: filmReflect,
+    reflectOf: reflectOf, quarterNm: quarterNm
   };
 })(typeof window !== 'undefined' ? window : globalThis);

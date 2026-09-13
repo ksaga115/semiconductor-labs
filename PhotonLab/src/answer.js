@@ -82,6 +82,33 @@
         d.freps = 80;
         return d;
       }
+    },
+    ingaas: {
+      note: '課題の条件を入れて M=15。F(15)=7.3 で SNR ≒ 5.25（山の頂上）。M=10 は 4.8、M=30 は 4.5。',
+      design: function () {
+        var d = PHO.defaults();
+        d.nm = 1550; d.eta = 0.8; d.pw = -7; d.idpa = 10000; d.ifa = 5000; d.bmhz = 1000; d.k = 0.4;
+        d.M = 15;
+        return d;
+      }
+    },
+    thresh: {
+      note: '課題の条件を入れて、しきい値 5 p.e.。偽 5×10⁵ × 0.1⁴ = 50 cps、信号（平均 10 p.e.）の 97.1% が 5 個以上。',
+      design: function () {
+        var d = PHO.defaults();
+        d.dkcps = 5e5; d.pct = 0.1; d.mupe = 10;
+        d.thr = 5;
+        return d;
+      }
+    },
+    scint: {
+      note: '集光 0.3・PDE 0.3 で 1,380 光電子。統計 6.5%（ENF 1.05）と固有 8% で 10.3%、飽和 4.7%。',
+      design: function () {
+        var d = PHO.defaults();
+        d.ekev = 511; d.ly = 30; d.rint = 8; d.pct = 0.05; d.ncell = 14400;
+        d.lce = 0.3; d.eta = 0.3;
+        return d;
+      }
     }
   };
 

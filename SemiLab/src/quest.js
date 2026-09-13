@@ -386,18 +386,20 @@
     },
     {
       id: 'ar', ch: 4, name: '反射を殺す',
-      desc: '**反射防止**（画面のスライダ）を 5% 以下にしたうえで、'
+      desc: '**反射防止**（画面の「反射」の直接の値か、「膜」）で 700 nm の反射を 5% 以下にしたうえで、'
           + '700 nm の感度を **0.45 A/W 以上**にする。',
       why: '裸のシリコンは 35% 跳ね返す。何をどう作り込んでも、そのぶんは最初から失われている。'
          + '反射防止膜は「作った素子の性能を活かすため」の部品。',
       hint: '反射を 1% にしてから、赤側で拾えるだけの厚みを持たせる。',
       check: function (ctx) {
-        var r = ctx.photo({ nm: 700, ar: ctx.ar, sFront: 1e4 }, ctx.vl, ctx.vr);
+        var r = ctx.photo({ nm: 700, ar: ctx.ar, coat: ctx.coat, sFront: 1e4 }, ctx.vl, ctx.vr);
+        var direct = ctx.ar !== undefined && ctx.ar !== null;
+        var how = direct ? '（直接）' : ctx.coat ? '（膜）' : '（裸）';
+        var okR = (direct || !!ctx.coat) && r.reflect <= 0.05;
         return {
-          ok: (ctx.ar !== undefined && ctx.ar !== null && ctx.ar <= 0.05) && r.resp >= 0.45,
+          ok: okR && r.resp >= 0.45,
           rows: [
-            row('反射', ((ctx.ar === undefined || ctx.ar === null ? r.reflect : ctx.ar) * 100).toFixed(1) + ' %', '5.0 % 以下',
-                ctx.ar !== undefined && ctx.ar !== null && ctx.ar <= 0.05),
+            row('700nm の反射', (r.reflect * 100).toFixed(1) + ' %' + how, '5.0 % 以下', okR),
             row('700nm の感度', r.resp.toFixed(3) + ' A/W', '0.450 A/W 以上', r.resp >= 0.45),
             row('量子効率', (r.qe * 100).toFixed(1) + ' %', '', true)
           ]
@@ -412,6 +414,61 @@
       hint: '入射側 0.2µm 以下、全体 50µm 以上、反射防止も使う。',
       check: function (ctx) {
         return photoCheck(ctx, [{ nm: 400, min: 0.30 }, { nm: 600, min: 0.30 }, { nm: 900, min: 0.30 }]);
+      }
+    },
+    {
+      id: 'quarter', ch: 4, name: '膜の厚みで反射を消す',
+      desc: '**Si₃N₄ の膜**（屈折率は目安 2.00）をシリコンの表面に付け、厚み（**150 nm 以下**）で 600 nm の反射を **1% 以下**にする。'
+          + 'そのうえで 600 nm の量子効率を **70% 以上**にする（逆バイアス −5 V）。',
+      why: '膜の表で跳ね返る光と、膜の裏（シリコンとの境）で跳ね返る光が、半波長ずれて打ち消し合う厚みがある ―'
+         + '往復で半波長なので、膜の中の片道は λ/4（光学的な厚み n₁d = λ/4）。'
+         + 'λ/4 膜の反射は ((n₀n_s − n₁²)/(n₀n_s + n₁²))² で、n₁² がシリコンの n_s に近いほど 0 に近づく ―'
+         + 'シリコン（600 nm で 3.95）には n₁ ≈ 2 の窒化膜がほぼぴったり。'
+         + '3λ/4（225 nm）でも打ち消すが、波長がずれたときに位相のずれが 3 倍速く育つ（帯域が狭い）ので、ふつうは最も薄い λ/4 を使う。',
+      hint: '600 / (4 × 2.00) = 75 nm で 0.005%。1% 以下は約 68〜81 nm。構造は「光が見える」と同じ 3 層でよい。',
+      check: function (ctx) {
+        var c = ctx.coat, direct = ctx.ar !== undefined && ctx.ar !== null;
+        var matOk = !!c && c.mat === 'sin' && !direct;
+        var okT = matOk && c.dnm <= 150;
+        var R = LIGHT.reflectOf(600, { ar: ctx.ar, coat: c });
+        var r = photoAt(ctx, 600);
+        if (!r) return { ok: false, rows: [row('接合', 'ない', 'pn 接合を作る', false)] };
+        return {
+          ok: matOk && okT && R <= 0.01 && r.qe >= 0.70,
+          rows: [
+            row('600 nm の反射', (R * 100).toFixed(3) + ' %', '1.000 % 以下', R <= 0.01),
+            row('膜', matOk ? 'Si₃N₄ ' + c.dnm + ' nm（λ/4 は ' + LIGHT.quarterNm(c, 600).toFixed(1) + ' nm）'
+                            : (direct ? '反射を直接いじっている' : c ? '材料が違う' : '膜がない'), 'Si₃N₄・150 nm 以下', okT),
+            row('600 nm の量子効率', (r.qe * 100).toFixed(1) + ' %', '70.0 % 以上', r.qe >= 0.70)
+          ]
+        };
+      }
+    },
+    {
+      id: 'index', ch: 4, name: '膜の屈折率を選ぶ',
+      desc: '膜の材料を「**n を数値で**」にして、屈折率と厚みで 600 nm の反射を **0.1% 以下**にする。'
+          + '600 nm の量子効率は **70% 以上**（逆バイアス −5 V）。SiO₂ の λ/4 膜では 9.0% までしか下がらない。',
+      why: 'λ/4 膜の反射がちょうど 0 になるのは n₁ = √(n₀n_s) のとき ― 600 nm のシリコンなら √3.95 = 1.99。'
+         + 'SiO₂（1.46）では n₁² = 2.13 が 3.95 に届かず 9.0% 残る。低すぎても高すぎても残る ― 窓は両側から閉じる。'
+         + 'シリコンの太陽電池の表面の窒化膜（n ≈ 2、厚み 70〜80 nm）は、この条件をほぼ満たすように選ばれている。',
+      hint: 'n = 1.99、厚み 600/(4 × 1.99) = 75.4 nm。λ/4 の厚みなら n が 1.93〜2.05 の範囲で 0.1% 以下。',
+      check: function (ctx) {
+        var c = ctx.coat, direct = ctx.ar !== undefined && ctx.ar !== null;
+        var matOk = !!c && c.mat === 'custom' && !direct;
+        var R = LIGHT.reflectOf(600, { ar: ctx.ar, coat: c });
+        var r = photoAt(ctx, 600);
+        if (!r) return { ok: false, rows: [row('接合', 'ない', 'pn 接合を作る', false)] };
+        var ideal = Math.sqrt(P.nIndex(600));
+        return {
+          ok: matOk && R <= 0.001 && r.qe >= 0.70,
+          rows: [
+            row('600 nm の反射', (R * 100).toFixed(4) + ' %', '0.1000 % 以下', R <= 0.001),
+            row('膜', matOk ? 'n ' + c.n + '・' + c.dnm + ' nm（その n の λ/4 は ' + LIGHT.quarterNm(c, 600).toFixed(1) + ' nm）'
+                            : (direct ? '反射を直接いじっている' : c ? '材料を「n を数値で」に' : '膜がない'), 'n を数値で', matOk),
+            row('ぴったりの屈折率 √n_s', ideal.toFixed(3), '', true),
+            row('600 nm の量子効率', (r.qe * 100).toFixed(1) + ' %', '70.0 % 以上', r.qe >= 0.70)
+          ]
+        };
       }
     },
 
@@ -573,18 +630,25 @@
     }
   ];
 
+  /** 逆バイアス −5V での光の応答。接合が無ければ null */
+  function photoAt(ctx, nm) {
+    var m = ctx.mesh();
+    if (!m || !ST.junctionNodes(m).length) return null;
+    var d = ctx.diode();
+    var vl = d && d.leftIsP ? -5 : 0, vr = d && d.leftIsP ? 0 : -5;
+    return ctx.photo({ nm: nm, sFront: 1e4, ar: ctx.ar, coat: ctx.coat }, vl, vr);
+  }
+
   /** 光の課題の共通判定。逆バイアス −5V で見る */
   function photoCheck(ctx, wants) {
     var m = ctx.mesh();
     if (!ST.junctionNodes(m).length) {
       return { ok: false, rows: [row('接合', 'ない', 'pn 接合を作る', false)] };
     }
-    var d = ctx.diode();
-    var vl = d && d.leftIsP ? -5 : 0, vr = d && d.leftIsP ? 0 : -5;
     var rows = [], all = true, i;
     for (i = 0; i < wants.length; i++) {
       var w = wants[i];
-      var r = ctx.photo({ nm: w.nm, sFront: 1e4, ar: ctx.ar }, vl, vr);
+      var r = photoAt(ctx, w.nm);
       var ok = r.qe >= w.min;
       all = all && ok;
       rows.push(row(w.nm + ' nm の量子効率', (r.qe * 100).toFixed(1) + ' %',
@@ -615,6 +679,7 @@
     if (!q) return { ok: false, rows: [], error: '課題が見つかりません' };
     var ctx = context(st, opt.T);
     ctx.ar = opt.ar;
+    ctx.coat = opt.coat || null;          /* 反射防止膜 { mat, n, dnm }（構造の外にある摘み） */
     try {
       var r = q.check(ctx);
       r.quest = q;

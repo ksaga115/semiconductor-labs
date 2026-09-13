@@ -251,7 +251,7 @@
     var sol = PS.solveRobust(m, bias);
     var qe = [], resp = [], nm;
     for (nm = 300; nm <= 1150; nm += 10) {
-      var r = LIGHT.photo(st, sol, { nm: nm, sFront: light.sFront, ar: light.ar, power: light.power });
+      var r = LIGHT.photo(st, sol, { nm: nm, sFront: light.sFront, ar: light.ar, coat: light.coat, power: light.power });
       qe.push([nm, r.qe * 100]);
       resp.push([nm, r.resp * 100]);
     }

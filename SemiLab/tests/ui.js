@@ -202,6 +202,23 @@ T('触る', () => {
   ar.value = '-1'; ar.fire('input'); win.flush();
   eq('裸に戻る', S.light.ar, null);
 
+  /* 反射防止膜: 材料を選ぶと直接の反射は外れ、厚みは今の波長の λ/4 から始まる */
+  const cm = $(doc, 'coatMat');
+  cm.value = 'sin'; cm.fire('change'); win.flush();
+  eq('膜が付いた', S.light.coat && S.light.coat.mat, 'sin');
+  near('厚みは今の波長の λ/4（Si₃N₄ 2.00）', S.light.coat.dnm, Math.round(S.light.nm / 8 * 10) / 10, 1e-9);
+  eq('直接の反射は外れる', S.light.ar, null);
+  ok('反射の表示が出る', /表面の反射/.test($(doc, 'coatR').textContent));
+  ok('Si₃N₄ では n の欄は触れない', $(doc, 'coatN').disabled === true);
+  const cz = $(doc, 'coatNm'); cz.value = '75'; cz.fire('change'); win.flush();
+  eq('厚みを数値で', S.light.coat.dnm, 75);
+  cm.value = 'custom'; cm.fire('change'); win.flush();
+  const cn = $(doc, 'coatN'); cn.value = '1.99'; cn.fire('change'); win.flush();
+  eq('n を数値で', S.light.coat.n, 1.99);
+  ar.value = '3'; ar.fire('input'); win.flush();
+  eq('反射を直接いじると膜は外れる', S.light.coat, null);
+  ar.value = '-1'; ar.fire('input'); win.flush();
+
   /* 下の段の切り替え */
   const radios = doc.getElementsByName('fieldView');
   radios.forEach((r) => { r.checked = false; });

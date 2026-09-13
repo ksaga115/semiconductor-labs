@@ -1,0 +1,7 @@
+{
+  "name": "DesignLab",
+  "version": "1.0.0",
+  "launch": "起動.vbs",
+  "kind": "web",
+  "description": "微弱光カメラ（光の予算・sCMOSとEM-CCD・AD変換と伝送・冷却）、LiDAR（戻る光子・昼の背景とSPADの飽和・精度と速さ）、分光器（格子・スリット・吸光度の雑音と校正）を設計して採点にかけるラボ（ブラウザのみ・依存ゼロ）"
+}

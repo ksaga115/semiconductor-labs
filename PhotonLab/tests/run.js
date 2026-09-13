@@ -150,4 +150,65 @@ T('計数モード ― √t で買う', () => {
   ok('背景光の光子も counts の床になる', bg.bcps > 1500 && bg.snrCount < ev.snrCount);
 });
 
+/* ================= 第4章 ================= */
+
+T('第5部 03 の例題 ― Si APD の M（850 nm・1 nW・k 0.02・100 pA・2 pA/√Hz・100 MHz）', () => {
+  const b = { nm: 850, eta: 0.8, pw: -9, k: 0.02, idpa: 100, ifa: 2000, bmhz: 100 };
+  const s = (M) => evalWith(Object.assign({ M }, b)).ev.SNR;
+  near('M=1 で 0.027', s(1), 0.027, 0.001);
+  near('M=10 で 0.27', s(10), 0.273, 0.002);
+  near('M=100 で 1.57', s(100), 1.570, 0.005);
+  near('M=300 で 1.33', s(300), 1.331, 0.005);
+  near('F(300, 0.02) ≒ 8.0', P.excess(300, 0.02), 7.96, 0.01);
+  const sw = P.snrSweep(Object.assign(P.defaults(), b), 1, 300, 300);
+  const peak = sw.reduce((a, p) => (p.snr > a.snr ? p : a));
+  ok('山の頂上は M ≈ 120〜135（本文「≈130」）', peak.M > 115 && peak.M < 135);
+  near('頂上の SNR ≈ 1.6', peak.snr, 1.596, 0.005);
+  near('k=0.4: F(10) ≒ 5.1', P.excess(10, 0.4), 5.14, 0.005);
+  near('k=0.4: F(100) ≒ 41', P.excess(100, 0.4), 41.2, 0.05);
+});
+
+T('k = 0.4 の山は低くて狭い', () => {
+  const b = { nm: 1550, eta: 0.8, pw: -7, k: 0.4, idpa: 10000, ifa: 5000, bmhz: 1000 };
+  const s = (M, k) => evalWith(Object.assign({ M }, b, k === undefined ? {} : { k })).ev.SNR;
+  ok('M=10 では 5 に届かない', s(10) < 5);
+  ok('M=15 は山の上', s(15) >= 5);
+  ok('M=30 では過剰雑音で 5 を割る', s(30) < 5);
+  const sw = P.snrSweep(Object.assign(P.defaults(), b), 1, 300, 400);
+  const peak = sw.reduce((a, p) => (p.snr > a.snr ? p : a));
+  ok('k=0.4 の頂上は M ≈ 15', peak.M > 13 && peak.M < 18);
+  const sw2 = P.snrSweep(Object.assign(P.defaults(), b, { k: 0.02 }), 1, 300, 400);
+  const peak2 = sw2.reduce((a, p) => (p.snr > a.snr ? p : a));
+  ok('同じ条件で k=0.02 なら頂上は高い M・高い SNR', peak2.M > 35 && peak2.snr > 9);
+});
+
+T('しきい値で数える ― クロストークとポアソンの裾', () => {
+  near('P(n≥5 | μ=10)', P.poissonTail(10, 5), 0.97075, 1e-4);
+  near('P(n≥7 | μ=10)', P.poissonTail(10, 7), 0.86986, 1e-4);
+  eq('P(n≥1) は 1 − e^−μ', P.poissonTail(2, 1).toFixed(12), (1 - Math.exp(-2)).toFixed(12));
+  const base = { dkcps: 5e5, pct: 0.1, mupe: 10 };
+  near('しきい値 1 p.e. は暗計数そのもの', evalWith(Object.assign({ thr: 1 }, base)).ev.falseCps, 5e5, 1e-6);
+  near('しきい値 2 p.e. は DCR·P_ct（定義）', evalWith(Object.assign({ thr: 2 }, base)).ev.falseCps, 5e4, 1e-6);
+  near('しきい値 5 p.e. は DCR·P_ct⁴', evalWith(Object.assign({ thr: 5 }, base)).ev.falseCps, 50, 1e-9);
+  const ap = evalWith({ pct: 0.05, pap: 0.03 }).ev;
+  near('見かけの計数倍率 1 + P_ct + P_ap', ap.appar, 1.08, 1e-12);
+  near('クロストークの ENF ≈ 1 + P_ct', ap.enfXt, 1.05, 1e-12);
+});
+
+T('シンチレータの分解能 ― 第5部 05 の PET', () => {
+  /* 511 keV × 30 光子/keV ≒ 1.5×10⁴ 光子。2,000 光電子なら統計だけで 5.3% */
+  const pet = evalWith({ ekev: 511, ly: 30, lce: 2000 / 15330, eta: 1, pct: 0, rint: 0 }).ev;
+  near('511 × 30 = 15,330 光子', pet.scNph, 15330, 1e-9);
+  near('2,000 光電子', pet.scNpe, 2000, 1e-6);
+  near('2.355/√2000 = 5.27%', pet.scRes, 2.355 / Math.sqrt(2000), 1e-12);
+  const withInt = evalWith({ ekev: 511, ly: 30, lce: 2000 / 15330, eta: 1, pct: 0, rint: 8 }).ev;
+  near('固有 8% と二乗和で 9.6%（本文「10% 級」）', withInt.scRes, Math.sqrt(0.0527 ** 2 + 0.08 ** 2), 5e-4);
+  const xt = evalWith({ ekev: 511, ly: 30, lce: 2000 / 15330, eta: 1, pct: 0.05, rint: 0 }).ev;
+  near('クロストーク 5% で統計は √1.05 倍', xt.scStat / pet.scStat, Math.sqrt(1.05), 1e-12);
+  const sat = evalWith({ ekev: 511, ly: 30, lce: 0.3, eta: 0.3, pct: 0.05, rint: 8, ncell: 14400 }).ev;
+  near('飽和の線形誤差 = 1 − N(1−e^(−μ/N))/μ', sat.scLin, 1 - 14400 * (1 - Math.exp(-sat.scNpe / 14400)) / sat.scNpe, 1e-12);
+  ok('光電子を増やすと飽和が増える', evalWith({ ekev: 511, ly: 30, lce: 0.5, eta: 0.5, ncell: 14400 }).ev.scLin > sat.scLin);
+  ok('セル数を入れなければ飽和は出さない', evalWith({ ncell: 0 }).ev.scLin === undefined);
+});
+
 report();

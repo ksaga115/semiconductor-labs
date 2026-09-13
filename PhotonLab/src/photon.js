@@ -25,9 +25,22 @@
  *   freps  TCSPC のレーザー繰り返し [MHz]  パイルアップ確率 p = 計数率/繰り返し（p≲2% が定石）
  *   taufl  測りたい蛍光寿命 [ns]        繰り返し周期は寿命の5倍以上あける
  *
+ * ---- 第4章（増倍の雑音と数え方）----
+ *   pct    MPPC のクロストーク確率      なだれ1回が隣のセルを発火させる確率（暗計数の 1.5 p.e. 以上 ÷ 0.5 p.e. 以上で測る定義）
+ *   pap    MPPC のアフターパルス確率    見かけの計数の倍率 ≈ 1 + pct + pap（小さい確率での一次近似）
+ *   thr    計数のしきい値 [p.e.]         n p.e. 以上のパルスだけ数える。暗計数が n 個以上に化ける率 ≈ DCR·pct^(n−1)
+ *                                        （連鎖を独立とみなす近似。n = 2 は pct の定義そのもの）
+ *   mupe   信号パルスの平均 [p.e.]       ポアソンで n 以上になる確率 = 信号の検出率（クロストークによる上乗せは入れない＝控えめ側）
+ *   ekev   放射線のエネルギー [keV]・ly シンチレータの光量 [光子/keV]・lce 集光効率
+ *                                        光電子 N = E·LY·集光·PDE（PDE は eta）
+ *   rint   結晶の固有分解能 [% FWHM]     分解能 = √((2.355·√(ENF/N))² + 固有²)、ENF = 1 + pct（MPPC のクロストーク、一次近似）
+ *                                        ncell > 0 なら飽和の線形誤差 1 − N_cell(1−e^(−N/N_cell))/N も出す
+ *
  * 【約束】数値はすべてこの式から導出できる。乱数は使わない（採点が毎回同じになるように）。
- * 【モデルの外】1/f 雑音・APD の暗電流の非増倍成分・MPPC のクロストーク／アフターパルス・
- * 計数のパイルアップ（不感時間）は入れていない。第5部の caveat と同じで、実素子の設計はデータシートから。
+ * 【モデルの外】1/f 雑音・APD の暗電流の非増倍成分・計数のパイルアップ（不感時間）は入れていない。
+ * クロストークとアフターパルスは一次近似（確率が小さいとき）だけで、V_ov と温度への依存は入れていない
+ * （両方とも V_ov で上がる ― 第5部 03）。飽和はクロストークが余分に使うセルを数えない。
+ * 第5部の caveat と同じで、実素子の設計はデータシートから。
  */
 (function (global) {
   'use strict';
@@ -46,8 +59,18 @@
       ncell: 0, nph: 1000,
       bgnw: 0, dkcps: 0, tsec: 0.001,
       wum: 3, diamum: 30,
-      freps: 10, taufl: 2
+      freps: 10, taufl: 2,
+      pct: 0, pap: 0, thr: 1, mupe: 10,
+      ekev: 662, ly: 38, lce: 0.5, rint: 5
     };
+  }
+
+  /** ポアソン分布（平均 mu）で n 以上になる確率 */
+  function poissonTail(mu, n) {
+    if (n <= 0) return 1;
+    var s = 0, t = Math.exp(-mu);
+    for (var i = 0; i < n; i++) { s += t; t *= mu / (i + 1); }
+    return Math.max(0, 1 - s);
   }
 
   /** マッキンタイアの過剰雑音指数。M=1 なら F=1 */
@@ -136,6 +159,30 @@
       out.fired = fired;
       out.linerr = mu > 0 ? 1 - fired / mu : 0;
     }
+
+    /* ---- 第4章 ---- */
+    var pct = d.pct || 0, pap = d.pap || 0;
+    out.appar = 1 + pct + pap;                     /* 見かけの計数 ÷ 本当の光電子（一次近似） */
+    out.enfXt = 1 + pct;                           /* クロストークの過剰雑音（一次近似） */
+
+    /* しきい値で数える: 暗計数のうち n p.e. 以上に化けるもの・信号のうち n p.e. 以上に届くもの */
+    var thr = Math.max(1, Math.round(d.thr || 1));
+    out.thr = thr;
+    out.falseCps = (d.dkcps || 0) * Math.pow(pct, thr - 1);
+    out.sigEff = poissonTail(d.mupe || 0, thr);
+
+    /* シンチレータ＋光検出器のエネルギー分解能 */
+    var scNph = (d.ekev || 0) * (d.ly || 0);
+    var scNpe = scNph * (d.lce || 0) * d.eta;
+    var scStat = scNpe > 0 ? 2.355 * Math.sqrt(out.enfXt / scNpe) : Infinity;
+    var scInt = (d.rint || 0) / 100;
+    out.scNph = scNph;
+    out.scNpe = scNpe;
+    out.scStat = scStat;
+    out.scRes = Math.sqrt(scStat * scStat + scInt * scInt);
+    if (d.ncell > 0 && scNpe > 0) {
+      out.scLin = 1 - d.ncell * (1 - Math.exp(-scNpe / d.ncell)) / scNpe;
+    }
     return out;
   }
 
@@ -154,6 +201,6 @@
 
   PH.photon = {
     Q: Q, RLOAD: RLOAD,
-    defaults: defaults, excess: excess, evaluate: evaluate, snrSweep: snrSweep
+    defaults: defaults, excess: excess, evaluate: evaluate, snrSweep: snrSweep, poissonTail: poissonTail
   };
 })(typeof window !== 'undefined' ? window : globalThis);

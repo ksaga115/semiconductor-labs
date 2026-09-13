@@ -95,6 +95,29 @@ T('落ちるべきもの', () => {
   ok('pile: 120MHz（尻尾を踏む）は落ちる', !Q.grade('pile', { design: pl2 }).ok);
   const pl3 = Object.assign({}, A.get('pile').design(), { pw: -13 });
   ok('pile: 光を勝手に絞るのは反則', !Q.grade('pile', { design: pl3 }).ok);
+
+  /* 第4章: k=0.4 の山の両側と、k を小さくする反則 */
+  const g = (id, patch) => Q.grade(id, { design: Object.assign({}, A.get(id).design(), patch) }).ok;
+  ok('ingaas: M=10（4.8）は落ちる', !g('ingaas', { M: 10 }));
+  ok('ingaas: M=30（4.5）は落ちる', !g('ingaas', { M: 30 }));
+  ok('ingaas: M=12 と M=21 は山の内側', g('ingaas', { M: 12 }) && g('ingaas', { M: 21 }));
+  ok('ingaas: k を 0.02 にするのは反則', !g('ingaas', { k: 0.02 }));
+  ok('ingaas: アンプ雑音を下げるのは反則', !g('ingaas', { ifa: 1000 }));
+
+  /* しきい値: 窓は 5〜6 p.e. */
+  ok('thresh: 4 p.e.（偽 500 cps）は落ちる', !g('thresh', { thr: 4 }));
+  ok('thresh: 6 p.e.（5 cps・93.3%）は通る', g('thresh', { thr: 6 }));
+  ok('thresh: 7 p.e.（検出率 87%）は落ちる', !g('thresh', { thr: 7 }));
+  ok('thresh: クロストークを勝手に下げるのは反則', !g('thresh', { thr: 3, pct: 0.01 }));
+  ok('thresh: 信号を勝手に明るくするのは反則', !g('thresh', { thr: 7, mupe: 20 }));
+
+  /* シンチ: 光電子が足りない側と、集めすぎて飽和する側 */
+  ok('scint: 集光 × PDE 0.075（1,150 p.e.）は分解能で落ちる', !g('scint', { lce: 0.3, eta: 0.25 }));
+  ok('scint: 集光 × PDE 0.105（1,610 p.e.）は飽和で落ちる', !g('scint', { lce: 0.3, eta: 0.35 }));
+  ok('scint: 固有分解能を下げるのは反則', !g('scint', { rint: 4, lce: 0.2, eta: 0.2 }));
+  ok('scint: クロストークを消すのは反則', !g('scint', { pct: 0 }));
+  ok('scint: セル数を増やすのは反則', !g('scint', { ncell: 40000, lce: 0.5, eta: 0.5 }));
+  ok('scint: PDE 0.6 は上限破り', !g('scint', { lce: 0.15, eta: 0.6 }));
 });
 
 report();

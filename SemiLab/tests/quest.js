@@ -49,7 +49,7 @@ T('課題の形', () => {
 T('お手本', () => {
   Q.LIST.forEach((q) => {
     const a = ANS.get(q.id);
-    const r = Q.grade(q.id, a.make(), { ar: a.ar });
+    const r = Q.grade(q.id, a.make(), { ar: a.ar, coat: a.coat });
     if (!r.ok) {
       const why = (r.rows || []).filter((x) => !x.ok)
         .map((x) => `${x.label}=${x.value}（欲しい: ${x.want}）`).join(' / ');
@@ -105,7 +105,7 @@ T('落ちるべきもの', () => {
     const a = ANS.get(q.id);
     const st = a.make();
     return {
-      id: q.id, ch: q.ch, st: st, ar: a.ar,
+      id: q.id, ch: q.ch, st: st, ar: a.ar, coat: a.coat,
       hasOx: st.layers.some((L) => L.mat === 'ox'),
       hasI: st.layers.some((L) => L.mat === 'si' && L.na === 0 && L.nd === 0),
       hasJn: SL.dev.sides(st) !== null
@@ -115,7 +115,7 @@ T('落ちるべきもの', () => {
   const M = {};
   Q.LIST.forEach((q) => {
     M[q.id] = {};
-    answers.forEach((a) => { M[q.id][a.id] = Q.grade(q.id, a.st, { ar: a.ar }).ok; });
+    answers.forEach((a) => { M[q.id][a.id] = Q.grade(q.id, a.st, { ar: a.ar, coat: a.coat }).ok; });
   });
   const self = (id) => answers.filter((a) => a.id === id)[0];
 
@@ -169,7 +169,7 @@ T('判定の理由', () => {
   /* 通ったときは全部の行が ok、落ちたときはどれかが ok でない */
   Q.LIST.forEach((q) => {
     const a = ANS.get(q.id);
-    const r = Q.grade(q.id, a.make(), { ar: a.ar });
+    const r = Q.grade(q.id, a.make(), { ar: a.ar, coat: a.coat });
     if (r.ok) {
       const bad = (r.rows || []).filter((x) => !x.ok && x.want && x.want !== '');
       /* 「（勝手に決まる）」のような説明行は want に判定の言葉が無い */
@@ -180,7 +180,7 @@ T('判定の理由', () => {
   /* 温度を上げても採点が例外を投げない（ni が跳ねる） */
   Q.LIST.forEach((q) => {
     const a = ANS.get(q.id);
-    const r = Q.grade(q.id, a.make(), { T: 400, ar: a.ar });
+    const r = Q.grade(q.id, a.make(), { T: 400, ar: a.ar, coat: a.coat });
     ok(`${q.id}: 400K でも例外を投げない`, !r.error);
   });
 });
@@ -204,6 +204,27 @@ T('積み上がり', () => {
   ok('nand のお手本は MOS になっている', mm !== null);
   ok('nand のお手本は nMOS', mm.pType);
   ok('nand の Vth は使える範囲', mm.vth > 0.3 && mm.vth < 0.7);
+});
+
+/* ================= 6. 反射防止膜の窓（両側が落ちる・反則が落ちる） ================= */
+
+T('反射防止膜の窓', () => {
+  const st = ANS.make('quarter');
+  const g = (id, coat, ar) => Q.grade(id, st, { coat: coat, ar: ar }).ok;
+  ok('quarter: Si₃N₄ 75 nm で通る', g('quarter', { mat: 'sin', n: 2, dnm: 75 }));
+  ok('quarter: 60 nm は反射が残る', !g('quarter', { mat: 'sin', n: 2, dnm: 60 }));
+  ok('quarter: 90 nm も反射が残る', !g('quarter', { mat: 'sin', n: 2, dnm: 90 }));
+  ok('quarter: 3λ/4（225 nm）は反射は消えるが厚みの上限破り', !g('quarter', { mat: 'sin', n: 2, dnm: 225 }));
+  ok('quarter: SiO₂ の λ/4 では 9% 残って通らない', !g('quarter', { mat: 'sio2', dnm: 102.9 }));
+  ok('quarter: 反射を直接 0 にするのは反則', !g('quarter', null, 0));
+  ok('quarter: 膜が無ければ通らない', !g('quarter', null));
+  ok('index: n 1.99・75.4 nm で通る', g('index', { mat: 'custom', n: 1.99, dnm: 75.4 }));
+  ok('index: n 1.85 は λ/4 でも残る', !g('index', { mat: 'custom', n: 1.85, dnm: 600 / (4 * 1.85) }));
+  ok('index: n 2.15 も残る', !g('index', { mat: 'custom', n: 2.15, dnm: 600 / (4 * 2.15) }));
+  ok('index: 厚みが λ/4 から外れると残る', !g('index', { mat: 'custom', n: 1.99, dnm: 65 }));
+  ok('index: Si₃N₄ を選ぶのは条件違反', !g('index', { mat: 'sin', n: 2, dnm: 75 }));
+  ok('ar: 膜で 700 nm を 5% 以下にしても通る', Q.grade('ar', ANS.make('ar'), { coat: { mat: 'sin', n: 2, dnm: 87.5 } }).ok);
+  ok('ar: 膜が 700 nm に合っていなければ通らない', !Q.grade('ar', ANS.make('ar'), { coat: { mat: 'sio2', dnm: 30 } }).ok);
 });
 
 report();

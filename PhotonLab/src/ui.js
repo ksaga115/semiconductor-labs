@@ -37,7 +37,15 @@
     ['wum', '空乏層の厚さ', 'µm', 0.1, 50],
     ['diamum', '受光部の直径', 'µm', 5, 1000],
     ['freps', 'TCSPC の繰り返し', 'MHz', 0.1, 1000],
-    ['taufl', '測りたい寿命', 'ns', 0.1, 1000]
+    ['taufl', '測りたい寿命', 'ns', 0.1, 1000],
+    ['pct', 'MPPC のクロストーク確率', '（0〜0.5）', 0, 0.5],
+    ['pap', 'MPPC のアフターパルス確率', '（0〜0.5）', 0, 0.5],
+    ['thr', '計数のしきい値', 'p.e.（以上を数える）', 1, 20, true],
+    ['mupe', '信号パルスの平均', 'p.e.', 0.1, 10000],
+    ['ekev', '放射線のエネルギー', 'keV', 1, 10000],
+    ['ly', 'シンチレータの光量', '光子/keV', 1, 100],
+    ['lce', '集光効率', '（0〜1）', 0.01, 1],
+    ['rint', '結晶の固有分解能', '% FWHM', 0, 30]
   ];
 
   function num(t) {
@@ -232,6 +240,16 @@
     if (S.design.dkcps > 0 || S.design.bgnw > 0) rows.push(['計数 SNR（' + S.design.tsec + ' s）', ev.snrCount >= 100 ? ev.snrCount.toFixed(0) : ev.snrCount.toFixed(2)]);
     if (ev.pmtM !== undefined) rows.push(['PMT 換算 δⁿ / F', ev.pmtM.toExponential(2) + ' / ' + ev.pmtF.toFixed(3)]);
     if (ev.fired !== undefined) rows.push(['MPPC 発火 / μ', ev.fired.toFixed(0) + ' / ' + ev.mu.toFixed(0) + '（目減り ' + (ev.linerr * 100).toFixed(2) + '%）', ev.linerr > 0.05]);
+    if (S.design.pct > 0 || S.design.pap > 0) {
+      rows.push(['MPPC 見かけの計数倍率', ev.appar.toFixed(3) + '（1 + P_ct + P_ap、一次近似）・ENF ' + ev.enfXt.toFixed(3)]);
+    }
+    if (S.design.dkcps > 0 && S.design.thr > 1) {
+      rows.push(['しきい値 ' + ev.thr + ' p.e.: 偽の計数 / 信号の検出率',
+        ev.falseCps.toExponential(2) + ' cps / ' + (ev.sigEff * 100).toFixed(1) + ' %（平均 ' + S.design.mupe + ' p.e.）']);
+    }
+    rows.push(['シンチ: 光電子 / 分解能（FWHM）',
+      ev.scNpe.toFixed(0) + ' p.e.（' + ev.scNph.toFixed(0) + ' 光子）/ ' + (ev.scRes * 100).toFixed(2) + ' %（統計 ' + (ev.scStat * 100).toFixed(2) + ' %）'
+      + (ev.scLin !== undefined ? '・飽和 ' + (ev.scLin * 100).toFixed(2) + ' %' : ''), ev.scLin !== undefined && ev.scLin > 0.05]);
     document.getElementById('derived').innerHTML = '<div class="dv">' + rows.map(function (r) {
       return '<span class="k">' + esc(r[0]) + '</span><span class="v' + (r[2] ? ' warn' : '') + '">' + esc(r[1]) + '</span>';
     }).join('') + '</div>';

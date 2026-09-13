@@ -20,7 +20,7 @@
       stack: SL.stack.create(),
       T: SL.phys.T300,
       bias: { left: 0, right: 0 },
-      light: { on: false, nm: 600, power: 1e-3, ar: null, sFront: 1e4 },
+      light: { on: false, nm: 600, power: 1e-3, ar: null, coat: null, sFront: 1e4 },
       lib: {},                 /* 名前を付けて残した構造 */
       cleared: {},
       quest: null,
@@ -58,13 +58,22 @@
     };
   }
 
+  /* 反射防止膜の保存 { mat, n, dnm }。形が合わなければ膜なしに戻す（古い保存には無い） */
+  function fixLight(l) {
+    var c = l.coat;
+    var good = c && typeof c === 'object' && typeof c.dnm === 'number' && isFinite(c.dnm)
+      && (c.mat === 'sio2' || c.mat === 'sin' || (c.mat === 'custom' && typeof c.n === 'number' && isFinite(c.n)));
+    l.coat = good ? c : null;
+    return l;
+  }
+
   function merge(s) {
     var b = blank();
     return {
       stack: s.stack,
       T: typeof s.T === 'number' ? s.T : b.T,
       bias: s.bias && typeof s.bias === 'object' ? s.bias : b.bias,
-      light: s.light && typeof s.light === 'object' ? s.light : b.light,
+      light: fixLight(s.light && typeof s.light === 'object' ? s.light : b.light),
       lib: s.lib || {},
       cleared: s.cleared || {},
       quest: s.quest || null,

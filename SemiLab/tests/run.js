@@ -596,4 +596,43 @@ T('なだらかな接合', () => {
   ok('ダイオードの結果は使い回される', DEV.diode(g, T300) === dg);
 });
 
+/* ================= 反射防止膜（単層・正規入射） =================
+ * 特性行列の数値を、教科書の閉じた式と突き合わせる */
+T('反射防止膜', () => {
+  const L = LIGHT;
+  [400, 600, 800, 1000].forEach((nm) => {
+    const n = P.nIndex(nm), k = L.siK(nm);
+    near(`${nm}nm: 膜厚 0 は裸（複素の式）`, L.filmReflect(nm, 2, 0), ((n - 1) ** 2 + k * k) / ((n + 1) ** 2 + k * k), 1e-12);
+    near(`${nm}nm: 膜厚 0 は実部だけの裸とほぼ同じ`, L.filmReflect(nm, 2, 0), P.reflect(nm), 0.002);
+    near(`${nm}nm: λ/2 膜は裸と同じ`, L.filmReflect(nm, 1.46, nm / (2 * 1.46)), L.filmReflect(nm, 1.46, 0), 1e-9);
+    near(`${nm}nm: k は吸収係数から αλ/4π`, k, P.alpha(nm) * nm * 1e-7 / (4 * Math.PI), 1e-15);
+  });
+  [[3.95, 2.0], [3.95, 1.46], [4.3, 2.1], [3.6, 1.8]].forEach(([ns, n1]) => {
+    near(`λ/4: n_s ${ns}・n₁ ${n1} で ((n_s − n₁²)/(n_s + n₁²))²`,
+         L.filmReflect(600, n1, 600 / (4 * n1), 1, { n: ns, k: 0 }), ((ns - n1 * n1) / (ns + n1 * n1)) ** 2, 1e-12);
+  });
+  near('n₁ = √n_s の λ/4 膜は反射ゼロ', L.filmReflect(600, Math.sqrt(3.95), 600 / (4 * Math.sqrt(3.95)), 1, { n: 3.95, k: 0 }), 0, 1e-15);
+  ok('λ/4 の厚みで極小', L.filmReflect(600, 2, 75) < L.filmReflect(600, 2, 70) && L.filmReflect(600, 2, 75) < L.filmReflect(600, 2, 80));
+  within('Si₃N₄ 75 nm の 600 nm の反射は 0.005%', L.filmReflect(600, 2, 75), 4.57e-5, 1.02);
+  within('SiO₂ の λ/4 膜は 9.0%', L.reflectOf(600, { coat: { mat: 'sio2', dnm: L.quarterNm({ mat: 'sio2' }, 600) } }), 0.0901, 1.01);
+  near('SiO₂ の屈折率（Malitson、587.6 nm で 1.4585）', L.COAT_MAT.sio2.n(587.6), 1.4585, 2e-4);
+  near('SiO₂ の屈折率（Malitson、1000 nm で 1.4504）', L.COAT_MAT.sio2.n(1000), 1.4504, 2e-4);
+  near('λ/4 の厚み（Si₃N₄・600 nm）', L.quarterNm({ mat: 'sin' }, 600), 75, 1e-12);
+  let inRange = true;
+  for (let nm = 300; nm <= 1200; nm += 10) for (let d = 0; d <= 400; d += 13) {
+    const r = L.filmReflect(nm, 2.0, d); if (!(r >= 0 && r <= 1)) inRange = false;
+  }
+  ok('反射はいつも 0〜1', inRange);
+
+  /* photo に入る。直接の値が膜より先に効く */
+  const st = SL.answer.make('photo');
+  const sol = PS.solve(ST.mesh(st, 300), { left: 0, right: 0 });
+  const bare = LIGHT.photo(st, sol, { nm: 600 });
+  const coat = LIGHT.photo(st, sol, { nm: 600, coat: { mat: 'sin', n: 2, dnm: 75 } });
+  near('膜の反射が photo の反射になる', coat.reflect, L.filmReflect(600, 2, 75), 1e-15);
+  within('反射が消えたぶんだけ QE が増える', coat.qe / bare.qe, (1 - coat.reflect) / (1 - bare.reflect), 1.001);
+  near('直接の反射は膜より先', LIGHT.photo(st, sol, { nm: 600, ar: 0.2, coat: { mat: 'sin', n: 2, dnm: 75 } }).reflect, 0.2, 0);
+  near('何も無ければ裸', bare.reflect, P.reflect(600), 0);
+});
+
 report();

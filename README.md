@@ -1,15 +1,15 @@
 # 半導体 ― 工程から像まで、読んで、作って、確かめる
 
-**入口は [`index.html`](index.html)（学びの地図）。** ブラウザで開くと、第0〜10部・付録と10ラボの目次と、章ごとに対応する
+**入口は [`index.html`](index.html)（学びの地図）。** ブラウザで開くと、第0〜10部・付録と11ラボの目次と、章ごとに対応する
 ラボの課題へのリンクが出る。この README はその Markdown 版（要点だけ）。
 
 半導体を、足場（第0部）から、製造工程 → 素子の物理 → 論理回路 → イメージセンサ → 光検出デバイス → アナログ回路 → 光学 → 信頼性と品質 → 光源とレーザー（第9部）までの10部に、全部をつなぐ総合演習（第10部）と、物性値と索引の付録を加えて通して学ぶための場所。
-各部は **参考書**（読んで理解する）と **ラボ**（自分の手で作って、機械に採点させる）の二層になっている（第0部・第10部・付録は参考書のみ）。
+各部は **参考書**（読んで理解する）と **ラボ**（自分の手で作って、機械に採点させる）の二層になっている（第0部・付録は参考書のみ）。
 
 ```
-        第0部 足場   第1部 工程   第2部 素子     第3部 論理   第4部 像      第5部 数える   第6部 アナログ  第7部 光学   第8部 信頼性  第9部 光源
-参考書  数・波・量子  製造プロセス  デバイスの基礎  論理回路     イメージセンサ  光検出の系統   ラザビー       検出器の相手側 壊れ方を数える 光源とレーザー
-ラボ    ―           ProcessLab   SemiLab       NandLab     PixelLab      PhotonLab     AnalogLab     OptoLab      QALab        LaserLab
+        第0部 足場   第1部 工程   第2部 素子     第3部 論理   第4部 像      第5部 数える   第6部 アナログ  第7部 光学   第8部 信頼性  第9部 光源     第10部 演習
+参考書  数・波・量子  製造プロセス  デバイスの基礎  論理回路     イメージセンサ  光検出の系統   ラザビー       検出器の相手側 壊れ方を数える 光源とレーザー   1台を設計する
+ラボ    ―           ProcessLab   SemiLab       NandLab     PixelLab      PhotonLab     AnalogLab     OptoLab      QALab        LaserLab       DesignLab
 
    工程 → 不純物 → pn接合 → MOSFET → インバータ → NAND → ALU → CPU
                      └→ フォトダイオード → 画素 → カメラ → 像
@@ -26,6 +26,7 @@
 ```
 半導体\
   index.html                     学びの地図（入口）
+  編集方針.md                     書き足す・直すときの約束（正確さ・厚み・図と動き・検査）と、部ごとの精査の記録
   第0部_基礎.html                 第0部 参考書 ― 全部の部の足場: 対数と dB・確率と √N・波とフーリエ・光子・結晶・バンド・n の導出・定数（8章）
   第1部_製造プロセス.html    第1部 参考書 ― ウェーハからチップまで（材料と結晶成長・設計からマスクまでを含む17節）
   第2部_デバイスの基礎.html          第2部 参考書 ― 不純物 → 接合 → MOSFET（5章＋ホール効果・ヘテロ接合・BJT・太陽電池・パワー。数値は SemiLab が解いた値）
@@ -39,15 +40,16 @@
   第10部_設計演習.html              第10部 総合演習 ― 1台を設計する: 微弱光カメラ・LiDAR・分光器を光子から安全と信頼性まで数字でつなぐ（10章）
   付録_物性値と索引.html            付録 ― 物性値の表・式の索引・全部の部の用語の統一索引（検索できる）・記号表・英日対訳・年表
   ProcessLab\                    第1部 ラボ ― 原始部品 ＝ 工程（4章 13問）
-  SemiLab\                       第2部 ラボ（作る側）― 原始部品 ＝ 不純物（5章 24問）
+  SemiLab\                       第2部 ラボ（作る側）― 原始部品 ＝ 不純物（5章 26問。pMOS とゲートの材料・単層の反射防止膜を含む）
   CharLab\                       第2部 ラボ（測る側）― 謎の素子の I-V/C-V から n・Vth・tox・Na を当てる（3章 9問）
   NandLab\                       第3部 ラボ ― 原始部品 ＝ NAND（6章 31問。第6章だけ NOR）
   PixelLab\                      第4部 ラボ ― 原始部品 ＝ 光子と電子を数えること（3章 12問）
-  PhotonLab\                     第5部 ラボ ― 原始部品 ＝ 光子とη（3章 12問。R・NEP・D*・最適なM・MPPC・背景光・計数・走行×RC・TCSPC）
+  PhotonLab\                     第5部 ラボ ― 原始部品 ＝ 光子とη（4章 15問。R・NEP・D*・最適なM・MPPC・背景光・計数・走行×RC・TCSPC・InGaAs APD・しきい値とクロストーク・シンチの分解能）
   AnalogLab\                     第6部 ラボ ― 原始部品 ＝ 二乗則のMOS 1個（4章 13問。Vov・gm・利得・GBW・TIA・kTC・SC・2段OTA・ADC・DC-DC）
   OptoLab\                       第7部 ラボ ― 原始部品 ＝ 光線とその会計（4章 15問。カメラ方程式・回折・ガウス・ファイバ・λ/4・エテンデュ・cos⁴・モード結合・ブルースター角・格子・回線）
   QALab\                         第8部 ラボ ― 原始部品 ＝ 故障率と分布（4章 14問。MTTF・加速3種＋HAST・B10・Tj・TEC・Cpk・誤差・GR&R・管理図・不確かさ）
   LaserLab\                      第9部 ラボ ― 原始部品 ＝ 共振器の会計と熱の光（3章 9問。黒体・LED・しきい値・スロープ効率・T₀・縦モード・DFB・モード同期・尖頭値）
+  DesignLab\                     第10部 ラボ ― 微弱光カメラ・LiDAR・分光器の予算表（3章 12問。光の予算・sCMOS と EM-CCD・伝送・冷却・戻る光子・背景と SPAD・精度・格子・スリット・吸光度と校正）
 ```
 
 **ProcessLab と PixelLab は `../SemiLab/src/*.js` を読み込む。SemiLab と必ず兄弟に置く（PhotonLab の実行は単独で可、検査は SemiLab の道具を共用）。**
@@ -62,7 +64,7 @@
 
 | 目的 | 順 |
 |---|---|
-| はじめて（体系の順に全部通す） | 第0部 → 第1部 参考書 → ProcessLab 1–3章 → SemiLab 1–3章 → ProcessLab 4章 → SemiLab 4–5章・CharLab → 第3部・NandLab → 第6部・AnalogLab → 第7部・OptoLab → 第9部 → 第5部・PhotonLab → 第4部・PixelLab → 第8部・QALab → 第10部（総合演習）→ 付録 |
+| はじめて（体系の順に全部通す） | 第0部 → 第1部 参考書 → ProcessLab 1–3章 → SemiLab 1–3章 → ProcessLab 4章 → SemiLab 4–5章・CharLab → 第3部・NandLab → 第6部・AnalogLab → 第7部・OptoLab → 第9部 → 第5部・PhotonLab → 第4部・PixelLab → 第8部・QALab → 第10部・DesignLab（総合演習）→ 付録 |
 | イメージセンサを主軸に（おすすめ） | `index.html` の「RECOMMENDED」参照。物理層（第2部）→ 作り方（第1部）→ 回路（第3部）→ センサ（第4部）→ センサの外（第5〜9部）→ 出荷（第8部） |
 | 役割別の入り口 | `index.html` の「ROLE ― 役割別の入り口」参照。第4部以降の各参考書の冒頭にも役割別（営業・企画／設計・開発／研究・製造）の読み方ガイドがある |
 | イメージセンサが目的 | SemiLab 1・2・4章 → 第4部 参考書 00–07 → PixelLab 1章 → 参考書 ノイズ／PTC／付録C → PixelLab 2–3章 |
@@ -82,15 +84,16 @@
 
 ```
 node ProcessLab\tests\all.js      332 件
-node SemiLab\tests\all.js       1,159 件
+node SemiLab\tests\all.js       1,255 件
 node CharLab\tests\all.js         184 件
 node NandLab\tests\all.js         725 件
 node PixelLab\tests\all.js        281 件
-node PhotonLab\tests\all.js       254 件
+node PhotonLab\tests\all.js       333 件
 node AnalogLab\tests\all.js       260 件
 node OptoLab\tests\all.js         301 件
 node QALab\tests\all.js           281 件
 node LaserLab\tests\all.js        200 件
+node DesignLab\tests\all.js       547 件
 ```
 
 （件数は 2026-09-13 時点）
@@ -101,4 +104,4 @@ node LaserLab\tests\all.js        200 件
 
 - ~~NandLab「電圧で見る」のしきい値 0.7V は決め打ち~~ → **SemiLab 第5章「NAND の中身へ」の採点を通すと、その nMOS の Vth が NandLab「電圧で見る」に渡る**ようになった（localStorage 経由・出どころを画面に明記）。渡るのは Vth だけ ― この素朴なモデルでは n と p の強さの比しか効かず比は 1 固定なので、Cox は坂の形を変えない。電源 3.3V は決め打ちのまま
 - ~~NandLab に「原始部品を NOR にする」モードを足すか検討~~ → **第6章「NOR だけで組む」として追加**（NOT・OR・AND・NAND・XNOR・SR ラッチの6問。素子は混ぜない ― 第6章は NOR だけ、ほかの章は NAND だけで採点）
-- 各ラボの「ここから先」（README）― BJT・降伏・反射防止膜の設計（SemiLab。pMOS は n 基板のソルバを直してゲートの材料と合わせて課題化済み）、側壁と形状・TED（ProcessLab）、光学（PixelLab。HDR 合成は「長短合成で 100 dB」として課題化済み）、メモリ（NandLab。RAM16 を「実装部品」として追加済み ― 課題の採点では使えない）、ゼロ打ち消し抵抗・スルーレート（AnalogLab）、調芯公差＝軸ずれ/角度ずれのモード結合（OptoLab）、Norris-Landzberg・GR&R の分散分析と ndc（QALab）、温度を振った I-V・1/C² プロファイル・SemiLab→CharLab の素子受け渡し（CharLab。C-V/I-V の測って当てるは実装済み）。
+- 各ラボの「ここから先」（README）― BJT・降伏・多層の反射防止膜（SemiLab。pMOS とゲートの材料、単層の反射防止膜は課題化済み）、側壁と形状・TED（ProcessLab）、光学（PixelLab。HDR 合成は「長短合成で 100 dB」として課題化済み）、メモリ（NandLab。RAM16 を「実装部品」として追加済み ― 課題の採点では使えない）、ゼロ打ち消し抵抗・スルーレート（AnalogLab）、調芯公差＝軸ずれ/角度ずれのモード結合（OptoLab）、Norris-Landzberg・GR&R の分散分析と ndc（QALab）、温度を振った I-V・1/C² プロファイル・SemiLab→CharLab の素子受け渡し（CharLab。C-V/I-V の測って当てるは実装済み）。
