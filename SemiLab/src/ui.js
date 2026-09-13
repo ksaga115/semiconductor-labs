@@ -659,6 +659,8 @@
     var mm = null;
     try { mm = DEV.mos(st, S.T); } catch (e) { mm = null; }
     if (mm) {
+      var GN = { 'n+poly': 'n⁺ポリ', 'p+poly': 'p⁺ポリ', al: 'Al', w: 'W' };
+      parts.push((mm.pType ? 'nMOS' : 'pMOS') + '・ゲート ' + (GN[mm.gate] || mm.gate));
       parts.push('Vth ' + mm.vth.toFixed(3) + ' V');
       parts.push('S ' + (mm.swing * 1000).toFixed(1) + ' mV/dec');
     }
@@ -702,6 +704,10 @@
   function renderLayers() {
     var ul = document.getElementById('layerList');
     var st = S.stack;
+    /* ゲートの材料 ― 端に酸化膜が無いあいだは効かないので薄く出す */
+    var hasGate = ST.contactKind(st, 'left') === ST.GATE || ST.contactKind(st, 'right') === ST.GATE;
+    document.getElementById('gateSel').value = st.gate || 'n+poly';
+    document.getElementById('gateRow').style.opacity = hasGate ? 1 : .55;
     ul.innerHTML = '';
     document.getElementById('layersEmpty').classList.toggle('hidden', st.layers.length > 0);
 
@@ -889,6 +895,12 @@
     document.getElementById('addOx').addEventListener('click', function () {
       ST.insertLayer(S.stack, 0, 'ox', 5);
       S.sel = 0;
+      touch(true);
+    });
+    /* ゲートの材料は構造の一部（st.gate）― 残す・書き出す・お手本でいっしょに動く */
+    var gateEl = document.getElementById('gateSel');
+    gateEl.addEventListener('change', function () {
+      S.stack.gate = gateEl.value;
       touch(true);
     });
   }

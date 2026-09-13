@@ -273,7 +273,9 @@
   function doCV(g, cvs, note) {
     var st = S().stack, T = S().T, vs = [], v;
     var mm = DEV.mos(st, T);
-    var lo = Math.min(mm.vfb - 2, -2), hi = Math.max(mm.vth + 2, 2);
+    /* pMOS は VFB と Vth の並びが逆（Vth < VFB）。どちら向きでも両方が窓に入るように */
+    var a = Math.min(mm.vfb, mm.vth), b = Math.max(mm.vfb, mm.vth);
+    var lo = Math.min(a - 2, -2), hi = Math.max(b + 2, 2);
     for (v = lo; v <= hi; v += (hi - lo) / 80) vs.push(v);
     var c = DEV.cv(st, vs, T);
     plot(g, cvs, {
@@ -283,6 +285,7 @@
     note.innerHTML = 'Cox = ' + (mm.Cox * 1e9).toFixed(1) + ' nF/cm²　'
       + 'フラットバンド ' + mm.vfb.toFixed(3) + ' V　しきい値 ' + mm.vth.toFixed(3) + ' V<br>'
       + '蓄積では Cox に張り付き、空乏で下がり、反転でまた上がる。'
+      + (mm.pType ? '' : '<b>n 基板なので左右が鏡写し</b> ― 蓄積は正のゲート側、反転（正孔）は負の側。')
       + 'この形は仮定せずに dQ/dV を数値で出しただけ ― '
       + '実際の C-V 測定で「反転側が上がらない（高周波では少数キャリアが追いつけない）」のは、'
       + 'ここでは扱っていない時間の話。';
@@ -291,8 +294,9 @@
   function doIdVd(g, cvs, note) {
     var st = S().stack, T = S().T;
     var mm = DEV.mos(st, T);
-    var vth = mm.vth;
-    var vgs = [vth + 0.3, vth + 0.6, vth + 0.9, vth + 1.2];
+    var vth = mm.vth, sg = mm.pType ? 1 : -1;
+    /* pMOS はゲートを Vth より負へ ― オーバードライブの大きさは nMOS と同じ 0.3〜1.2 V */
+    var vgs = [0.3, 0.6, 0.9, 1.2].map(function (d) { return vth + sg * d; });
     var series = vgs.map(function (vg, i) {
       var r = DEV.idvd(st, vg, 2.0, T, 26);
       return {
@@ -301,12 +305,15 @@
         color: ['#5aa9e6', '#4cc38a', '#ffcc66', '#e5686d'][i]
       };
     });
-    plot(g, cvs, { xlabel: 'ドレイン電圧 Vd [V]', ylabel: 'Id （W/L = 1） [µA]', y0: 0, series: series });
+    plot(g, cvs, { xlabel: 'ドレイン電圧 Vd [V]', ylabel: (mm.pType ? 'Id' : '|Id|') + ' （W/L = 1） [µA]', y0: 0, series: series });
+    var muN = P.muN(mm.Nb, T), muP = P.muP(mm.Nb, T);
     note.innerHTML = 'Id = (W/L)·µ·∫Qinv(Vc) dVc を、チャネル電位ごとに<b>ポアソンを解いて</b>積んだもの。<br>'
-      + '二乗則も飽和も仮定していない ― Vd を上げるとドレイン側の反転電荷が減り、'
+      + '二乗則も飽和も仮定していない ― |Vd| を上げるとドレイン側の反転電荷が減り、'
       + '足し算が増えなくなるので<b>勝手に飽和する</b>。<br>'
+      + (mm.pType ? '' : '<b>pMOS</b> ― ゲートもドレインも負の側で、流れるのは正孔。'
+         + '移動度が電子の 1/' + (muN / muP).toFixed(2) + ' なので、同じ形でも電流はそのぶん小さい。<br>')
       + 'しきい値 ' + vth.toFixed(3) + ' V、チャネルの移動度 '
-      + P.muN(mm.Nb, T).toFixed(0) + ' cm²/Vs。';
+      + (mm.pType ? muN : muP).toFixed(0) + ' cm²/Vs（' + (mm.pType ? '電子' : '正孔') + '）。';
   }
 
   SL.chart = { open: open, plot: plot, cvData: cvData };

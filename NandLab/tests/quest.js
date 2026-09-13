@@ -63,7 +63,7 @@ A.STEPS.forEach(st => {
   pass++;
   measured[st.id] = r.gates;
   const mark = r.gates === quest.goal ? '' : `   ← src/quest.js の goal は ${quest.goal}`;
-  console.log(`  OK  ${padW(quest.name, 18)} NAND ${String(r.gates).padStart(3)}個${mark}`);
+  console.log(`  OK  ${padW(quest.name, 18)} ${Q.unitOf(quest).padEnd(4)} ${String(r.gates).padStart(3)}個${mark}`);
 
   if (st.chip) check(!!lib[st.chip], `${quest.name}: チップ ${st.chip} として登録できた`);
 });
@@ -141,6 +141,48 @@ console.log('\n== わざと間違えた回路は落ちる');
   const r = Q.grade(Q.BY_ID.dff, b.c, lib);
   check(!r.ok, 'D ラッチは D フリップフロップとして通らない');
   check(r.step === 2, 'C が 1 のあいだに D を変える手順で落ちている');
+}
+
+/* ---------------- 素子を混ぜない（第6章 NOR の世界） ---------------- */
+
+console.log('\n== 素子を混ぜると落ちる');
+
+{
+  /* NOR の章に、NAND の世界の NOT チップを持ち込む ― 振る舞いは合っていても落ちる */
+  const b = new Builder(lib);
+  const a = b.input('A');
+  b.output('Y', b.chip('NOT', [a])[0]);
+  const r = Q.grade(Q.BY_ID.n_not, b.c, lib);
+  check(!r.ok && /NOR だけ/.test(r.error || ''), 'NOR の章に NAND を持ち込むと落ちる');
+}
+{
+  /* NAND の章の「NOR」課題に NOR 素子を1個置く ― 振る舞いは合っていても落ちる */
+  const b = new Builder(lib);
+  const a = b.input('A'), c = b.input('B');
+  b.output('Y', b.nor(a, c));
+  const r = Q.grade(Q.BY_ID.nor, b.c, lib);
+  check(!r.ok && /第6章/.test(r.error || ''), 'NAND の章に NOR 素子を持ち込むと落ちる');
+  /* 同じ回路でも、NOR の章の課題（NOR で OR の否定＝NOR そのもの…は無いので NOT で確かめる）なら素子の種類では落ちない */
+  const b2 = new Builder(lib);
+  const a2 = b2.input('A');
+  b2.output('Y', b2.nor(a2, a2));
+  const r2 = Q.grade(Q.BY_ID.n_not, b2.c, lib);
+  check(r2.ok && r2.gates === 1 && r2.unit === 'NOR', 'NOR 1個の NOT は NOR の章で通り、NOR 1個と数える');
+}
+{
+  /* 双対: NAND 4個の XOR と同じ配線を NOR でやると、XOR ではなく XNOR になる */
+  const b = new Builder(lib);
+  const a = b.input('A'), c = b.input('B');
+  const t = b.nor(a, c);
+  b.output('Y', b.nor(b.nor(a, t), b.nor(c, t)));
+  check(Q.grade(Q.BY_ID.n_xnor, b.c, lib).ok, 'NAND の XOR と同じ配線の NOR は XNOR として通る');
+  const nandXor = Q.BY_ID.xor;
+  check(!Q.grade(Object.assign({}, nandXor, { prim: 'nor' }), b.c, lib).ok, '同じ回路は XOR としては通らない');
+}
+{
+  /* NOR の SR ラッチは「1 で効く」― NAND のラッチ（0 で効く）の手順では落ちる */
+  const r = Q.grade(Object.assign({}, Q.BY_ID.srlatch, { prim: 'nor' }), all.circuits.n_sr, lib);
+  check(!r.ok, 'NOR のラッチは、0 で効く NAND のラッチの手順では通らない');
 }
 
 /* ---------------- 画面から見るお手本 ---------------- */

@@ -85,6 +85,7 @@ group('起動', () => {
   dom.byId.get('mOk').onclick();
   eq(Object.keys(S.circuit.parts).length, 0, '「作業台を消す」で空になる');
   ok(palette({ kind: 'nand' }), 'パレットに NAND がある');
+  ok(palette({ kind: 'nor' }), 'パレットに NOR（第6章の素子）がある');
   const items = dom.created.filter(e => e.tagName === 'LI' && !e.classList.contains('sec'));
   eq(items.length, NL.quest.QUESTS.length, '課題が全部並んでいる');
   eq(dom.created.filter(e => e.tagName === 'LI' && e.classList.contains('sec')).length,

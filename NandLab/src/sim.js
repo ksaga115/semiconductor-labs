@@ -33,6 +33,20 @@
     return X;
   }
 
+  /* NOR の3値表（第6章の原始部品）― NAND の表の 0 と 1 を入れ替えたもの（双対）。
+   * 片方が 1 なら、もう片方が未定でも出力は 0 で確定する。
+   *
+   *        b=0  b=1  b=X
+   *   a=0    1    0    X
+   *   a=1    0    0    0
+   *   a=X    X    0    X
+   */
+  function nor3(a, b) {
+    if (a === 1 || b === 1) return 0;      /* 1 が1つあれば、もう片方が何でも 0 */
+    if (a === 0 && b === 0) return 1;
+    return X;
+  }
+
   var SETTLE_MAX = 2000;   /* これを超えたら発振とみなす */
   var PROBE = 40;          /* 発振している素子を特定するために追加で回す歩数 */
 
@@ -78,6 +92,7 @@
     if (g.kind === 'src') return this.v[i];             /* 源は外から書かれるまで動かない */
     if (g.kind === 'buf') return this.val(g.ins[0]);
     if (g.kind === 'ram16') return this.evalRam(i, g);
+    if (g.kind === 'nor') return nor3(this.val(g.ins[0]), this.val(g.ins[1]));
     return nand3(this.val(g.ins[0]), this.val(g.ins[1]));
   };
 
@@ -241,7 +256,7 @@
   function show(v) { return v === X ? 'X' : String(v); }
 
   NL.sim = {
-    X: X, nand3: nand3, SETTLE_MAX: SETTLE_MAX,
+    X: X, nand3: nand3, nor3: nor3, SETTLE_MAX: SETTLE_MAX,
     Sim: Sim, evaluate: evaluate, show: show
   };
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -102,10 +102,13 @@
   /** NAND の数（チップを展開したあとの正味の素子数）。回路の"重さ"の指標 */
   function gateCount(circuit, lib) {
     var flat = NL.lib.flatten(circuit, lib);
-    if (flat.error) return { error: flat.error, nand: 0, total: 0 };
-    var nand = 0;
-    for (var i = 0; i < flat.gates.length; i++) if (flat.gates[i].kind === 'nand') nand++;
-    return { nand: nand, total: flat.gates.length, error: null };
+    if (flat.error) return { error: flat.error, nand: 0, nor: 0, total: 0 };
+    var nand = 0, nor = 0;
+    for (var i = 0; i < flat.gates.length; i++) {
+      if (flat.gates[i].kind === 'nand') nand++;
+      else if (flat.gates[i].kind === 'nor') nor++;     /* 第6章の原始部品 */
+    }
+    return { nand: nand, nor: nor, total: flat.gates.length, error: null };
   }
 
   /**

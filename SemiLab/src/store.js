@@ -33,6 +33,8 @@
     if (!s.stack || typeof s.stack !== 'object') return false;
     if (!Array.isArray(s.stack.layers)) return false;
     if (typeof s.stack.seq !== 'number') return false;
+    /* ゲートの材料は無くてよい（無ければ n+ ポリ）。あるなら知っている材料の名前 */
+    if (s.stack.gate !== undefined && !(typeof s.stack.gate === 'string' && SL.phys.WORKFN[s.stack.gate])) return false;
     for (var i = 0; i < s.stack.layers.length; i++) {
       var L = s.stack.layers[i];
       if (!L || (L.mat !== 'si' && L.mat !== 'ox')) return false;

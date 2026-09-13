@@ -1,6 +1,6 @@
-/* お手本 ― 22問それぞれを実際に組んだ回路
+/* お手本 ― 全課題それぞれを実際に組んだ回路
  *
- * 課題の「お手本の NAND 数」は、ここで組んだ回路の実測値。
+ * 課題の「お手本の NAND 数」（第6章は NOR 数）は、ここで組んだ回路の実測値。
  * **画面の「お手本を見る」と、検査（tests/quest.js）は同じこれを使う。**
  * 別々に持つと、検査を通っているお手本と、人が見るお手本が食い違う。
  *
@@ -41,6 +41,13 @@
   Builder.prototype.openNand = function () { return this.place('nand'); };
   Builder.prototype.nand = function (a, b) {
     var g = this.place('nand');
+    this.link(a, g, 0); this.link(b, g, 1);
+    return sig(g, 0);
+  };
+  /* 第6章（原始部品が NOR の世界）用 */
+  Builder.prototype.openNor = function () { return this.place('nor'); };
+  Builder.prototype.nor = function (a, b) {
+    var g = this.place('nor');
     this.link(a, g, 0); this.link(b, g, 1);
     return sig(g, 0);
   };
@@ -299,6 +306,42 @@
         var logic = b.chipn('MUX', { A: and, B: xor, S: s0 }).Y;
         b.output('Y' + i, b.chipn('MUX', { A: f.S, B: logic, S: s1 }).Y);
       }
+    } },
+
+    /* ---- 第6章 NOR だけ。チップ名は N- で始めて、NAND の世界のチップと取り違えない ---- */
+    { id: 'n_not', chip: 'N-NOT', build: function (b) {
+      var a = b.input('A');
+      b.output('Y', b.nor(a, a));
+    } },
+    { id: 'n_or', chip: 'N-OR', build: function (b) {
+      var a = b.input('A'), c = b.input('B');
+      b.output('Y', b.chip('N-NOT', [b.nor(a, c)])[0]);
+    } },
+    { id: 'n_and', chip: 'N-AND', build: function (b) {
+      var a = b.input('A'), c = b.input('B');
+      /* ド・モルガン: A·B = ¬(¬A + ¬B) = NOR(NOT A, NOT B) */
+      b.output('Y', b.nor(b.chip('N-NOT', [a])[0], b.chip('N-NOT', [c])[0]));
+    } },
+    { id: 'n_nand', chip: 'N-NAND', build: function (b) {
+      var a = b.input('A'), c = b.input('B');
+      b.output('Y', b.chip('N-NOT', [b.chip('N-AND', [a, c])[0]])[0]);
+    } },
+    { id: 'n_xnor', chip: 'N-XNOR', build: function (b) {
+      var a = b.input('A'), c = b.input('B');
+      /* NAND の XOR と同じ配線。双対なので XNOR になる */
+      var t = b.nor(a, c);
+      b.output('Y', b.nor(b.nor(a, t), b.nor(c, t)));
+    } },
+    { id: 'n_sr', chip: 'N-SR', build: function (b) {
+      var s = b.input('S'), r = b.input('R');
+      /* Q = NOR(R, P)、P = NOR(S, Q)。互い違いなので先に置いてから配線する */
+      var g1 = b.openNor(), g2 = b.openNor();
+      b.link(r, g1, 0);
+      b.link(sig(g2, 0), g1, 1);
+      b.link(s, g2, 0);
+      b.link(sig(g1, 0), g2, 1);
+      b.output('Q', sig(g1, 0));
+      b.output('P', sig(g2, 0));
     } }
   ];
 

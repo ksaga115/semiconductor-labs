@@ -39,9 +39,9 @@
   第10部_設計演習.html              第10部 総合演習 ― 1台を設計する: 微弱光カメラ・LiDAR・分光器を光子から安全と信頼性まで数字でつなぐ（10章）
   付録_物性値と索引.html            付録 ― 物性値の表・式の索引・全部の部の用語の統一索引（検索できる）・記号表・英日対訳・年表
   ProcessLab\                    第1部 ラボ ― 原始部品 ＝ 工程（4章 13問）
-  SemiLab\                       第2部 ラボ（作る側）― 原始部品 ＝ 不純物（5章 22問）
+  SemiLab\                       第2部 ラボ（作る側）― 原始部品 ＝ 不純物（5章 24問）
   CharLab\                       第2部 ラボ（測る側）― 謎の素子の I-V/C-V から n・Vth・tox・Na を当てる（3章 9問）
-  NandLab\                       第3部 ラボ ― 原始部品 ＝ NAND（5章 25問）
+  NandLab\                       第3部 ラボ ― 原始部品 ＝ NAND（6章 31問。第6章だけ NOR）
   PixelLab\                      第4部 ラボ ― 原始部品 ＝ 光子と電子を数えること（3章 12問）
   PhotonLab\                     第5部 ラボ ― 原始部品 ＝ 光子とη（3章 12問。R・NEP・D*・最適なM・MPPC・背景光・計数・走行×RC・TCSPC）
   AnalogLab\                     第6部 ラボ ― 原始部品 ＝ 二乗則のMOS 1個（4章 13問。Vov・gm・利得・GBW・TIA・kTC・SC・2段OTA・ADC・DC-DC）
@@ -82,9 +82,9 @@
 
 ```
 node ProcessLab\tests\all.js      332 件
-node SemiLab\tests\all.js       1,074 件
+node SemiLab\tests\all.js       1,159 件
 node CharLab\tests\all.js         184 件
-node NandLab\tests\all.js         642 件
+node NandLab\tests\all.js         725 件
 node PixelLab\tests\all.js        281 件
 node PhotonLab\tests\all.js       254 件
 node AnalogLab\tests\all.js       260 件
@@ -100,5 +100,5 @@ node LaserLab\tests\all.js        200 件
 ## これから
 
 - ~~NandLab「電圧で見る」のしきい値 0.7V は決め打ち~~ → **SemiLab 第5章「NAND の中身へ」の採点を通すと、その nMOS の Vth が NandLab「電圧で見る」に渡る**ようになった（localStorage 経由・出どころを画面に明記）。渡るのは Vth だけ ― この素朴なモデルでは n と p の強さの比しか効かず比は 1 固定なので、Cox は坂の形を変えない。電源 3.3V は決め打ちのまま
-- NandLab に「原始部品を NOR にする」モードを足すか検討（第3部 01 章で NOR の万能性を説明しているが、ラボでは NAND からしか組めない）
-- 各ラボの「ここから先」（README）― BJT・降伏・反射防止膜の設計・pMOS（SemiLab。ただし dev.js の MOS 解は p 基板＋n+poly ゲート前提で、n 基板に対しては正しい Vth を返さないことを確認済み ― pMOS 課題はソルバの n 基板対応が先）、側壁と形状・TED（ProcessLab）、光学（PixelLab。HDR 合成は「長短合成で 100 dB」として課題化済み）、メモリ（NandLab。RAM16 を「実装部品」として追加済み ― 課題の採点では使えない）、ゼロ打ち消し抵抗・スルーレート（AnalogLab）、調芯公差＝軸ずれ/角度ずれのモード結合（OptoLab）、Norris-Landzberg・GR&R の分散分析と ndc（QALab）、温度を振った I-V・1/C² プロファイル・SemiLab→CharLab の素子受け渡し（CharLab。C-V/I-V の測って当てるは実装済み）。さらに先の候補: NandLab の NOR モード
+- ~~NandLab に「原始部品を NOR にする」モードを足すか検討~~ → **第6章「NOR だけで組む」として追加**（NOT・OR・AND・NAND・XNOR・SR ラッチの6問。素子は混ぜない ― 第6章は NOR だけ、ほかの章は NAND だけで採点）
+- 各ラボの「ここから先」（README）― BJT・降伏・反射防止膜の設計（SemiLab。pMOS は n 基板のソルバを直してゲートの材料と合わせて課題化済み）、側壁と形状・TED（ProcessLab）、光学（PixelLab。HDR 合成は「長短合成で 100 dB」として課題化済み）、メモリ（NandLab。RAM16 を「実装部品」として追加済み ― 課題の採点では使えない）、ゼロ打ち消し抵抗・スルーレート（AnalogLab）、調芯公差＝軸ずれ/角度ずれのモード結合（OptoLab）、Norris-Landzberg・GR&R の分散分析と ndc（QALab）、温度を振った I-V・1/C² プロファイル・SemiLab→CharLab の素子受け渡し（CharLab。C-V/I-V の測って当てるは実装済み）。

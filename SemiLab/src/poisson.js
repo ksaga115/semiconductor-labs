@@ -94,7 +94,7 @@
    * そこでは電荷への効きが桁で無視できるので、一定のままにしてある。
    *
    * bias = { left, right }（V）。opt.chan を渡すと、シリコンの中の電子だけ
-   * その電位にする（MOSFET のチャネル用）。
+   * その電位にする（nMOS のチャネル用）。opt.chanP は同じことを正孔に（pMOS のチャネル用）。
    */
   function quasiFermi(m, bias, opt) {
     opt = opt || {};
@@ -120,12 +120,18 @@
       if (opt.chan !== undefined && opt.chan !== null) {
         for (i = 0; i < n; i++) if (m.siDx[i] > 0) phin[i] = opt.chan;
       }
+      if (opt.chanP !== undefined && opt.chanP !== null) {
+        for (i = 0; i < n; i++) if (m.siDx[i] > 0) phip[i] = opt.chanP;
+      }
       return { phin: phin, phip: phip, multi: js.length > 1 };
     }
 
     for (i = 0; i < n; i++) { phin[i] = vn; phip[i] = vp; }
     if (opt.chan !== undefined && opt.chan !== null) {
       for (i = 0; i < n; i++) if (m.siDx[i] > 0) phin[i] = opt.chan;
+    }
+    if (opt.chanP !== undefined && opt.chanP !== null) {
+      for (i = 0; i < n; i++) if (m.siDx[i] > 0) phip[i] = opt.chanP;
     }
     return { phin: phin, phip: phip, multi: false };
   }
@@ -150,7 +156,9 @@
     var phin = qf.phin, phip = qf.phip;
 
     /* 境界（両端はディリクレ） */
-    var wfL = opt.wfLeft || P.WORKFN['n+poly'], wfR = opt.wfRight || P.WORKFN['n+poly'];
+    /* ゲートの仕事関数。明示されなければ構造の持つ材料（m.gate）、それも無ければ n+ ポリ */
+    var gw = P.WORKFN[m.gate] || P.WORKFN['n+poly'];
+    var wfL = opt.wfLeft || gw, wfR = opt.wfRight || gw;
     var psiL = m.left === SL.stack.GATE ? gatePsi(bias.left, wfL, T) : ohmicPsi(bias.left, m.netR[0], T);
     var psiR = m.right === SL.stack.GATE ? gatePsi(bias.right, wfR, T) : ohmicPsi(bias.right, m.netL[N - 1], T);
 

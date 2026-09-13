@@ -16,11 +16,12 @@
   var ST = SL.stack;
 
   /** 層の並びを短く書くための道具。['si', 厚みnm, {na,nd}] の配列から作る */
-  function build(rows) {
+  function build(rows, gate) {
     var st = ST.create(), i;
     for (i = 0; i < rows.length; i++) {
       ST.addLayer(st, rows[i][0], rows[i][1], rows[i][2] || {});
     }
+    if (gate) st.gate = gate;          /* ゲートの材料（phys.WORKFN のキー）。省くと n+ ポリ */
     return st;
   }
 
@@ -131,6 +132,14 @@
     swing: {
       note: '酸化膜 4nm で Cox を上げ、基板 3e17 で Vth を確保。60mV/dec には届かない。',
       make: function () { return build([['ox', 4], ['si', 500, { na: 3e17 }]]); }
+    },
+    gate: {
+      note: '基板と酸化膜は MOS キャパシタのお手本と同じまま、ゲートだけ p⁺ ポリに。仕事関数の差 1.12 eV がそのまま Vth に乗る。',
+      make: function () { return build([['ox', 5], ['si', 500, { na: 1e17 }]], 'p+poly'); }
+    },
+    pmos: {
+      note: '「NAND の中身へ」のお手本を鏡に映したもの ― n 基板と p⁺ ポリ。符号が全部逆になる。',
+      make: function () { return build([['ox', 7], ['si', 500, { nd: 2.5e17 }]], 'p+poly'); }
     },
     nand: {
       note: 'nMOS の完成形。ここから上は NandLab の話 ― これを4個組むと NAND になる。',

@@ -317,7 +317,8 @@
     var qdep = P.Q * Nb * wmax;
 
     var m = ST.mesh(st, T);
-    var wf = P.WORKFN['n+poly'];
+    /* ゲートの材料は構造が持つ（st.gate → m.gate。無ければ n+ ポリ） */
+    var wf = P.WORKFN[m.gate] || P.WORKFN['n+poly'];
     var vfbAnalytic = P.neutralPsi(body.nd - body.na, T) - PS.gatePsi(0, wf, T);
     var vthAnalytic = vfbAnalytic + 2 * phiF + (pType ? qdep / Cox : -qdep / Cox);
 
@@ -327,14 +328,20 @@
       return PS.solve(m, b, { wfLeft: wf, wfRight: wf, psi0: psi0 });
     }
 
-    /** 表面ポテンシャルが target になる vg を二分法で探す */
+    /**
+     * 表面ポテンシャルが target になる vg を二分法で探す。
+     * φs は vg の増加関数 ― p 基板でも n 基板でも「φs < target なら vg を上げる」。
+     *
+     * 【n 基板で一度まちがえていた】 以前は n 基板のとき比べる向きを逆にしていた。
+     * n 基板の反転は φs を負の側（2φF < 0）へ動かすが、φs が vg とともに増えることは
+     * 変わらない。向きを逆にすると探索が上端に張り付き、VFB も Vth も +5.4 V のような
+     * 探索範囲の端を返していた（教科書の式は −1.22 V）。tests/run.js の pMOS の節が見張る。
+     */
     function findVg(target, lo, hi) {
       var mid, i;
       for (i = 0; i < 30; i++) {
         mid = (lo + hi) / 2;
-        var s = at(mid);
-        var ok = pType ? (PS.surfacePsi(s) < target) : (PS.surfacePsi(s) > target);
-        if (ok) lo = mid; else hi = mid;
+        if (PS.surfacePsi(at(mid)) < target) lo = mid; else hi = mid;
       }
       return (lo + hi) / 2;
     }
@@ -351,9 +358,12 @@
       kind: 'mos', T: T, gateLeft: gateLeft, pType: pType,
       tox: tox, Cox: Cox, Nb: Nb, phiF: phiF, wmax: wmax, qdep: qdep,
       vfb: vfb, vth: vth, vfbAnalytic: vfbAnalytic, vthAnalytic: vthAnalytic,
-      swing: swing, cdep: cdep, wf: wf, mesh: m, at: at,
-      /** 反転電荷の面密度 [cm^-2] */
-      qinv: function (vg) { return PS.electronSheet(at(vg)); }
+      swing: swing, cdep: cdep, wf: wf, gate: m.gate, mesh: m, at: at,
+      /** 反転電荷の面密度 [cm^-2]。p 基板（nMOS）なら電子、n 基板（pMOS）なら正孔 */
+      qinv: function (vg) {
+        var s = at(vg);
+        return pType ? PS.electronSheet(s) : PS.holeSheet(s);
+      }
     };
   }
 
@@ -367,7 +377,7 @@
     dv = dv || 0.01;
     var m = ST.mesh(st, T);
     var gateLeft = st.layers[0].mat === 'ox';
-    var wf = P.WORKFN['n+poly'];
+    var wf = P.WORKFN[m.gate] || P.WORKFN['n+poly'];
     var out = [], i;
 
     function q(vg) {
@@ -393,6 +403,9 @@
    *
    * 同じ Vg なら Qinv(Vc) の表は1回作れば使い回せるので、
    * Vd を掃くのは足し算だけで済む。
+   *
+   * pMOS（n 基板）は鏡写し ― 反転層は正孔、移動度は µp、チャネルの電位は正孔の
+   * 準フェルミ電位（chanP）で、Vd は 0 から **−vdMax へ**掃く。戻す電流は大きさ |Id|。
    */
   function idvd(st, vg, vdMax, T, steps) {
     T = T || P.T300;
@@ -400,23 +413,26 @@
     var mm = mos(st, T);
     if (!mm) return null;
     var m = mm.mesh, wf = mm.wf, gateLeft = mm.gateLeft;
-    var mu = P.muN(mm.Nb, T);
+    var sgn = mm.pType ? 1 : -1;
+    var mu = mm.pType ? P.muN(mm.Nb, T) : P.muP(mm.Nb, T);
     var i, vc, tbl = [];
 
     for (i = 0; i <= steps; i++) {
-      vc = vdMax * i / steps;
+      vc = sgn * vdMax * i / steps;
       var b = gateLeft ? { left: vg, right: 0 } : { left: 0, right: vg };
-      var sol = PS.solve(m, b, { wfLeft: wf, wfRight: wf, chan: vc });
-      tbl.push({ vc: vc, qinv: P.Q * PS.electronSheet(sol) });   /* [C/cm^2] */
+      var o = mm.pType ? { wfLeft: wf, wfRight: wf, chan: vc } : { wfLeft: wf, wfRight: wf, chanP: vc };
+      var sol = PS.solve(m, b, o);
+      var sheet = mm.pType ? PS.electronSheet(sol) : PS.holeSheet(sol);
+      tbl.push({ vc: vc, qinv: P.Q * sheet });                   /* [C/cm^2] */
     }
 
     /* 台形で積む。W/L は掛けない ― 呼ぶ側が形で決める量なので */
     var out = [{ vd: 0, idPerWL: 0 }], acc = 0;
     for (i = 1; i < tbl.length; i++) {
-      acc += (tbl[i].qinv + tbl[i - 1].qinv) / 2 * (tbl[i].vc - tbl[i - 1].vc);
+      acc += (tbl[i].qinv + tbl[i - 1].qinv) / 2 * Math.abs(tbl[i].vc - tbl[i - 1].vc);
       out.push({ vd: tbl[i].vc, idPerWL: mu * acc });            /* [A]（W/L=1 のとき） */
     }
-    return { vg: vg, mu: mu, vth: mm.vth, points: out, table: tbl };
+    return { vg: vg, mu: mu, vth: mm.vth, pType: mm.pType, points: out, table: tbl };
   }
 
   SL.dev = {

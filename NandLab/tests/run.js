@@ -90,6 +90,13 @@ group('sim ― NAND の3値表', () => {
   eq(S.nand3(0, X), 1, '片方が 0 なら、もう片方が未定でも 1 で確定する');
   eq(S.nand3(X, 0), 1, '順番を入れ替えても同じ');
   eq([S.nand3(1, X), S.nand3(X, 1), S.nand3(X, X)], [X, X, X], 'それ以外の未定は未定のまま');
+  /* NOR（第6章の原始部品）― NAND の表の 0 と 1 を入れ替えたもの。1 が1つあれば 0 で確定する */
+  eq([S.nor3(0, 0), S.nor3(0, 1), S.nor3(1, 0), S.nor3(1, 1)], [1, 0, 0, 0], '0/1 の普通の NOR');
+  eq([S.nor3(1, X), S.nor3(X, 1)], [0, 0], 'NOR: 片方が 1 なら、もう片方が未定でも 0 で確定する');
+  eq([S.nor3(0, X), S.nor3(X, 0), S.nor3(X, X)], [X, X, X], 'NOR: それ以外の未定は未定のまま');
+  /* 双対: nor3(a,b) = ¬nand3(¬a,¬b)（X は X のまま） */
+  const inv = (v) => v === X ? X : 1 - v;
+  [0, 1, X].forEach((a) => [0, 1, X].forEach((b) => eq(S.nor3(a, b), inv(S.nand3(inv(a), inv(b))), `双対 a=${a} b=${b}`)));
 });
 
 group('sim ― 組み合わせ回路', () => {
@@ -154,6 +161,7 @@ group('truth ― 真理値表', () => {
   eq(t.outNames, ['Y'], '出力名');
   eq(t.rows.map(r => r.in.concat(r.out)), [[0, 1], [1, 0]], 'NOT の表');
   eq(T.gateCount(notCircuit(), {}).nand, 1, 'NAND 1個');
+  eq(T.gateCount(notCircuit(), {}).nor, 0, 'NOR は 0個（数え分ける）');
 });
 
 /* ---- ここからチップ ---- */

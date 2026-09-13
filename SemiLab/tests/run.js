@@ -268,6 +268,85 @@ T('MOS', () => {
   ok('Vd を上げると傾きが寝る（飽和する）', slopeLate < slopeEarly * 0.35);
 });
 
+/* ================= 4.5 pMOS（n 基板）とゲートの材料 =================
+ *
+ * 【n 基板で一度まちがえていた】 dev.js の二分法が n 基板のとき向きを逆にしていて、
+ * VFB も Vth も探索範囲の端（+5.4 V）を返していた。式（−1.22 V）と突き合わせる検査が
+ * 無かったので気付かなかった ― ここがその見張り。
+ */
+
+function pmosStack(toxNm, nd, gate) {
+  const st = ST.create();
+  ST.addLayer(st, 'ox', toxNm);
+  ST.addLayer(st, 'si', 500, { nd });
+  if (gate) st.gate = gate;
+  return st;
+}
+
+T('pMOS', () => {
+  const st = pmosStack(5, 1e17, 'p+poly');
+  const mp = DEV.mos(st, T300);
+  ok('n 基板は pMOS と見分ける', !mp.pType);
+  eq('ゲートの材料が構造から来る', mp.gate, 'p+poly');
+  near('φF は負', mp.phiF, -P.vt(300) * Math.log(1e17 / P.ni(300)), 1e-6);
+
+  /* 数値と式が一致する（nMOS と同じ 5mV） */
+  near('pMOS の VFB（数値 vs 式）', mp.vfb, mp.vfbAnalytic, 5e-3);
+  near('pMOS の Vth（数値 vs 式）', mp.vth, mp.vthAnalytic, 5e-3);
+  near('VFB で φs = 0', PS.surfacePsi(mp.at(mp.vfb)), 0, 2e-3);
+  near('Vth で φs = 2φF（負）', PS.surfacePsi(mp.at(mp.vth)), 2 * mp.phiF, 5e-3);
+
+  /* 並びが鏡写し ― 蓄積は正のゲート側、反転は負の側 */
+  const acc = PS.surfacePsi(mp.at(mp.vfb + 1.5));
+  const depl = PS.surfacePsi(mp.at((mp.vfb + mp.vth) / 2));
+  const inv = PS.surfacePsi(mp.at(mp.vth - 1.5));
+  ok('蓄積では φs > 0', acc > 0);
+  ok('空乏では 2φF < φs < 0', depl < 0 && depl > 2 * mp.phiF);
+  ok('反転では φs < 2φF', inv < 2 * mp.phiF);
+  ok('Vth より上では反転電荷（正孔）が小さい', mp.qinv(mp.vth + 0.3) < mp.qinv(mp.vth) / 100);
+  ok('Vth より下では反転電荷（正孔）が育つ', mp.qinv(mp.vth - 1) > 1e12);
+
+  /* 以前の誤りの見張り: n+ ポリの n 基板は Vth が負で、式と一致する */
+  const np = DEV.mos(pmosStack(5, 1e17), T300);
+  ok('n+ ポリの n 基板は Vth が負（探索の端 +5.4V を返さない）', np.vth < 0);
+  near('n+ ポリの n 基板の Vth（数値 vs 式）', np.vth, np.vthAnalytic, 5e-3);
+  /* 式の形 Vth = −ψB − (χ+Eg/2 − φm) − Qdep/Cox ― 1e15 以上なら −0.86 V より深い */
+  ok('n+ ポリのままでは 1e15 の基板でも −0.86 V より深い', DEV.mos(pmosStack(5, 1e15), T300).vth < -0.86);
+
+  /* 鏡写し: 同じ濃度・同じ酸化膜の nMOS（n+ ポリ）と、Vth は符号が逆で
+   * 大きさの差はゲートの非対称（n+ ポリは中央から 0.5623 V、p+ ポリは 0.5577 V）だけ */
+  const mn = DEV.mos(mosStack(5, 1e17), T300);
+  const mid = P.SI.chi + P.eg(300) / 2;
+  const asym = (mid - P.WORKFN['n+poly']) - (P.WORKFN['p+poly'] - mid);
+  near('鏡写し: Vth_p = −Vth_n − 非対称', mp.vth, -mn.vth - asym, 2e-3);
+  near('鏡写し: S 値は同じ', mp.swing, mn.swing, 1e-9);
+
+  /* ゲートの材料: p 基板のまま n+ → p+ ポリで Vth は仕事関数の差（1.12 eV）だけずれる */
+  const pp = DEV.mos(Object.assign(mosStack(5, 1e17), { gate: 'p+poly' }), T300);
+  near('ゲートの材料で Vth が Δφm だけずれる', pp.vth - mn.vth, P.WORKFN['p+poly'] - P.WORKFN['n+poly'], 3e-3);
+  eq('ゲートを書かなければ n+ ポリ', ST.mesh(mosStack(5, 1e17), T300).gate, 'n+poly');
+  near('solve も構造のゲートを使う', PS.surfacePsi(PS.solve(ST.mesh(st, T300), { left: 0, right: 0 })),
+       PS.surfacePsi(mp.at(0)), 1e-6);
+
+  /* C-V も鏡写し ― 蓄積（正の側）で Cox、空乏で下がり、反転（負の側）でまた上がる */
+  const cvs = DEV.cv(st, [mp.vfb + 2, (mp.vfb + mp.vth) / 2, mp.vth - 2], T300);
+  within('pMOS の蓄積の容量は Cox', cvs[0].c, mp.Cox, 1.15);
+  ok('pMOS も空乏で容量が下がる', cvs[1].c < cvs[0].c * 0.8);
+  ok('pMOS も反転でまた上がる', cvs[2].c > cvs[1].c);
+
+  /* Id-Vd: Vd は負へ掃き、正孔で飽和する。同じオーバードライブなら電流比は µn/µp */
+  const rp = DEV.idvd(st, mp.vth - 1.0, 2.0, T300, 20);
+  const rn = DEV.idvd(mosStack(5, 1e17), mn.vth + 1.0, 2.0, T300, 20);
+  const pts = rp.points;
+  ok('pMOS の Vd は負の側', pts[pts.length - 1].vd < 0);
+  near('pMOS の Vd は −2 V まで', pts[pts.length - 1].vd, -2, 1e-12);
+  ok('pMOS の |Id| は単調に増える', pts.every((p, i) => i === 0 || p.idPerWL >= pts[i - 1].idPerWL - 1e-18));
+  ok('pMOS も |Vd| を上げると飽和する',
+     pts[pts.length - 1].idPerWL - pts[pts.length - 2].idPerWL < (pts[3].idPerWL - pts[2].idPerWL) * 0.35);
+  near('pMOS の移動度は µp', rp.mu, P.muP(1e17, 300), 1e-9);
+  within('電流比 nMOS/pMOS は µn/µp', rn.points[20].idPerWL / pts[20].idPerWL, P.muN(1e17, 300) / P.muP(1e17, 300), 1.02);
+});
+
 /* ================= 5. ダイオード ================= */
 
 T('ダイオード', () => {

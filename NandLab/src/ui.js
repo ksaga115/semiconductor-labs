@@ -37,6 +37,7 @@
 
   var GEO = {
     nand:  { w: 60, h: heightFor(2) },
+    nor:   { w: 60, h: heightFor(2) },   /* 第6章の原始部品 */
     'in':  { w: 60, h: heightFor(1) },
     out:   { w: 60, h: heightFor(1) },
     'const': { w: 40, h: heightFor(1) },
@@ -141,9 +142,10 @@
     S.flat = L.flatten(S.circuit, S.lib);
     /* 素子数はここで数えて覚えておく。ステータス行のために毎フレーム
      * T.gateCount を呼ぶと、そのたびに回路を展開し直すことになる */
-    S.nandCount = 0; S.ramCount = 0;
+    S.nandCount = 0; S.norCount = 0; S.ramCount = 0;
     for (var i = 0; i < S.flat.gates.length; i++) {
       if (S.flat.gates[i].kind === 'nand') S.nandCount++;
+      else if (S.flat.gates[i].kind === 'nor') S.norCount++;
       else if (S.flat.gates[i].kind === 'ram16') S.ramCount++;
     }
     S.sim = new SIM.Sim(S.flat);
@@ -551,15 +553,15 @@
     c2.textAlign = 'center';
     c2.textBaseline = 'middle';
 
-    if (p.kind === 'nand') {
+    if (p.kind === 'nand' || p.kind === 'nor') {
       roundRect(c2, p.x, p.y, s.w - 8, s.h, 6);
       c2.fill(); c2.stroke();
       /* 出力側の否定の丸 */
       c2.beginPath();
       c2.arc(p.x + s.w - 4, p.y + s.h / 2, 4.5, 0, Math.PI * 2);
       c2.fillStyle = '#12151a'; c2.fill(); c2.stroke();
-      c2.fillStyle = '#c3cfdd';
-      c2.fillText('NAND', p.x + (s.w - 8) / 2, p.y + s.h / 2);
+      c2.fillStyle = p.kind === 'nor' ? '#e8c170' : '#c3cfdd';   /* NOR は色を変えて取り違えないように */
+      c2.fillText(p.kind === 'nor' ? 'NOR' : 'NAND', p.x + (s.w - 8) / 2, p.y + s.h / 2);
 
     } else if (p.kind === 'in') {
       roundRect(c2, p.x, p.y, s.w, s.h, s.h / 2);
@@ -714,7 +716,8 @@
   function updateStatus() {
     var left = [];
     if (S.flat && S.flat.error) left.push('⚠ ' + S.flat.error);
-    else left.push('NAND ' + S.nandCount + '個' + (S.ramCount ? '＋RAM16 ' + S.ramCount + '個（実装部品）' : ''));
+    else left.push('NAND ' + S.nandCount + '個' + (S.norCount ? '＋NOR ' + S.norCount + '個' : '')
+                   + (S.ramCount ? '＋RAM16 ' + S.ramCount + '個（実装部品）' : ''));
     var selN = Object.keys(S.sel.parts).length;
     if (selN) left.push(selN + '個 選択中');
     if (S.place) left.push('配置: ' + (S.place.chip || kindLabel(S.place.kind)) + '（Esc でやめる）');
@@ -732,14 +735,21 @@
   }
 
   function kindLabel(k) {
-    return { nand: 'NAND', 'in': '入力', out: '出力', 'const': '定数', clock: 'クロック', ram16: 'RAM16（実装部品）' }[k] || k;
+    return { nand: 'NAND', nor: 'NOR', 'in': '入力', out: '出力', 'const': '定数', clock: 'クロック', ram16: 'RAM16（実装部品）' }[k] || k;
+  }
+
+  /** 素子数を人に見せる形に。NOR（第6章）が混じっていればそれも出す */
+  function gateText(g) {
+    if (g.nor && !g.nand) return 'NOR ' + g.nor + '個';
+    return 'NAND ' + g.nand + '個' + (g.nor ? '・NOR ' + g.nor + '個' : '');
   }
 
   /* ---------------- パレット ---------------- */
 
   function buildPalette() {
     el.prims.innerHTML = '';
-    [['nand', 'NAND', '唯一の素子'],
+    [['nand', 'NAND', '第1〜5章の素子'],
+     ['nor', 'NOR', '第6章の素子'],
      ['in', '入力', 'スイッチ'],
      ['out', '出力', 'ランプ'],
      ['const', '定数', '0 / 1'],
@@ -759,6 +769,10 @@
                 + '課題の採点では使えない（課題は NAND から組むのが主題）。\n'
                 + 'ダブルクリックで中身の16セルを見られる。';
       }
+      if (row[0] === 'nor') {
+        d.title = '第6章「NOR だけで組む」の原始部品。\n'
+                + '素子は混ぜない ― 第6章は NOR だけ、第1〜5章は NAND だけで採点する。';
+      }
       d.onclick = function () { setPlace({ kind: row[0] }); };
       el.prims.appendChild(d);
     });
@@ -775,11 +789,11 @@
       d.className = 'pitem';
       d.dataset.chip = nm;
       d.title = nm + '（入力 ' + def.inNames.join(',') + ' → 出力 ' + def.outNames.join(',') + '）\n'
-              + 'ばらすと NAND ' + g.nand + '個・NOT から数えて ' + dep + ' 段目\n'
+              + 'ばらすと ' + gateText(g) + '・NOT から数えて ' + dep + ' 段目\n'
               + 'ダブルクリックで中身を作業台に取り出す';
       d.innerHTML = '<span class="k"></span><span class="cnt"></span><span class="x" title="削除">×</span>';
       d.querySelector('.k').textContent = nm;
-      d.querySelector('.cnt').textContent = g.error ? '?' : g.nand;
+      d.querySelector('.cnt').textContent = g.error ? '?' : (g.nand + (g.nor || 0));
       d.onclick = function (e) {
         if (e.target.className === 'x') { e.stopPropagation(); removeChip(nm); return; }
         setPlace({ kind: 'chip', chip: nm });
@@ -1075,6 +1089,11 @@
     if (!p) return;
     if (p.kind === 'chip') { openPeek(p); return; }
     if (p.kind === 'nand') { openMos(p); return; }
+    if (p.kind === 'nor') {
+      /* トランジスタの絵は NAND のぶんだけ用意してある。NOR は言葉で正直に */
+      say('NOR の中身（CMOS）は pMOS 2個が直列・nMOS 2個が並列 ― NAND と上下が逆。トランジスタの絵は NAND だけ');
+      return;
+    }
     if (p.kind === 'ram16') { showRamCells(p); return; }
     if (p.kind === 'in' || p.kind === 'out') say('名前を変えるには、選んでから F2');
   }
@@ -1510,8 +1529,9 @@
         sim.settle();
 
         S.peek = { kind: 'answer', circuit: r.circuit, lib: r.lib, sim: sim, view: { ox: 0, oy: 0, s: 1 } };
-        el.peekName.textContent = q.name + ' のお手本　― NAND ' + q.goal + '個'
-          + (r.uses.length ? '（' + r.uses.join('・') + ' を使っている）' : '（NAND だけで組んである）');
+        var unit = Q.unitOf(q);
+        el.peekName.textContent = q.name + ' のお手本　― ' + unit + ' ' + q.goal + '個'
+          + (r.uses.length ? '（' + r.uses.join('・') + ' を使っている）' : '（' + unit + ' だけで組んである）');
         el.peek.classList.remove('hidden');
         el.peek.classList.remove('small');
         el.peekEdit.classList.add('hidden');
@@ -1581,8 +1601,8 @@
         /* 何の上に積み上がったのかを、登録した瞬間に見せる */
         var nm = made.chip.name, g = T.gateCount(S.lib[nm].circuit, S.lib), dep = L.depth(nm, S.lib);
         setEditing(nm);            /* 続けて直して Ctrl+S できるように */
-        say('「' + nm + '」 を' + (exists ? '上書きした' : 'チップにした') + '　― ばらすと NAND '
-          + g.nand + '個、NOT から数えて ' + dep + ' 段目');
+        say('「' + nm + '」 を' + (exists ? '上書きした' : 'チップにした') + '　― ばらすと '
+          + gateText(g) + '、NOT から数えて ' + dep + ' 段目');
         return true;
       }
     });
@@ -1869,7 +1889,7 @@
            + ' style="left:' + p.x + 'px;top:' + p.y + 'px;width:' + BW + 'px;height:' + BH + 'px"'
            + ' title="' + esc(q.desc.slice(0, 60)) + '">'
            + '<span class="nm">' + esc(q.name) + '</span>'
-           + '<span class="sub">' + (S.cleared[q.id] ? '✓ ' : '') + 'NAND ' + q.goal + '</span></div>';
+           + '<span class="sub">' + (S.cleared[q.id] ? '✓ ' : '') + Q.unitOf(q) + ' ' + q.goal + '</span></div>';
     });
     html += '</div>';
     html += '<p class="hintline">箱をクリックするとその課題を選ぶ。線は「先に作っておくと楽な課題」。'
@@ -1949,7 +1969,7 @@
       S.cleared[q.id] = true;
       buildQuestList();
       selectQuestKeep(q.id);
-      h = '<div class="good">◎ 合格　NAND ' + r.gates + '個（お手本は ' + r.goal + '個）</div>';
+      h = '<div class="good">◎ 合格　' + (r.unit || 'NAND') + ' ' + r.gates + '個（お手本は ' + r.goal + '個）</div>';
       if (q.why) h += '<div class="why">これで ' + esc(q.why) + '</div>';
       var next = Q.QUESTS[Q.QUESTS.indexOf(q) + 1];
       h += '<div class="why">「チップにする」で登録しておくと、次から部品として使える。'

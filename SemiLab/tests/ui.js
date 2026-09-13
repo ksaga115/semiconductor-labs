@@ -508,6 +508,36 @@ T('測る', () => {
   });
   $(doc, 'modal').querySelector('#mClose').fire('click');
 
+  /* pMOS（n 基板＋p⁺ ポリ）でも C-V と Id-Vd が例外なく出る */
+  S.stack = SL.answer.make('pmos');
+  SL.ui.syncControls(); SL.ui.invalidate(); win.flush();
+  eq('ゲートの欄がお手本の材料を示す', $(doc, 'gateSel').value, 'p+poly');
+  ok('下のバーに pMOS と出る', /pMOS/.test($(doc, 'statLeft').textContent));
+  $(doc, 'btnMeasure').fire('click');
+  win.flush();
+  const k3 = $(doc, 'modal').querySelectorAll('#mkinds .tb').filter((b) => b.dataset.k);
+  const note3 = $(doc, 'modal').querySelector('#mnote');
+  k3.forEach((btn) => {
+    btn.fire('click');
+    win.flush();
+    ok(`pMOS ${btn.dataset.k}: 例外を投げない`, !/計算できませんでした/.test(note3.textContent));
+    if (btn.dataset.k === 'idvd') ok('pMOS の Id-Vd は正孔と書く', /正孔/.test(note3.textContent));
+    if (btn.dataset.k === 'cv') ok('pMOS の C-V は鏡写しと書く', /鏡写し/.test(note3.textContent));
+  });
+  $(doc, 'modal').querySelector('#mClose').fire('click');
+
+  /* ゲートの材料を画面で切り替える → 構造に入り、Vth が仕事関数の差だけずれる */
+  S.stack = SL.answer.make('moscap');
+  SL.ui.syncControls(); SL.ui.invalidate(); win.flush();
+  eq('既定のゲートは n⁺ ポリ', $(doc, 'gateSel').value, 'n+poly');
+  const v0 = SL.dev.mos(S.stack, S.T).vth;
+  $(doc, 'gateSel').value = 'p+poly';
+  $(doc, 'gateSel').fire('change');
+  win.flush();
+  eq('選んだ材料が構造に入る', S.stack.gate, 'p+poly');
+  near('Vth が仕事関数の差だけずれる', SL.dev.mos(S.stack, S.T).vth - v0, 1.12, 5e-3);
+  ok('下のバーにも出る', /p⁺ポリ/.test($(doc, 'statLeft').textContent));
+
   /* 空の作業台では断る */
   S.stack = SL.stack.create();
   SL.ui.invalidate(); win.flush();
@@ -547,6 +577,13 @@ T('残す と 書き出し', () => {
   ok('読み戻せる', !back.error);
   eq('層の数が同じ', back.state.stack.layers.length, S.stack.layers.length);
   eq('残した素子も残る', Object.keys(back.state.lib).length, 1);
+
+  /* ゲートの材料も往復する。知らない材料の名前は断る */
+  S.stack.gate = 'w';
+  eq('ゲートの材料も往復する', SL.store.fromJSON(SL.store.toJSON(S)).state.stack.gate, 'w');
+  ok('知らない材料の名前は断る',
+     !!SL.store.fromJSON(JSON.stringify({ v: 1, stack: { layers: [], seq: 1, gate: 'gold' } })).error);
+  delete S.stack.gate;
 
   /* 壊れた JSON は断る */
   ok('壊れた JSON は断る', !!SL.store.fromJSON('{{{').error);

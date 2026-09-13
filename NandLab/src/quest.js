@@ -50,7 +50,8 @@
     { n: 2, name: '選ぶ・見分ける', note: '信号を選ぶ。同じかどうかを見る' },
     { n: 3, name: '計算する',       note: '足す・引く・かける' },
     { n: 4, name: '記憶する',       note: '値を覚える。ここから時間が関わる' },
-    { n: 5, name: '組み上げる',     note: '計算機の部品そのもの。この先はもう CPU' }
+    { n: 5, name: '組み上げる',     note: '計算機の部品そのもの。この先はもう CPU' },
+    { n: 6, name: 'NOR だけで組む', note: '原始部品を NOR に取り替えて、同じ世界をもう一度' }
   ];
 
   var QUESTS = [
@@ -193,7 +194,8 @@
     {
       id: 'nor', name: 'NOR', goal: 4, stage: 1, needs: ['or'],
       desc: 'どちらも 0 のときだけ 1。NAND と並ぶもう1つの万能ゲートで、'
-          + '実は NOR だけからでも全部の論理が作れる（このアプリが NAND から始めたのと同じ理由）。',
+          + '実は NOR だけからでも全部の論理が作れる（このアプリが NAND から始めたのと同じ理由）。'
+          + '第6章で、原始部品を NOR に取り替えて実際にやる。',
       why: 'NAND と同じで、これ1つからでも全部が作れる。アポロ誘導計算機は NOR だけで組まれていた。',
       hint: 'OR を作ってひっくり返すだけ。OR チップと NOT チップを並べる。',
       kind: 'comb', inputs: ['A', 'B'], outputs: ['Y'],
@@ -387,8 +389,97 @@
     }
   ];
 
+  /* ---- 第6章 ― 原始部品を NOR に取り替える ----
+   * prim: 'nor' の課題は NOR 素子だけ、それ以外は NAND だけで採点する（primError）。
+   * goal はこの章だけ「お手本が使った NOR の数」（tests/quest.js が実測して突き合わせる） */
+  var NOR_QUESTS = [
+    {
+      id: 'n_not', name: 'NOR で NOT', goal: 1, stage: 6, needs: [], prim: 'nor',
+      desc: 'ここからは原始部品を NOR に取り替える（パレットの NOR を使う。NAND は使えない）。まず NOT。',
+      why: 'NOR 1個からでも「ひっくり返す」が作れる。NOR も万能ゲートだという証明の最初の一歩。',
+      hint: 'NOR(A, A) を書き下す。A=0 なら 1、A=1 なら 0。NAND のときと同じ形。',
+      kind: 'comb', inputs: ['A'], outputs: ['Y'],
+      rows: build(1, function (b) { return [b[0] ? 0 : 1]; })
+    },
+    {
+      id: 'n_or', name: 'NOR で OR', goal: 2, stage: 6, needs: ['n_not'], prim: 'nor',
+      desc: 'どちらかが 1 なら 1。NOR は「OR の否定」なので、もう一度否定すれば戻る。',
+      why: 'NAND の世界の AND（NAND の後ろに NOT）と、ちょうど鏡写しの形。',
+      hint: 'NOR の後ろに、作った NOT（NOR 製）を置く。',
+      kind: 'comb', inputs: ['A', 'B'], outputs: ['Y'],
+      rows: build(2, function (b) { return [b[0] | b[1]]; })
+    },
+    {
+      id: 'n_and', name: 'NOR で AND', goal: 3, stage: 6, needs: ['n_not'], prim: 'nor',
+      desc: '両方 1 のときだけ 1。NOR だけで。',
+      why: 'ド・モルガン: A·B = ¬(¬A + ¬B) = NOR(¬A, ¬B)。NAND の世界の OR（NAND(¬A, ¬B)）の鏡写し。',
+      hint: '入力をそれぞれ NOT（NOR 製）してから、NOR に入れる。',
+      kind: 'comb', inputs: ['A', 'B'], outputs: ['Y'],
+      rows: build(2, function (b) { return [b[0] & b[1]]; })
+    },
+    {
+      id: 'n_nand', name: 'NOR で NAND', goal: 4, stage: 6, needs: ['n_and'], prim: 'nor',
+      desc: 'NOR だけで NAND を作る。',
+      why: 'NOR から NAND が作れた ― NAND からは第1章で NOR を作った。どちらを原始部品にしても、同じ全部が作れる。',
+      hint: 'AND（NOR 製）を作って、ひっくり返す。',
+      kind: 'comb', inputs: ['A', 'B'], outputs: ['Y'],
+      rows: build(2, function (b) { return [(b[0] & b[1]) ? 0 : 1]; })
+    },
+    {
+      id: 'n_xnor', name: 'NOR で一致（XNOR）', goal: 4, stage: 6, needs: ['n_not'], prim: 'nor',
+      desc: '2つが同じときだけ 1。NOR 4個でできる。',
+      why: 'NAND 4個の XOR と同じ配線を NOR でやると XNOR になる。全部の線の 0 と 1 を入れ替えて見ると、'
+         + 'NAND は NOR に、XOR は XNOR に写る（双対）。',
+      hint: 'T = NOR(A, B) を作り、NOR(A, T) と NOR(B, T) を最後の NOR でまとめる ― NAND の XOR と同じ形。',
+      kind: 'comb', inputs: ['A', 'B'], outputs: ['Y'],
+      rows: build(2, function (b) { return [b[0] === b[1] ? 1 : 0]; })
+    },
+    {
+      id: 'n_sr', name: 'NOR の SR ラッチ', goal: 2, stage: 6, needs: [], prim: 'nor',
+      desc: 'NOR 2個を互い違いに繋ぐ SR ラッチ。こちらは S・R が「1 で効く」（正論理）。'
+          + 'S=1 で Q が 1 に、R=1 で Q が 0 になり、S=R=0 のあいだは前の値を保つ。',
+      why: 'NAND のラッチ（0 で効く）と、効く向きが逆になるだけで同じ記憶の仕組み。',
+      hint: 'NOR を2つ置き、互いの出力をもう片方の入力へ。空いた入力が R と S。'
+          + 'Q は R が入っている側の NOR の出力から取る。',
+      kind: 'seq', inputs: ['R', 'S'], outputs: ['Q'],
+      steps: [
+        { in: { S: 0, R: 0 }, want: { Q: null }, note: '電源投入直後。まだ何も決まっていない（X でよい）' },
+        { in: { S: 1, R: 0 }, want: { Q: 1 }, note: 'S を効かせる → Q が 1' },
+        { in: { S: 0, R: 0 }, want: { Q: 1 }, note: '両方戻しても 1 のまま。これが記憶' },
+        { in: { S: 0, R: 1 }, want: { Q: 0 }, note: 'R を効かせる → Q が 0' },
+        { in: { S: 0, R: 0 }, want: { Q: 0 }, note: '戻しても 0 のまま' },
+        { in: { S: 1, R: 0 }, want: { Q: 1 }, note: 'もう一度 S' },
+        { in: { S: 0, R: 0 }, want: { Q: 1 }, note: '保持' }
+      ]
+    }
+  ];
+  QUESTS.push.apply(QUESTS, NOR_QUESTS);
+
   var BY_ID = {};
   QUESTS.forEach(function (q) { BY_ID[q.id] = q; });
+
+  /** 課題の単位になる素子。第6章だけ NOR */
+  function unitOf(quest) { return quest && quest.prim === 'nor' ? 'NOR' : 'NAND'; }
+
+  /* 素子を混ぜない。第6章は NOR だけ、ほかの章は NAND だけで組む。
+   * 混ぜてよいことにすると、第1章の「NOR」課題が NOR 素子1個で済んでしまい、
+   * 第6章は NAND の世界で作ったチップを持ち込むだけで済んでしまう */
+  function primError(quest, flat) {
+    var nand = 0, nor = 0;
+    for (var i = 0; i < flat.gates.length; i++) {
+      if (flat.gates[i].kind === 'nand') nand++;
+      else if (flat.gates[i].kind === 'nor') nor++;
+    }
+    if (quest.prim === 'nor') {
+      return nand ? 'この章は NOR だけで組む。NAND が ' + nand + '個入っている（NAND の章で作ったチップも中身は NAND）' : null;
+    }
+    return nor ? 'NOR 素子は第6章の原始部品。この課題は NAND から組む（NOR 素子が ' + nor + '個入っている）' : null;
+  }
+
+  function countOf(quest, circuit, lib) {
+    var g = NL.truth.gateCount(circuit, lib);
+    return quest.prim === 'nor' ? g.nor : g.nand;
+  }
 
   /**
    * 採点する。戻り値 { ok, error, bad, gates, goal }
@@ -401,10 +492,14 @@
     if (!f0.error && NL.truth.hasRam(f0)) {
       return { ok: false, error: 'RAM16 は実装部品（NAND から組んでいない）なので、課題の採点では使えません。NAND から組んでください' };
     }
+    if (!f0.error) {
+      var pe = primError(quest, f0);
+      if (pe) return { ok: false, error: pe };
+    }
     if (quest.kind === 'seq') return gradeSeq(quest, circuit, lib);
     var r = NL.truth.check(circuit, lib, quest);
     if (!r.ok) return r;
-    return { ok: true, gates: NL.truth.gateCount(circuit, lib).nand, goal: quest.goal };
+    return { ok: true, gates: countOf(quest, circuit, lib), goal: quest.goal, unit: unitOf(quest) };
   }
 
   function gradeSeq(quest, circuit, lib) {
@@ -438,8 +533,11 @@
         }
       }
     }
-    return { ok: true, gates: NL.truth.gateCount(circuit, lib).nand, goal: quest.goal };
+    return { ok: true, gates: countOf(quest, circuit, lib), goal: quest.goal, unit: unitOf(quest) };
   }
 
-  NL.quest = { QUESTS: QUESTS, STAGES: STAGES, BY_ID: BY_ID, grade: grade, build: build, numToBits: numToBits };
+  NL.quest = {
+    QUESTS: QUESTS, STAGES: STAGES, BY_ID: BY_ID, grade: grade, build: build, numToBits: numToBits,
+    unitOf: unitOf
+  };
 })(typeof window !== 'undefined' ? window : globalThis);

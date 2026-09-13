@@ -65,6 +65,8 @@
   function fmtUm(cm) { return (cm * 1e4).toFixed(cm * 1e4 < 1 ? 3 : 2) + ' µm'; }
   function fmtV(v) { return v.toFixed(3) + ' V'; }
 
+  var GATE_NAME = { 'n+poly': 'n⁺ ポリシリコン', 'p+poly': 'p⁺ ポリシリコン', al: 'Al', w: 'W' };
+
   /* ---- 課題 ---- */
 
   var CH = [
@@ -477,6 +479,69 @@
             row('室温の下限', floor.toFixed(1) + ' mV/dec', '（これは超えられない）', true),
             row('Vth', fmtV(mm.vth), '0.200 V 以上', mm.vth >= 0.2),
             row('Cdep/Cox', (mm.cdep / mm.Cox).toFixed(3), '（0 に近いほど良い）', true)
+          ]
+        };
+      }
+    },
+    {
+      id: 'gate', ch: 5, name: 'ゲートの材料で Vth を動かす',
+      desc: '基板は **p 型 1×10¹⁷ cm⁻³**、酸化膜は **5 nm**（この2つは固定）のまま、'
+          + 'しきい値電圧 Vth を **+1.0 V 以上**にする。',
+      why: 'Vth = VFB + 2φF + Qdep/Cox の VFB は、ゲートと基板の仕事関数の差で決まる。'
+         + '基板と酸化膜を変えずに動かせるのは**ゲートの材料**だけで、仕事関数がずれた分がそのまま Vth に乗る。'
+         + 'n⁺ ポリ（伝導帯の端）と p⁺ ポリ（価電子帯の端）の差はほぼバンドギャップぶん。'
+         + 'CMOS で nMOS に n⁺ ポリ、pMOS に p⁺ ポリを使い分ける（デュアルゲート）のは、'
+         + '両方の Vth を小さく揃えるため ― 次の課題で pMOS の側を作る。',
+      hint: '左の「ゲートの材料」を切り替える。基板と酸化膜はいじらない。',
+      check: function (ctx) {
+        var mm = ctx.mos();
+        if (!mm) return { ok: false, rows: [row('構造', 'MOS になっていない', '端に酸化膜を置く', false)] };
+        var toxNm = mm.tox * 1e7;
+        var subOk = mm.pType && within(mm.Nb, 1e17, 1.05);
+        var oxOk = near(toxNm, 5, 0.05);
+        var dwf = (P.WORKFN[mm.gate] || P.WORKFN['n+poly']) - P.WORKFN['n+poly'];
+        return {
+          ok: subOk && oxOk && mm.vth >= 1.0,
+          rows: [
+            row('Vth', fmtV(mm.vth), '1.000 V 以上', mm.vth >= 1.0),
+            row('基板', (mm.pType ? 'p' : 'n') + ' 型 ' + fmtE(mm.Nb) + ' cm⁻³', 'p 型 1.00e+17（固定）', subOk),
+            row('酸化膜', toxNm.toFixed(2) + ' nm', '5.00 nm（固定）', oxOk),
+            row('ゲート', GATE_NAME[mm.gate] || mm.gate, '', true),
+            row('VFB', fmtV(mm.vfb), '（仕事関数の差で決まる）', true),
+            row('n⁺ ポリからの仕事関数の差', dwf.toFixed(2) + ' eV', '（そのまま Vth のずれになる）', true)
+          ]
+        };
+      }
+    },
+    {
+      id: 'pmos', ch: 5, name: 'pMOS を作る',
+      desc: 'pMOS（**n 基板**、濃度 1×10¹⁵ cm⁻³ 以上）を作り、Vth を **−0.60 〜 −0.40 V** に収める。'
+          + 'さらに S 値 80 mV/dec 以下、酸化膜 3 nm 以上、Vg = Vth − 1 V で正孔の面密度 1×10¹² cm⁻² 以上。',
+      why: 'nMOS を鏡に映すと pMOS ― 基板は n 型、反転層は正孔、ゲートを**負**にかけると通じる。'
+         + 'CMOS インバータの上半分がこれ。'
+         + 'n⁺ ポリのままだと Vth = −ψB − 0.56 V − Qdep/Cox（ψB は基板のフェルミ準位の深さ）で、'
+         + '1e15 以上の基板では −0.86 V より深くなってしまう ― だから pMOS には p⁺ ポリを使う。'
+         + '正孔の移動度は電子の半分以下なので、同じ電流を出すために pMOS は幅 W を広く作る（採点の欄に倍率が出る）。',
+      hint: 'ゲートを p⁺ ポリに。「NAND の中身へ」の nMOS の、濃度と酸化膜をそのまま n 型に映すと近い。',
+      check: function (ctx) {
+        var mm = ctx.mos();
+        if (!mm) return { ok: false, rows: [row('構造', 'MOS になっていない', '端に酸化膜を置く', false)] };
+        var toxNm = mm.tox * 1e7;
+        var subOk = !mm.pType && mm.Nb >= 1e15;
+        var win = mm.vth >= -0.6 && mm.vth <= -0.4;
+        var q = mm.pType ? 0 : mm.qinv(mm.vth - 1);
+        var ratio = P.muN(mm.Nb, ctx.T) / P.muP(mm.Nb, ctx.T);
+        return {
+          ok: subOk && win && mm.swing * 1000 <= 80 && toxNm >= 3 && q >= 1e12,
+          rows: [
+            row('種類', mm.pType ? 'nMOS（p 基板）' : 'pMOS（n 基板）', 'pMOS', !mm.pType),
+            row('基板の濃度', fmtE(mm.Nb) + ' cm⁻³', '1.0e+15 以上', mm.Nb >= 1e15),
+            row('Vth', fmtV(mm.vth), '−0.600 〜 −0.400 V', win),
+            row('S 値', (mm.swing * 1000).toFixed(1) + ' mV/dec', '80.0 以下', mm.swing * 1000 <= 80),
+            row('酸化膜', toxNm.toFixed(1) + ' nm', '3.0 nm 以上', toxNm >= 3),
+            row('反転層の正孔（Vg = Vth − 1 V）', fmtE(q) + ' cm⁻²', '1.0e+12 以上', q >= 1e12),
+            row('ゲート', GATE_NAME[mm.gate] || mm.gate, '', true),
+            row('µn / µp（同じ電流には W をこの倍に）', ratio.toFixed(2) + ' 倍', '', true)
           ]
         };
       }

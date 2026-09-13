@@ -258,7 +258,9 @@
       matL: matL, matR: matR, netL: netL, netR: netR,
       mat: mat, na: na, nd: nd, net: net, eps: eps, epsEdge: epsEdge,
       layer: layer, iface: iface, n: n, T: T, ratio: r,
-      left: contactKind(st, 'left'), right: contactKind(st, 'right')
+      left: contactKind(st, 'left'), right: contactKind(st, 'right'),
+      /* ゲート電極の材料（phys.WORKFN のキー）。構造が持つ。無ければ n+ ポリ ― 昔からの既定 */
+      gate: st.gate || 'n+poly'
     };
   }
 

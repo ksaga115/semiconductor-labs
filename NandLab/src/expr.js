@@ -224,7 +224,7 @@
       function visit(gi) {
         if (gi < 0 || state[gi] === 2) return;
         state[gi] = 1;
-        if (g[gi].kind === 'nand') {
+        if (g[gi].kind === 'nand' || g[gi].kind === 'nor') {
           g[gi].ins.forEach(function (i) { visit(resolve(i)); });
           order.push(gi);
         }
@@ -264,8 +264,10 @@
     var exprOf = {}, steps = [], names = {};
     order.forEach(function (gi) {
       var a = resolve(g[gi].ins[0]), b = resolve(g[gi].ins[1]);
-      exprOf[gi] = simp(NOT(AND([leafExpr(a), leafExpr(b)])));
-      var raw = '¬(' + leafName(a) + ' · ' + leafName(b) + ')';
+      /* NAND は ¬(a·b)、NOR（第6章）は ¬(a+b) */
+      var isNor = g[gi].kind === 'nor';
+      exprOf[gi] = simp(NOT((isNor ? OR : AND)([leafExpr(a), leafExpr(b)])));
+      var raw = '¬(' + leafName(a) + (isNor ? ' + ' : ' · ') + leafName(b) + ')';
       steps.push({ name: mark[gi], raw: raw, simple: text(exprOf[gi], names), gate: gi });
       /* 2箇所以上から使われる素子は、以降の式でこの名前に置き換えて短くする */
       if ((used[gi] || 0) >= 2 && exprOf[gi].op !== 'var' && exprOf[gi].op !== 'const') {

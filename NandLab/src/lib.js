@@ -11,7 +11,8 @@
  *
  *   src   値を自分で持つ（トップの入力スイッチ・定数・クロック）
  *   buf   入力をそのまま出す中継（チップの内側の in / out 部品、全階層の out 部品）
- *   nand  唯一の論理素子
+ *   nand  論理素子（第1〜5章）
+ *   nor   論理素子（第6章。原始部品を NOR に取り替えた世界）
  *   ram16 16語×1bit の RAM。【実装部品】NAND からは組んでいない（sim.js が状態を持つ）
  *
  * チップの境界を buf として残すのがミソ。境界のネットを消して両側を直結する
@@ -152,8 +153,8 @@
       p = circuit.parts[id];
       var path = prefix + p.id;
 
-      if (p.kind === 'nand') {
-        gi = gate(flat, 'nand', 2, path, p);
+      if (p.kind === 'nand' || p.kind === 'nor') {
+        gi = gate(flat, p.kind, 2, path, p);
         slot[p.id] = { outs: [gi], inTargets: [[gi, 0], [gi, 1]] };
 
       } else if (p.kind === 'in') {
