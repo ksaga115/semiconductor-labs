@@ -169,6 +169,30 @@ T('課題の一巡', () => {
   ok('描けている', $(doc, 'board').getContext()._stack === 0);
 });
 
+T('第5章の計算の欄', () => {
+  const { doc, S, win, PL } = boot({ search: '?fresh=1' });
+  PL.ui.selectQuest('dryox'); win.flush();
+  ok('第1章では計算の欄は隠れている', $(doc, 'calcBox').classList.contains('hidden'));
+  PL.ui.selectQuest('shot'); win.flush();
+  ok('第5章では計算の欄が出る', !$(doc, 'calcBox').classList.contains('hidden'));
+  const ins = $(doc, 'calcForm').querySelectorAll('input');
+  eq('欄は 8 つ', ins.length, 8);
+  ins[0].value = '38'; ins[0].fire('change'); win.flush();
+  eq('露光量が入った', S.recipe.calc.dose, 38);
+  ok('結果が出る', /揺らぎ 1\.97/.test($(doc, 'calcOut').textContent));
+  $(doc, 'btnGrade').fire('click'); win.flush();
+  ok('画面で通る', /通った/.test($(doc, 'qResult').textContent));
+  const bad = $(doc, 'calcForm').querySelectorAll('input')[0];
+  bad.value = 'abc'; bad.fire('change'); win.flush();
+  ok('読めない値は赤くなる', bad.classList.contains('bad'));
+  eq('読めない値では変わらない', S.recipe.calc.dose, 38);
+  const n6 = $(doc, 'calcForm').querySelectorAll('input')[6];
+  n6.value = '8.6'; n6.fire('change'); win.flush();
+  eq('分ける個数は整数に丸める', S.recipe.calc.nsplit, 9);
+  const b = PL.store.fromJSON(PL.store.toJSON(S));
+  eq('書き出し → 読み込みで計算の欄も戻る', b.state.recipe.calc.dose, 38);
+});
+
 T('保存', () => {
   const { win, S, PL } = boot({ seed: '{壊れ' });
   ok('壊れていても起動する', S.recipe && Array.isArray(S.recipe.steps));

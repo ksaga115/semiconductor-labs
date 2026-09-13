@@ -196,11 +196,11 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       <dl class="spec">
         <div><dt>参考書</dt><dd>11<small>部＋付録</small></dd></div>
         <div><dt>ラボ</dt><dd>11<small>本</small></dd></div>
-        <div><dt>採点つき課題</dt><dd>196<small>問</small></dd></div>
+        <div><dt>採点つき課題</dt><dd>199<small>問</small></dd></div>
         <div><dt>依存</dt><dd>0<small>ブラウザのみ</small></dd></div>
         <div><dt>通信</dt><dd>0<small>手元で完結</small></dd></div>
-        <div><dt>自動検査</dt><dd>5,321<small>件 (Node)</small></dd></div>
-        <div class="spec-cap">課題数は ProcessLab 13 ＋ SemiLab 26 ＋ CharLab 13 ＋ NandLab 31 ＋ PixelLab 19 ＋ PhotonLab 15 ＋ AnalogLab 16 ＋ OptoLab 18 ＋ QALab 21 ＋ LaserLab 12 ＋ DesignLab 12。検査は11本の <code>node tests/all.js</code> の合計（2026-09-13 時点）。</div>
+        <div><dt>自動検査</dt><dd>5,400<small>件 (Node)</small></dd></div>
+        <div class="spec-cap">課題数は ProcessLab 16 ＋ SemiLab 26 ＋ CharLab 13 ＋ NandLab 31 ＋ PixelLab 19 ＋ PhotonLab 15 ＋ AnalogLab 16 ＋ OptoLab 18 ＋ QALab 21 ＋ LaserLab 12 ＋ DesignLab 12。検査は11本の <code>node tests/all.js</code> の合計（2026-09-13 時点）。</div>
       </dl>
     </div>
   </div>
@@ -411,7 +411,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       </div>
       <div class="pair">
         <div><span class="kind read">参考書</span><a href="第1部_製造プロセス.html">半導体製造プロセス体系マップ</a><small>ウェーハからチップまで · 17節</small></div>
-        <div><span class="kind lab">ラボ</span><a href="ProcessLab/index.html">ProcessLab</a><small>原始部品 ＝ 工程 · 4章 13問 · <a href="ProcessLab/README.md">README</a></small></div>
+        <div><span class="kind lab">ラボ</span><a href="ProcessLab/index.html">ProcessLab</a><small>原始部品 ＝ 工程 · 5章 16問 · <a href="ProcessLab/README.md">README</a></small></div>
       </div>
     </div>
     <div class="chap">
@@ -445,6 +445,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
     <div class="chap">
       <div><span class="cn">09</span><div class="ct"><a href="第1部_製造プロセス.html#tr">トランジスタ構造の進化</a></div><div class="cd">ゲートが薄い膜1枚では電流を止めきれなくなる。planar → FinFET → GAA。</div></div>
       <div class="do"><span class="lbl">ProcessLab 第4章（SemiLab で採点）</span><a class="q" href="ProcessLab/index.html?quest=pd">フォトダイオードを作る</a><a class="q" href="ProcessLab/index.html?quest=mos">MOS のしきい値を合わせる</a><a class="q" href="ProcessLab/index.html?quest=cmos">CMOS の土台</a></div>
+      <div class="do"><span class="lbl">ProcessLab 第5章</span><a class="q" href="ProcessLab/index.html?quest=shot">EUV の光子の揺らぎを 2% に</a><a class="q" href="ProcessLab/index.html?quest=chiplet">チップレットで歩留まり 90%</a><a class="q" href="ProcessLab/index.html?quest=d0">60% を見込める欠陥密度</a></div>
     </div>
     <div class="chap">
       <div><span class="cn">10–17</span><div class="ct"><a href="第1部_製造プロセス.html#beflow">後工程 / 先端パッケージ / MEMS・化合物・センサ / 歩留まり / 用語集 / 出典</a></div><div class="cd">ウェーハを部品にする。KOH とボッシュ法、リフトオフと劈開、裏面照射の薄化。大きいチップが高い理由。</div></div>
@@ -940,7 +941,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       <p>依存ゼロ・通信ゼロ・インストール不要。各フォルダの <code>index.html</code> を開く（<code>*.vbs</code> をダブルクリックしても同じ）。保存は <code>localStorage</code>。壊れていたら退避してから空で始める。</p>
       <h3>画面に触るのは <code>ui.js</code> だけ</h3>
       <p>物理・課題・採点は Node だけで検査できる。<code>tests/ui.js</code> は本物の <code>index.html</code> から DOM を組んで本物の <code>ui.js</code> を動かす。</p>
-      <pre>node ProcessLab\tests\all.js   332 件
+      <pre>node ProcessLab\tests\all.js   411 件
 node SemiLab\tests\all.js    1,255 件
 node CharLab\tests\all.js      281 件
 node NandLab\tests\all.js      725 件

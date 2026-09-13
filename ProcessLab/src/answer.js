@@ -10,6 +10,14 @@
   var R = PL.recipe;
 
   function rc(sub, steps) { var r = R.create(sub); r.steps = steps; return r; }
+  /* 第5章: 工程は無く、計算の欄だけを持つ */
+  function calc(patch) {
+    var r = R.create({ type: 'p', N: 1e15 }), d = PL.quest.calc.DEF, k;
+    r.calc = {};
+    for (k in d) r.calc[k] = d[k];
+    for (k in patch) r.calc[k] = patch[k];
+    return r;
+  }
   var P15 = { type: 'p', N: 1e15 }, N14 = { type: 'n', N: 1e14 };
   var LEFT = function () { return R.maskRanges([[0, 5]]); };
   var RIGHT = function () { return R.maskRanges([[5, 10]]); };
@@ -129,6 +137,18 @@
           { t: 'heat', C: 900, min: 10, amb: 'dry' }
         ]);
       }
+    },
+    shot: {
+      note: '露光量 38 mJ/cm²。一辺 10 nm に 2,583 個、揺らぎ 1.97%。ArF 並み（0.59%）にするには 14.3 倍の約 429 mJ/cm² が要る。',
+      make: function () { return calc({ dose: 38 }); }
+    },
+    chiplet: {
+      note: '9 個に分ける。1 個 0.933 cm² で歩留まり 91.3%、総面積 8.4 cm²。8 個（90.4%・8.3 cm²）、10 個（92.0%・8.5 cm²）でも通る。',
+      make: function () { return calc({ nsplit: 9 }); }
+    },
+    d0: {
+      note: 'D₀ 0.05 /cm²。負の二項で 70.9%（ポアソンなら 68.7%）。',
+      make: function () { return calc({ d0: 0.05 }); }
     }
   };
 

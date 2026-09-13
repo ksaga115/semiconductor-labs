@@ -1008,6 +1008,11 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
         </ul>
       </div>
     </div>
+    <div class="ex">
+      <span class="exh">例題 ― 手で一度解く（成膜）</span>
+      <p><b>問.</b> 厚さ 5 nm のゲート酸化膜を、300 mm の全面で ±2%（±0.1 nm）にそろえた。基板が 1×10¹⁷ cm⁻³ の nMOS では、しきい値電圧は酸化膜の厚みでどれだけばらつくか。</p>
+      <p><b>解.</b> V<sub>th</sub> = V<sub>FB</sub> + 2φ<sub>F</sub> + Q<sub>dep</sub>·t<sub>ox</sub>/ε<sub>ox</sub> で、厚みが効くのは最後の項だけ ― 傾きは Q<sub>dep</sub>/ε<sub>ox</sub>。φ<sub>F</sub> = 0.417 V、空乏層の最大幅 104 nm、Q<sub>dep</sub> = 1.66×10⁻⁷ C/cm² から <b>1 nm あたり 48 mV</b>（SemiLab のポアソンの解でも 48.2 mV/nm）。±0.1 nm で <b>±4.8 mV</b>。<span class="key">膜厚の「数%」が、そのままトランジスタのばらつきの予算を食う</span> ― 成膜の均一性が厳しく管理される理由です（第2部 05）。</p>
+    </div>
     <div class="share">
       <p class="share-t">成膜装置 世界シェア</p>
       <div class="share-grid two">
@@ -1867,6 +1872,36 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
     <div class="note">次の一手として、n型とp型を上下に重ねる<b>CFET</b>や、配線層をチップの裏面に移して表を配線だらけにしない<span class="tm">裏面給電<i>Backside Power Delivery。電源配線をウェーハの裏側に作り、表面を信号配線専用にする技術。Intel PowerVia、TSMC Super Power Railなど。</i></span>が実用化段階に入っています。「平面で細くする」時代は終わり、<b>立体に作り替える</b>時代に移りました。</div>
     <div class="note"><b>もうひとつの主戦場 ― 配線は細くすると遅くなる。</b>トランジスタは小さくすると速くなりますが、配線は逆です。信号の伝わりにくさは配線の抵抗Rと周囲との容量Cの積で決まり、<b>細くすると R が上がり、間隔を詰めると C が上がる</b>。1997年にIBMが配線材をアルミから抵抗の低い銅に替え、絶縁膜も誘電率の低い low-k 材に替えて時間を稼ぎましたが、数十nm幅まで来ると銅の中の電子が配線の表面や結晶粒界で散乱して<b>実効抵抗率そのものが上がり始めます</b>。さらに銅は染み出しを防ぐバリア膜（タンタル系）を巻く必要があり、細い配線ほどバリアが断面積を食う。最先端でコバルトやルテニウムといった別の金属が下層配線に使われ始めたのは、この「細くしても悪化しにくい」性質のためです。<b>チップの速さの上限が、トランジスタではなく配線で決まる場面が増えている</b> ― 微細化の物語の、もう半分です。</div>
   </div>
+  <div class="ex">
+    <span class="exh">例題 ― 手で一度解く（09 配線の RC）</span>
+    <p><b>問.</b> 幅 50 nm・高さ 100 nm の銅の配線を 1 mm 引く。抵抗率はバルクの 1.68×10⁻⁸ Ω·m、配線の容量は 0.2 fF/µm（典型的な値として仮定）とする。信号が伝わる遅延はいくらか。長さを半分にするとどうなるか。</p>
+    <p><b>解.</b> R = ρL/(wh) = <b>3,360 Ω</b>、C = 0.2 fF/µm × 1,000 µm = <b>200 fF</b>、RC = 672 ps。抵抗と容量が一様に分布した線の 50% 遅延は 0.377RC（Sakurai 1983）なので <b>約 253 ps</b> ― 5 GHz のクロックの 1 周期（200 ps）を超える。R も C も長さに比例するので遅延は L² で効き、半分の長さなら 1/4 の 63 ps。線幅が数十 nm 以下になると、表面と粒界の散乱で実効の抵抗率がバルクより上がるので（線幅と作り方で大きく変わる）、実際はこれより遅い。<span class="key">長い配線は途中に中継のバッファ（リピータ）を入れて L² を分割する</span> ― 第3部 07 の分布 RC の話です。</p>
+  </div>
+
+  <figure class="fig">
+    <div class="fig-h"><h3>配線の遅延は長さの 2 乗で伸びる</h3><span class="k">幅 50 nm・高さ 100 nm の銅・0.2 fF/µm と仮定 / 0.377·RC を計算</span></div>
+    <div class="stage">
+      <svg viewBox="0 0 760 250" role="img" aria-label="配線の長さに対する遅延のグラフ。遅延は 0.377 RC で、抵抗も容量も長さに比例するので長さの2乗で増える。0.5ミリで約63ピコ秒、1ミリで約253ピコ秒、2ミリで約1013ピコ秒。" style="max-height:none">
+        <path d="M90 30 V200 H660" fill="none" stroke="var(--rule-2)" stroke-width="1"/>
+        <path d="M90 200 V204 M232.5 200 V204 M375 200 V204 M517.5 200 V204 M660 200 V204 M86 200 H90 M86 161.4 H90 M86 122.7 H90 M86 84.1 H90 M86 45.5 H90" fill="none" stroke="var(--rule-2)" stroke-width="1"/>
+        <polyline class="p1draw" style="--len:760" fill="none" stroke="var(--si-2)" stroke-width="2.2" points="90.0,200.0 104.3,199.9 118.5,199.6 132.8,199.1 147.0,198.4 161.3,197.6 175.5,196.5 189.8,195.2 204.0,193.7 218.3,192.1 232.5,190.2 246.8,188.2 261.0,185.9 275.3,183.5 289.5,180.8 303.8,178.0 318.0,174.9 332.3,171.7 346.5,168.3 360.8,164.7 375.0,160.8 389.3,156.8 403.5,152.6 417.8,148.2 432.0,143.6 446.3,138.8 460.5,133.8 474.8,128.6 489.0,123.3 503.3,117.7 517.5,111.9 531.8,105.9 546.0,99.8 560.3,93.4 574.5,86.8 588.8,80.1 603.0,73.1 617.3,66.0 631.5,58.7 645.8,51.1 660.0,43.4"/>
+        <circle cx="232.5" cy="190.2" r="3.5" fill="var(--si-2)"/>
+        <circle class="p1pulse" cx="375.0" cy="160.8" r="4.5" fill="var(--amber-2)"/>
+        <g font-size="10.5">
+          <text x="110" y="48" fill="var(--ink)" font-weight="700">遅延 ＝ 0.377·RC ∝ L²</text>
+          <text x="225" y="180" fill="var(--ink-2)" text-anchor="end">0.5 mm で 63 ps</text>
+          <text x="365" y="148" fill="var(--amber)" text-anchor="end">1 mm で 253 ps</text>
+        </g>
+        <g font-size="9.5" fill="var(--muted)">
+          <text x="84" y="203" text-anchor="end">0</text><text x="84" y="164" text-anchor="end">250</text><text x="84" y="126" text-anchor="end">500</text><text x="84" y="87" text-anchor="end">750</text><text x="84" y="48" text-anchor="end">1000</text>
+          <text x="90" y="216" text-anchor="middle">0</text><text x="232.5" y="216" text-anchor="middle">0.5</text><text x="375" y="216" text-anchor="middle">1.0</text><text x="517.5" y="216" text-anchor="middle">1.5</text><text x="660" y="216" text-anchor="middle">2.0</text>
+        </g>
+        <text x="375" y="238" font-size="10.5" fill="var(--ink-2)" text-anchor="middle">配線の長さ L（mm）→　縦軸は遅延（ps）</text>
+      </svg>
+    </div>
+    <p class="cap"><span class="cd">曲線は本文の例題と同じ式 0.377·(ρL/wh)·(cL) を長さごとに計算したもの。2 mm では約 1,013 ps で、1 mm の 4 倍。バルクの抵抗率で計算しているので、細い線の実物はこれより上に来る。</span></p>
+  </figure>
+
   <div class="lab-go">
     <span class="tag">手を動かす — SemiLab 第5章 / ProcessLab 第4章</span>
     <p>ゲートが「電流を止めきれなくなる」手前の話 ― 酸化膜を挟むと電極がゲートになり、しきい値電圧が基板の濃度と酸化膜厚で決まる ― を1次元のポアソン方程式で解く。工程から MOS を作って SemiLab で測るのは ProcessLab の第4章。</p>
@@ -2067,6 +2102,11 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
           <li><span class="tm">ステルスダイシング<i>浜松ホトニクスが開発し、DISCOなどが装置化した方式。レーザーをシリコン内部の一点に集光して改質層を作り、テープを引き伸ばして割る。表面を削らないため切りくずが出ず、極薄ウェーハに適する。</i></span>：ウェーハ<b>内部</b>にレーザーで改質層を作り、テープを広げて割る。切りくずゼロで、薄いウェーハに強い</li>
         </ul>
       </div>
+    </div>
+    <div class="ex">
+      <span class="exh">例題 ― 手で一度解く（ダイシング）</span>
+      <p><b>問.</b> 300 mm ウェーハから一辺 1 mm のチップ（小さなフォトダイオード級）を取る。切りしろがブレードで 60 µm のときと、ステルスダイシングで 10 µm のとき（どちらも説明のための仮定の値）で、取れる数はいくつ違うか。一辺 10 mm のチップならどうか。</p>
+      <p><b>解.</b> 16 の式 DPW ≈ π(d/2)²/S − πd/√(2S) で、S は切りしろ込みのピッチの二乗。1 mm 角は 60 µm で <b>62,281 個</b>、10 µm で <b>68,633 個</b> ― <b>10.2% 増える</b>。10 mm 角では 632 個と 638 個で 0.9% しか変わらない。<span class="key">切りしろは、小さいチップほど効く</span> ― 小さな受光素子や LED を大量に取る製品で、切りしろがほとんど要らないステルスダイシングが効く理由の、数の上の中身です。</p>
     </div>
     <div class="share">
       <p class="share-t">ダイシング装置 世界シェア</p>
@@ -2305,6 +2345,11 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
     </div>
     <p class="src">FC-BGA基板は上位5社で約72%、上位10社で約91%（2024年、QYResearch）。右列は「1社しか作れない」タイプの材料で、いずれも日本企業。味の素のABFは高性能半導体向け絶縁フィルムで同社公表シェア95%超。<span class="mono">[R11][R21]</span></p>
   </div>
+  <div class="ex">
+    <span class="exh">例題 ― 手で一度解く（12 HBM の帯域）</span>
+    <p><b>問.</b> HBM3 は 1 スタックあたり 1,024 本のデータ線を持ち、1 本あたり最大 6.4 Gb/s で動く（JEDEC の規格 JESD238）。1 スタックの帯域はいくらか。GPU の周りに 6 スタック並べると？ 同じ 6.4 Gb/s でデータ線 32 本の部品と比べると何倍か。</p>
+    <p><b>解.</b> 1,024 × 6.4 Gb/s ÷ 8 = <b>819 GB/s</b>、6 スタックで <b>約 4.9 TB/s</b>。32 本なら 32 × 6.4 ÷ 8 = 25.6 GB/s で、<b>32 倍</b>。1 本あたりの速さではなく<b>本数</b>で稼ぐので、パッケージ基板の配線では引き回せない 1,000 本を超える線を、シリコンの中継板（2.5D）と TSV で数 mm の距離に詰める ― HBM が CoWoS のような 2.5D の実装と組で使われる理由です。</p>
+  </div>
 </section>
 
 <!-- ============================================================ 13 -->
@@ -2495,6 +2540,12 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
     <p><b>解.</b> EUV の光子 1 個は 91.8 eV = 1.47×10⁻¹⁷ J なので、30 mJ/cm² ÷ 1.47×10⁻¹⁷ J = 2.04×10¹⁵ 個/cm²。(10 nm)² = 10⁻¹² cm² に <b>約 2,040 個</b>、ばらつきは 1/√2040 = <b>2.2%</b>。ArF は 1 個 6.42 eV なので <b>約 29,100 個</b>、0.59%。同じ露光量で EUV は光子が 1/14.3、ばらつきは √14.3 = 3.8 倍 ― <span class="key">波長を縮めるほど、光を「粒」として数える話になる</span>。ばらつきを ArF 並みに抑えるには露光量を 14 倍にする必要があり、それは処理枚数を 1/14 にすることです。</p>
   </div>
 
+  <div class="lab-go">
+    <span class="tag">手を動かす — ProcessLab 第5章</span>
+    <p>露光量を上げれば光子の揺らぎは 1/√N で減るが、処理枚数が落ちる ― 一辺 10 nm の正方形で揺らぎを 2% 以下にする露光量を、上限つきで決める。</p>
+    <div class="qs"><a href="ProcessLab/index.html?quest=shot">EUV の光子の揺らぎを 2% に</a></div>
+  </div>
+
   <div class="note" style="margin-top:18px"><b>この章が単純化していること。</b>多層膜は界面が鋭い理想の膜として計算し、実物の混ざり合い・粗さ・保護膜は入れていない。反射回数と 70% は説明のための値で、機種ごとの光学系の構成は公開資料の範囲でしか分からない。光源の変換効率と出力は公表値 <span class="mono">[R48]</span>。解像の物理そのものは <a href="第7部_光学.html">第7部</a>、光子の数え方は第0部 02 と第5部。</div>
 </section>
 
@@ -2679,6 +2730,11 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
     <p><b>問.</b> 面積 7.5 cm²（750 mm²、AI 向け GPU 級）のチップを D₀ = 0.1 /cm² のラインで作る。ポアソン・マーフィー・負の二項（α＝2）で歩留まりはいくつか。同じ回路を 1.875 cm² のチップレット 4 個に分けると、1 個あたりのポアソンの歩留まりはいくつか。</p>
     <p><b>解.</b> AD₀ = 0.75。ポアソン e<sup>−0.75</sup> = <b>47.2%</b>、マーフィー ((1 − e<sup>−0.75</sup>)/0.75)² = <b>49.5%</b>、負の二項 (1 + 0.75/2)<sup>−2</sup> = <b>52.9%</b>。式によって 5 ポイント以上違う。4 分割すると 1 個は AD₀ = 0.1875 で e<sup>−0.1875</sup> = <b>82.9%</b>。テストで良品のチップレットだけを選んで組み合わせれば（10 の KGD）、使えるシリコンの割合は 47.2% から 82.9% へ <b>1.76 倍</b>になる ― 12 の先端パッケージでチップレットが主流になった理由の、数の上での中身です（接続の面積と組立の歩留まりのぶんは差し引く必要があります）。</p>
   </div>
+  <div class="lab-go">
+    <span class="tag">手を動かす — ProcessLab 第5章</span>
+    <p>同じ回路を何個のチップレットに分けるか（1 個の歩留まり 90% と、接続の面積の予算の窓）、分けずに作るならラインに何 /cm² の欠陥密度を求めるか ― 式の選び方で要求が変わるのを数字で確かめる。</p>
+    <div class="qs"><a href="ProcessLab/index.html?quest=chiplet">チップレットに何個で分けるか</a><a href="ProcessLab/index.html?quest=d0">大きなチップに要る欠陥密度</a></div>
+  </div>
 </section>
 
 <!-- ============================================================ 11 -->
@@ -2717,7 +2773,7 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
       </tbody>
     </table>
   </div>
-  <p class="src" style="max-width:none">「前」＝前工程、「後」＝後工程、「共通」＝両者にまたがる。<span class="jp">JP</span> は日本企業。出典は各工程カードの脚注および末尾の一覧を参照してください。</p>
+  <p class="src" style="max-width:none">「前」＝前工程、「後」＝後工程、「共通」＝両者にまたがる。<b>確かめた範囲</b>: ファウンドリと DRAM の行は、TrendForce の公表（2025 年第 4 四半期）で数字を確かめた。NAND と OSAT も TrendForce の数字の引用だが、ここでは一次の公表を確かめ直していない。それ以外の行は各工程カードの脚注にある業界集計の概数で、集計年・対象・金額か台数かで数ポイント動く（「約」を付けたもの）。<span class="jp">JP</span> は日本企業。出典は各工程カードの脚注および末尾の一覧を参照してください。</p>
 </section>
 
 <!-- ============================================================ 12 -->

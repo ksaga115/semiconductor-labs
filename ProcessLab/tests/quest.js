@@ -70,6 +70,25 @@ T('落ちるべきもの', () => {
   const slow = R.create({ type: 'p', N: 1e15 });
   slow.steps = [{ t: 'heat', C: 1200, min: 600, amb: 'dry' }];
   ok('wetox: 時間をかけたドライ酸化では通らない', !Q.grade('wetox', slow).ok);
+
+  /* 第5章: 窓の両側と、固定した欄を動かす反則 */
+  const C5 = (id, patch) => { const r = ANS.make(id); Object.assign(r.calc, patch); return Q.grade(id, r).ok; };
+  ok('shot: 36.5 mJ/cm² は揺らぎが 2% を超える', !C5('shot', { dose: 36.5 }));
+  ok('shot: 37 mJ/cm² なら通る', C5('shot', { dose: 37 }));
+  ok('shot: 41 mJ/cm² は処理枚数の上限破り', !C5('shot', { dose: 41 }));
+  ok('shot: ArF にして光子を稼ぐのは反則', !C5('shot', { lam: 193, dose: 30 }));
+  ok('shot: 正方形を大きくするのは反則', !C5('shot', { side: 20, dose: 30 }));
+  ok('chiplet: 7 個は歩留まりが 90% に届かない', !C5('chiplet', { nsplit: 7 }));
+  ok('chiplet: 8 個と 10 個は通る', C5('chiplet', { nsplit: 8 }) && C5('chiplet', { nsplit: 10 }));
+  ok('chiplet: 11 個は総面積の上限破り', !C5('chiplet', { nsplit: 11 }));
+  ok('chiplet: 接続の面積を減らすのは反則', !C5('chiplet', { over: 0.01, nsplit: 7 }));
+  ok('chiplet: α を小さく（固まる）とするのは反則', !C5('chiplet', { alpha: 0.5, nsplit: 7 }));
+  ok('d0: 0.08 は 60% に届かない', !C5('d0', { d0: 0.08 }));
+  ok('d0: 0.077 は通る', C5('d0', { d0: 0.077 }));
+  ok('d0: 0.019 はラインの限界より下', !C5('d0', { d0: 0.019 }));
+  ok('d0: 分けて歩留まりを稼ぐのは反則', !C5('d0', { d0: 0.1, nsplit: 4 }));
+  ok('d0: α を変えるのは反則', !C5('d0', { d0: 0.08, alpha: 0.5 }));
+  ok('d0: 面積を小さくするのは反則', !C5('d0', { d0: 0.1, area: 3 }));
 });
 
 report();

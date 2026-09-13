@@ -637,6 +637,7 @@
     document.getElementById('depthSel').value = String(S.view.depth || 2);
     var cvl = document.getElementById('cutVal'); cvl.value = S.cutX.toFixed(2); cvl.classList.remove('bad');
     renderSteps();
+    renderCalc();
   }
 
   /* ================= SemiLab へ ================= */
@@ -683,7 +684,45 @@
     document.getElementById('qWhy').innerHTML = md(q.why);
     document.getElementById('qHint').textContent = q.hint;
     document.getElementById('qResult').innerHTML = '';
+    renderCalc();
     persist();
+  }
+
+  /* ---- 第5章の計算の欄 ― 工程は使わず、この数字だけで採点する（quest.js の calc） ---- */
+  var CALC_FIELDS = [
+    ['dose', '露光量', 'mJ/cm²', 1, 1000],
+    ['side', '正方形の一辺', 'nm', 1, 100],
+    ['lam', '露光の波長', 'nm', 5, 400],
+    ['d0', '欠陥密度 D₀', '/cm²', 0.001, 5],
+    ['alpha', '固まり具合 α', '', 0.1, 100],
+    ['area', '回路の面積', 'cm²', 0.01, 20],
+    ['nsplit', '分ける個数', '個', 1, 50, true],
+    ['over', '1 個あたりの接続の面積', 'cm²', 0, 2]
+  ];
+  function renderCalc() {
+    var box = document.getElementById('calcBox');
+    var q = Q.byId(S.quest), on = !!(q && q.ch === 5);
+    box.classList.toggle('hidden', !on);
+    if (!on) return;
+    var c = Q.calc.of(S.recipe), host = document.getElementById('calcForm');
+    host.innerHTML = '';
+    CALC_FIELDS.forEach(function (fd) {
+      host.appendChild(numRow(fd[1], c[fd[0]], fd[2], function (t) {
+        var v = parseNum(t);
+        if (!isFinite(v)) return false;
+        v = clampv(v, fd[3], fd[4]);
+        if (fd[5]) v = Math.round(v);
+        S.recipe.calc = Q.calc.of(S.recipe);
+        S.recipe.calc[fd[0]] = v;
+        renderCalc(); persist();
+        return true;
+      }));
+    });
+    var e = Q.calc.evaluate(c);
+    document.getElementById('calcOut').innerHTML =
+      '光子 ' + esc(e.n.toFixed(0)) + ' 個・揺らぎ ' + esc((e.rel * 100).toFixed(2)) + ' %（1 個 ' + esc(e.eph.toFixed(1)) + ' eV）<br>'
+      + '分けたとき: 1 個 ' + esc(e.chipA.toFixed(3)) + ' cm²・歩留まり ' + esc((e.chipY * 100).toFixed(2)) + ' %（負の二項）・総面積 ' + esc(e.totalA.toFixed(2)) + ' cm²<br>'
+      + '分けないとき: 負の二項 ' + esc((e.bigY * 100).toFixed(1)) + ' %・ポアソン ' + esc((e.bigYP * 100).toFixed(1)) + ' %・マーフィー ' + esc((e.bigYM * 100).toFixed(1)) + ' %';
   }
 
   function showResult(r) {

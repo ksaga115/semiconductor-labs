@@ -68,6 +68,8 @@
         return (semi[k] = st);
       },
       /** 酸化する熱処理の合計時間 [分] */
+      /** 第5章の計算の欄（無ければ既定値） */
+      calc: function () { return CALC.of(rc); },
       oxMinutes: function () {
         return rc.steps.reduce(function (a, s) {
           return a + (s.t === 'heat' && (s.amb === 'dry' || s.amb === 'wet') ? (+s.min || 0) : 0);
@@ -76,6 +78,37 @@
     };
     return ctx;
   }
+
+  /* ---- 第5章 ― 数で決まる（計算の欄 rc.calc で採点。ウェーハは使わない） ----
+   * 第1部 14（EUV の光子の数）と 16（歩留まりの4つの式）をそのまま計算する。 */
+  var Q_E = 1.602176634e-19, HC_EVNM = 1239.84;
+  var CALC_DEF = { dose: 30, side: 10, lam: 13.5, d0: 0.1, alpha: 2, area: 7.5, nsplit: 1, over: 0.1 };
+  var CALC = {
+    DEF: CALC_DEF,
+    of: function (rc) {
+      var c = {}, k, src = (rc && rc.calc) || {};
+      for (k in CALC_DEF) c[k] = typeof src[k] === 'number' && isFinite(src[k]) ? src[k] : CALC_DEF[k];
+      return c;
+    },
+    /** 光子 1 個のエネルギー [J] */
+    ephJ: function (lamNm) { return HC_EVNM / lamNm * Q_E; },
+    /** 露光量 dose [mJ/cm²] で、一辺 side [nm] の正方形に入る光子の数 */
+    photons: function (dose, sideNm, lamNm) { return dose * 1e-3 * Math.pow(sideNm * 1e-7, 2) / CALC.ephJ(lamNm); },
+    poisson: function (AD) { return Math.exp(-AD); },
+    murphy: function (AD) { return AD > 0 ? Math.pow((1 - Math.exp(-AD)) / AD, 2) : 1; },
+    seeds: function (AD) { return 1 / (1 + AD); },
+    negbin: function (AD, a) { return Math.pow(1 + AD / a, -a); },
+    evaluate: function (c) {
+      var n = CALC.photons(c.dose, c.side, c.lam);
+      var k = Math.max(1, Math.round(c.nsplit));
+      var a = c.area / k + c.over;
+      return {
+        eph: HC_EVNM / c.lam, n: n, rel: 1 / Math.sqrt(n),
+        chipA: a, chipY: CALC.negbin(a * c.d0, c.alpha), chipYP: CALC.poisson(a * c.d0), totalA: k * a,
+        bigY: CALC.negbin(c.area * c.d0, c.alpha), bigYP: CALC.poisson(c.area * c.d0), bigYM: CALC.murphy(c.area * c.d0)
+      };
+    }
+  };
 
   function row(label, value, want, ok) { return { label: label, value: value, want: want, ok: !!ok }; }
   function e2(v) { return v === null || v === undefined ? '―' : (+v).toExponential(2); }
@@ -86,8 +119,14 @@
     { id: 1, name: '第1章　膜を育てる', lead: '酸化剤は膜を通り抜けて界面で反応する。だから厚くなるほど遅くなる。' },
     { id: 2, name: '第2章　決まった深さに打つ', lead: 'エネルギーが深さを、ドーズが量を決める。マスクは「止める」ためにある。' },
     { id: 3, name: '第3章　熱が広げる', lead: '拡散は温度に指数で効く。熱予算（温度×時間）が接合の深さを決める。' },
-    { id: 4, name: '第4章　素子にする（SemiLab で採点）', lead: '工程で作った縦の1本を、そのまま SemiLab の物理に掛けて測る。' }
+    { id: 4, name: '第4章　素子にする（SemiLab で採点）', lead: '工程で作った縦の1本を、そのまま SemiLab の物理に掛けて測る。' },
+    { id: 5, name: '第5章　数で決まる（計算の欄で採点）', lead: '光子の数と欠陥の数 ― どちらもポアソンで、面積が指数の肩に乗る。第1部 14・16。' }
   ];
+
+  function near5(a, b) { return Math.abs(a - b) <= Math.abs(b) * 1e-9 + 1e-12; }
+  function locks(c, spec) { for (var k in spec) if (!near5(c[k], spec[k])) return false; return true; }
+  function lockRow(ok, text) { return row('条件固定', ok ? '守っている（' + text + '）' : '課題の条件に戻す', '', ok); }
+  function pc(v, d) { return (v * 100).toFixed(d === undefined ? 1 : d) + ' %'; }
 
   var LIST = [
     /* ===== 第1章 ===== */
@@ -341,6 +380,78 @@
           ]
         };
       }
+    },
+
+    /* ===== 第5章 ===== */
+    {
+      id: 'shot', ch: 5, name: 'EUV の光子の揺らぎを 2% に',
+      desc: '**EUV（13.5 nm）**で**一辺 10 nm** の正方形に入る光子の数の相対的な揺らぎ 1/√N を **2.0% 以下**にする。'
+          + 'ただし処理枚数のため、露光量は **40 mJ/cm² 以下**。',
+      why: 'EUV の光子 1 個は 91.8 eV で ArF の 14 倍重く、同じ露光量でも数が 1/14 になる。数はポアソン分布で揺らぐので、'
+         + '細い線の縁の乱れやブリッジ・抜け（確率的欠陥）の元になる（第1部 14）。露光量を上げれば揺らぎは 1/√N で減るが、'
+         + '<b>そのぶん 1 時間に処理できるウェーハの枚数が落ちる</b> ― 窓は両側から閉じる。',
+      hint: '30 mJ/cm² で約 2,040 個、揺らぎ 2.2%。2% には N ≥ 2,500 個 ― 露光量は 36.8 mJ/cm² 以上。',
+      check: function (ctx) {
+        var c = ctx.calc(), e = CALC.evaluate(c);
+        var lock = locks(c, { side: 10, lam: 13.5 });
+        var okR = e.rel <= 0.02, okD = c.dose <= 40;
+        return {
+          ok: lock && okR && okD,
+          rows: [
+            row('光子の揺らぎ 1/√N', pc(e.rel, 2) + '（N = ' + e.n.toFixed(0) + ' 個）', '2.00 % 以下', okR),
+            row('露光量', c.dose.toFixed(1) + ' mJ/cm²', '40.0 以下', okD),
+            row('光子 1 個', e.eph.toFixed(1) + ' eV', '', true),
+            lockRow(lock, '13.5 nm・一辺 10 nm')
+          ]
+        };
+      }
+    },
+    {
+      id: 'chiplet', ch: 5, name: 'チップレットに何個で分けるか',
+      desc: '面積 **7.5 cm²** の回路を、**D₀ 0.1 /cm²・負の二項 α 2** のラインで作る。何個のチップレットに分けるかを決めて、'
+          + '**1 個あたりの歩留まりを 90% 以上**にする。分けるたびに接続の面積が **1 個 0.1 cm²**（仮定）増えるので、'
+          + 'シリコンの総面積は **8.5 cm² 以下**に抑える。',
+      why: '大きなチップは欠陥を踏む確率が面積の指数で効くので、分けるほど 1 個の歩留まりは上がる（第1部 16 の例題: 4 分割で 47% → 83%）。'
+         + 'だが分けるたびに、チップ間をつなぐ回路と余白の面積が増える。<b>分けすぎても、分けなさすぎても損</b> ― '
+         + '先端パッケージでチップレットの数が「数個」に落ち着く理由の、数の上の中身。',
+      hint: '1 個の面積 a = 7.5/n + 0.1。(1 + 0.05a)⁻² ≥ 0.9 から a ≤ 1.08 cm² → n ≥ 8。総面積 7.5 + 0.1n ≤ 8.5 → n ≤ 10。',
+      check: function (ctx) {
+        var c = ctx.calc(), e = CALC.evaluate(c);
+        var lock = locks(c, { area: 7.5, d0: 0.1, alpha: 2, over: 0.1 });
+        var okY = e.chipY >= 0.9, okA = e.totalA <= 8.5 + 1e-9;
+        return {
+          ok: lock && okY && okA,
+          rows: [
+            row('1 個の歩留まり（負の二項）', pc(e.chipY, 2) + '（1 個 ' + e.chipA.toFixed(3) + ' cm²）', '90.00 % 以上', okY),
+            row('シリコンの総面積', e.totalA.toFixed(2) + ' cm²（' + Math.max(1, Math.round(c.nsplit)) + ' 個）', '8.50 以下', okA),
+            row('参考: ポアソンなら', pc(e.chipYP, 2), '', true),
+            lockRow(lock, '7.5 cm²・D₀ 0.1・α 2・接続 0.1 cm²/個')
+          ]
+        };
+      }
+    },
+    {
+      id: 'd0', ch: 5, name: '大きなチップに要る欠陥密度',
+      desc: '面積 **7.5 cm²** のチップを分けずに作り、**負の二項 α 2** で歩留まり **60% 以上**を見込めるように、ラインの欠陥密度 D₀ を決める。'
+          + 'ただし D₀ は **0.02 /cm² より下げられない**（成熟したラインの限界と仮定）。',
+      why: '歩留まりの式は「欠陥がどう散らばるか」の仮定の違いで、大きなチップほど式によって見積もりが割れる（第1部 16 の表）。'
+         + '同じ 60% でも、ポアソンで考えると D₀ ≤ 0.068、負の二項（α 2）なら 0.078 ― <b>式の選び方で、ラインに求める清浄さが 14% 変わる</b>。'
+         + 'だから大きなチップの採算は、欠陥の散らばり方を実測で確かめてから見積もる。',
+      hint: '(1 + 7.5·D₀/2)⁻² ≥ 0.6 → D₀ ≤ 0.0776。窓は 0.02〜0.0776 /cm²。',
+      check: function (ctx) {
+        var c = ctx.calc(), e = CALC.evaluate(c);
+        var lock = locks(c, { area: 7.5, alpha: 2 }) && Math.max(1, Math.round(c.nsplit)) === 1;
+        var okY = e.bigY >= 0.6, okD = c.d0 >= 0.02;
+        return {
+          ok: lock && okY && okD,
+          rows: [
+            row('歩留まり（負の二項 α 2）', pc(e.bigY, 2), '60.00 % 以上', okY),
+            row('欠陥密度 D₀', c.d0.toFixed(4) + ' /cm²', '0.0200 以上', okD),
+            row('参考: ポアソン / マーフィー', pc(e.bigYP, 1) + ' / ' + pc(e.bigYM, 1), '', true),
+            lockRow(lock, '7.5 cm²・分けない・α 2')
+          ]
+        };
+      }
     }
   ];
 
@@ -359,5 +470,5 @@
     }
   }
 
-  PL.quest = { LIST: LIST, CH: CH, byId: byId, grade: grade, context: context, chapterOf: chapterOf, LEFT: LEFT, MID: MID, RIGHT: RIGHT };
+  PL.quest = { LIST: LIST, CH: CH, byId: byId, grade: grade, context: context, chapterOf: chapterOf, LEFT: LEFT, MID: MID, RIGHT: RIGHT, calc: CALC };
 })(typeof window !== 'undefined' ? window : globalThis);
