@@ -38,7 +38,18 @@
     ['lcavm', 'モード同期の共振器', 'm', 0.01, 20],
     ['mlnm', 'モード同期の中心', 'nm', 300, 3000],
     ['dlnm', 'スペクトルの幅', 'nm', 0.01, 300],
-    ['pavg', '平均の出力', 'W', 0.001, 50]
+    ['pavg', '平均の出力', 'W', 0.001, 50],
+    ['dfac', '緩和振動の係数 D', 'GHz/√mA', 0.1, 10],
+    ['gbps', 'ビットレート', 'Gb/s', 0.1, 100],
+    ['shgL', 'SHG の結晶の長さ', 'cm', 0.05, 10],
+    ['shgP', 'SHG の励起', 'W', 0.001, 20],
+    ['shgK', 'SHG の効率の係数', '%/(W·cm)', 0.01, 100],
+    ['shgA', '温度の許容幅 × 長さ', '℃·cm', 0.01, 100],
+    ['shgdT', '温度の揺れ', '±℃', 0, 10],
+    ['fibw', 'ファイバのモード半径', 'µm', 0.5, 50],
+    ['ldw', 'LD のモード半径', 'µm', 0.1, 50],
+    ['mag', 'レンズの倍率', '倍', 0.1, 20],
+    ['offum', '横ずれ', 'µm', 0, 20]
   ];
 
   function num(t) {
@@ -204,7 +215,10 @@
       ['縦モードの間隔', ev.fsrNm.toFixed(3) + ' nm'],
       ['DFB の波長', ev.lamT.toFixed(3) + ' nm（25 ℃ で ' + ev.lamB.toFixed(2) + '）'],
       ['モード同期: 繰り返し / 最短のパルス', (ev.frep / 1e6).toFixed(2) + ' MHz / ' + ev.tauFs.toFixed(1) + ' fs'],
-      ['パルス: エネルギー / 尖頭値', ev.epNj.toFixed(2) + ' nJ / ' + ev.ppeakKw.toFixed(1) + ' kW']
+      ['パルス: エネルギー / 尖頭値', ev.epNj.toFixed(2) + ' nJ / ' + ev.ppeakKw.toFixed(1) + ' kW'],
+      ['緩和振動 / 変調の帯域', ev.fR.toFixed(2) + ' / ' + ev.f3.toFixed(2) + ' GHz（要る ' + ev.fNeed.toFixed(2) + '）', ev.f3 < ev.fNeed],
+      ['SHG: 出力 / 揺れでの低下', ev.p2wMw.toFixed(2) + ' mW / ' + (ev.shgDrop * 100).toFixed(1) + ' %（許容幅 ' + ev.shgTol.toFixed(3) + ' ℃）'],
+      ['ファイバへの結合', (ev.eta * 100).toFixed(2) + ' %（大きさ ' + (ev.etaMM * 100).toFixed(1) + ' % × 横ずれ ' + (ev.etaOff * 100).toFixed(1) + ' %）']
     ];
     document.getElementById('derived').innerHTML = '<div class="dv">' + rows.map(function (r) {
       return '<span class="k">' + esc(r[0]) + '</span><span class="v' + (r[2] ? ' warn' : '') + '">' + esc(r[1]) + '</span>';

@@ -60,6 +60,18 @@
     gum: {
       note: '校正を U 1.0% に・10 回平均。u_c = √(0.5² + 0.289² + 0.158² + 0.115²) = 0.61% → U = 1.22%。',
       design: function () { var d = M.defaults(); d.ucal = 1; d.nrep = 10; return d; }
+    },
+    nl: {
+      note: '36 回/日（40 分サイクル）。AF = (165/30)^1.9 × (1/36)^(1/3) × exp(1414·(1/328−1/398)) = 25.5 × 0.303 × 2.13 ≒ 16.5 → 222 回・6.2 日。',
+      design: function () { var d = M.defaults(); d.dts = 165; d.cfs = 36; return d; }
+    },
+    ndc: {
+      note: '繰り返し σ 0.005。σ測定 0.0078 → ndc = 1.41 × 0.03/0.0078 = 5.4 → 5、公差比 7.8 %（全変動比では 25 %）。',
+      design: function () { var d = M.defaults(); d.srpt = 0.005; return d; }
+    },
+    oc: {
+      note: 'n = 132・c = 3。AQL 1% で合格 95.6 %（α 4.4 %）、LTPD 5% で合格 9.9 %（β 9.9 %）― 教科書の定番の計画。',
+      design: function () { var d = M.defaults(); d.nsmp = 132; d.cacc = 3; return d; }
     }
   };
 

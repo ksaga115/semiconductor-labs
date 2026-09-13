@@ -40,6 +40,18 @@
     peak: {
       note: '1.0 W。E = 12.5 nJ、尖頭値 0.94 × 12.5 nJ / 94 fs = 125 kW。',
       design: function () { var d = M.defaults(); d.lcavm = 1.874; d.dlnm = 10; d.pavg = 1.0; return d; }
+    },
+    relax: {
+      note: '85 ℃ で 42 mA。しきい値 27.2 mA なので I − I_th = 14.8 mA、f_R = 5.77 GHz、帯域 8.97 GHz（要る 7.0）。',
+      design: function () { var d = M.defaults(); d.tempc = 85; d.iop = 42; return d; }
+    },
+    shg: {
+      note: '長さ 2.6 cm・励起 1.0 W。±0.1 ℃ の最悪で 21.8 mW、低下 16%（許容幅 FWHM 0.38 ℃）。',
+      design: function () { var d = M.defaults(); d.shgL = 2.6; d.shgP = 1.0; return d; }
+    },
+    fiber: {
+      note: '倍率 3.4（スポット半径 5.44 µm）。大きさの合い具合 99.8% × 横ずれ 92.4% = 92.2%。',
+      design: function () { var d = M.defaults(); d.mag = 3.4; return d; }
     }
   };
 

@@ -13,6 +13,10 @@
  *   jd      暗電流密度 [pA/cm²]（60℃）     業界の仕様書は 60℃ で書く
  *   T       温度 [℃]
  *   bits    AD の桁数
+ *   rows, vpx, fclk, colpar   ローリングシャッタ（行の数・物体の速さ・AD のクロック・同時に読む行）
+ *   pls     グローバルシャッタの寄生感度の分離比 [dB]
+ *   fnum    レンズの F 値（回折の限界の画素ピッチ λN/2）
+ *   tdiN, tdiMode, tdiS1, tdiSync   TDI（段数・電荷かデジタルか・1 段の信号・速さのずれ）
  *
  * 【ここで効いてくる綱引き】
  *
@@ -42,7 +46,18 @@
       pitch: 3.0, pdFrac: 0.5, ml: true, epi: 3.0, nm: 550,
       fwd: 1500, cfd: 2.0, sf: 120, cds: true,
       jd: 50, T: 25, bits: 12, prnu: 1.0, offset: 64,
-      hdrR: 1                      /* 長短合成の露光比（1 = 合成なし）。第4部「ダイナミックレンジを広げる」 */
+      hdrR: 1,                     /* 長短合成の露光比（1 = 合成なし）。第4部「ダイナミックレンジを広げる」 */
+      /* ---- 第4章: 動き・細かさ・時間 ---- */
+      rows: 3000,                  /* 行の数 */
+      vpx: 600,                    /* 動く物体の像の速さ [画素/s]（横向き） */
+      fclk: 1000,                  /* 列の AD（単一傾斜）のカウンタのクロック [MHz]（仮定） */
+      colpar: 1,                   /* 同時に読む行の数（列回路を何組並べるか） */
+      pls: 80,                     /* グローバルシャッタの寄生感度の分離比 [dB]（80 dB ＝ 10⁻⁴） */
+      fnum: 2.8,                   /* レンズの F 値 */
+      tdiN: 1,                     /* TDI の段数 */
+      tdiMode: 0,                  /* 0 ＝ デジタルで足す（CMOS）、1 ＝ 電荷で足す（CCD） */
+      tdiS1: 5,                    /* 1 段で溜まる信号 [e⁻] */
+      tdiSync: 1                   /* 物体の速さと行の送りのずれ [%] */
     };
   }
 
@@ -117,14 +132,46 @@
     var hdrR = Math.max(1, Math.min(32, d.hdrR || 1));
     var drH = dr + 20 * Math.log10(hdrR);
 
+    /* ---- 第4章 ----
+     * ローリングシャッタ: 1 行の読み出しは列の AD の変換時間で決まるとする。
+     * 単一傾斜の AD は全域を数えるのに 2^bits 回のクロックが要る（仮定: 変換時間が 1 行の時間を決める）。
+     * colpar 行を同時に読めば 1 行あたりの時間は 1/colpar。上端と下端の時間差 ＝ 行数 × 1 行の時間。
+     * 横に動く物体は、その時間差のあいだに vpx × 時間差 だけ動く ― それが上下での横ずれ（歪み）。 */
+    var tAdc = Math.pow(2, d.bits) / (d.fclk * 1e6);          /* s */
+    var tRow = tAdc / Math.max(1, d.colpar);
+    var tRead = d.rows * tRow;
+    var skew = d.vpx * tRead;
+    /* グローバルシャッタ: 退避した電荷は読まれるまで待つ。最後の行は tRead 待つので、そこに寄生感度ぶんの光が混ざる。
+     * 分離比は 20 log₁₀ で dB にする（10⁻⁴ ＝ 80 dB、10⁻⁵ ＝ 100 dB。第4部と同じ）。 */
+    var plsRatio = Math.pow(10, -d.pls / 20);
+    /* 回折: 遮断周波数 1/(λN) とナイキスト 1/(2p) が等しくなる画素ピッチ λN/2 より細かくしても解像は増えない */
+    var lamUm = d.nm / 1000;
+    var pDiff = lamUm * d.fnum / 2;
+    var airy = 2.44 * lamUm * d.fnum;
+    /* TDI: N 段で信号は N 倍。電荷で足せば読み出し雑音は 1 回、デジタルで足せば N 回ぶん（分散で N 倍）。
+     * 速さのずれ s% は N 段のあいだに N·s/100 画素の流れ（にじみ）になる。 */
+    var tdiSig = d.tdiN * d.tdiS1;
+    var tdiRead2 = (d.tdiMode ? 1 : d.tdiN) * read * read;
+    var tdiSnr = tdiSig / Math.sqrt(tdiSig + tdiRead2);
+    var tdiSmear = d.tdiN * d.tdiSync / 100;
+
     return {
       area: area, pdArea: pdArea, fill: fill, qeSi: qeSi, qe: qe,
       fwPd: fwPd, fwFd: fwFd, fw: fw, limit: fwPd <= fwFd ? 'PD' : '浮遊拡散',
       cg: cg, readSf: readSf, kTC: kTC, read: read, K: K, quant: quant,
       dark: dark, floor: noiseFloor, dr: dr, snrMax: Math.sqrt(fw),
       hdrR: hdrR, drH: drH,
-      prnu: d.prnu / 100, offset: d.offset, bits: d.bits, T: d.T
+      prnu: d.prnu / 100, offset: d.offset, bits: d.bits, T: d.T,
+      tAdc: tAdc, tRow: tRow, tRead: tRead, skew: skew,
+      plsRatio: plsRatio, pDiff: pDiff, airy: airy,
+      nyqLpmm: 1000 / (2 * d.pitch), cutLpmm: 1000 / (lamUm * d.fnum),
+      tdiSig: tdiSig, tdiSnr: tdiSnr, tdiSmear: tdiSmear
     };
+  }
+
+  /** グローバルシャッタで、光子束 flux [光子/µm²/s] の明るい物体から最後の行に混ざる電子 [e⁻] */
+  function parasitic(ev, flux) {
+    return ev.qe * flux * ev.area * ev.plsRatio * ev.tRead;
   }
 
   /**
@@ -153,7 +200,7 @@
 
   PX.pixel = {
     Q: Q, KB: KB, VSWING: VSWING, ML_FILL: ML_FILL, T_REF: T_REF,
-    defaults: defaults, evaluate: evaluate, snr: snr, signal: signal, toCamera: toCamera,
+    defaults: defaults, evaluate: evaluate, snr: snr, signal: signal, toCamera: toCamera, parasitic: parasitic,
     qeSilicon: qeSilicon, darkScale: darkScale, doublingK: doublingK
   };
 })(typeof window !== 'undefined' ? window : globalThis);

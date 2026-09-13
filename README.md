@@ -41,14 +41,14 @@
   付録_物性値と索引.html            付録 ― 物性値の表・式の索引・全部の部の用語の統一索引（検索できる）・記号表・英日対訳・年表
   ProcessLab\                    第1部 ラボ ― 原始部品 ＝ 工程（4章 13問）
   SemiLab\                       第2部 ラボ（作る側）― 原始部品 ＝ 不純物（5章 26問。pMOS とゲートの材料・単層の反射防止膜を含む）
-  CharLab\                       第2部 ラボ（測る側）― 謎の素子の I-V/C-V から n・Vth・tox・Na を当てる（3章 9問）
+  CharLab\                       第2部 ラボ（測る側）― 謎の素子の I-V/C-V から n・Vth・tox・Na を当てる（4章 13問。第4章は温度を振った Eg・1/C² の濃度分布・2 成分の I-V）
   NandLab\                       第3部 ラボ ― 原始部品 ＝ NAND（6章 31問。第6章だけ NOR）
-  PixelLab\                      第4部 ラボ ― 原始部品 ＝ 光子と電子を数えること（3章 12問）
+  PixelLab\                      第4部 ラボ ― 原始部品 ＝ 光子と電子を数えること（4章 16問。第4章はローリング／グローバルシャッタ・画素ピッチの限界・TDI）
   PhotonLab\                     第5部 ラボ ― 原始部品 ＝ 光子とη（4章 15問。R・NEP・D*・最適なM・MPPC・背景光・計数・走行×RC・TCSPC・InGaAs APD・しきい値とクロストーク・シンチの分解能）
   AnalogLab\                     第6部 ラボ ― 原始部品 ＝ 二乗則のMOS 1個（4章 13問。Vov・gm・利得・GBW・TIA・kTC・SC・2段OTA・ADC・DC-DC）
   OptoLab\                       第7部 ラボ ― 原始部品 ＝ 光線とその会計（4章 15問。カメラ方程式・回折・ガウス・ファイバ・λ/4・エテンデュ・cos⁴・モード結合・ブルースター角・格子・回線）
-  QALab\                         第8部 ラボ ― 原始部品 ＝ 故障率と分布（4章 14問。MTTF・加速3種＋HAST・B10・Tj・TEC・Cpk・誤差・GR&R・管理図・不確かさ）
-  LaserLab\                      第9部 ラボ ― 原始部品 ＝ 共振器の会計と熱の光（3章 9問。黒体・LED・しきい値・スロープ効率・T₀・縦モード・DFB・モード同期・尖頭値）
+  QALab\                         第8部 ラボ ― 原始部品 ＝ 故障率と分布（5章 17問。MTTF・加速3種＋HAST・B10・Tj・TEC・Cpk・誤差・GR&R・管理図・不確かさ・Norris-Landzberg・ndc・OC 曲線）
+  LaserLab\                      第9部 ラボ ― 原始部品 ＝ 共振器の会計と熱の光（4章 12問。黒体・LED・しきい値・スロープ効率・T₀・縦モード・DFB・モード同期・尖頭値・緩和振動・SHG・ファイバ結合）
   DesignLab\                     第10部 ラボ ― 微弱光カメラ・LiDAR・分光器の予算表（3章 12問。光の予算・sCMOS と EM-CCD・伝送・冷却・戻る光子・背景と SPAD・精度・格子・スリット・吸光度と校正）
 ```
 
@@ -85,14 +85,14 @@
 ```
 node ProcessLab\tests\all.js      332 件
 node SemiLab\tests\all.js       1,255 件
-node CharLab\tests\all.js         184 件
+node CharLab\tests\all.js         281 件
 node NandLab\tests\all.js         725 件
-node PixelLab\tests\all.js        281 件
+node PixelLab\tests\all.js        372 件
 node PhotonLab\tests\all.js       333 件
 node AnalogLab\tests\all.js       260 件
 node OptoLab\tests\all.js         301 件
-node QALab\tests\all.js           281 件
-node LaserLab\tests\all.js        200 件
+node QALab\tests\all.js           358 件
+node LaserLab\tests\all.js        272 件
 node DesignLab\tests\all.js       547 件
 ```
 

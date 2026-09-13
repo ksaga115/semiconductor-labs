@@ -109,4 +109,39 @@ T('画素の設計', () => {
   within('設計したカメラの K を PTC で測ると設計どおり', PTC.fitK(pts).K, ev.K, 1.05);
 });
 
+T('第4章 動き・細かさ・時間（第4部の数字と突き合わせる）', () => {
+  const d = PIX.defaults(), ev = PIX.evaluate(d);
+  const W = (p) => PIX.evaluate(Object.assign({}, d, p));
+  /* ローリングシャッタ: 単一傾斜の AD は 2^bits 回数える */
+  near('12 bit・1 GHz の AD は 4.096 µs', ev.tAdc, 4096e-9, 1e-15);
+  near('3000 行で上下の時間差 12.288 ms', ev.tRead, 3000 * 4096e-9, 1e-12);
+  near('600 画素/s なら横ずれ 7.37 画素', ev.skew, 600 * 3000 * 4096e-9, 1e-9);
+  near('4 行同時に読むと 1.84 画素', W({ colpar: 4 }).skew, 600 * 3000 * 1024e-9, 1e-9);
+  ok('1 bit 増やすと 1 行が倍遅い', Math.abs(W({ bits: 13 }).tRow / ev.tRow - 2) < 1e-12);
+  /* 第4部の例: 3000 行を 1/60 秒で読むと 1 行 5.6 µs、上下で 16.7 ms */
+  const f60 = 4096 / (1e6 / 60 / 3000);            /* 1 行 = (1/60)/3000 s になるクロック [MHz] */
+  const e60 = W({ fclk: f60 });
+  near('第4部: 1 行 5.56 µs', e60.tRow * 1e6, 5.556, 0.001);
+  near('第4部: 上下で 16.7 ms', e60.tRead * 1e3, 16.667, 0.001);
+  /* グローバルシャッタの分離比（第4部: 10⁻⁴ ＝ 80 dB、10⁻⁵ ＝ 100 dB） */
+  near('80 dB は 10⁻⁴', W({ pls: 80 }).plsRatio, 1e-4, 1e-18);
+  near('100 dB は 10⁻⁵', W({ pls: 100 }).plsRatio, 1e-5, 1e-18);
+  near('寄生の電子 = QE × 光 × 面積 × 分離比 × 待ち時間', PIX.parasitic(ev, 1e6), ev.qe * 1e6 * 9 * 1e-4 * ev.tRead, 1e-9);
+  ok('読み出しを 4 倍速くすると寄生も 1/4', Math.abs(PIX.parasitic(W({ colpar: 4 }), 1e6) / PIX.parasitic(ev, 1e6) - 0.25) < 1e-12);
+  /* 回折（第4部: F2.8 でエアリー円板 3.76 µm、3.0 µm の画素は F10.9 から回折で決まる） */
+  near('F2.8・550 nm のエアリー円板 3.76 µm', W({ fnum: 2.8 }).airy, 2.44 * 0.55 * 2.8, 1e-12);
+  ok('第4部の 3.76 µm と一致', Math.abs(W({ fnum: 2.8 }).airy - 3.76) < 0.005);
+  near('λN/2 = 3.0 µm になるのは F10.9', 2 * 3.0 / 0.55, 10.909, 0.001);
+  near('F8 の回折の限界 2.2 µm', W({ fnum: 8 }).pDiff, 2.2, 1e-12);
+  near('3.0 µm のナイキスト 166.7 本/mm（標本化 333 本/mm の半分）', ev.nyqLpmm, 1000 / 6, 1e-9);
+  /* TDI: 電荷で足すと読み出し雑音は 1 回、デジタルで足すと N 回 */
+  const r2 = ev.read * ev.read;
+  near('電荷で足す S/N = 5N/√(5N + σ²)', W({ tdiMode: 1, tdiN: 90 }).tdiSnr, 450 / Math.sqrt(450 + r2), 1e-12);
+  near('デジタルで足す S/N = 5N/√(5N + Nσ²)', W({ tdiMode: 0, tdiN: 90 }).tdiSnr, 450 / Math.sqrt(450 + 90 * r2), 1e-12);
+  ok('電荷で足すなら 81 段で 20 に届き、80 段では届かない', W({ tdiMode: 1, tdiN: 81 }).tdiSnr >= 20 && W({ tdiMode: 1, tdiN: 80 }).tdiSnr < 20);
+  ok('デジタルで足すと 100 段でも 20 に届かない', W({ tdiMode: 0, tdiN: 100 }).tdiSnr < 20);
+  ok('1 段なら足し方で差は無い', Math.abs(W({ tdiMode: 0 }).tdiSnr - W({ tdiMode: 1 }).tdiSnr) < 1e-12);
+  near('ずれ 1% で 100 段なら にじみ 1 画素', W({ tdiN: 100 }).tdiSmear, 1, 1e-12);
+});
+
 report();

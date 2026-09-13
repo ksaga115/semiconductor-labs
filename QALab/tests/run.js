@@ -121,4 +121,49 @@ T('管理図と不確かさ ― 第8部 09・10 の数字', () => {
   ok('校正 2% では平均を増やしても U は 2.08% を切れない', g2.Ug > 2.08);
 });
 
+T('Norris-Landzberg ― 周波数と最高温度の補正', () => {
+  const base = { dtu: 30, dts: 165, cyd: 1, lifey: 10, tmu: 55, tms: 125, nnl: 1.9, mnl: 1 / 3, eknl: 1414 };
+  const same = evalWith(Object.assign({}, base, { cfs: 1 })).ev;
+  near('ΔT の項 5.5^1.9', Math.pow(5.5, 1.9), 25.51, 0.01);
+  near('最高温度の項 exp(1414(1/328.15−1/398.15))', Math.exp(1414 * (1 / 328.15 - 1 / 398.15)), 2.133, 0.002);
+  within('同じ周波数なら AF ≒ 54.4', same.afnl, 54.41, 1.002);
+  const h24 = evalWith(Object.assign({}, base, { cfs: 24 })).ev;
+  within('24 回/日で AF ≒ 18.9', h24.afnl, 18.86, 1.002);
+  within('24 回/日で 194 回', h24.cycNl, 193.5, 1.002);
+  within('24 回/日で 8.1 日', h24.daysNl, 8.06, 1.002);
+  near('周波数を 8 倍にすると AF は 1/2', evalWith(Object.assign({}, base, { cfs: 8 })).ev.afnl / same.afnl, 0.5, 1e-9);
+  near('べき 0・Ea 0・同じ最高温度なら純 C-M', evalWith(Object.assign({}, base, { nnl: 2, mnl: 0, eknl: 0, cfs: 24 })).ev.afnl, 30.25, 1e-9);
+});
+
+T('ndc ― 有効区分数（AIAG MSA）', () => {
+  const a = evalWith({ tol: 0.3, srpd: 0.006, srpt: 0.005, spv: 0.03 }).ev;
+  within('σ測定 0.0078', a.sgrr, 0.00781, 1.002);
+  within('ndc 切り捨て前 5.41', a.ndcRaw, 5.416, 1.002);
+  eq('ndc は切り捨てて 5', a.ndc, 5);
+  within('全変動比 25.2 %', a.pgrrTv, 0.252, 1.005);
+  near('ndc ≈ 1.41·√(1−x²)/x（x = 全変動比）', a.ndcRaw, 1.41 * Math.sqrt(1 - a.pgrrTv * a.pgrrTv) / a.pgrrTv, 1e-9);
+  const b = evalWith({ tol: 0.3, srpd: 0.006, srpt: 0.007, spv: 0.03 }).ev;
+  eq('公差比 9.2 % の物差しでも ndc は 4', b.ndc, 4);
+  ok('その物差しは公差比では合格', b.pgrr <= 0.10);
+});
+
+T('抜き取りの OC 曲線 ― 二項分布', () => {
+  near('Pa(p=0) = 1', M.binCdf(3, 132, 0), 1, 1e-12);
+  near('c ≥ n なら必ず合格', M.binCdf(10, 10, 0.3), 1, 1e-12);
+  near('c = 0 は (1−p)^n', M.binCdf(0, 50, 0.02), Math.pow(0.98, 50), 1e-12);
+  /* 小さな場合を手で: n = 3, c = 1, p = 0.1 → 0.9³ + 3·0.1·0.9² = 0.972 */
+  near('n = 3・c = 1・p = 0.1 は 0.972', M.binCdf(1, 3, 0.1), 0.972, 1e-12);
+  const a = evalWith({ nsmp: 132, cacc: 3, aql: 1, ltpd: 5 }).ev;
+  within('(132, 3) の α 4.43 %', a.alphaAct, 0.0443, 1.01);
+  within('(132, 3) の β 9.92 %', a.betaAct, 0.0992, 1.01);
+  const sw = M.ocSweep({ nsmp: 132, cacc: 3 }, 0.1, 50);
+  ok('OC 曲線は p とともに単調に下がる', sw.every((q, i) => i === 0 || q.pa <= sw[i - 1].pa + 1e-12));
+  /* c ≤ 2 はどの n でも両立しない（全探索） */
+  let any = false;
+  for (let c = 0; c <= 2; c++) for (let n = c + 1; n <= 1000; n++) {
+    if (1 - M.binCdf(c, n, 0.01) <= 0.05 && M.binCdf(c, n, 0.05) <= 0.10) any = true;
+  }
+  ok('c ≤ 2 ではどの n でも α 5%・β 10% を両立しない', !any);
+});
+
 report();

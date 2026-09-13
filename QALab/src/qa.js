@@ -37,10 +37,19 @@
  *   shsig    見つけたい平均のずれ δ [σ]    p1 = Φ(−k+δ√n) + Φ(−k−δ√n)、ARL1 = 1/p1
  *   ucal     校正証明書の拡張不確かさ [%]（k = 2）  GUM: u_c = √((U/2)² + (a/√3)² + (s/√n)² + (b/√3)²)
  *   resd     表示の分解能の半幅 [%]・srep 繰り返しの標準偏差 [%]・nrep 平均の回数・tco 温度の影響の半幅 [%]
+ *   tmu,tms  温度サイクルの使用/試験の最高温度 [℃]・cfs 試験の周波数 [回/日]（使用の周波数は cyd）
+ *   nnl,mnl,eknl  Norris-Landzberg の定数（SnPb の原典値 1.9・1/3・1414 K ― Norris & Landzberg 1969）
+ *            AF = (ΔTs/ΔTu)^n · (fu/fs)^m · exp(Ea/k·(1/Tmax,u − 1/Tmax,s))
+ *   spv      部品のばらつき σ（GR&R に使う部品が工程を代表しているとして）
+ *            ndc = 1.41·σ部品/σ測定（小数は切り捨て）― AIAG MSA の有効区分数
+ *   aql,ltpd 合格品質水準・ロット許容不良率 [%]・alp,bet 生産者危険・消費者危険 [%]
+ *   nsmp,cacc 1 回抜き取りのサンプル数 n と合格判定数 c
+ *            合格の確率 Pa(p) = Σ_{k≤c} C(n,k) p^k (1−p)^(n−k)（二項分布の OC 曲線）
  *
  * 【約束】数値はすべてこの式から導出できる。乱数は使わない。
  * 【モデルの外】ワイブルの当てはめ（プロット）・TECの電流最適化・
  * 非正規分布・系統誤差・電圧/電流密度の加速は入れていない。
+ * GR&R の分散分析の表そのもの（部品×測定者の交互作用の分離）と、JIS Z 9015 の切り替えの規則は入れていない。
  */
 (function (global) {
   'use strict';
@@ -61,8 +70,25 @@
       dtu: 30, dts: 60, ncm: 2, cyd: 1,
       srpt: 0.02, srpd: 0.006,
       klim: 3, ngrp: 1, shsig: 1,
-      ucal: 2, resd: 0.5, srep: 0.5, nrep: 1, tco: 0.2
+      ucal: 2, resd: 0.5, srep: 0.5, nrep: 1, tco: 0.2,
+      tmu: 55, tms: 125, cfs: 24, nnl: 1.9, mnl: 1 / 3, eknl: 1414,
+      spv: 0.03,
+      aql: 1, ltpd: 5, alp: 5, bet: 10, nsmp: 50, cacc: 1
     };
+  }
+
+  /** 二項分布の累積 P(X ≤ c)、X ~ Bin(n, p)。対数で足して桁あふれを避ける */
+  function binCdf(c, n, p) {
+    if (c >= n) return 1;
+    if (c < 0) return 0;
+    if (p <= 0) return 1;
+    if (p >= 1) return 0;
+    var s = 0, lnc = 0, k;
+    for (k = 0; k <= c; k++) {
+      if (k > 0) lnc += Math.log((n - k + 1) / k);
+      s += Math.exp(lnc + k * Math.log(p) + (n - k) * Math.log(1 - p));
+    }
+    return Math.min(1, s);
   }
 
   /** 誤差関数（Abramowitz & Stegun 7.1.26、|誤差| < 1.5×10⁻⁷） */
@@ -138,7 +164,31 @@
     var ucg = Math.sqrt(Math.pow((d.ucal || 0) / 2, 2) + Math.pow((d.resd || 0) / Math.sqrt(3), 2)
       + Math.pow((d.srep || 0) / Math.sqrt(d.nrep || 1), 2) + Math.pow((d.tco || 0) / Math.sqrt(3), 2));
 
+    /* Norris-Landzberg: Coffin-Manson に周波数（クリープの時間）と最高温度の補正を掛ける。
+       試験を速く回すほど fu/fs が小さくなり AF は下がる */
+    var Tmu = (d.tmu || 0) + 273.15, Tms = (d.tms || 0) + 273.15;
+    var afnl = Math.pow((d.dts || 1) / (d.dtu || 1), d.nnl || 0)
+             * Math.pow((d.cyd || 1) / (d.cfs || 1), d.mnl || 0)
+             * Math.exp((d.eknl || 0) * (1 / Tmu - 1 / Tms));
+    var cycNl = afnl > 0 ? cycUse / afnl : Infinity;
+    var daysNl = cycNl / (d.cfs || 1);
+
+    /* ndc（有効区分数）: 部品の違いを測定系が何段に見分けられるか。1.41 ≈ √2（AIAG MSA） */
+    var spv = d.spv || 0;
+    var ndcRaw = sgrr > 0 ? 1.41 * spv / sgrr : Infinity;
+    var ndc = Math.floor(ndcRaw + 1e-9);
+    var tv = Math.sqrt(sgrr * sgrr + spv * spv);
+    var pgrrTv = tv > 0 ? sgrr / tv : 0;
+
+    /* 1 回抜き取り (n, c) の OC: AQL での合格の確率と、LTPD での合格の確率 */
+    var nS = Math.round(d.nsmp || 0), cS = Math.round(d.cacc || 0);
+    var paAql = binCdf(cS, nS, (d.aql || 0) / 100);
+    var paLtpd = binCdf(cS, nS, (d.ltpd || 0) / 100);
+
     return {
+      afnl: afnl, cycNl: cycNl, daysNl: daysNl,
+      ndcRaw: ndcRaw, ndc: ndc, pgrrTv: pgrrTv, tv: tv,
+      paAql: paAql, paLtpd: paLtpd, alphaAct: 1 - paAql, betaAct: paLtpd,
       lamFit: lamFit, mttfH: mttfH, mttfY: mttfY,
       af: af, testH: testH, b10H: b10H,
       tj: tj, thTot: thTot,
@@ -179,9 +229,20 @@
     return out;
   }
 
+  /** 不良率 p を掃いて合格の確率を返す（OC 曲線） */
+  function ocSweep(d, pMax, n) {
+    pMax = pMax || 0.1; n = n || 100;
+    var out = [], nS = Math.round(d.nsmp || 0), cS = Math.round(d.cacc || 0);
+    for (var i = 0; i <= n; i++) {
+      var p = pMax * i / n;
+      out.push({ p: p, pa: binCdf(cS, nS, p) });
+    }
+    return out;
+  }
+
   QA.qa = {
     KB_EV: KB_EV, HOURS_Y: HOURS_Y,
-    defaults: defaults, evaluate: evaluate, erf: erf, phi: phi,
-    afSweep: afSweep, tecSweep: tecSweep
+    defaults: defaults, evaluate: evaluate, erf: erf, phi: phi, binCdf: binCdf,
+    afSweep: afSweep, tecSweep: tecSweep, ocSweep: ocSweep
   };
 })(typeof window !== 'undefined' ? window : globalThis);

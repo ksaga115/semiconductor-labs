@@ -66,6 +66,29 @@ T('落ちるべきもの', () => {
   ok('fsr: 群屈折率を変えるのは反則', !with_('fsr', { ng: 3.0 }));
   ok('dfb: 格子の周期を変えるのは反則', !with_('dfb', { pitchnm: 242.2, tempc: 25 }));
   ok('peak: スペクトルを変えるのは反則', !with_('peak', { dlnm: 20 }));
+
+  /* 第4章: 窓の両側と反則 */
+  ok('relax: 36.0 mA は帯域が足りない', !with_('relax', { iop: 36.0 }));
+  ok('relax: 36.5 mA なら通る', with_('relax', { iop: 36.5 }));
+  ok('relax: 50 mA は通る（上限ちょうど）', with_('relax', { iop: 50 }));
+  ok('relax: 55 mA は電流の上限破り', !with_('relax', { iop: 55 }));
+  ok('relax: 70 ℃ に下げるのは反則', !with_('relax', { tempc: 70 }));
+  ok('relax: D を盛るのは反則', !with_('relax', { dfac: 3, iop: 30 }));
+  ok('relax: ビットレートを下げるのは反則', !with_('relax', { gbps: 5, iop: 30 }));
+  ok('shg: 2.2 cm・1 W は 20 mW に届かない', !with_('shg', { shgL: 2.2 }));
+  ok('shg: 2.35 cm・1 W なら通る', with_('shg', { shgL: 2.35 }));
+  ok('shg: 2.85 cm・1 W なら通る', with_('shg', { shgL: 2.85 }));
+  ok('shg: 3.0 cm は揺れで 20% より多く落ちる', !with_('shg', { shgL: 3.0 }));
+  ok('shg: 励起 1.2 W は損傷の上限破り', !with_('shg', { shgP: 1.2 }));
+  ok('shg: 2.6 cm でも 0.9 W では足りない', !with_('shg', { shgP: 0.9 }));
+  ok('shg: 許容幅を広く見積もるのは反則', !with_('shg', { shgA: 2, shgL: 4 }));
+  ok('shg: 温度の揺れを小さく見積もるのは反則', !with_('shg', { shgdT: 0.01, shgL: 4 }));
+  ok('fiber: 倍率 2.7 は小さすぎる', !with_('fiber', { mag: 2.7 }));
+  ok('fiber: 倍率 3.0 なら通る', with_('fiber', { mag: 3.0 }));
+  ok('fiber: 倍率 3.8 なら通る', with_('fiber', { mag: 3.8 }));
+  ok('fiber: 倍率 4.0 は大きすぎる', !with_('fiber', { mag: 4.0 }));
+  ok('fiber: 横ずれを小さく見積もるのは反則', !with_('fiber', { offum: 0.5, mag: 2.7 }));
+  ok('fiber: LD のモードを変えるのは反則', !with_('fiber', { ldw: 5.2, mag: 1 }));
 });
 
 report();

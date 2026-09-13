@@ -55,7 +55,20 @@
     ['resd', '表示の分解能（半幅）', '%', 0, 5],
     ['srep', '1 回の読みの繰り返し', '%', 0, 5],
     ['nrep', '平均の回数', '回', 1, 1000, true],
-    ['tco', '温度の影響（半幅）', '%', 0, 5]
+    ['tco', '温度の影響（半幅）', '%', 0, 5],
+    ['tmu', '使用の最高温度（NL）', '℃', -40, 150],
+    ['tms', '試験の最高温度（NL）', '℃', 25, 200],
+    ['cfs', '試験の周波数', '回/日', 0.1, 200],
+    ['nnl', 'NL の ΔT のべき', '（SnPb 1.9）', 1, 5],
+    ['mnl', 'NL の周波数のべき', '（SnPb 1/3）', 0, 1],
+    ['eknl', 'NL の Ea/k', 'K（SnPb 1414）', 0, 5000],
+    ['spv', '部品のばらつき σ', '（工程を代表）', 0.0001, 1],
+    ['aql', '合格品質水準 AQL', '%', 0.01, 20],
+    ['ltpd', 'ロット許容不良率 LTPD', '%', 0.1, 50],
+    ['alp', '生産者危険 α', '%', 0.1, 50],
+    ['bet', '消費者危険 β', '%', 0.1, 50],
+    ['nsmp', 'サンプル数 n', '個', 1, 5000, true],
+    ['cacc', '合格判定数 c', '個', 0, 100, true]
   ];
 
   function num(t) {
@@ -231,7 +244,10 @@
       ['合成誤差 √(A²+B²)', ev.stot.toFixed(3) + ' %'],
       ['%GR&R（公差比）', (ev.pgrr * 100).toFixed(1) + ' %', ev.pgrr > 0.3],
       ['管理図 ARL₀ / ARL₁', ev.arl0.toFixed(0) + ' 群 / ' + ev.arl1.toFixed(1) + ' 群（空振り / 見逃し）', ev.arl0 < 100],
-      ['不確かさ u_c / U（k=2）', ev.ucg.toFixed(3) + ' % / ' + ev.Ug.toFixed(3) + ' %']
+      ['不確かさ u_c / U（k=2）', ev.ucg.toFixed(3) + ' % / ' + ev.Ug.toFixed(3) + ' %'],
+      ['温度サイクル（NL）', 'AF ' + ev.afnl.toFixed(1) + ' → ' + ev.cycNl.toFixed(0) + ' 回・' + ev.daysNl.toFixed(1) + ' 日（' + S.design.cfs + ' 回/日）'],
+      ['ndc / %GR&R（全変動比）', ev.ndc + '（' + ev.ndcRaw.toFixed(2) + '） / ' + (ev.pgrrTv * 100).toFixed(1) + ' %', ev.ndc < 5],
+      ['抜き取り α / β', (ev.alphaAct * 100).toFixed(2) + ' % / ' + (ev.betaAct * 100).toFixed(2) + ' %（n ' + S.design.nsmp + '・c ' + S.design.cacc + '）']
     ];
     document.getElementById('derived').innerHTML = '<div class="dv">' + rows.map(function (r) {
       return '<span class="k">' + esc(r[0]) + '</span><span class="v' + (r[2] ? ' warn' : '') + '">' + esc(r[1]) + '</span>';

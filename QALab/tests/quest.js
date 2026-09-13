@@ -110,6 +110,35 @@ T('落ちるべきもの', () => {
   ok('gum: 買えない校正は上限破りで落ちる', !Q.grade('gum', { design: u4 }).ok);
   const u5 = Object.assign({}, A.get('gum').design(), { resd: 0.05 });
   ok('gum: 分解能を都合よく変えるのは反則', !Q.grade('gum', { design: u5 }).ok);
+
+  const w = (id, patch) => Q.grade(id, { design: Object.assign({}, A.get(id).design(), patch) }).ok;
+
+  /* Norris-Landzberg: 回数と日数の窓の両側、槽の限界、定数を盛る反則 */
+  ok('nl: 24 回/日は 8.1 日で落ちる', !w('nl', { cfs: 24 }));
+  ok('nl: 60 回/日は 263 回で落ちる', !w('nl', { cfs: 60 }));
+  ok('nl: 窓の端 30 回/日は通る', w('nl', { cfs: 30 }));
+  ok('nl: 窓の端 51 回/日は通る', w('nl', { cfs: 51 }));
+  ok('nl: 80 回/日は槽の限界破り', !w('nl', { cfs: 80, nnl: 1.9 }));
+  ok('nl: ΔT のべきを盛るのは反則', !w('nl', { nnl: 2.5 }));
+  ok('nl: 試験の最高温度を変えるのは反則', !w('nl', { tms: 150 }));
+  ok('nl: cm のお手本（24 回/日）では日数で落ちる', !Q.grade('nl', { design: A.get('cm').design() }).ok);
+
+  /* ndc: 公差比で合格の物差しでも落ちる・分解能の限界・部品のばらつきを盛る反則 */
+  ok('ndc: 繰り返し 0.007（公差比 9.2%）でも ndc 4 で落ちる', !w('ndc', { srpt: 0.007 }));
+  ok('ndc: grr のお手本では落ちる', !Q.grade('ndc', { design: A.get('grr').design() }).ok);
+  ok('ndc: 窓の端 0.0055 は通る', w('ndc', { srpt: 0.0055 }));
+  ok('ndc: 0.002 は器具の分解能の限界破り', !w('ndc', { srpt: 0.002 }));
+  ok('ndc: 部品のばらつきを盛るのは反則', !w('ndc', { spv: 0.1 }));
+  ok('ndc: 再現性を消すのは反則', !w('ndc', { srpd: 0.001 }));
+
+  /* OC: n の窓の両側・c を変えると予算破り・危険を緩める反則 */
+  ok('oc: n = 131 は β で落ちる', !w('oc', { nsmp: 131 }));
+  ok('oc: n = 138 は α で落ちる', !w('oc', { nsmp: 138 }));
+  ok('oc: 窓の端 n = 137 は通る', w('oc', { nsmp: 137 }));
+  ok('oc: c = 2 はどの n でも落ちる（n = 100）', !w('oc', { cacc: 2, nsmp: 100 }));
+  ok('oc: c = 4・n = 158 は両立するが予算破り', !w('oc', { cacc: 4, nsmp: 158 }));
+  ok('oc: β を 20% に緩めるのは反則', !w('oc', { bet: 20, nsmp: 100 }));
+  ok('oc: LTPD を 10% に緩めるのは反則', !w('oc', { ltpd: 10, nsmp: 80, cacc: 2 }));
 });
 
 report();

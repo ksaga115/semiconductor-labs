@@ -20,8 +20,13 @@
   var CH = [
     { id: 1, name: '第1章　撮って測る（PTC）', lead: 'ばらつきを測ると、画面の数字が何電子かが分かる。中身の伏せられたカメラで試す。' },
     { id: 2, name: '第2章　画素を設計する', lead: '面積・容量・温度・AD の桁。どれかを良くすると、どれかが悪くなる。' },
-    { id: 3, name: '第3章　SemiLab とつなぐ', lead: '量子効率は SemiLab のフォトダイオードで解いている。赤外は層の厚みで決まる。' }
+    { id: 3, name: '第3章　SemiLab とつなぐ', lead: '量子効率は SemiLab のフォトダイオードで解いている。赤外は層の厚みで決まる。' },
+    { id: 4, name: '第4章　動き・細かさ・時間', lead: 'ローリングシャッタの歪み、グローバルシャッタの寄生感度、画素を細かくする限界、TDI の段数。第4部の読み出し・回折の節と同じ式。' }
   ];
+
+  function near(a, b) { return Math.abs(a - b) <= Math.abs(b) * 1e-9 + 1e-12; }
+  function lockRow(ok, text) { return row('条件固定', ok ? '守っている（' + text + '）' : '課題の条件に戻す', '', ok); }
+  var PLS_THRESH = 1.5;             /* 寄生の電子の目安: 既定の設計の読み出し雑音（1.50 e⁻） */
 
   var LIST = [
     /* ===== 第1章 測る ===== */
@@ -197,6 +202,106 @@
             row('画素の量子効率', f(ev.qe * 100, 1) + ' %', '25.0 以上', ev.qe >= 0.25),
             row('シリコンの量子効率（SemiLab）', f(ev.qeSi * 100, 1) + ' %（エピ ' + d.epi + ' µm）', '', true),
             row('マイクロレンズ / ピッチ', (d.ml ? 'あり' : 'なし') + ' / ' + f(d.pitch, 2) + ' µm', 'あり / 3.00', d.ml && Math.abs(d.pitch - 3) < 1e-9)
+          ]
+        };
+      }
+    },
+
+    /* ===== 第4章 ===== */
+    {
+      id: 'roll', ch: 4, kind: 'design',
+      name: 'ローリングシャッタの歪みを抑える',
+      desc: '**3000 行**・AD のクロック **1 GHz**（単一傾斜）のセンサで、**600 画素/s** で横に動く物体の上端と下端の横ずれを **2.5 画素以下**にする。'
+          + 'AD は **12 bit 以上**のまま、同時に読む行（列回路の組）は **4 組まで**。',
+      why: '行を 1 本ずつ順に読むので、上端と下端では 行数 × 1 行の時間 だけ撮った時刻がずれ、そのあいだに動いた分だけ像が斜めに歪む（第4部 ローリングシャッターの正体）。'
+         + '単一傾斜の AD は 2^bits 回数えるので、**桁を増やすほど 1 行が遅くなる** ― 12 bit・1 GHz で 4.1 µs、3000 行で 12.3 ms、600 画素/s なら 7.4 画素ずれる。'
+         + '桁を落とさずに速くするには、列回路を増やして何行も同時に読むしかない。',
+      hint: '同時に読む行を 3 にすると 4.1 ms で 2.46 画素、4 にすると 3.1 ms で 1.84 画素。2 では 3.7 画素で足りない。',
+      check: function (ev, d) {
+        var lock = near(d.rows, 3000) && near(d.fclk, 1000) && near(d.vpx, 600);
+        var okS = ev.skew <= 2.5, okB = d.bits >= 12, okC = d.colpar <= 4;
+        return {
+          ok: lock && okS && okB && okC,
+          rows: [
+            row('上端と下端の横ずれ', f(ev.skew, 2) + ' 画素（時間差 ' + f(ev.tRead * 1e3, 2) + ' ms）', '2.50 以下', okS),
+            row('1 行の時間', f(ev.tRow * 1e6, 3) + ' µs（AD の変換 ' + f(ev.tAdc * 1e6, 3) + ' µs）', '', true),
+            row('AD の桁 / 同時に読む行', d.bits + ' bit / ' + f(d.colpar, 0), '12 bit 以上・4 以下', okB && okC),
+            lockRow(lock, '3000 行・1 GHz・600 画素/s')
+          ]
+        };
+      }
+    },
+    {
+      id: 'gs', ch: 4, kind: 'design', flux: 1e6,
+      name: 'グローバルシャッタの寄生感度',
+      desc: 'グローバルシャッタにした 3.0 µm 画素（既定の画素・550 nm・12 bit・3000 行・1 GHz）で、画面に **10⁶ 光子/µm²/s** の明るい光源があるとき、'
+          + '最後に読まれる行の退避した電荷に混ざる偽の信号を **1.5 e⁻（既定の読み出し雑音）以下**にする。分離比は **100 dB まで**、同時に読む行は **4 組まで**。',
+      why: 'グローバルシャッタは全画素の電荷を同時に画素の中へ退避させ、あとで順に読む。**退避しているあいだにも光が漏れ込む** ― その割合が寄生感度で、分離比 10⁻⁴ なら 80 dB（第4部）。'
+         + '最後の行は読み出しの全時間を待つので、漏れ込む量は 分離比 × 光 × 待ち時間。遮光を良くするか、読み出しを速くして待ち時間を縮める。',
+      hint: '既定（80 dB・12.3 ms）で 8.4 e⁻。同時に読む行 1 のままなら 95 dB 以上、4 にすれば（3.1 ms）83 dB 以上で届く。',
+      check: function (ev, d) {
+        var q = byId('gs');
+        var lock = near(d.pitch, 3) && near(d.pdFrac, 0.5) && d.ml && near(d.epi, 3) && near(d.nm, 550)
+          && d.bits === 12 && near(d.rows, 3000) && near(d.fclk, 1000);
+        var e = PIX.parasitic(ev, q.flux);
+        var okE = e <= PLS_THRESH, okP = d.pls <= 100, okC = d.colpar <= 4;
+        return {
+          ok: lock && okE && okP && okC,
+          rows: [
+            row('最後の行に混ざる偽の信号', f(e, 3) + ' e⁻', '1.500 以下', okE),
+            row('分離比', f(d.pls, 1) + ' dB（' + ev.plsRatio.toExponential(2) + '）', '100 以下', okP),
+            row('待ち時間（読み出しの全時間）', f(ev.tRead * 1e3, 2) + ' ms（同時に読む行 ' + f(d.colpar, 0) + '）', '4 組以下', okC),
+            lockRow(lock, '3.0 µm・550 nm・12 bit・3000 行・1 GHz')
+          ]
+        };
+      }
+    },
+    {
+      id: 'pitch', ch: 4, kind: 'design', flux: 20000, t: 0.01, width: 6.0,
+      name: '画素を細かくする限界',
+      desc: '幅 **6.0 mm** のセンサに横 **2400 画素以上**を並べ、**F8**・**550 nm** のレンズで回折の限界（λN/2）より細かくしない。'
+          + 'さらに光子束 **2×10⁴ 光子/µm²/s**・露光 **10 ms** で S/N **25 以上**（既定の画素の作り）。',
+      why: '画素を細かくすると解像の目盛りは増えるが、光も井戸も面積に比例して減る ― 小さい画素は S/N で損をする。'
+         + 'さらに回折の遮断周波数 1/(λN) がナイキスト 1/(2p) より低くなると、**それより細かい画素は何も新しく写さない**（第4部: 3.0 µm なら F10.9 から先）。'
+         + '画素数（上限）と、S/N と回折（下限）の窓の中にしか答えはない。',
+      hint: '2400 画素には 2.5 µm 以下。F8・550 nm の λN/2 は 2.2 µm。S/N 25 は約 2.1 µm から。窓は 2.2〜2.5 µm。',
+      check: function (ev, d) {
+        var q = byId('pitch');
+        var lock = near(d.fnum, 8) && near(d.nm, 550) && near(d.pdFrac, 0.5) && d.ml && near(d.epi, 3)
+          && near(d.cfd, 2) && near(d.sf, 120) && d.cds && near(d.fwd, 1500);
+        var count = q.width * 1000 / d.pitch;
+        var S = PIX.signal(ev, q.flux, q.t), s = PIX.snr(ev, S, q.t);
+        var okN = count >= 2400 - 1e-9, okD = d.pitch >= ev.pDiff - 1e-9, okS = s >= 25;
+        return {
+          ok: lock && okN && okD && okS,
+          rows: [
+            row('横の画素数', f(count, 0) + '（ピッチ ' + f(d.pitch, 2) + ' µm）', '2400 以上', okN),
+            row('回折の限界 λN/2', f(ev.pDiff, 3) + ' µm（エアリー円板 ' + f(ev.airy, 2) + ' µm）', 'ピッチがこれ以上', okD),
+            row('S/N', f(s, 2) + '（信号 ' + f(S, 0) + ' e⁻）', '25.00 以上', okS),
+            lockRow(lock, 'F8・550 nm・既定の画素の作り')
+          ]
+        };
+      }
+    },
+    {
+      id: 'tdi', ch: 4, kind: 'design',
+      name: 'TDI の段数を決める',
+      desc: '1 段で **5 e⁻** しか溜まらない暗いライン撮像で、段を重ねて S/N を **20 以上**にする。物体の速さと行の送りは **1%** ずれているので、'
+          + '段数ぶんのにじみを **1 画素以下**に抑える。読み出し雑音は既定の画素（1.50 e⁻）。',
+      why: 'TDI は、物体の動きに合わせて電荷を行から行へ送り、同じ点を N 回撮って足す。信号は N 倍、ショット雑音は √N 倍。'
+         + '**CCD のように電荷で足せば読み出し雑音は最後に 1 回**、CMOS のようにデジタルで足すと **N 回ぶん**乗る（第10部 03 の EM-CCD と sCMOS の違いと同じ構図）。'
+         + 'だが段を増やすほど、速さのずれが N 倍に積もってにじむ ― 窓。',
+      hint: '電荷で足す（TDI の足し方 1）なら 81 段から S/N 20。1% のずれで 100 段までなら 1 画素。デジタル（0）では 100 段でも 18.6 で届かない。',
+      check: function (ev, d) {
+        var lock = near(d.tdiS1, 5) && near(d.tdiSync, 1) && near(d.cfd, 2) && near(d.sf, 120) && d.cds;
+        var okS = ev.tdiSnr >= 20, okM = ev.tdiSmear <= 1 + 1e-9;
+        return {
+          ok: lock && okS && okM,
+          rows: [
+            row('S/N', f(ev.tdiSnr, 2) + '（' + f(d.tdiN, 0) + ' 段・' + (d.tdiMode ? '電荷で足す' : 'デジタルで足す') + '）', '20.00 以上', okS),
+            row('にじみ', f(ev.tdiSmear, 2) + ' 画素', '1.00 以下', okM),
+            row('信号 / 読み出し雑音の分散', f(ev.tdiSig, 0) + ' e⁻ / ' + f((d.tdiMode ? 1 : d.tdiN) * ev.read * ev.read, 1) + ' e⁻²', '', true),
+            lockRow(lock, '1 段 5 e⁻・ずれ 1%・既定の読み出し回路')
           ]
         };
       }

@@ -1,9 +1,12 @@
 /* 画面 ― ブラウザに触るのはこのファイルと main.js だけ
  *
- * 真ん中は3枚の測定図（すべて char.js の同じ式から描く。図に嘘はない）:
- *   左   謎のダイオード D の I-V（縦は対数）― 直線・傾き・てっぺんの曲がり
- *   中   謎の MOSFET M の Id-Vg（青=線形・橙=対数）― 外挿の直線と裾の傾き
- *   右   謎の MOS 容量 C の C-V ― 2つの棚と肩
+ * 真ん中は 2 段 × 3 枚の測定図（すべて char.js の同じ式から描く。図に嘘はない）:
+ *   上左 謎のダイオード D の I-V（縦は対数）― 直線・傾き・てっぺんの曲がり
+ *   上中 謎の MOSFET M の Id-Vg（青=線形・橙=対数）― 外挿の直線と裾の傾き
+ *   上右 謎の MOS 容量 C の C-V ― 2つの棚と肩
+ *   下左 謎のダイオード TD のアレニウス ― ln(Is/T³) と 1000/T の直線
+ *   下中 謎の p⁺n 接合 P の 1/C² ― 傾きが折れる所が濃度の段
+ *   下右 謎のダイオード R の I-V ― 傾きが n=2 から n=1 へ変わる
  * 左の欄は「答案」。測定表から自分で計算した値を書き込んで、採点にかける。
  */
 (function (global) {
@@ -24,7 +27,15 @@
     ['ssfit', 'M: S 値', 'mV/dec', 55, 500],
     ['toxfit', 'C: 酸化膜厚 tox', 'nm', 0.5, 100],
     ['nafit', 'C: 基板濃度 Na', 'cm⁻³', 1e14, 1e19],
-    ['vfbfit', 'C: フラットバンド Vfb', 'V', -3, 3]
+    ['vfbfit', 'C: フラットバンド Vfb', 'V', -3, 3],
+    ['egfit', 'TD: 見かけの Eg', 'eV', 0.1, 3],
+    ['n1fit', 'P: 浅い濃度 N1', 'cm⁻³', 1e13, 1e19],
+    ['vbifit', 'P: ビルトイン電位 Vbi', 'V', 0, 2],
+    ['x1fit', 'P: 段の深さ x1', 'µm', 0.01, 5],
+    ['n2fit', 'P: 深い濃度 N2', 'cm⁻³', 1e13, 1e19],
+    ['is1fit', 'R: 拡散の Is1', 'A', 1e-20, 1e-6],
+    ['is2fit', 'R: 再結合の Is2', 'A', 1e-18, 1e-3],
+    ['vxfit', 'R: 入れ替わり Vx', 'V', 0, 1.5]
   ];
 
   function num(t) {
@@ -66,14 +77,76 @@
     var w = W / DPR, h = H / DPR;
     ctx.fillStyle = COL.bg; ctx.fillRect(0, 0, w, h);
 
+    /* 2 段 × 3 列。上の段が第1〜3章の素子、下の段が第4章の素子 */
     var gap = 14, Lm = 50, Rm = 8, top = 22, bottom = 40;
     var colW = (w - gap * 2) / 3;
-    var pw = Math.max(70, colW - Lm - Rm), ph = Math.max(60, h - top - bottom);
+    var rowH = h / 2;
+    var pw = Math.max(70, colW - Lm - Rm), ph = Math.max(50, rowH - top - bottom);
     var T = M.tables();
-    drawDiode({ x: Lm, y: top, w: pw, h: ph }, T.dio);
-    drawMos({ x: colW + gap + Lm, y: top, w: pw, h: ph }, T.mos);
-    drawCv({ x: 2 * (colW + gap) + Lm, y: top, w: pw, h: ph }, T.cv);
+    function box(c, r) { return { x: c * (colW + gap) + Lm, y: r * rowH + top, w: pw, h: ph }; }
+    drawDiode(box(0, 0), T.dio);
+    drawMos(box(1, 0), T.mos);
+    drawCv(box(2, 0), T.cv);
+    drawTeg(box(0, 1), T.teg);
+    drawProf(box(1, 1), T.prof);
+    drawRec(box(2, 1), T.rec);
     updateStatus();
+  }
+
+  /* 第4章 TD: アレニウス ― ln(Is/T³) を 1000/T に対して */
+  function drawTeg(b, pts) {
+    frameBox(b, '謎のダイオード TD ― ln(Is/T³) と 1000/T');
+    var xs = pts.map(function (p) { return 1000 / p.t; }), ys = pts.map(function (p) { return Math.log(p.is / Math.pow(p.t, 3)); });
+    var x0 = 2.4, x1 = 4.1, y0 = Math.floor(Math.min.apply(null, ys)) - 1, y1 = Math.ceil(Math.max.apply(null, ys)) + 1;
+    var X = function (v) { return b.x + b.w * (v - x0) / (x1 - x0); };
+    var Y = function (v) { return b.y + b.h * (1 - (v - y0) / (y1 - y0)); };
+    grid(b, [2.5, 3.0, 3.5, 4.0], X, function (v) { return v.toFixed(1); },
+      [Math.ceil(y0 / 5) * 5, Math.ceil(y0 / 5) * 5 + 10, Math.ceil(y0 / 5) * 5 + 20], Y, function (v) { return String(v); });
+    label(b.x + b.w / 2, b.y + b.h + 26, '1000/T [1/K]', COL.fg3, 'center', '10px');
+    ctx.save(); ctx.beginPath(); ctx.rect(b.x, b.y, b.w, b.h); ctx.clip();
+    ctx.strokeStyle = COL.light; ctx.beginPath();
+    xs.forEach(function (x, k) { if (k === 0) ctx.moveTo(X(x), Y(ys[k])); else ctx.lineTo(X(x), Y(ys[k])); });
+    ctx.stroke();
+    xs.forEach(function (x, k) { dot(X(x), Y(ys[k]), COL.now, 2); });
+    ctx.restore();
+    label(b.x + b.w - 6, b.y + 14, '傾き × k が見かけの Eg', COL.fg3, 'right', '10px', b.w - 12);
+  }
+
+  /* 第4章 P: 1/C² と V ― 傾きが折れる所が濃度の段 */
+  function drawProf(b, pts) {
+    frameBox(b, '謎の p⁺n 接合 P ― 1/C² と V');
+    var inv = pts.map(function (p) { return 1 / Math.pow(p.c * 1e9, 2) * 1e3; });   /* 10⁻³ (cm²/nF)² */
+    var yMax = Math.max.apply(null, inv) * 1.1;
+    var X = function (v) { return b.x + b.w * (v + 20) / 20; };
+    var Y = function (v) { return b.y + b.h * (1 - v / yMax); };
+    grid(b, [-20, -15, -10, -5, 0], X, function (v) { return v + ''; },
+      [0, 5, 10], Y, function (v) { return String(v); });
+    label(b.x + b.w / 2, b.y + b.h + 26, 'V [V]（縦は 10⁻³ (cm²/nF)²）', COL.fg3, 'center', '10px');
+    ctx.save(); ctx.beginPath(); ctx.rect(b.x, b.y, b.w, b.h); ctx.clip();
+    ctx.strokeStyle = COL.warm; ctx.beginPath();
+    pts.forEach(function (p, k) { if (k === 0) ctx.moveTo(X(p.v), Y(inv[k])); else ctx.lineTo(X(p.v), Y(inv[k])); });
+    ctx.stroke();
+    pts.forEach(function (p, k) { dot(X(p.v), Y(inv[k]), COL.now, 2); });
+    ctx.restore();
+    label(b.x + b.w - 6, b.y + 14, '傾きが折れる所が段', COL.fg3, 'right', '10px', b.w - 12);
+  }
+
+  /* 第4章 R: 2 ダイオードの I-V（縦は対数） */
+  function drawRec(b, pts) {
+    frameBox(b, '謎のダイオード R ― I-V（縦は対数）');
+    var y0 = -9, y1 = -1;
+    var X = function (v) { return b.x + b.w * (v - 0.1) / 0.65; };
+    var Y = function (i) { return b.y + b.h * (1 - (Math.log10(Math.max(i, 1e-12)) - y0) / (y1 - y0)); };
+    grid(b, [0.1, 0.3, 0.5, 0.7], X, function (v) { return v.toFixed(1); },
+      [-8, -6, -4, -2], function (e) { return Y(Math.pow(10, e)); }, function (e) { return '1e' + e; });
+    label(b.x + b.w / 2, b.y + b.h + 26, 'V [V]', COL.fg3, 'center', '10px');
+    ctx.save(); ctx.beginPath(); ctx.rect(b.x, b.y, b.w, b.h); ctx.clip();
+    ctx.strokeStyle = COL.light; ctx.beginPath();
+    pts.forEach(function (p, k) { if (k === 0) ctx.moveTo(X(p.v), Y(p.i)); else ctx.lineTo(X(p.v), Y(p.i)); });
+    ctx.stroke();
+    pts.forEach(function (p) { dot(X(p.v), Y(p.i), COL.now, 2); });
+    ctx.restore();
+    label(b.x + b.w - 6, b.y + 14, '傾きが途中で変わる', COL.fg3, 'right', '10px', b.w - 12);
   }
 
   function frameBox(b, title) {
@@ -161,7 +234,7 @@
   function updateStatus() {
     var done = Object.keys(S.cleared).length;
     document.getElementById('statLeft').textContent =
-      '謎の素子 D・M・C ― 測定表は左の下';
+      '謎の素子 D・M・C・TD・P・R ― 測定表は左の下';
     document.getElementById('statRight').textContent =
       '当てたパラメータ ' + done + ' / ' + Q.LIST.length;
   }
@@ -202,6 +275,12 @@
     T.mos.forEach(function (p) { rows.push([p.vg.toFixed(1) + ' V', p.id.toExponential(3) + ' A']); });
     rows.push(['― MOS 容量 C ―', 'Vg → C']);
     T.cv.forEach(function (p) { rows.push([p.vg.toFixed(2) + ' V', (p.c * 1e9).toFixed(1) + ' nF/cm²']); });
+    rows.push(['― ダイオード TD ―', 'T → Is']);
+    T.teg.forEach(function (p) { rows.push([p.t + ' K', p.is.toExponential(3) + ' A']); });
+    rows.push(['― p⁺n 接合 P ―', 'V → C（面積あたり）']);
+    T.prof.forEach(function (p) { rows.push([p.v.toFixed(1) + ' V', (p.c * 1e9).toFixed(3) + ' nF/cm²']); });
+    rows.push(['― ダイオード R ―', 'V → I']);
+    T.rec.forEach(function (p) { rows.push([p.v.toFixed(2) + ' V', p.i.toExponential(4) + ' A']); });
     document.getElementById('derived').innerHTML = '<div class="dv">' + rows.map(function (r) {
       return '<span class="k">' + esc(r[0]) + '</span><span class="v">' + esc(r[1]) + '</span>';
     }).join('') + '</div>';

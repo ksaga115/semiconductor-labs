@@ -76,6 +76,22 @@
     nir: {
       note: '850nm で見て、光を集める層を 10µm に厚くした（SemiLab で量子効率 32%、マイクロレンズで 9 割が届いて 29%）。',
       design: function () { var d = PIX.defaults(); d.nm = 850; d.epi = 10; return d; }
+    },
+    roll: {
+      note: '12 bit のまま列回路を 4 組にして 4 行を同時に読む。1 行 1.02 µs、上端と下端の時間差 3.07 ms、600 画素/s で 1.84 画素。',
+      design: function () { var d = PIX.defaults(); d.colpar = 4; return d; }
+    },
+    gs: {
+      note: '同時に読む行を 4 組にして待ち時間を 3.07 ms に縮め、分離比を 90 dB（3.2×10⁻⁵）に。偽の信号 0.67 e⁻。',
+      design: function () { var d = PIX.defaults(); d.colpar = 4; d.pls = 90; return d; }
+    },
+    pitch: {
+      note: 'F8 の回折の限界 2.2 µm と、2400 画素の上限 2.5 µm のあいだの 2.3 µm。S/N 27.3。',
+      design: function () { var d = PIX.defaults(); d.fnum = 8; d.pitch = 2.3; return d; }
+    },
+    tdi: {
+      note: '電荷で足す（CCD 型）90 段。信号 450 e⁻、読み出し雑音は 1 回だけで S/N 21.2、にじみ 0.9 画素。',
+      design: function () { var d = PIX.defaults(); d.tdiMode = 1; d.tdiN = 90; return d; }
     }
   };
 

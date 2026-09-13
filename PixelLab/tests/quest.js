@@ -58,4 +58,41 @@ T('落ちるべきもの', () => {
   });
 });
 
+T('第4章 ― 窓の両側と反則', () => {
+  const g = (id, patch) => Q.grade(id, { design: Object.assign({}, A.get(id).design(), patch) }).ok;
+  ok('第4章の課題が 4 問ある', Q.LIST.filter((q) => q.ch === 4).length === 4);
+  /* roll */
+  ok('roll: 同時に読む行 3 でも 2.46 画素で通る', g('roll', { colpar: 3 }));
+  ok('roll: 2 では 3.69 画素で落ちる', !g('roll', { colpar: 2 }));
+  ok('roll: 桁を 11 に落として速くするのは反則', !g('roll', { colpar: 1, bits: 11 }));
+  ok('roll: 列回路 5 組は上限破り', !g('roll', { colpar: 5 }));
+  ok('roll: 13 bit にすると 4 組でも 3.69 画素で落ちる', !g('roll', { bits: 13 }));
+  ok('roll: クロックを上げるのは反則', !g('roll', { colpar: 1, fclk: 4000 }));
+  ok('roll: 物体を遅くするのは反則', !g('roll', { colpar: 1, vpx: 100 }));
+  /* gs */
+  ok('gs: 4 組なら 84 dB で通る', g('gs', { pls: 84 }));
+  ok('gs: 4 組でも 82 dB では落ちる', !g('gs', { pls: 82 }));
+  ok('gs: 1 組なら 96 dB で通る', g('gs', { colpar: 1, pls: 96 }));
+  ok('gs: 1 組の 94 dB は落ちる', !g('gs', { colpar: 1, pls: 94 }));
+  ok('gs: 分離比 110 dB は上限破り', !g('gs', { colpar: 1, pls: 110 }));
+  ok('gs: 画素を小さくして光を減らすのは反則', !g('gs', { pls: 80, pitch: 1.0 }));
+  ok('gs: 桁を落として速くするのは反則', !g('gs', { pls: 80, bits: 8 }));
+  /* pitch */
+  ok('pitch: 2.2 µm は通る', g('pitch', { pitch: 2.2 }));
+  ok('pitch: 2.5 µm は通る', g('pitch', { pitch: 2.5 }));
+  ok('pitch: 2.6 µm は画素数が足りない', !g('pitch', { pitch: 2.6 }));
+  ok('pitch: 2.1 µm は回折の限界より細かい', !g('pitch', { pitch: 2.1 }));
+  ok('pitch: F 値を開けて回折の限界を下げるのは反則', !g('pitch', { pitch: 2.1, fnum: 4 }));
+  ok('pitch: 読み出し回路を変えるのは反則', !g('pitch', { cfd: 1.2 }));
+  /* tdi */
+  ok('tdi: 電荷で 81 段は通る', g('tdi', { tdiN: 81 }));
+  ok('tdi: 電荷で 80 段は S/N が足りない', !g('tdi', { tdiN: 80 }));
+  ok('tdi: 電荷で 100 段は通る', g('tdi', { tdiN: 100 }));
+  ok('tdi: 電荷で 101 段は にじむ', !g('tdi', { tdiN: 101 }));
+  ok('tdi: デジタルで 100 段は届かない', !g('tdi', { tdiMode: 0, tdiN: 100 }));
+  ok('tdi: 速さのずれを小さくするのは反則', !g('tdi', { tdiN: 150, tdiSync: 0.5 }));
+  ok('tdi: 1 段の信号を増やすのは反則', !g('tdi', { tdiN: 10, tdiS1: 50 }));
+  ok('tdi: 読み出し雑音を削るのは反則（ここでは足し方を選ぶ課題）', !g('tdi', { tdiMode: 0, tdiN: 100, cfd: 1.0 }));
+});
+
 report();

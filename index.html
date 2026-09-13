@@ -196,11 +196,11 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       <dl class="spec">
         <div><dt>参考書</dt><dd>11<small>部＋付録</small></dd></div>
         <div><dt>ラボ</dt><dd>11<small>本</small></dd></div>
-        <div><dt>採点つき課題</dt><dd>169<small>問</small></dd></div>
+        <div><dt>採点つき課題</dt><dd>183<small>問</small></dd></div>
         <div><dt>依存</dt><dd>0<small>ブラウザのみ</small></dd></div>
         <div><dt>通信</dt><dd>0<small>手元で完結</small></dd></div>
-        <div><dt>自動検査</dt><dd>4,699<small>件 (Node)</small></dd></div>
-        <div class="spec-cap">課題数は ProcessLab 13 ＋ SemiLab 26 ＋ CharLab 9 ＋ NandLab 31 ＋ PixelLab 12 ＋ PhotonLab 15 ＋ AnalogLab 13 ＋ OptoLab 15 ＋ QALab 14 ＋ LaserLab 9 ＋ DesignLab 12。検査は11本の <code>node tests/all.js</code> の合計（2026-09-13 時点）。</div>
+        <div><dt>自動検査</dt><dd>5,036<small>件 (Node)</small></dd></div>
+        <div class="spec-cap">課題数は ProcessLab 13 ＋ SemiLab 26 ＋ CharLab 13 ＋ NandLab 31 ＋ PixelLab 16 ＋ PhotonLab 15 ＋ AnalogLab 13 ＋ OptoLab 15 ＋ QALab 17 ＋ LaserLab 12 ＋ DesignLab 12。検査は11本の <code>node tests/all.js</code> の合計（2026-09-13 時点）。</div>
       </dl>
     </div>
   </div>
@@ -463,7 +463,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       <div class="pair">
         <div><span class="kind read">参考書</span><a href="第2部_デバイスの基礎.html">半導体デバイスの基礎</a><small>一片のシリコンから、スイッチができるまで · 5章＋付録</small></div>
         <div><span class="kind lab">ラボ</span><a href="SemiLab/index.html">SemiLab</a><small>作る側 · 原始部品 ＝ 不純物 · 5章 26問 · <a href="SemiLab/README.md">README</a></small></div>
-        <div><span class="kind lab">ラボ</span><a href="CharLab/index.html">CharLab</a><small>測る側 · 謎の素子の I-V / C-V から当てる · 3章 9問 · <a href="CharLab/README.md">README</a></small></div>
+        <div><span class="kind lab">ラボ</span><a href="CharLab/index.html">CharLab</a><small>測る側 · 謎の素子の I-V / C-V から当てる · 4章 13問 · <a href="CharLab/README.md">README</a></small></div>
       </div>
     </div>
     <div class="chap">
@@ -501,6 +501,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
     <div class="chap">
       <div><span class="cn">2-5</span><div class="ct"><a href="第2部_デバイスの基礎.html#s5">MOS、そして MOSFET ― NAND の中身へ</a></div><div class="cd">酸化膜を挟むとゲートになる。表面ポテンシャル、しきい値電圧、S値の 60mV/桁 の壁、Id-Vd。第3部の入口。</div></div>
       <div class="do"><span class="lbl">SemiLab 第5章</span><a class="q" href="SemiLab/index.html?quest=moscap">MOS キャパシタ</a><a class="q" href="SemiLab/index.html?quest=vth">しきい値電圧を合わせる</a><a class="q" href="SemiLab/index.html?quest=swing">切れ味を上げる</a><a class="q" href="SemiLab/index.html?quest=gate">ゲートの材料</a><a class="q" href="SemiLab/index.html?quest=pmos">pMOS を作る</a><a class="q" href="SemiLab/index.html?quest=nand">NAND の中身へ</a><span class="lbl">CharLab 第2-3章（測る側）</span><a class="q" href="CharLab/index.html?quest=mvth">Vthを外挿で当てる</a><a class="q" href="CharLab/index.html?quest=mss">S値を裾で当てる</a><a class="q" href="CharLab/index.html?quest=ctox">toxを棚で当てる</a><a class="q" href="CharLab/index.html?quest=cna">Naを棚で当てる</a></div>
+      <div class="do"><span class="lbl">CharLab 第4章</span><a class="q" href="CharLab/index.html?quest=teg">温度を振って Eg を読む</a><a class="q" href="CharLab/index.html?quest=cvn">1/C² の傾きで浅い濃度と Vbi</a><a class="q" href="CharLab/index.html?quest=cvx">濃度の段の深さを読む</a><a class="q" href="CharLab/index.html?quest=rec">2つの傾きで電流の中身を分ける</a></div>
     </div>
     <div class="chap">
       <div><span class="cn">—</span><div class="ct"><a href="第2部_デバイスの基礎.html#spow">電力を切る ― パワーデバイス</a></div><div class="cd">同じ MOSFET で数百 V を切る。耐圧とオン抵抗の綱引きを、片側接合の空乏層と臨界電界だけで読む。縦型 MOSFET・IGBT・SiC/GaN。</div></div>
@@ -562,7 +563,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       </div>
       <div class="pair">
         <div><span class="kind read">参考書</span><a href="第4部_イメージセンサ.html">イメージセンサ解剖ラボ</a><small>光子が像になるまでの7つの段 · 23節</small></div>
-        <div><span class="kind lab">ラボ</span><a href="PixelLab/index.html">PixelLab</a><small>原始部品 ＝ 光子と電子を数えること · 3章 12問 · <a href="PixelLab/README.md">README</a></small></div>
+        <div><span class="kind lab">ラボ</span><a href="PixelLab/index.html">PixelLab</a><small>原始部品 ＝ 光子と電子を数えること · 4章 16問 · <a href="PixelLab/README.md">README</a></small></div>
       </div>
     </div>
     <div class="chap">
@@ -592,6 +593,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
     <div class="chap">
       <div><span class="cn">—</span><div class="ct"><a href="第4部_イメージセンサ.html#sptc">ノイズの正体 / センサを測る（PTC）</a></div><div class="cd">分散と平均から電子が数えられる。合わせ込む係数がひとつも無い物差し。</div></div>
       <div class="do"><span class="lbl">PixelLab 第1章</span><a class="q" href="PixelLab/index.html?quest=k">K を当てる</a><a class="q" href="PixelLab/index.html?quest=read">読み出し雑音</a><a class="q" href="PixelLab/index.html?quest=fw">飽和電荷</a><a class="q" href="PixelLab/index.html?quest=dark">暗電流</a><a class="q" href="PixelLab/index.html?quest=prnu">PRNU</a></div>
+      <div class="do"><span class="lbl">PixelLab 第4章</span><a class="q" href="PixelLab/index.html?quest=roll">ローリングシャッタの歪み</a><a class="q" href="PixelLab/index.html?quest=gs">グローバルシャッタの寄生感度</a><a class="q" href="PixelLab/index.html?quest=pitch">画素を細かくする限界</a><a class="q" href="PixelLab/index.html?quest=tdi">TDI の段数</a></div>
     </div>
     <div class="chap">
       <div><span class="cn">A–B</span><div class="ct"><a href="第4部_イメージセンサ.html#sa">トンネル効果 / 短チャネル効果</a></div><div class="cd">薄ければ抜ける。S値 59.5 mV/桁 は熱が決める壁。</div></div>
@@ -719,7 +721,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       </div>
       <div class="pair">
         <div><span class="kind read">参考書</span><a href="第8部_信頼性と品質.html">信頼性と品質 ― 壊れ方を数える</a><small>FIT → Arrhenius → Weibull → Cpk → SPC → GUM → Fit · 13章</small></div>
-        <div><span class="kind lab">ラボ</span><a href="QALab/index.html">QALab</a><small>原始部品 ＝ 故障率と分布 · 4章 14問 · <a href="QALab/README.md">README</a></small></div>
+        <div><span class="kind lab">ラボ</span><a href="QALab/index.html">QALab</a><small>原始部品 ＝ 故障率と分布 · 5章 17問 · <a href="QALab/README.md">README</a></small></div>
       </div>
     </div>
     <div class="chap">
@@ -733,6 +735,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
     <div class="chap">
       <div><span class="cn">06-08</span><div class="ct"><a href="第8部_信頼性と品質.html#s6">Cpk / 誤差の合成 / 現場の品質</a></div><div class="cd">Cpk 1.33=63ppm、√(Σσ²) の誤差予算、GR&amp;R。HTOL・85/85・バーンイン・ESD ― 規格の番号を式に翻訳する。</div></div>
       <div class="do"><span class="lbl">QALab 第3章</span><a class="q" href="QALab/index.html?quest=cpk">Cpk 1.33の工程</a><a class="q" href="QALab/index.html?quest=prop">誤差の合成を0.51%に</a><a class="q" href="QALab/index.html?quest=grr">物差しを検定する</a></div>
+      <div class="do"><span class="lbl">QALab 第5章</span><a class="q" href="QALab/index.html?quest=nl">温度サイクルの速さ（Norris-Landzberg）</a><a class="q" href="QALab/index.html?quest=ndc">物差しの見分ける力 ndc</a><a class="q" href="QALab/index.html?quest=oc">抜き取りの OC 曲線</a></div>
     </div>
     <div class="chap">
       <div><span class="cn">09-12</span><div class="ct"><a href="第8部_信頼性と品質.html#s10">管理図と SPC / 測定の不確かさ / 故障解析 / 規格・安全・法規</a></div><div class="cd">3σ の管理限界と X̄–R 図・判定ルール。GUM のタイプ A/B と U=k·u<sub>c</sub>、校正の支配項。X 線・SAT・EMMI・OBIRCH・ロックイン発熱・FIB/TEM。IEC 60825-1 のクラス、IEC 62471、RoHS/REACH、輸出管理。</div></div>
@@ -754,7 +757,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       </div>
       <div class="pair">
         <div><span class="kind read">参考書</span><a href="第9部_光源とレーザー.html">光源とレーザー ― 熱・放電・LED・レーザー</a><small>Heat → Discharge → LED → Laser → Mode → Pulse · 11章</small></div>
-        <div><span class="kind lab">ラボ</span><a href="LaserLab/index.html">LaserLab</a><small>原始部品 ＝ 共振器の会計（利得 ＝ 損失）と熱の光 · 3章 9問 · <a href="LaserLab/README.md">README</a></small></div>
+        <div><span class="kind lab">ラボ</span><a href="LaserLab/index.html">LaserLab</a><small>原始部品 ＝ 共振器の会計（利得 ＝ 損失）と熱の光 · 4章 12問 · <a href="LaserLab/README.md">README</a></small></div>
       </div>
     </div>
     <div class="chap">
@@ -768,6 +771,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
     <div class="chap">
       <div><span class="cn">08-11</span><div class="ct"><a href="第9部_光源とレーザー.html#s8">固体・ファイバ・ガス / パルス / 非線形光学 / 選ぶ・駆動する・守る</a></div><div class="cd">量子欠損 24% と 9%。c/2L で 80 MHz、Δν·Δt ≥ 0.441、尖頭値 120 kW。SHG と位相整合、2 光子の 10⁵ 倍。輝度とエテンデュ、APC・COD・アイソレータ。</div></div>
       <div class="do"><span class="lbl">LaserLab 第3章</span><a class="q" href="LaserLab/index.html?quest=mlock">80 MHz・100 fs</a><a class="q" href="LaserLab/index.html?quest=peak">尖頭値 100 kW・20 nJ</a></div>
+      <div class="do"><span class="lbl">LaserLab 第4章</span><a class="q" href="LaserLab/index.html?quest=relax">85 ℃ で 10 Gb/s の直接変調</a><a class="q" href="LaserLab/index.html?quest=shg">SHG の結晶の長さ</a><a class="q" href="LaserLab/index.html?quest=fiber">ファイバに 90% 入れる</a></div>
     </div>
   </article>
 
@@ -782,7 +786,6 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       <div class="pair">
         <div><span class="kind read">参考書</span><a href="第10部_設計演習.html">1 台を設計する ― カメラ・LiDAR・分光器</a><small>Requirement → Budget → Dominant term → Decision → Check · 10章</small></div>
         <div><span class="kind lab">ラボ</span><a href="DesignLab/index.html">DesignLab</a><small>微弱光カメラ・LiDAR・分光器の予算表 · 3章 12問 · <a href="DesignLab/README.md">README</a></small></div>
-        <div><span class="kind lab">ラボ</span><a href="PixelLab/index.html">PixelLab</a><small>専用のラボは無い。予算の各段は各部のラボで確かめられる</small></div>
       </div>
     </div>
     <div class="chap">
@@ -845,8 +848,8 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
         <li><b>センサの外へ:</b> 第5部 → PhotonLab<span class="r">15問</span><span class="why">像を結ばず数える一族（PMT・APD・MPPC）と共通の物差し。SNRの「最適な M」を自分で探す</span></li>
         <li><b>読み出しの中身:</b> 第6部 → AnalogLab<span class="r">13問</span><span class="why">列アンプ・TIA・チャージアンプの正体。gm と Vov の九九から差動対と帰還まで</span></li>
         <li><b>光の入り口:</b> 第7部 → OptoLab<span class="r">15問</span><span class="why">センサに届く光を自分で出す。第4部の 0.52%・190光子/px/s の出どころ</span></li>
-        <li><b>光をつくる側:</b> 第9部 → LaserLab<span class="r">9問</span><span class="why">照明の LED、dToF の VCSEL、TCSPC のパルス ― センサの相手役の物理</span></li>
-        <li><b>出荷まで:</b> 第8部 → QALab<span class="r">14問</span><span class="why">10年もつか・百万個そろうか。FIT・アレニウス・θ・Cpk・管理図・不確かさ ― 保証書の中身</span></li>
+        <li><b>光をつくる側:</b> 第9部 → LaserLab<span class="r">12問</span><span class="why">照明の LED、dToF の VCSEL、TCSPC のパルス ― センサの相手役の物理</span></li>
+        <li><b>出荷まで:</b> 第8部 → QALab<span class="r">17問</span><span class="why">10年もつか・百万個そろうか。FIT・アレニウス・θ・Cpk・管理図・不確かさ ― 保証書の中身</span></li>
         <li><b>総仕上げ:</b> 第10部 → DesignLab<span class="r">12問</span><span class="why">センサを 1 台のカメラとして設計する。LiDAR と分光器も同じ作法で</span></li>
         <li><b>引く:</b> 付録<span class="r">索引</span><span class="why">物性値の表と、全部の部の用語の統一索引</span></li>
       </ol>
@@ -865,10 +868,10 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
         <li><b>第3部</b> NandLab 第1〜6章<span class="r">31問</span><span class="why">NAND だけから NOT・加算器・フリップフロップ・ALU、そして CPU とメモリ階層まで</span></li>
         <li><b>第6部</b> 参考書 01〜12 → AnalogLab<span class="r">13問</span><span class="why">同じ MOSFET をアナログの目で。増幅・帰還・雑音・基準から AD 変換・電源・実装まで</span></li>
         <li><b>第7部</b> 参考書 01〜13 → OptoLab<span class="r">15問</span><span class="why">光の会計。lx と W の換算、結像と回折、ファイバ、偏光・干渉・分光</span></li>
-        <li><b>第9部</b> 参考書 01〜11 → LaserLab<span class="r">9問</span><span class="why">光をつくる側。熱・放電・LED・レーザー・パルス・非線形</span></li>
+        <li><b>第9部</b> 参考書 01〜11 → LaserLab<span class="r">12問</span><span class="why">光をつくる側。熱・放電・LED・レーザー・パルス・非線形</span></li>
         <li><b>第5部</b> 参考書 01〜10 → PhotonLab<span class="r">15問</span><span class="why">光を数える一族。PMT・APD・MPPC・SNSPD と、共通の物差し R・NEP・D*</span></li>
         <li><b>第4部</b> 参考書 00〜07 → PixelLab 第1〜3章<span class="r">12問</span><span class="why">ここまでの全部が 1 つの製品に集まる。光子→電子→電圧→数値→像と、付録 A〜D の床下</span></li>
-        <li><b>第8部</b> 参考書 01〜13 → QALab<span class="r">14問</span><span class="why">信頼性と品質。作った物を 10 年・百万個の側から見直す</span></li>
+        <li><b>第8部</b> 参考書 01〜13 → QALab<span class="r">17問</span><span class="why">信頼性と品質。作った物を 10 年・百万個の側から見直す</span></li>
         <li><b>第10部</b> 1 台を設計する → DesignLab<span class="r">12問</span><span class="why">総仕上げ。カメラ・LiDAR・分光器を、光子から安全と信頼性まで全部の数字でつなぐ</span></li>
         <li><b>付録</b> 物性値と索引<span class="r">引く</span><span class="why">材料の表と、全部の部の用語の統一索引</span></li>
       </ol>
@@ -933,14 +936,14 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       <p>物理・課題・採点は Node だけで検査できる。<code>tests/ui.js</code> は本物の <code>index.html</code> から DOM を組んで本物の <code>ui.js</code> を動かす。</p>
       <pre>node ProcessLab\tests\all.js   332 件
 node SemiLab\tests\all.js    1,255 件
-node CharLab\tests\all.js      184 件
+node CharLab\tests\all.js      281 件
 node NandLab\tests\all.js      725 件
-node PixelLab\tests\all.js     281 件
+node PixelLab\tests\all.js     372 件
 node PhotonLab\tests\all.js    333 件
 node AnalogLab\tests\all.js    260 件
 node OptoLab\tests\all.js      301 件
-node QALab\tests\all.js        281 件
-node LaserLab\tests\all.js     200 件
+node QALab\tests\all.js        358 件
+node LaserLab\tests\all.js     272 件
 node DesignLab\tests\all.js    547 件</pre>
       <div class="caveat">
         <span class="tag">配置の注意</span>

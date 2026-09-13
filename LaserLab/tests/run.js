@@ -57,4 +57,35 @@ T('縦モード・DFB・パルス ― 第9部 06・07・09 の数字', () => {
   within('尖頭値は約 117 kW（0.94E/Δt）', p.ppeakKw, 117.5, 1.01);
 });
 
+T('第4章 ― 緩和振動・SHG・ファイバ結合', () => {
+  /* 緩和振動: 減衰を無視した応答 f_R²/(f_R² − f²) の −3 dB は √(1+√2)·f_R */
+  const r = evalWith({ tempc: 85, iop: 42 }).ev;
+  near('f_3dB / f_R = √(1+√2)', r.f3 / r.fR, Math.sqrt(1 + Math.SQRT2), 1e-12);
+  near('√(1+√2) = 1.5538', Math.sqrt(1 + Math.SQRT2), 1.55377, 1e-5);
+  within('85 ℃・42 mA で f_R 5.77 GHz', r.fR, 5.774, 1.001);
+  ok('√(I − I_th) に比例: 差を 4 倍にすると f_R は 2 倍',
+     Math.abs(evalWith({ tempc: 25, iop: 10 + 36 }).ev.fR / evalWith({ tempc: 25, iop: 10 + 9 }).ev.fR - 2) < 1e-12);
+  near('しきい値より下では f_R = 0', evalWith({ tempc: 85, iop: 20 }).ev.fR, 0, 1e-12);
+  near('10 Gb/s の目安は 7 GHz', r.fNeed, 7, 1e-12);
+  within('85 ℃ で帯域 7 GHz の電流は 36.2 mA', 10 * Math.E + Math.pow(7 / (1.5 * Math.sqrt(1 + Math.SQRT2)), 2), 36.20, 1.001);
+
+  /* SHG: sinc² の半値と許容幅 */
+  near('sinc²(1.39156) = 0.5', M.sinc2(M.SINC_HALF), 0.5, 1e-5);
+  near('揺れ 0 なら sinc² = 1', evalWith({ shgdT: 0 }).ev.shgS2, 1, 1e-12);
+  const a = evalWith({ shgL: 2.5, shgdT: 0.2 }).ev;
+  near('許容幅 FWHM × 長さ = 1.0 ℃·cm', a.shgTol * 2.5, 1.0, 1e-12);
+  near('揺れが半値幅の半分なら、ちょうど半分に落ちる', evalWith({ shgL: 2, shgdT: 0.25 }).ev.shgS2, 0.5, 1e-5);
+  const p1 = evalWith({ shgP: 0.5 }).ev.p2wMw, p2 = evalWith({ shgP: 1.0 }).ev.p2wMw;
+  near('弱い変換: 励起 2 倍で SHG 4 倍（第9部 10 の例題）', p2 / p1, 4, 1e-12);
+  within('2.6 cm・1 W・±0.1 ℃ で 21.8 mW', evalWith({ shgL: 2.6, shgP: 1 }).ev.p2wMw, 21.77, 1.001);
+
+  /* ガウスのモードの重なり */
+  near('大きさが同じ・ずれなしなら 100%', evalWith({ ldw: 5.2, mag: 1, offum: 0 }).ev.eta, 1, 1e-12);
+  within('大きさが同じ・横ずれ 1.5 µm で 92.0%', evalWith({ ldw: 5.2, mag: 1, offum: 1.5 }).ev.eta, 0.9202, 1.0005);
+  within('倍率 1（1.6 µm のまま）では 27%', evalWith({ mag: 1 }).ev.eta, 0.2715, 1.001);
+  const e1 = evalWith({ ldw: 1, mag: 5.2 * 2, offum: 0 }).ev.etaMM, e2 = evalWith({ ldw: 1, mag: 5.2 / 2, offum: 0 }).ev.etaMM;
+  near('大きさの合い具合は、2 倍大きくても 2 倍小さくても同じ（0.64）', e1, e2, 1e-12);
+  near('2 倍ずれると 0.64', e1, 0.64, 1e-12);
+});
+
 report();

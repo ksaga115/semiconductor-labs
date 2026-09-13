@@ -35,7 +35,18 @@
     ['bits', 'AD の桁', 'bit', 8, 16],
     ['prnu', '感度のむら', '%', 0, 10],
     ['offset', 'オフセット', 'DN', 0, 1000],
-    ['hdrR', '長短の露光比（HDR）', '：1（1＝合成なし）', 1, 32]
+    ['hdrR', '長短の露光比（HDR）', '：1（1＝合成なし）', 1, 32],
+    /* 第4章: 動き・細かさ・時間（6 番目が true なら整数） */
+    ['rows', '行の数', '行', 100, 20000, true],
+    ['vpx', '動く物体の速さ', '画素/s', 0, 1e6],
+    ['fclk', 'AD のクロック', 'MHz', 10, 5000],
+    ['colpar', '同時に読む行', '組', 1, 16, true],
+    ['pls', '寄生感度の分離比', 'dB', 40, 140],
+    ['fnum', 'レンズの F 値', '', 0.7, 32],
+    ['tdiN', 'TDI の段数', '段', 1, 512, true],
+    ['tdiMode', 'TDI の足し方', '（0 デジタル・1 電荷）', 0, 1, true],
+    ['tdiS1', 'TDI の 1 段の信号', 'e⁻', 0.1, 1e5],
+    ['tdiSync', '速さのずれ', '%', 0, 20]
   ];
 
   /* ================= 起動 ================= */
@@ -290,7 +301,7 @@
         var v = PARSE.num(t);
         if (!isFinite(v)) return false;
         v = Math.min(fd[4], Math.max(fd[3], v));
-        if (fd[0] === 'bits') v = Math.round(v);
+        if (fd[0] === 'bits' || fd[5]) v = Math.round(v);
         S.design[fd[0]] = v;
         designChanged();
         return true;
@@ -326,7 +337,13 @@
       ['暗電流', ev.dark.toPrecision(3) + ' e⁻/s'],
       ['暗電流が倍になる幅', PIX.doublingK(S.design.T).toFixed(1) + ' K'],
       ['ダイナミックレンジ', ev.dr.toFixed(1) + ' dB'],
-      ['HDR 合成（' + ev.hdrR.toFixed(0) + ':1）', ev.hdrR > 1 ? ev.drH.toFixed(1) + ' dB（+' + (20 * Math.log10(ev.hdrR)).toFixed(1) + '）' : '合成なし']
+      ['HDR 合成（' + ev.hdrR.toFixed(0) + ':1）', ev.hdrR > 1 ? ev.drH.toFixed(1) + ' dB（+' + (20 * Math.log10(ev.hdrR)).toFixed(1) + '）' : '合成なし'],
+      ['1 行 / 上下の時間差', (ev.tRow * 1e6).toFixed(3) + ' µs / ' + (ev.tRead * 1e3).toFixed(2) + ' ms'],
+      ['ローリングの横ずれ', ev.skew.toFixed(2) + ' 画素'],
+      ['寄生感度の分離比', ev.plsRatio.toExponential(2) + '（' + S.design.pls + ' dB）'],
+      ['回折の限界 λN/2 / エアリー円板', ev.pDiff.toFixed(2) + ' µm / ' + ev.airy.toFixed(2) + ' µm', S.design.pitch < ev.pDiff],
+      ['ナイキスト / 回折の遮断', ev.nyqLpmm.toFixed(0) + ' / ' + ev.cutLpmm.toFixed(0) + ' 本/mm'],
+      ['TDI の S/N / にじみ', ev.tdiSnr.toFixed(2) + ' / ' + ev.tdiSmear.toFixed(2) + ' 画素']
     ];
     document.getElementById('derived').innerHTML = '<div class="dv">' + rows.map(function (r) {
       return '<span class="k">' + esc(r[0]) + '</span><span class="v' + (r[2] ? ' warn' : '') + '">' + esc(r[1]) + '</span>';

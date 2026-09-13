@@ -18,6 +18,15 @@
  *   mlnm    モード同期の中心の波長 [nm]・dlnm スペクトルの幅 [nm]  ガウス形の最短のパルス Δt = 0.441·λ²/(c·Δλ)
  *   pavg    平均の出力 [W]                          パルス 1 個 E = P/f、尖頭値 ≈ 0.94·E/Δt
  *
+ * 第4章（速さ・波長変換・結合）:
+ *   dfac    緩和振動の係数 D [GHz/√mA]（仮定）  f_R = D·√(I − I_th)、変調の帯域 f_3dB = √(1+√2)·f_R（減衰を無視）
+ *   gbps    ビットレート [Gb/s]                      NRZ で要る帯域の目安 0.7 × ビットレート（仮定の目安）
+ *   shgL    SHG の結晶の長さ [cm]・shgP 励起 [W]・shgK 効率の係数 [%/(W·cm)]（仮定）
+ *   shgA    温度の許容幅（FWHM）× 長さ [℃·cm]（仮定）・shgdT 温度の揺れ [±℃]
+ *                                          P_2ω = shgK·L·P²·sinc²(u)、u = 2·1.39156·δT·L/A（sinc² の半値が u = 1.39156）
+ *   fibw    ファイバのモード半径 [µm]・ldw LD のモード半径 [µm]（円に近似）・mag レンズの倍率・offum 横ずれ [µm]
+ *                                          η = (2w₁w₂/(w₁²+w₂²))² · exp(−2d²/(w₁²+w₂²))（ガウスのモードの重なり）
+ *
  * 【約束】数値はすべてこの式から導出できる。乱数は使わない。
  * 【モデルの外】利得のスペクトルの形・キャリアの寿命・高温でのスロープ効率の低下・線幅・チャープ・
  * 空間的なホールバーニングは入れていない。スロープ効率は温度によらず一定としている。
@@ -36,9 +45,16 @@
       ith25: 10, t0: 60, tempc: 25, iop: 30,
       ng: 3.6,
       neff: 3.2, pitchnm: 242, dldt: 0.1,
-      lcavm: 1.5, mlnm: 800, dlnm: 5, pavg: 0.5
+      lcavm: 1.5, mlnm: 800, dlnm: 5, pavg: 0.5,
+      dfac: 1.5, gbps: 10,
+      shgL: 1, shgP: 0.5, shgK: 1.0, shgA: 1.0, shgdT: 0.1,
+      fibw: 5.2, ldw: 1.6, mag: 1, offum: 1.5
     };
   }
+
+  /* sinc²(u) = 0.5 になる u（半値）。位相整合の許容幅（FWHM）は Δk·L = 4u = 5.566 */
+  var SINC_HALF = 1.39156;
+  function sinc2(u) { return u === 0 ? 1 : Math.pow(Math.sin(u) / u, 2); }
 
   /* 黒体の分光放射（形だけ。定数倍は割合で消える） */
   function planck(lamM, T) { return 1 / Math.pow(lamM, 5) / (Math.exp(H * C / (lamM * KB * T)) - 1); }
@@ -87,7 +103,25 @@
     var epJ = d.pavg / frep;
     var ppeak = 0.94 * epJ / tauS;
 
+    /* 緩和振動と直接変調（しきい値は動作温度の値） */
+    var fR = d.dfac * Math.sqrt(Math.max(0, d.iop - ith));
+    var f3 = Math.sqrt(1 + Math.SQRT2) * fR;
+    var fNeed = 0.7 * d.gbps;
+
+    /* SHG: 弱い変換（励起が減らない）・最適集光で長さに比例、と仮定 */
+    var shgU = 2 * SINC_HALF * d.shgdT * d.shgL / d.shgA;
+    var shgS2 = sinc2(shgU);
+    var p2wMw = d.shgK / 100 * d.shgL * d.shgP * d.shgP * shgS2 * 1000;
+
+    /* ファイバへの結合（ガウスのモードの重なり） */
+    var w1 = d.ldw * d.mag, w2 = d.fibw, ss = w1 * w1 + w2 * w2;
+    var etaMM = Math.pow(2 * w1 * w2 / ss, 2);
+    var etaOff = Math.exp(-2 * d.offum * d.offum / ss);
+
     return {
+      fR: fR, f3: f3, fNeed: fNeed,
+      shgU: shgU, shgS2: shgS2, p2wMw: p2wMw, shgTol: d.shgA / d.shgL, shgDrop: 1 - shgS2,
+      fibW1: w1, etaMM: etaMM, etaOff: etaOff, eta: etaMM * etaOff,
       lamMaxUm: lamMaxUm, vis: vis, Mwcm2: Mwcm2,
       hvLed: hvLed, eqe: eqe, wpe: wpe,
       am: am, gth: gth, etad: etad, slope: slope, front: front, ith: ith, pmw: pmw,
@@ -123,7 +157,7 @@
   }
 
   LS.laser = {
-    H: H, C: C, KB: KB, HC_EVNM: HC_EVNM,
+    H: H, C: C, KB: KB, HC_EVNM: HC_EVNM, SINC_HALF: SINC_HALF, sinc2: sinc2,
     defaults: defaults, evaluate: evaluate, visFrac: visFrac, liSweep: liSweep, planckSweep: planckSweep
   };
 })(typeof window !== 'undefined' ? window : globalThis);

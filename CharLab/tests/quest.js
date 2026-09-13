@@ -62,6 +62,22 @@ T('落ちるべきもの', () => {
   ok('ctox: Å と nm の取り違え（42）は落ちる', !Q.grade('ctox', { design: u1 }).ok);
   const u2 = Object.assign({}, A.get('mk').design(), { kwlfit: 1.6e-5 });
   ok('mk: Vd で割り忘れた傾きそのままは落ちる', !Q.grade('mk', { design: u2 }).ok);
+
+  /* 第4章 ― 定番の読み違いが落ちる */
+  const g = (id, patch) => Q.grade(id, { design: Object.assign({}, A.get(id).design(), patch) }).ok;
+  ok('teg: 300 K の Eg 1.1245 と答えると落ちる', !g('teg', { egfit: 1.1245 }));
+  ok('teg: T³ で割り忘れた 1.284 は落ちる', !g('teg', { egfit: 1.284 }));
+  ok('teg: Varshni の 0 K の値 1.17 も落ちる（接線の切片とは違う）', !g('teg', { egfit: 1.17 }));
+  ok('teg: 1.22 は通る（許容の中）', g('teg', { egfit: 1.22 }));
+  ok('cvn: N1 を 1.5 倍外すと落ちる', !g('cvn', { n1fit: 1.5e16 }));
+  ok('cvn: 深い点で引いた 3×10¹⁶ は落ちる', !g('cvn', { n1fit: 3e16 }));
+  ok('cvn: Vbi 0.6 V は落ちる', !g('cvn', { vbifit: 0.6 }));
+  ok('cvx: 0 V の W（0.34 µm）を段と読むと落ちる', !g('cvx', { x1fit: 0.34 }));
+  ok('cvx: 段をまたぐ組の 1.17×10¹⁶ を N2 と読むと落ちる', !g('cvx', { n2fit: 1.166e16 }));
+  ok('cvx: 0.58 µm は通る（許容の中）', g('cvx', { x1fit: 0.58 }));
+  ok('rec: Is2 を 2 倍外すと落ちる', !g('rec', { is2fit: 4e-9 }));
+  ok('rec: Is2 を引き忘れた Is1（1.26 倍）は落ちる', !g('rec', { is1fit: 1.264e-14 }));
+  ok('rec: 引き忘れから出した Vx 0.619 は落ちる', !g('rec', { vxfit: 0.619 }));
 });
 
 report();
