@@ -420,6 +420,9 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li><a href="#s6"><span class="n">06</span><span>OTA と補償</span></a></li>
     <li><a href="#s7"><span class="n">07</span><span>雑音</span></a></li>
     <li><a href="#s8"><span class="n">08</span><span>基準を作る</span></a></li>
+    <li><a href="#s10"><span class="n">09</span><span>AD 変換の方式</span></a></li>
+    <li><a href="#s11"><span class="n">10</span><span>電源</span></a></li>
+    <li><a href="#s12"><span class="n">11</span><span>実装と EMC</span></a></li>
     <li class="dom"><span>付録</span></li>
     <li><a href="#scheck"><span class="n">—</span><span>理解の確認</span></a></li>
     <li><a href="#s9"><span class="n">—</span><span>用語表</span></a></li>
@@ -441,6 +444,9 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li><a href="#s6"><span class="n">06</span><span>OTA</span></a></li>
     <li><a href="#s7"><span class="n">07</span><span>雑音</span></a></li>
     <li><a href="#s8"><span class="n">08</span><span>基準</span></a></li>
+    <li><a href="#s10"><span class="n">09</span><span>AD 変換</span></a></li>
+    <li><a href="#s11"><span class="n">10</span><span>電源</span></a></li>
+    <li><a href="#s12"><span class="n">11</span><span>実装と EMC</span></a></li>
     <li class="dom"><span>付録</span></li>
     <li><a href="#scheck"><span class="n">—</span><span>理解の確認</span></a></li>
     <li><a href="#s9"><span class="n">—</span><span>用語表</span></a></li>
@@ -1147,10 +1153,226 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   </div>
 </section>
 
+<!-- ================= 09 ================= -->
+<section class="stage" id="s10">
+  <div class="stage-head"><span class="stage-num">09</span>
+    <h2>AD 変換の方式 ― 細かさと速さの地図</h2></div>
+  <p class="lede">08 の「動かない電圧」を物差しにして、アナログの電圧をデジタルの数に変えるのが ADC です。<a href="第4部_イメージセンサ.html#s6">第4部 06</a> では画素の列ごとに並べるシングルスロープ型だけを見ました。ここでは ADC の一族を、<span class="key">「何ビットで（細かさ）」「1 秒に何回（速さ）」</span>という 2 本の軸の地図の上に並べます。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>量子化の床 ― 6.02N + 1.76 dB</h3>
+      <p>N ビットの ADC は、満量程を 2<sup>N</sup> 段に刻みます。刻みの幅（LSB）の中で誤差が一様に散らばるとすると、その雑音は LSB/√12（第4部 06 と同じ）。満量程の正弦波の電力と比べた比が、理想の<b>信号対量子化雑音比</b>:</p>
+      <div class="eq">SQNR = 6.02·N + 1.76 dB　（12 ビットで 74.0 dB、16 ビットで 98.1 dB）</div>
+      <p>実物の ADC は、回路の雑音・歪み・刻みの不均一（DNL・INL ― 段の幅のばらつきと、直線からのずれ）が加わって、この理想に届きません。測った SN 比（SINAD）から逆算した実効のビット数 <b>ENOB = (SINAD − 1.76)/6.02</b> が、カタログのビット数より正直な物差しです。</p>
+    </div>
+    <div class="body-col">
+      <h3>サンプリングの 2 つの約束</h3>
+      <p>ADC は時間も刻みます。<b>標本化周波数の半分（ナイキスト周波数）より高い成分は、低い周波数に折り返して混ざる</b>（第0部 03、第4部のモアレと同じ）ので、ADC の前には必ず折り返し防止のローパスフィルタを置く。もうひとつは<b>kT/C</b>: 電圧を容量に取り込む瞬間、容量の大きさだけで決まる雑音 √(kT/C) が焼き付く（07）。12 ビット・満量程 1 V なら LSB/√12 = 70 µV で、kT/C をそれ以下にするには <b>0.83 pF</b> 以上が要る。16 ビットでは 213 pF ― <span class="key">ビット数を 4 つ上げると、容量は 256 倍、それを駆動する電流も増える</span>。高分解能の ADC が別の作戦（下の ΔΣ）を取る理由です。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">ADC MAP — 方式ごとの守備範囲（目安）</span><span class="fig-title">横 ＝ 標本化の速さ（対数）、縦 ＝ ビット数</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 250" role="img" aria-label="ADCの方式の地図。横軸は標本化周波数（1kS/sから10GS/s、対数）、縦軸はビット数（4から24）。ΔΣ型は高分解能・低速、逐次比較型は中分解能で広い速度域、パイプライン型は中分解能・高速、フラッシュ型は低分解能・最高速の領域を占める。" style="min-width:700px;width:100%;display:block">
+        <g stroke="var(--line)" stroke-width="1"><path d="M90 30 V210 H690"/><path d="M90 174 H690 M90 138 H690 M90 102 H690 M90 66 H690" stroke-dasharray="2 4"/></g>
+        <rect x="90" y="30" width="343" height="72" fill="var(--volt)" opacity="0.14" stroke="var(--volt)"/>
+        <rect x="90" y="66" width="429" height="90" fill="var(--electron)" opacity="0.12" stroke="var(--electron)"/>
+        <rect x="433" y="102" width="171" height="54" fill="var(--photon)" opacity="0.18" stroke="var(--photon)"/>
+        <rect x="519" y="174" width="171" height="36" fill="var(--warn)" opacity="0.16" stroke="var(--warn)"/>
+        <g font-size="10.5" font-weight="700">
+          <text x="100" y="48" fill="var(--volt)">ΔΣ 型（オーバーサンプリング）</text>
+          <text x="100" y="148" fill="var(--electron-2)">逐次比較（SAR）型</text>
+          <text x="528" y="134" fill="var(--photon-2)">パイプライン</text>
+          <text x="528" y="196" fill="var(--warn)">フラッシュ型</text>
+        </g>
+        <g font-family="var(--mono)" font-size="9.5" fill="var(--ink-3)">
+          <text x="84" y="178" text-anchor="end">8</text><text x="84" y="142" text-anchor="end">12</text><text x="84" y="106" text-anchor="end">16</text><text x="84" y="70" text-anchor="end">20</text><text x="84" y="34" text-anchor="end">24 bit</text>
+          <text x="90" y="224" text-anchor="middle">1 k</text><text x="347" y="224" text-anchor="middle">1 M</text><text x="604" y="224" text-anchor="middle">1 G</text><text x="690" y="224" text-anchor="middle">10 G</text>
+        </g>
+        <text x="390" y="242" font-size="9.5" fill="var(--ink-3)" text-anchor="middle">標本化の速さ（S/s）→　　イメージセンサの列ごとのシングルスロープ型は、1 個は遅いが何千個も並べて速さを稼ぐ（第4部 06）</text>
+      </svg>
+    </div>
+    <figcaption>境界は目安で、世代ごとに外へ広がり続けています（複数の ADC を時間でずらして並べる「インターリーブ」で、SAR 型が GS/s に届くなど）。<span class="key">細かさと速さは 1 つの回路で同時に伸ばしにくい</span> ― それぞれの方式は、比較を「一度に全部」「1 ビットずつ」「数ビットずつ受け渡し」「粗く何度も」のどれで行うかの違いです。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>一度に全部 ― フラッシュ型</h3>
+      <p>2<sup>N</sup> − 1 個の比較器を並べ、それぞれに違う基準電圧を配って、入力と一斉に比べる。1 回の比較で答えが出るので最も速い（GS/s 級）が、比較器の数がビット数の指数で増えるので 6〜8 ビットが限度です。オシロスコープや光通信の受信の入口がこれです。</p>
+      <h3>1 ビットずつ ― 逐次比較（SAR）型</h3>
+      <p>「真ん中より上か下か」を最上位のビットから 1 ビットずつ決める、二分探索の ADC。比べる相手の電圧は、容量の比で作った DA 変換器（容量 DAC）が出します。N ビットに N 回の比較で済み、回路が小さく<b>消費電力が小さい</b>ので、センサのマイコン内蔵 ADC から数十 MS/s の計測まで、いちばん広く使われています。精度は容量の比の精度（03 のミスマッチ）で決まります。</p>
+    </div>
+    <div class="body-col">
+      <h3>受け渡し ― パイプライン型</h3>
+      <p>各段で数ビットだけ粗く決め、その残りの差（残差）を増幅して次の段へ渡す流れ作業（第3部の「CPU とメモリ階層」のパイプラインと同じ発想）。1 拍ごとに新しい標本を受け付けられるので速く、10〜16 ビットで数十 MS/s〜GS/s 級。残差を正確に増幅する OTA（06）の出来が性能を決めます。</p>
+      <h3>粗く何度も ― ΔΣ 型</h3>
+      <p>信号よりずっと速く、ごく粗く（1 ビットでも）何度も標本化し、量子化の誤差を帰還（05）で<b>高い周波数へ押しやって</b>（ノイズシェーピング）、あとでデジタルのフィルタで低い周波数だけを取り出す。オーバーサンプリング比 64 で、ただ平均するだけなら 18 dB（3 ビットぶん）の改善が、1 次の ΔΣ で 49 dB、2 次で 77 dB になる。<span class="key">精度を「部品の精度」ではなく「時間とデジタル処理」で買う</span>方式で、16〜24 ビットの計測・オーディオの主役です（遅い信号向き）。</p>
+    </div>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（09 AD 変換）</span>
+    <p><b>問.</b> 12 ビット ADC の理想の SQNR は？ 実測の SINAD が 68 dB なら ENOB は？ この ADC が 100 MS/s・10 mW で動くとき、変換 1 段あたりのエネルギー（ワルデンの性能指数 P/(2<sup>ENOB</sup>·f<sub>s</sub>)）は？</p>
+    <p><b>解.</b> 6.02 × 12 + 1.76 = <b>74.0 dB</b>。ENOB = (68 − 1.76)/6.02 = <b>11.0 ビット</b> ― 1 ビットぶんが回路の雑音と歪みに食われている。性能指数は 10 mW / (2¹¹ × 10⁸ /s) = <b>49 fJ/段</b>。<span class="key">ビット数と速さの違う ADC を 1 つの数で比べる</span>ための物差しで、世代とともに下がり続けてきました（Walden 1999 の整理が出発点）。</p>
+  </div>
+</section>
+
+<!-- ================= 10 ================= -->
+<section class="stage" id="s11">
+  <div class="stage-head"><span class="stage-num">10</span>
+    <h2>電源 ― 動かない電圧を配り、高い電圧を作る</h2></div>
+  <p class="lede">回路は、きれいな電源の上でしか設計どおりに動きません。ADC の目盛りも、TIA の床も、PMT の利得も、電源の揺れがそのまま紛れ込む。ここでは電源を作る 3 つの方式 ― 捨てて作る（LDO）、切り刻んで作る（DC-DC）、積み上げて作る（高圧） ― を、この部の道具（帰還・バンドギャップ・スイッチ）で読みます。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>LDO ― 余りを熱にして、静かに作る</h3>
+      <p>LDO（低ドロップアウトの直列レギュレータ）は、入力と出力の間にトランジスタを 1 個置き、08 のバンドギャップ基準と比べた差を OTA（06）で増やしてトランジスタを絞る、05 の帰還回路そのものです。<b>入力と出力の電圧差 × 電流</b>がそのまま熱になるので、効率はおよそ V<sub>out</sub>/V<sub>in</sub>（3.3 V から 1.8 V を作れば 55%）。その代わりスイッチを持たないので<b>出力が静か</b>で、入力の揺れを帰還で打ち消す力（PSRR）が高い。センサの画素電源や ADC の基準のような、雑音に敏感な回路の最後の段に置かれます。</p>
+    </div>
+    <div class="body-col">
+      <h3>DC-DC ― 切り刻んで、平均を取る</h3>
+      <p>降圧型（バック）コンバータは、スイッチで入力をオン・オフし、コイルとコンデンサでならして平均の電圧を取り出します。オンの時間の割合（デューティ D）で出力が決まり、<b>V<sub>out</sub> = D·V<sub>in</sub></b>。スイッチは理想的にはオンでもオフでも電力を食わないので、効率は 90% 前後まで上がる。代わりに出力にはスイッチの周波数のリップルと、切り替えの瞬間の急な電流変化が作る雑音が乗ります。<span class="key">大きな電力は DC-DC で効率よく落とし、最後の数百 mV を LDO で静かに整える</span>のが、アナログ回路の電源の定石です。コイル電流の三角波の振幅は ΔI = (V<sub>in</sub> − V<sub>out</sub>)·D/(L·f) で、周波数を上げるほど小さなコイルで済みます（第2部のパワーデバイスの SiC・GaN が効く場所）。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">BUCK — 切り刻んだ電圧を、コイルとコンデンサでならす</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 230" role="img" aria-label="降圧型DC-DCコンバータ。左は回路図: 入力からスイッチ、スイッチの節点から地面へ戻るダイオード（または同期整流のトランジスタ）、コイル、出力コンデンサ、負荷。右は波形: スイッチの節点の電圧は入力電圧と0を行き来する矩形波で、コイルの電流は平均値のまわりを三角波で上下する。" style="min-width:700px;width:100%;display:block">
+        <g stroke="var(--ink-2)" stroke-width="1.6" fill="none">
+          <path d="M40 60 H90"/><path d="M90 60 L118 48"/><path d="M122 60 H170"/>
+          <path d="M170 60 V94"/><path d="M160 94 H180"/><path d="M160 110 H180 L170 94 Z"/><path d="M170 110 V150"/>
+          <path d="M170 60 H200 q8 -12 16 0 q8 -12 16 0 q8 -12 16 0 q8 -12 16 0 H300"/>
+          <path d="M300 60 V92 M288 92 H312 M288 100 H312 M300 100 V150"/>
+          <path d="M300 60 H360 V80"/><rect x="350" y="80" width="20" height="44"/><path d="M360 124 V150"/>
+          <path d="M40 150 H360"/>
+        </g>
+        <circle cx="170" cy="60" r="3.5" fill="var(--warn)"/>
+        <g font-size="10.5" fill="var(--ink-2)">
+          <text x="40" y="50">V<tspan font-size="7.5" dy="2">in</tspan></text>
+          <text x="104" y="40" text-anchor="middle">スイッチ</text>
+          <text x="186" y="126">ダイオード</text>
+          <text x="186" y="140" font-size="9.5" fill="var(--ink-3)">（同期整流なら FET）</text>
+          <text x="240" y="44" text-anchor="middle">L</text>
+          <text x="318" y="98">C</text>
+          <text x="376" y="106">負荷</text>
+          <text x="320" y="52">V<tspan font-size="7.5" dy="2">out</tspan></text>
+          <text x="176" y="76" fill="var(--warn)">節点</text>
+        </g>
+        <text x="200" y="176" font-size="10" fill="var(--ink-3)" text-anchor="middle">オンでコイルに電流を貯め、オフでダイオードを通して吐き出す</text>
+        <g stroke="var(--line)" stroke-width="1"><path d="M450 30 V100 H730"/><path d="M450 120 V200 H730"/></g>
+        <path d="M450 44 H490 V96 H560 V44 H600 V96 H660" stroke="var(--warn)" stroke-width="2" fill="none"/>
+        <path d="M450 180 L490 140 L560 180 L600 140 L660 174.3" stroke="var(--electron)" stroke-width="2" fill="none"/>
+        <path d="M450 160 H660" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="4 3"/>
+        <g font-size="10">
+          <text x="668" y="62" fill="var(--warn)">節点の電圧</text>
+          <text x="668" y="146" fill="var(--electron-2)">コイル電流</text>
+          <text x="668" y="164" fill="var(--ink-3)">平均 ＝ 負荷電流</text>
+          <text x="470" y="116" fill="var(--ink-3)" text-anchor="middle">D·T</text>
+        </g>
+        <text x="390" y="220" font-size="9.5" fill="var(--ink-3)" text-anchor="middle">V<tspan font-size="7" dy="2">out</tspan><tspan dy="-2"> ＝ D·V</tspan><tspan font-size="7" dy="2">in</tspan><tspan dy="-2">　　三角波の振幅 ΔI ＝ (V</tspan><tspan font-size="7" dy="2">in</tspan><tspan dy="-2">−V</tspan><tspan font-size="7" dy="2">out</tspan><tspan dy="-2">)·D / (L·f)</tspan></text>
+      </svg>
+    </div>
+    <figcaption>節点の電圧は入力と 0 の間を往復する矩形波で、その平均（D·V<sub>in</sub>）だけをコイルとコンデンサ（ローパスフィルタ、第0部 03）が取り出す。コイル電流の三角波が出力コンデンサの電圧を少し揺らし、それが出力のリップルになる。切り替えの急な縁（ns 級）はスペクトルの広い雑音源で、11 の実装の話につながります。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>高い電圧を作る ― 光検出器のための電源</h3>
+      <p>光検出器は高い電圧で動くものが多い: PMT は 1〜2 kV（第5部 02）、APD は百 V 級（第5部 03）、MPPC・SPAD は降伏電圧＋数 V。低い電圧から高い電圧を作る定番が<b>コッククロフト・ウォルトン回路</b>で、ダイオードとコンデンサを梯子のように n 段つなぎ、交流の振幅 V<sub>pk</sub> を段ごとに積み上げて、無負荷なら約 2n·V<sub>pk</sub> を得ます。電流を取ると段数の 3 乗に比例して電圧が下がり、リップルも乗るので、後ろに帰還をかけた安定化を置きます。</p>
+    </div>
+    <div class="body-col">
+      <h3>検出器の電源に要る精度</h3>
+      <p>PMT の利得は電圧のおよそ 7〜10 乗で動くので、電源の 0.1% のふらつきが利得の 0.7〜1% になる（第5部 02）。APD と MPPC は降伏電圧が温度で動くので、<b>温度に合わせてバイアスを追従させる</b>電源が要る（第5部 03）。<span class="key">光検出器の性能の一部は、電源回路の性能そのもの</span>で、高圧電源が検出器のモジュールに組み込まれて売られていることが多いのはこのためです。</p>
+    </div>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（10 電源）</span>
+    <p><b>問1.</b> 12 V から 3.3 V を作る降圧コンバータ（1 MHz・コイル 10 µH）のデューティと、コイル電流の三角波の振幅は？ 同じ 3.3 V から LDO で 1.8 V・100 mA を作ると、何 W が熱になるか。</p>
+    <p><b>解.</b> D = 3.3/12 = <b>0.275</b>、ΔI = (12 − 3.3) × 0.275 / (10 µH × 1 MHz) = <b>0.24 A</b>。LDO の熱は (3.3 − 1.8) V × 0.1 A = <b>0.15 W</b>（効率 55%）。大きな電圧差を LDO で落とすと、熱と電池の持ちで損をする。</p>
+    <p><b>問2.</b> 5 段のコッククロフト・ウォルトン回路に振幅 100 V・50 kHz を入れ、各段 10 nF。無負荷の出力と、100 µA 取ったときの電圧降下は？（降下 ≈ I/(fC)·(2n³/3 + n²/2 − n/6)）</p>
+    <p><b>解.</b> 無負荷 2 × 5 × 100 = <b>1,000 V</b>。降下 = 10⁻⁴/(5×10⁴ × 10⁻⁸) × (83.3 + 12.5 − 0.83) = 0.2 × 95 = <b>約 19 V</b>。段数を増やすと電圧は稼げるが、降下は n³ で効く ― 段数・周波数・容量の設計です。</p>
+  </div>
+</section>
+
+<!-- ================= 11 ================= -->
+<section class="stage" id="s12">
+  <div class="stage-head"><span class="stage-num">11</span>
+    <h2>実装と EMC ― 回路図に描かれない部品</h2></div>
+  <p class="lede">回路図の線は抵抗ゼロ・インダクタンスゼロですが、基板の上の銅は違います。グラウンドは 0 V ではなく、配線は数 nH のコイルで、速い信号は伝送線路になり、絶縁物の表面にも電流が流れる。<span class="key">回路図どおりに動かない原因の大半は、描かれていないこれらの「部品」</span>です。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>グラウンドは 0 V ではない</h3>
+      <p>グラウンドの配線にも抵抗とインダクタンスがあり、そこに電流が流れれば電圧が立ちます。デジタル回路やスイッチング電源の大きな電流と、微小なアナログ信号が同じグラウンドの道を通ると、<b>大電流の作る電圧がアナログ信号の基準をずらす</b>。対策は、電流の帰り道を分けること: 低い周波数ではアナログとデジタルのグラウンドを 1 点でつなぐ（一点接地）、高い周波数では基板の一層を丸ごとグラウンドの面にして、信号の真下に帰り道を作る。2 か所以上でグラウンドがつながった輪（グラウンドループ）は、外の磁場を拾うアンテナになります。</p>
+      <h3>デカップリング ― 近くに電荷を置いておく</h3>
+      <p>IC が一瞬に大きな電流を引くと、電源配線のインダクタンス L が V = L·di/dt の電圧降下を作る。1 nH の配線で 1 A を 1 ns で変えると <b>1 V</b> ― 1.8 V の電源には致命的です。そこで IC の電源ピンのすぐ近くにコンデンサを置き、その電荷で一瞬の電流をまかなう。コンデンサ自身にもインダクタンスがあるので、容量の違うものを並べて広い周波数を覆います。</p>
+    </div>
+    <div class="body-col">
+      <h3>速い信号は伝送線路になる</h3>
+      <p>信号の立ち上がりが、配線を伝わる時間と同じくらい速くなると、配線は「導線」ではなく<b>伝送線路</b>として振る舞います。ガラスエポキシ基板（比誘電率 約 4）の中の信号は約 6.7 ps/mm で進むので、10 cm の配線は 0.67 ns。線路には特性インピーダンス Z<sub>0</sub>（50 Ω が定番）があり、終端の抵抗 Z<sub>L</sub> が合っていないと、反射係数 Γ = (Z<sub>L</sub> − Z<sub>0</sub>)/(Z<sub>L</sub> + Z<sub>0</sub>) の割合で信号が跳ね返る。第5部の光検出器のパルスや、第4部のセンサの高速なデータ出力は、この線路の設計の上を走っています。</p>
+      <h3>差動で送る</h3>
+      <p>2 本の線に逆向きの信号を流して差を受け取る<b>差動伝送</b>は、04 の差動対の考え方を配線に広げたものです。外から入る雑音は 2 本に同じだけ乗る（同相）ので、差を取れば消える。しかも 2 本の電流が逆向きなので、周りに放つ磁場も打ち消し合う。イメージセンサの高速な出力（MIPI D-PHY など）、LVDS、USB、Ethernet ― 速い信号の配線はほぼすべて差動です。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">GUARD — pA を測るために、漏れの道の電圧をゼロにする</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 220" role="img" aria-label="ガードリングの断面図。左はガードなし: 電源電圧のかかった配線から、基板の表面を通って入力の配線へ漏れ電流が流れ込む。右はガードあり: 入力の配線を、入力と同じ電位に保ったガードの配線で囲むので、入力とガードの間には電圧がかからず漏れが流れない。漏れはガードへ流れて入力には入らない。" style="min-width:700px;width:100%;display:block">
+        <text x="190" y="24" font-size="11" font-weight="700" fill="var(--ink)" text-anchor="middle">① ガードなし</text>
+        <text x="570" y="24" font-size="11" font-weight="700" fill="var(--ink)" text-anchor="middle">② ガードあり</text>
+        <rect x="40" y="110" width="300" height="50" fill="var(--surface-3)"/>
+        <rect x="420" y="110" width="300" height="50" fill="var(--surface-3)"/>
+        <rect x="70" y="98" width="40" height="12" fill="var(--warn)"/><rect x="240" y="98" width="40" height="12" fill="var(--electron)"/>
+        <rect x="450" y="98" width="40" height="12" fill="var(--warn)"/><rect x="545" y="98" width="30" height="12" fill="var(--digital)"/><rect x="600" y="98" width="40" height="12" fill="var(--electron)"/><rect x="665" y="98" width="30" height="12" fill="var(--digital)"/>
+        <path d="M110 104 H240" stroke="var(--warn)" stroke-width="1.6" stroke-dasharray="4 3"/>
+        <path d="M490 104 H545" stroke="var(--warn)" stroke-width="1.6" stroke-dasharray="4 3"/>
+        <g font-size="10" fill="var(--ink-2)" text-anchor="middle">
+          <text x="90" y="88">電源 10 V</text><text x="260" y="88">入力（0 V）</text>
+          <text x="470" y="88">電源 10 V</text><text x="560" y="72">ガード</text><text x="620" y="88">入力</text><text x="680" y="72">ガード</text>
+          <text x="190" y="136" fill="var(--ink-3)">基板（表面にわずかな漏れ）</text>
+          <text x="570" y="136" fill="var(--ink-3)">基板</text>
+        </g>
+        <text x="175" y="186" font-size="10" fill="var(--warn)" text-anchor="middle">表面を伝って入力へ漏れる（10 V / 1 GΩ ＝ 10 nA）</text>
+        <text x="570" y="186" font-size="10" fill="var(--digital)" text-anchor="middle">ガードを入力と同じ電位に保つ ― 入力へは漏れない</text>
+        <text x="570" y="204" font-size="9.5" fill="var(--ink-3)" text-anchor="middle">漏れは電源からガードへ流れ、入力とガードの間の電圧はほぼ 0</text>
+      </svg>
+    </div>
+    <figcaption>フォトダイオードの暗電流（pA 級）や TIA の入力を測るとき、敵は回路の雑音より<b>絶縁物の表面を伝う漏れ電流</b>です。入力の配線を、入力と同じ電位に保った配線（ガード）で囲めば、入力とガードの間には電圧がかからないので漏れが流れない ― <span class="key">漏れの道を断つのではなく、道の両端の電圧差を消す</span>発想です。ケーブルも同じ考えで、芯線をガードで包んだ三軸ケーブルを使います。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>シールド ― 電界と磁界は別の相手</h3>
+      <p>電界（静電的な結合）は、グラウンドにつないだ導体の箱や膜で遮れます。低い周波数の磁界は導体では遮れず、透磁率の高い材料（パーマロイなど）で磁束の道を逸らすか、<b>信号の輪の面積を小さくする</b>（往復の線をより合わせる）ほうが効く。高い周波数の磁界は、導体の中に流れる渦電流が打ち消してくれる。PMT が磁場に弱い（第5部 02）ため磁気シールドの筒に入れて使われるのは、この低い周波数の磁界への対策です。</p>
+    </div>
+    <div class="body-col">
+      <h3>入出力の守り ― ESD とラッチアップ</h3>
+      <p>外とつながる端子には、静電気の放電（第8部 08 の HBM・CDM）を逃がす保護素子（ダイオードなど）が付いています。CMOS の中には、隣り合う p 型と n 型の層が寄生のサイリスタ（pnpn）を作っていて、端子に電源を超える電圧が入るとそれがオンになって電源と地面を短絡し続ける<b>ラッチアップ</b>が起きる。ウェルの周りを濃い層で囲み、濃い基板に薄いエピ層を載せる（第1部 04）のは、この寄生の道の利得を下げるためです。</p>
+    </div>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（11 実装と EMC）</span>
+    <p><b>問1.</b> 50 Ω の線路の終端に 75 Ω をつないだ。反射係数は？ 20 cm の配線を信号が往復する時間は（比誘電率 4）？</p>
+    <p><b>解.</b> Γ = (75 − 50)/(75 + 50) = <b>0.2</b> ― 振幅の 20% が跳ね返る。片道 200 mm × 6.7 ps/mm = 1.33 ns、往復 <b>2.7 ns</b>。立ち上がりが ns 級の信号では、反射が次の信号に重なって波形を乱す。</p>
+    <p><b>問2.</b> 10 V の配線と入力の間の基板表面の抵抗が 1 GΩ のとき、入力に入る漏れは？ 入力と同じ電位（ずれ 1 mV）のガードで囲むと？</p>
+    <p><b>解.</b> ガードなし 10 V / 1 GΩ = <b>10 nA</b> ― 暗電流 10 pA のフォトダイオードの 1,000 倍で、何も測れない。ガードありなら入力が見る電圧差は 1 mV なので 1 mV / 1 GΩ = <b>1 pA</b>。<span class="key">抵抗を上げる（絶縁を良くする）より、電圧差を消すほうが桁で効く</span>。</p>
+  </div>
+
+  <div class="caveat">
+    <span class="tag">この 3 章が単純化していること</span>
+    <p><strong>ADC の守備範囲・効率・電源の数値は、代表的な目安と理想式です。</strong>実際の ADC の選定はデータシートの ENOB・SFDR・消費電力で、電源の設計は損失・熱・過渡応答・安定性の検討で行います。EMC は規格（放射と耐性の試験）に沿って測って確かめる分野で、ここではその背後にある物理の最小限だけを扱いました。</p>
+  </div>
+</section>
+
 <!-- ================= 理解の確認 ================= -->
 <section class="stage" id="scheck">
   <div class="stage-head"><span class="stage-num">—</span>
-    <h2>理解の確認 ― 10問で4枚のカードを並べ直す</h2></div>
+    <h2>理解の確認 ― 13問で4枚のカードを並べ直す</h2></div>
   <p class="lede">答えを開く前に、どの章の式を使うかを先に言ってみてください。後ろの問いほど前の章を組み合わせます。</p>
   <div class="chk">
     <details><summary><span class="qn">Q1 · 01</span>同じ電流で g<sub>m</sub> を上げる手は？ 代償は？</summary><p>W/L を太らせて V<sub>ov</sub> を下げる（g<sub>m</sub> = 2I<sub>D</sub>/V<sub>ov</sub>）。代償は面積とゲート容量（f<sub>T</sub> が下がる）、下げすぎると弱反転に入って二乗則の外。</p></details>
@@ -1163,6 +1385,9 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <details><summary><span class="qn">Q8 · 06</span>ミラー補償の C<sub>c</sub> を大きくすると、PM・GBW・スルーレートはどちらへ動くか。</summary><p>PM は上がる（ただし頭打ち）、GBW = g<sub>m1</sub>/2πC<sub>c</sub> とスルーレート I<sub>SS</sub>/C<sub>c</sub> は下がる。窓の中で一番小さい C<sub>c</sub> を選ぶのが速さの面では得。</p></details>
     <details><summary><span class="qn">Q9 · 07</span>多段アンプの雑音の床が初段で決まるのはなぜか。1/f が問題になるのはどんな信号か。</summary><p>入力換算すると後段の雑音は前段の利得で割られるから。1/f はコーナー周波数（MOS で kHz〜MHz）より遅い信号で効く ― 太らせる・pMOS・チョッパや CDS で高域へ引っ越す。</p></details>
     <details><summary><span class="qn">Q10 · 08</span>バンドギャップ基準の出力が約 1.2 V になるのはなぜか。</summary><p>V<sub>BE</sub>（CTAT、約 −2 mV/K）に PTAT（V<sub>T</sub> ln n）を m 倍して足し、1次の温度係数を打ち消すと、残る値がシリコンのバンドギャップを 0 K へ外挿した電圧（約 1.2 V）になるから。</p></details>
+    <details><summary><span class="qn">Q11 · 09</span>16 ビット級の ADC に ΔΣ 型が多いのはなぜか。SAR 型で同じ分解能を狙うと何が苦しいか。</summary><p>ΔΣ は粗い量子化を速く繰り返し、雑音を帰還で高域へ押しやってデジタルで捨てるので、精度を部品の精度ではなく時間とデジタル処理で買える。SAR で 16 ビットを狙うと、kT/C を LSB/√12 以下にするための容量（1 V 満量程で 200 pF 級）と、容量比の精度（ミスマッチ）の両方が苦しくなる。</p></details>
+    <details><summary><span class="qn">Q12 · 10</span>12 V から 1.8 V の雑音に敏感な電源を作る。LDO だけ・DC-DC だけ・両方のどれにするか。</summary><p>両方。LDO だけでは効率が 1.8/12 = 15% で、ほとんどが熱になる。DC-DC だけではスイッチのリップルと切り替え雑音が残る。DC-DC で効率よく 2〜3 V 程度まで落とし、最後を LDO で静かに整える。</p></details>
+    <details><summary><span class="qn">Q13 · 11</span>フォトダイオードの pA 級の暗電流を測りたい。回路図には出てこない敵と、その対策は？</summary><p>敵は基板や絶縁物の表面を伝う漏れ電流（10 V / 1 GΩ で 10 nA）。入力を同じ電位のガードで囲んで漏れの道の電圧差を消し、ケーブルも三軸にする。加えて、グラウンドの帰り道を分け、ループの面積を小さくして外の雑音を拾わない。</p></details>
   </div>
 </section>
 
@@ -1191,6 +1416,18 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>チョッパ / CDS</td><td>信号を 1/f の届かない高域へ変調して増幅（周波数軸）／2サンプルの引き算で低域を消す（時間軸）。同じ思想の2つの顔</td><td class="num">オフセットも消える</td></tr>
           <tr><td>kT/C / SC</td><td>サンプルのたび焼き付く雑音と、1/(fC) で抵抗を作るスイッチト・キャパシタ。ADC の分解能はほぼこの交渉</td><td class="num">1pF で 64µV</td></tr>
           <tr><td>バンドギャップ</td><td>CTAT（V<sub>BE</sub>）と PTAT（V<sub>T</sub>ln n）を足して温度係数ゼロ。残る値は E<sub>g</sub> 由来。2次の曲率は残る</td><td class="num">≒1.2 V</td></tr>
+          <tr><td>SQNR / ENOB</td><td>理想の量子化雑音に対する SN 比 6.02N+1.76 dB と、測った SINAD から逆算した実効ビット数</td><td class="num">12 bit で 74 dB</td></tr>
+          <tr><td>フラッシュ / SAR</td><td>2<sup>N</sup>−1 個の比較器で一度に決める最速型／二分探索で 1 ビットずつ決める小型・低電力型</td><td class="num">GS/s・6〜8 bit／広い範囲</td></tr>
+          <tr><td>パイプライン / ΔΣ</td><td>数ビットずつ決めて残差を次段へ渡す高速型／粗く何度も標本化し、雑音を高域へ押しやる高分解能型</td><td class="num">〜GS/s／16〜24 bit</td></tr>
+          <tr><td>LDO</td><td>直列トランジスタを帰還で絞る静かなレギュレータ。効率はおよそ V<sub>out</sub>/V<sub>in</sub></td><td class="num">雑音に敏感な最終段</td></tr>
+          <tr><td>降圧 DC-DC</td><td>スイッチとコイル・コンデンサで平均電圧を取り出す。V<sub>out</sub> = D·V<sub>in</sub>、効率 90% 前後。リップルと切り替え雑音を伴う</td><td class="num">ΔI = (V<sub>in</sub>−V<sub>out</sub>)D/(Lf)</td></tr>
+          <tr><td>コッククロフト・ウォルトン</td><td>ダイオードとコンデンサの梯子で交流の振幅を積み上げる高圧回路。PMT の電源の定番</td><td class="num">無負荷 2nV<sub>pk</sub></td></tr>
+          <tr><td>グラウンドループ</td><td>2 か所以上でつながったグラウンドの輪。外の磁場を拾い、基準電位をずらす</td><td class="num">輪の面積が敵</td></tr>
+          <tr><td>デカップリング</td><td>IC のそばに置いて一瞬の電流をまかなうコンデンサ。配線の L·di/dt を避ける</td><td class="num">1 nH で 1 V（1 A/ns）</td></tr>
+          <tr><td>伝送線路 / 反射</td><td>速い信号では配線が特性インピーダンス Z<sub>0</sub> の線路になり、終端が合わないと Γ の割合で反射する</td><td class="num">基板中 約 6.7 ps/mm</td></tr>
+          <tr><td>差動伝送</td><td>逆向きの信号を 2 本で送り差を受ける。同相の雑音が消え、放射も減る</td><td class="num">MIPI D-PHY・LVDS・USB</td></tr>
+          <tr><td>ガードリング</td><td>入力を同じ電位の導体で囲み、漏れの道の電圧差を消す。pA 測定の定石</td><td class="num">10 nA → 1 pA</td></tr>
+          <tr><td>ラッチアップ</td><td>CMOS の寄生サイリスタがオンになり電源を短絡し続ける現象。ウェルの囲いとエピ層で防ぐ</td><td class="num">入出力の過電圧が引き金</td></tr>
         </tbody>
       </table>
     </div>
@@ -1230,6 +1467,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>帰還の安定判別</td><td>H. Nyquist<br>Bell Syst. Tech. J. 11, 126 (1932)</td><td>05。ループを一周した応答で発振を判定する基準（ナイキスト線図）。位相余裕の考え方の土台。</td></tr>
           <tr><td>バンドギャップ基準</td><td>R. J. Widlar, IEEE J. Solid-State Circuits 6, 2 (1971)<br>A. P. Brokaw, IEEE J. Solid-State Circuits 9, 388 (1974)</td><td>08。V<sub>BE</sub> と ΔV<sub>BE</sub> を足して温度係数を消す回路の原典と、その定番の形。</td></tr>
           <tr><td>ミスマッチの面積則</td><td>M. J. M. Pelgrom ほか<br>IEEE J. Solid-State Circuits 24, 1433 (1989)</td><td>03・04。ミラーと差動対の精度が面積の平方根で決まる根拠。</td></tr>
+          <tr><td>ADC の性能の整理</td><td>R. H. Walden<br>IEEE J. Sel. Areas Commun. 17, 539 (1999)</td><td>09。方式ごとの分解能と速さの整理と、性能指数 P/(2<sup>ENOB</sup>f<sub>s</sub>)。</td></tr>
+          <tr><td>ΔΣ 変換器</td><td>R. Schreier &amp; G. C. Temes『Understanding Delta-Sigma Data Converters』Wiley-IEEE Press (2005)</td><td>09。ノイズシェーピングとオーバーサンプリングの利得。</td></tr>
+          <tr><td>データ変換器の実務</td><td>W. Kester（編）『The Data Conversion Handbook』Analog Devices / Newnes (2005)</td><td>09。SQNR・ENOB・INL/DNL・サンプリングの実務。</td></tr>
+          <tr><td>高電圧の倍電圧回路</td><td>J. D. Cockcroft &amp; E. T. S. Walton<br>Proc. R. Soc. Lond. A 136, 619 (1932)</td><td>10。ダイオードとコンデンサの梯子で高電圧を作る回路の原典。</td></tr>
+          <tr><td>パワーエレクトロニクス</td><td>R. W. Erickson &amp; D. Maksimović『Fundamentals of Power Electronics』3rd ed., Springer (2020)</td><td>10。降圧・昇圧コンバータの定常解析とリップル。</td></tr>
+          <tr><td>EMC の設計</td><td>H. W. Ott『Electromagnetic Compatibility Engineering』Wiley (2009)</td><td>11。グラウンド・シールド・デカップリング・ガードの標準的な教科書。</td></tr>
         </tbody>
       </table>
     </div>
