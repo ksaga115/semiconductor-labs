@@ -43,7 +43,7 @@
   SemiLab\                       第2部 ラボ（作る側）― 原始部品 ＝ 不純物（5章 26問。pMOS とゲートの材料・単層の反射防止膜を含む）
   CharLab\                       第2部 ラボ（測る側）― 謎の素子の I-V/C-V から n・Vth・tox・Na を当てる（4章 13問。第4章は温度を振った Eg・1/C² の濃度分布・2 成分の I-V）
   NandLab\                       第3部 ラボ ― 原始部品 ＝ NAND（6章 31問。第6章だけ NOR）
-  PixelLab\                      第4部 ラボ ― 原始部品 ＝ 光子と電子を数えること（4章 16問。第4章はローリング／グローバルシャッタ・画素ピッチの限界・TDI）
+  PixelLab\                      第4部 ラボ ― 原始部品 ＝ 光子と電子を数えること（5章 19問。第4章はローリング／グローバルシャッタ・画素ピッチの限界・TDI、第5章は HDR のつなぎ目・欠陥の暗電流・SPAD）
   PhotonLab\                     第5部 ラボ ― 原始部品 ＝ 光子とη（4章 15問。R・NEP・D*・最適なM・MPPC・背景光・計数・走行×RC・TCSPC・InGaAs APD・しきい値とクロストーク・シンチの分解能）
   AnalogLab\                     第6部 ラボ ― 原始部品 ＝ 二乗則のMOS 1個（5章 16問。Vov・gm・利得・GBW・TIA・kTC・SC・2段OTA・ADC・DC-DC・カレントミラー・バンドギャップ・TIA の帰還容量）
   OptoLab\                       第7部 ラボ ― 原始部品 ＝ 光線とその会計（4章 15問。カメラ方程式・回折・ガウス・ファイバ・λ/4・エテンデュ・cos⁴・モード結合・ブルースター角・格子・回線）
@@ -87,7 +87,7 @@ node ProcessLab\tests\all.js      332 件
 node SemiLab\tests\all.js       1,255 件
 node CharLab\tests\all.js         281 件
 node NandLab\tests\all.js         725 件
-node PixelLab\tests\all.js        372 件
+node PixelLab\tests\all.js        433 件
 node PhotonLab\tests\all.js       333 件
 node AnalogLab\tests\all.js       334 件
 node OptoLab\tests\all.js         301 件

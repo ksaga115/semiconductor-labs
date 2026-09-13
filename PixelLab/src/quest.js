@@ -21,7 +21,8 @@
     { id: 1, name: '第1章　撮って測る（PTC）', lead: 'ばらつきを測ると、画面の数字が何電子かが分かる。中身の伏せられたカメラで試す。' },
     { id: 2, name: '第2章　画素を設計する', lead: '面積・容量・温度・AD の桁。どれかを良くすると、どれかが悪くなる。' },
     { id: 3, name: '第3章　SemiLab とつなぐ', lead: '量子効率は SemiLab のフォトダイオードで解いている。赤外は層の厚みで決まる。' },
-    { id: 4, name: '第4章　動き・細かさ・時間', lead: 'ローリングシャッタの歪み、グローバルシャッタの寄生感度、画素を細かくする限界、TDI の段数。第4部の読み出し・回折の節と同じ式。' }
+    { id: 4, name: '第4章　動き・細かさ・時間', lead: 'ローリングシャッタの歪み、グローバルシャッタの寄生感度、画素を細かくする限界、TDI の段数。第4部の読み出し・回折の節と同じ式。' },
+    { id: 5, name: '第5章　つなぎ目・冷却の残り・数える画素', lead: 'HDR のつなぎ目の SN 比、欠陥の成分が残る冷却、SPAD の数え落としと距離のばらつき。第4部の例題（ダイナミックレンジを広げる・付録 C・SPAD）と同じ式。' }
   ];
 
   function near(a, b) { return Math.abs(a - b) <= Math.abs(b) * 1e-9 + 1e-12; }
@@ -302,6 +303,82 @@
             row('にじみ', f(ev.tdiSmear, 2) + ' 画素', '1.00 以下', okM),
             row('信号 / 読み出し雑音の分散', f(ev.tdiSig, 0) + ' e⁻ / ' + f((d.tdiMode ? 1 : d.tdiN) * ev.read * ev.read, 1) + ' e⁻²', '', true),
             lockRow(lock, '1 段 5 e⁻・ずれ 1%・既定の読み出し回路')
+          ]
+        };
+      }
+    },
+
+    /* ===== 第5章 ===== */
+    {
+      id: 'seam', ch: 5, kind: 'design',
+      name: 'HDR の露光比の窓',
+      desc: '既定の画素（3.0 µm・浮遊拡散 2 fF・12 bit）のまま、長短合成の露光比で、合成のダイナミックレンジを **88 dB 以上**にし、'
+          + 'つなぎ目の短い露光側の SN 比を **30 以上**に保つ。',
+      why: '合成は天井を 20log₁₀R だけ上げる。だが長い露光が飽和する直前から短い露光に切り替えると、同じ明るさが 1/R の電子で表されるので、'
+         + 'SN 比がそこで √R 近く落ちる（第4部「ダイナミックレンジを広げる」の例題: 1:16 で 109.5 → 27.3）。'
+         + '**比を大きくするほど天井は上がり、つなぎ目の段差は深くなる** ― 窓。',
+      hint: '単発は 72.6 dB。88 dB には R ≥ 5.9、つなぎ目の SN 比 30 には R ≤ 7.5（長い側は 82.1）。',
+      check: function (ev, d) {
+        var lock = near(d.pitch, 3) && near(d.pdFrac, 0.5) && near(d.fwd, 1500) && near(d.cfd, 2) && near(d.sf, 120)
+          && d.cds && d.bits === 12 && near(d.offset, 64);
+        var okD = ev.drH >= 88, okS = ev.seamShort >= 30, lim = ev.hdrR <= 16 + 1e-9;
+        return {
+          ok: lock && okD && okS && lim,
+          rows: [
+            row('合成のダイナミックレンジ', f(ev.drH, 2) + ' dB（単発 ' + f(ev.dr, 1) + ' + ' + f(20 * Math.log10(ev.hdrR), 1) + '）', '88.00 以上', okD),
+            row('つなぎ目の SN 比（短い側）', f(ev.seamShort, 2) + '（長い側 ' + f(ev.seamLong, 1) + '、' + f(ev.seamDb, 1) + ' dB）', '30.00 以上', okS),
+            row('露光比', f(ev.hdrR, 2) + ':1', '16:1 以下', lim),
+            lockRow(lock, '既定の画素・12 bit')
+          ]
+        };
+      }
+    },
+    {
+      id: 'defect', ch: 5, kind: 'design', t: 60,
+      name: '冷やしても残る暗電流',
+      desc: '既定の画素に、欠陥の準位を通る暗電流 **10 pA/cm²**（60℃、見かけの E<sub>a</sub> 0.35 eV・仮定）が加わった。'
+          + '露光 **60 秒**で、暗電流のショットノイズを**読み出し雑音以下**にする。冷却は **−40℃ まで**。',
+      why: '空乏層の生成電流（∝ ni、見かけの E<sub>a</sub> ≈ 0.6 eV）は冷やせば約 9℃ ごとに半分になるが、E<sub>a</sub> の小さい欠陥の成分は、'
+         + '同じだけ冷やしても減り方が鈍い（第4部 付録C の例題: 27 → −5℃ で生成は 1/16、欠陥は 1/5）。'
+         + '冷やすほど**欠陥の成分が支配項に入れ替わり**、必要な冷却が一気に深くなる ― 白キズが冷却で消え切らないのと同じ理由。',
+      hint: '欠陥の成分が無ければ約 −10℃ で足りる（「冷やして長く撮る」と同じ）。10 pA/cm² があると約 −29℃ まで要る。窓は −40〜−29℃。',
+      check: function (ev, d) {
+        var q = byId('defect');
+        var lock = near(d.jd, 50) && near(d.jdDef, 10) && near(d.pitch, 3) && near(d.pdFrac, 0.5)
+          && near(d.cfd, 2) && near(d.sf, 120) && d.cds;
+        var ds = Math.sqrt(ev.dark * q.t);
+        var okD = ds <= ev.read, okT = d.T >= -40;
+        return {
+          ok: lock && okD && okT,
+          rows: [
+            row('暗電流のショット（60 秒）', f(ds, 3) + ' e⁻', '読み出し雑音 ' + f(ev.read, 3) + ' e⁻ 以下', okD),
+            row('温度', f(d.T, 1) + ' ℃', '−40℃ 以上', okT),
+            row('内訳 生成 / 欠陥', ev.darkGen.toPrecision(3) + ' / ' + ev.darkDef.toPrecision(3) + ' e⁻/s', '', true),
+            lockRow(lock, '生成 50・欠陥 10 pA/cm²・既定の読み出し回路')
+          ]
+        };
+      }
+    },
+    {
+      id: 'spad', ch: 5, kind: 'design',
+      name: 'SPAD の不感時間と積む光子',
+      desc: '**10⁷ 光子/s** が来る SPAD（時刻の揺らぎ **100 ps**）で、数え落としを **10% 以下**、距離のばらつきを **2 mm 以下**にする。'
+          + '不感時間は **5 ns 以上**（アフターパルスを抑えるため・仮定）、積む光子は **100 個まで**（1 点に使える時間の上限・仮定）。',
+      why: '不感時間の間に来た光子を無視する型では、数えられるのは r/(1 + rτ<sub>d</sub>)。20 ns なら 16.7% を数え落とす（第4部 SPAD の例題）。'
+         + '短くすれば数え落としは減るが、アフターパルスが増える。距離のばらつきは c·σ/2 = 1.5 cm で、N 光子の重心なら 1/√N ― '
+         + '**不感時間と光子数の 2 つの窓**を同時に選ぶ。',
+      hint: '10% には τ<sub>d</sub> ≤ 11.1 ns。2 mm には N ≥ 57（56 では 2.003 mm）。',
+      check: function (ev, d) {
+        var lock = near(d.spadRate, 1e7) && near(d.spadJit, 100);
+        var okL = ev.spadLoss <= 0.10, okT = d.spadTd >= 5, okS = ev.spadSigN <= 0.2, okN = d.spadN <= 100;
+        return {
+          ok: lock && okL && okT && okS && okN,
+          rows: [
+            row('数え落とし', f(ev.spadLoss * 100, 2) + ' %（rτ = ' + f(ev.spadRtd, 3) + '）', '10.00 以下', okL),
+            row('不感時間', f(d.spadTd, 2) + ' ns', '5.00 以上', okT),
+            row('距離のばらつき', f(ev.spadSigN * 10, 3) + ' mm（1 光子で ' + f(ev.spadSig1, 2) + ' cm）', '2.000 以下', okS),
+            row('積む光子', f(d.spadN, 0) + ' 個', '100 以下', okN),
+            lockRow(lock, '10⁷ 光子/s・揺らぎ 100 ps')
           ]
         };
       }

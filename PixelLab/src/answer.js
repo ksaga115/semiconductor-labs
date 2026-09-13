@@ -92,6 +92,18 @@
     tdi: {
       note: '電荷で足す（CCD 型）90 段。信号 450 e⁻、読み出し雑音は 1 回だけで S/N 21.2、にじみ 0.9 画素。',
       design: function () { var d = PIX.defaults(); d.tdiMode = 1; d.tdiN = 90; return d; }
+    },
+    seam: {
+      note: '露光比 6.5:1。合成 88.9 dB、つなぎ目は長い側 82.1 → 短い側 32.2（−8.1 dB）。8:1 にすると 29.0 に落ちる。',
+      design: function () { var d = PIX.defaults(); d.hdrR = 6.5; return d; }
+    },
+    defect: {
+      note: '−32℃ まで冷やす。生成の成分は 0.0028 e⁻/s まで減るが、欠陥の成分は 0.030 e⁻/s 残り、合計の 9 割を占める。',
+      design: function () { var d = PIX.defaults(); d.jdDef = 10; d.T = -32; return d; }
+    },
+    spad: {
+      note: '不感時間 8 ns で数え落とし 7.4%、64 光子を積んで 1.5 cm/√64 = 1.9 mm。',
+      design: function () { var d = PIX.defaults(); d.spadTd = 8; d.spadN = 64; return d; }
     }
   };
 

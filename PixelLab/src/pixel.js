@@ -57,8 +57,28 @@
       tdiN: 1,                     /* TDI の段数 */
       tdiMode: 0,                  /* 0 ＝ デジタルで足す（CMOS）、1 ＝ 電荷で足す（CCD） */
       tdiS1: 5,                    /* 1 段で溜まる信号 [e⁻] */
-      tdiSync: 1                   /* 物体の速さと行の送りのずれ [%] */
+      tdiSync: 1,                  /* 物体の速さと行の送りのずれ [%] */
+      /* ---- 第5章: つなぎ目・冷却の残り・数える画素 ---- */
+      jdDef: 0,                    /* 欠陥の準位を通る暗電流の密度 [pA/cm²]（60℃）。E_a 0.35 eV（仮定、第4部 付録C） */
+      spadRate: 1e7,               /* SPAD に来る光子の率 [/s] */
+      spadTd: 20,                  /* SPAD の不感時間 [ns] */
+      spadJit: 100,                /* SPAD と TDC の時刻の揺らぎ [ps] */
+      spadN: 1                     /* 距離の重心を出すのに積む光子の数 */
     };
+  }
+
+  var DEF_EA = 0.35;               /* 欠陥の成分の見かけの活性化エネルギー [eV]（仮定。第4部 付録C と同じ） */
+  var KB_EV = 8.617333262e-5, C_LIGHT = 2.99792458e8;
+
+  /** 活性化エネルギー ea [eV] の成分が、Tref [℃] から T [℃] でどれだけ変わるか（前指数の温度依存は無視） */
+  function arrScale(ea, Tc, Tref) {
+    return Math.exp(-ea / KB_EV * (1 / (Tc + 273.15) - 1 / (Tref + 273.15)));
+  }
+
+  /** 長短合成のつなぎ目: 長い露光が S で飽和する直前と、同じ明るさを短い露光（1/R）で表したときの SN 比 */
+  function seamSnr(S, R, floor) {
+    var s = S / R;
+    return { long: S / Math.sqrt(S + floor * floor), short: s / Math.sqrt(s + floor * floor) };
   }
 
   /* ---- 量子効率（SemiLab） ---- */
@@ -121,7 +141,9 @@
     var K = fw / (full * 0.95);
     var quant = K / Math.sqrt(12);
 
-    var dark = d.jd * 1e-12 * darkScale(d.T) * pdArea * 1e-8 / Q;   /* e-/s */
+    var darkGen = d.jd * 1e-12 * darkScale(d.T) * pdArea * 1e-8 / Q;                     /* e-/s（空乏層の生成、∝ ni） */
+    var darkDef = (d.jdDef || 0) * 1e-12 * arrScale(DEF_EA, d.T, T_REF) * pdArea * 1e-8 / Q; /* e-/s（欠陥の成分） */
+    var dark = darkGen + darkDef;
     var noiseFloor = Math.sqrt(read * read + quant * quant);
     var dr = 20 * Math.log10(fw / noiseFloor);
 
@@ -155,7 +177,21 @@
     var tdiSnr = tdiSig / Math.sqrt(tdiSig + tdiRead2);
     var tdiSmear = d.tdiN * d.tdiSync / 100;
 
+    /* ---- 第5章 ----
+     * つなぎ目: 長い露光が飽和電荷 fw に届く直前で短い露光に切り替える。同じ明るさを短い露光で表すと電子は fw/R。
+     * 床（読み出し＋量子化）は同じなので、SN 比は √R 近くまで落ちる（第4部「ダイナミックレンジを広げる」の例題）。 */
+    var seam = seamSnr(fw, hdrR, noiseFloor);
+    /* SPAD: 不感時間の間に来た光子を無視する型（non-paralyzable）。数えられる率 r/(1+rτ)。
+     * 距離のばらつきは c·σ_t/2、N 光子の重心なら 1/√N（パルスの幅と背景光は無視した理想） */
+    var rtd = d.spadRate * d.spadTd * 1e-9;
+    var spadLoss = rtd / (1 + rtd);
+    var spadSig1 = C_LIGHT * d.spadJit * 1e-12 / 2 * 100;         /* cm */
+    var spadSigN = spadSig1 / Math.sqrt(Math.max(1, d.spadN));
+
     return {
+      darkGen: darkGen, darkDef: darkDef,
+      seamLong: seam.long, seamShort: seam.short, seamDb: 20 * Math.log10(seam.short / seam.long),
+      spadRtd: rtd, spadLoss: spadLoss, spadCounted: d.spadRate / (1 + rtd), spadSig1: spadSig1, spadSigN: spadSigN,
       area: area, pdArea: pdArea, fill: fill, qeSi: qeSi, qe: qe,
       fwPd: fwPd, fwFd: fwFd, fw: fw, limit: fwPd <= fwFd ? 'PD' : '浮遊拡散',
       cg: cg, readSf: readSf, kTC: kTC, read: read, K: K, quant: quant,
@@ -201,6 +237,7 @@
   PX.pixel = {
     Q: Q, KB: KB, VSWING: VSWING, ML_FILL: ML_FILL, T_REF: T_REF,
     defaults: defaults, evaluate: evaluate, snr: snr, signal: signal, toCamera: toCamera, parasitic: parasitic,
-    qeSilicon: qeSilicon, darkScale: darkScale, doublingK: doublingK
+    qeSilicon: qeSilicon, darkScale: darkScale, doublingK: doublingK,
+    DEF_EA: DEF_EA, arrScale: arrScale, seamSnr: seamSnr
   };
 })(typeof window !== 'undefined' ? window : globalThis);

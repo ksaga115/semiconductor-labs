@@ -46,7 +46,13 @@
     ['tdiN', 'TDI の段数', '段', 1, 512, true],
     ['tdiMode', 'TDI の足し方', '（0 デジタル・1 電荷）', 0, 1, true],
     ['tdiS1', 'TDI の 1 段の信号', 'e⁻', 0.1, 1e5],
-    ['tdiSync', '速さのずれ', '%', 0, 20]
+    ['tdiSync', '速さのずれ', '%', 0, 20],
+    /* 第5章: つなぎ目・冷却の残り・数える画素 */
+    ['jdDef', '欠陥の暗電流（60℃）', 'pA/cm²', 0, 5000],
+    ['spadRate', 'SPAD に来る光子', '個/s', 1e3, 1e10],
+    ['spadTd', 'SPAD の不感時間', 'ns', 0.1, 1000],
+    ['spadJit', 'SPAD の時刻の揺らぎ', 'ps', 1, 5000],
+    ['spadN', '積む光子の数', '個', 1, 1e6, true]
   ];
 
   /* ================= 起動 ================= */
@@ -343,7 +349,10 @@
       ['寄生感度の分離比', ev.plsRatio.toExponential(2) + '（' + S.design.pls + ' dB）'],
       ['回折の限界 λN/2 / エアリー円板', ev.pDiff.toFixed(2) + ' µm / ' + ev.airy.toFixed(2) + ' µm', S.design.pitch < ev.pDiff],
       ['ナイキスト / 回折の遮断', ev.nyqLpmm.toFixed(0) + ' / ' + ev.cutLpmm.toFixed(0) + ' 本/mm'],
-      ['TDI の S/N / にじみ', ev.tdiSnr.toFixed(2) + ' / ' + ev.tdiSmear.toFixed(2) + ' 画素']
+      ['TDI の S/N / にじみ', ev.tdiSnr.toFixed(2) + ' / ' + ev.tdiSmear.toFixed(2) + ' 画素'],
+      ['HDR のつなぎ目の SN 比', ev.hdrR > 1 ? ev.seamLong.toFixed(1) + ' → ' + ev.seamShort.toFixed(1) + '（' + ev.seamDb.toFixed(1) + ' dB）' : '合成なし'],
+      ['暗電流の内訳 生成 / 欠陥', ev.darkGen.toPrecision(3) + ' / ' + ev.darkDef.toPrecision(3) + ' e⁻/s'],
+      ['SPAD 数え落とし / 距離のばらつき', (ev.spadLoss * 100).toFixed(1) + ' % / ' + (ev.spadSigN * 10).toFixed(2) + ' mm']
     ];
     document.getElementById('derived').innerHTML = '<div class="dv">' + rows.map(function (r) {
       return '<span class="k">' + esc(r[0]) + '</span><span class="v' + (r[2] ? ' warn' : '') + '">' + esc(r[1]) + '</span>';

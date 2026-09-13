@@ -240,6 +240,9 @@ code{font-family:var(--mono);font-size:.9em;background:var(--surface-2);padding:
 .qa h4{font-size:14px;margin-bottom:4px;color:var(--ink)}
 .qa p{font-size:14px;color:var(--ink-2)}
 table{width:100%;border-collapse:collapse;font-size:13.5px}
+/* 列を細くしすぎない ― 日本語が 1〜3 文字ずつ縦に積まれるのを防ぐ。入りきらない表は外側の .scroll-x の中で横に送る */
+th,td{min-width:6.5em}
+th{white-space:nowrap}
 th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line-2);vertical-align:top}
 th{font-family:var(--mono);font-size:10px;letter-spacing:.07em;color:var(--ink-3);font-weight:500;
   border-bottom:1px solid var(--line)}
@@ -455,6 +458,10 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li><a href="#sd"><span class="n">D</span><span>ばらつきの起源</span></a></li>
     <li><a href="#sspad"><span class="n">—</span><span>降伏の先（SPAD）</span></a></li>
     <li><a href="#sevt"><span class="n">—</span><span>イベントベース</span></a></li>
+    <li><a href="#stdi"><span class="n">—</span><span>TDI</span></a></li>
+    <li><a href="#ssub"><span class="n">—</span><span>深サブ電子の読み出し</span></a></li>
+    <li><a href="#sband"><span class="n">—</span><span>波長の外側</span></a></li>
+    <li><a href="#smtf"><span class="n">—</span><span>画素の MTF とクロストーク</span></a></li>
     <li class="dom"><span>むすび</span></li>
     <li><a href="#send"><span class="n">—</span><span>4つの境目に戻る</span></a></li>
     <li class="dom"><span>付録</span></li>
@@ -498,6 +505,10 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li><a href="#sd"><span class="n">D</span><span>ばらつきの起源</span></a></li>
     <li><a href="#sspad"><span class="n">—</span><span>降伏の先（SPAD）</span></a></li>
     <li><a href="#sevt"><span class="n">—</span><span>イベントベース</span></a></li>
+    <li><a href="#stdi"><span class="n">—</span><span>TDI</span></a></li>
+    <li><a href="#ssub"><span class="n">—</span><span>深サブ電子の読み出し</span></a></li>
+    <li><a href="#sband"><span class="n">—</span><span>波長の外側</span></a></li>
+    <li><a href="#smtf"><span class="n">—</span><span>画素の MTF とクロストーク</span></a></li>
     <li class="dom"><span>むすび</span></li>
     <li><a href="#send"><span class="n">—</span><span>4つの境目に戻る</span></a></li>
     <li class="dom"><span>付録</span></li>
@@ -622,7 +633,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p>晴天の屋外は10万lx前後、明るいオフィスが500〜1000lx、夜道が数lx。スライダの目盛りはこの実感に合わせてあります。</p>
     <p style="margin-top:12px">写真の言葉に翻訳するなら、露出計のEV（ISO 100・入射光式、較正定数 C=250 の流儀）でおよそ <code>E [lx] &asymp; 2.5&times;2<sup>EV</sup></code>。1,000 lx は EV 8.6、晴天の10万 lx は EV 15 前後、夜道の 3 lx は EV 0 あたりに相当します（Cの流儀で1/3段ほど動く目安値です）。</p>
   </div>
-</section>
+<div class="ex">
+    <span class="tag">役割別の読み方 ― どこから読むか</span>
+    <p><b>営業・企画</b>: 00 の一本道 → 08 の「どれを減らせばいいのか」の表 →「4つの境目に戻る」の地図。仕様書の飽和・読み出しノイズ・QE・ダイナミックレンジが、どの段の数字かを言えるようになれば十分です。<br><b>設計・開発</b>: 03〜06 と「センサを測る」、付録 A〜D。PTC で手元のセンサを測り直し、いまの支配項から改善の手を選ぶ（08 の表）。「解像の限界」と「ダイナミックレンジを広げる」は仕様の決め方そのものです。<br><b>研究・製造</b>: 02・03、付録 C（暗電流の出どころ）と D（1/f・RTS）、「波長の外側」。欠陥と電界が画質に出る道筋と、紫外・近赤外・X 線で画素の作り方が変わる理由を押さえてください。</p>
+  </div>
+
+  </section>
 
 <!-- ================= 01 ================= -->
 <section class="stage" id="s1">
@@ -694,7 +710,13 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <p><strong>フィルタの中身</strong>：カラーフィルタは顔料や染料を分散したレジストで、厚みは0.5〜1&micro;m程度。透過スペクトルは急峻な矩形ではなくブロードに重なっていて、この重なり方がそのまま「そのカメラの色の癖」になります。<span class="tag-inline t-ph">補足</span> 赤外は全色のフィルタを透過してしまうため、別途IRカットフィルタで650nm以上を落とします。</p>
     </div>
   </div>
-</section>
+<div class="ex">
+    <span class="tag">例題 ― 手で一度解く（01 入り口）</span>
+    <p><b>問.</b> 02 の例題と同じ条件（18% グレーで 2,160 e⁻、読み出しノイズ 2.5 e⁻）で、カラーフィルタを外したモノクロの画素と、マイクロレンズの無い画素（開口率 40% のまま、と仮定。マイクロレンズがあれば実効的にほぼ全面で受けると置く）では、SN 比はそれぞれいくつになるか。</p>
+    <p><b>解.</b> SN 比は S/√(S + 2.5²)。カラーでは 2,160/√2,166 = <b>46.4</b>。モノクロは電子が 1/0.35 倍の 6,171 e⁻ で <b>78.5</b> ― 電子は 2.86 倍でも、SN 比は √2.86 = 1.69 倍（+4.6 dB）にとどまる。マイクロレンズが無く光の 4 割しか受けられないと 864 e⁻ で <b>29.3</b>。<span class="key">マイクロレンズもカラーフィルタも光の予算の掛け算の 1 項で、ショットノイズが支配する明るさでは、SN 比にはその平方根で効きます</span>。</p>
+  </div>
+
+  </section>
 
 
 <!-- ================= 解像の限界 ================= -->
@@ -744,6 +766,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <div class="eq">1/(&lambda;<b>N</b>) = 1/(2<i>p</i>) &nbsp;&rarr;&nbsp; <b>N</b> = 2<i>p</i>/&lambda;</div>
       <p>p = 3.0 &micro;m、&lambda; = 550 nm を入れると <strong>N = 10.9</strong>。つまりこのラボのセンサは、<span class="key">F11 より絞ると、回折だけで解像が決まってしまいます</span>。</p>
       <p>逆に言えば、画素を 1.5 &micro;m に半分にすると、この境目は F5.5 まで開きます。<strong>画素を細かくするほど、絞れなくなる。</strong>スマートフォンのカメラが F1.8 前後の明るいレンズを固定絞りで積んでいるのは、画素が 1 &micro;m 級で、絞る余地がそもそも無いからです。</p>
+      <p>同じ式を画素ピッチの側から読むと、<strong>p = λN/2</strong> が「それより細かくしても回折で消える」画素の大きさです。F8・550 nm なら <b>2.2 µm</b>。3.0 µm の画素のナイキストは 1/(2 × 3.0 µm) = <b>166.7 本/mm</b> で、F8 の遮断周波数 1/(0.55 µm × 8) = 227 本/mm より低いので、F8 ではまだ画素のほうが先に効いています。どちらも<span class="key">単色・無収差のレンズでの上限</span>で、実際のレンズはこれより手前で頭打ちになります。</p>
     </div>
   </div>
 
@@ -804,7 +827,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   <div class="deep deep-note">
     <span class="tag">くわしく — 実機の MTF はどう測るか（スラントエッジ）</span>
     <p>この節の MTF は式から描きましたが、実機では「わずかに<b>斜めに傾けた</b>白黒のエッジ」を1枚撮るだけで測れます（ISO 12233）。種は標本化のすき間の埋め方: エッジが画素格子に対して斜めなので、<span class="key">行ごとにエッジと画素の位置関係が少しずつずれ</span>、多数の行を「エッジからの距離」で並べ直すと、画素ピッチより細かく刻んだエッジ断面（ESF）が合成できます ― ナイキストの制約を、同じ模様の多数コピーで実質すり抜ける手です。</p>
-    <p>あとは一本道: ESF を微分すると線像分布（LSF）、それをフーリエ変換した絶対値が MTF。レンズ・ローパス・画素開口・現像まで<b>通しの実測</b>が出るので、この図の理論上限と見比べれば「どこで損しているか」が切り分けられます。测るときは現像の輪郭強調を必ず切ること ― 強調は MTF を1を超えて見せ、測定を嘘にします。</p>
+    <p>あとは一本道: ESF を微分すると線像分布（LSF）、それをフーリエ変換した絶対値が MTF。レンズ・ローパス・画素開口・現像まで<b>通しの実測</b>が出るので、この図の理論上限と見比べれば「どこで損しているか」が切り分けられます。測るときは現像の輪郭強調を必ず切ること ― 強調は MTF を1を超えて見せ、測定を嘘にします。</p>
   </div>
 
   <div class="caveat">
@@ -813,6 +836,23 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p><strong>レンズは理想（収差ゼロ）としています。</strong>実際のレンズは開放側では収差でMTFが落ちるので、いちばん解像する絞りは回折だけで決まる位置よりも絞り側に来ます。この図が描いているのは<span class="key">「どんなに良いレンズでもここまで」という上限</span>で、実測のMTFは必ずこれより下です。</p>
     <p><strong>1次元で描いています。</strong>実際の標本化は2次元で、格子の向きに対して斜めの縞では折り返し方が変わります。ベイヤーの緑が市松（正方格子を45度回したもの）なので、緑の限界は方向によって違います。図の「輝度の半分」はあくまで赤・青についての話です。</p>
     <p><strong>マイクロレンズの効果は入れていません。</strong>画素開口のMTFは受光部の幅で計算していますが、01で見たとおりマイクロレンズが光を集めるので、実効的な開口は幾何的な受光部より広くなります。実機の画素MTFはこの図より少し低め（＝もう少しぼける）に出ます。</p>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（解像の限界）</span>
+    <p><b>問.</b> 画素 1.0 µm のスマートフォンのセンサで、F1.8 と F2.8 のレンズ（550 nm・無収差）を比べる。エアリー円板の直径、回折の遮断周波数、ナイキストでの回折の MTF と、画素開口を掛けた系の MTF はいくつか。</p>
+    <p><b>解.</b> ナイキストは 1/(2 × 1.0 µm) = 500 本/mm。<b>F1.8</b>: エアリー円板 2.44 × 0.55 × 1.8 = 2.42 µm（画素 2.4 個ぶん）、遮断 1/(0.55 µm × 1.8) = 1,010 本/mm。ナイキストは遮断の 0.495 倍で、回折の MTF は <b>0.40</b>、画素開口 0.637 を掛けて系は <b>0.25</b>。<b>F2.8</b>: 3.76 µm・649 本/mm で、回折の MTF <b>0.13</b>、系 <b>0.08</b>。境目の N = 2p/λ = 3.6 より開けていても、F2.8 ではナイキストのコントラストは 1 割を切ります ― <span class="key">遮断の手前なら安心、ではなく、遮断に近づくほど MTF は連続的に落ちている</span>。1 µm 級の画素に明るいレンズが要る、の数値版です。</p>
+  </div>
+
+  <div class="ex">
+    <span class="tag">落とし穴 ― 画素数で解像を比べる</span>
+    <p>「画素数が 2 倍なら 2 倍細かく写る」が成り立つのは、画素ピッチが回折の境目 p = λN/2 より十分大きいときだけです。F8・550 nm の境目は 2.2 µm で、それより細かい画素を並べても、ナイキストが遮断周波数（227 本/mm）を越えるだけで写る細かさはほとんど増えません。カタログの画素数を比べる前に、使う F 値での λN/2 を計算してください。</p>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — PixelLab 第4章</span>
+    <p>画素を細かくする限界を、この節の式と同じ数字で確かめる。F 値と波長から p = λN/2 を出し、画素ピッチとナイキストの関係を設計の側から合わせる。</p>
+    <div class="qs"><span class="lab">PixelLab</span><a href="PixelLab/index.html?quest=pitch">画素を細かくする限界</a></div>
   </div>
 </section>
 
@@ -1005,7 +1045,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
 
   <div class="deep deep-note">
     <span class="tag">くわしく — 吸収係数と、深さの設計</span>
-    <p>シリコン中の光強度は深さ <code>x</code> に対して <code>I(x) = I&#8320;&middot;exp(&minus;&alpha;x)</code> で減り、<code>1/&alpha;</code> を吸収長と呼びます。シリコンは間接遷移半導体なので、吸収にはフォノンの助けが要り、バンドギャップに近い長波長ほど吸収が急激に弱くなります。450nmで0.4&micro;m、650nmで約3&micro;m、850nm(近赤外)では19&micro;m（室温・真性シリコンでの代表値。実測値は文献間で1〜2割ばらつき、高濃度ドープや高温では変わります）。</p>
+    <p>シリコン中の光強度は深さ <code>x</code> に対して <code>I(x) = I&#8320;&middot;exp(&minus;&alpha;x)</code> で減り、<code>1/&alpha;</code> を吸収長と呼びます。シリコンは間接遷移半導体なので、吸収にはフォノンの助けが要り、バンドギャップに近い長波長ほど吸収が急激に弱くなります。450nmで0.4&micro;m、650nmで約3.5&micro;m、850nm(近赤外)では19&micro;m（室温・真性シリコンでの代表値。実測値は文献間で1〜2割ばらつき、高濃度ドープや高温では変わります）。</p>
     <p>ここに設計のジレンマがあります。<strong>赤や近赤外の感度を上げるにはシリコンを厚くしたい。しかし厚くすると、斜めに入った光子が隣の画素で電子になる混色が増え、空乏層も広げにくくなる。</strong>一般的な可視光センサの空乏層は2〜3&micro;m。近赤外を狙うセンサでは10&micro;m級の厚膜や、裏面に反射構造・回折構造を作って光路を稼ぐ工夫をします。</p>
     <p>青と近赤外がそれぞれ難しい理由は、ひとつ上の「両端が難しい」で数字とともに扱いました。<span class="key">吸収長が合わないという同じ一言でも、失敗の仕方と対策が逆向き</span>になる、というのがそこの要点です。</p>
   </div>
@@ -1052,8 +1092,8 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <div><dt>この幅で捕まる波長</dt><dd id="rPnWL">—</dd></div>
     </dl>
     <figcaption>
-      <p>電子にとっての「井戸」は、まずはPN接合にできる<strong>空乏層</strong>だと思ってください（厳密には同じものではありません。空乏層は<span class="key">電界がある領域</span>で、井戸は<span class="key">電子にとっての電位の谷</span>。谷の深さと形を決めているのは不純物の入れ方で、空乏層はその結果として広がる範囲です。深さと形は、この図のあとの「電位の井戸」で別に扱います）。2本のスライダで空乏層の幅が変わり、いちばん右の読み値「この幅で捕まる波長」が動きます。<strong>Vを10倍にしても幅は3倍ちょっとにしかなりませんが、Naを1/10にすると3倍以上になる</strong>——式が √ の中にあるためで、実際のセンサが電圧より不純物濃度で勝負する理由です。</p>
-      <p style="margin-top:9px"><strong>②の読み方。</strong>縦は①と同じ深さの目盛りで、横がその深さでの電界の強さです。接合のすぐ下がいちばん強く、そこから離れるほど<strong>打ち消し合わずに残っているイオンが減っていく</strong>ので電界は直線的に弱くなり、空乏層の端でちょうどゼロになる。だから三角形です。そして<strong>この三角形の面積が、いま接合にかかっている電圧そのもの</strong>（内蔵電位＋逆バイアス）。電圧を増やせば面積を増やすしかなく、三角形は縦にも横にも伸びる——これが幅Wが√Vでしか増えない理由です。下の物差しは強さの実感用で、いまの値は空気なら放電する強さの数倍、シリコンが壊れる限界の1割ほどにあたります。</p>
+      <p>電子にとっての「井戸」は、まずはPN接合にできる<strong>空乏層</strong>だと思ってください（厳密には同じものではありません。空乏層は<span class="key">電界がある領域</span>で、井戸は<span class="key">電子にとっての電位の谷</span>。谷の深さと形を決めているのは不純物の入れ方で、空乏層はその結果として広がる範囲です。深さと形は、この図のあとの「電位の井戸」で別に扱います）。2本のスライダで空乏層の幅が変わり、いちばん右の読み値「この幅で捕まる波長」が動きます。<strong>V を 10 倍（3 V → 30 V）にしても幅は 2.9 倍にしかなりませんが、N<sub>a</sub> を 1/10 にすると 3.1 倍になる</strong>（√ の中には内蔵電位 0.77 V も入っているので、V だけを 10 倍にしても √10 = 3.2 倍に届かない）——式が √ の中にあるためで、実際のセンサが電圧より不純物濃度で勝負する理由です。</p>
+      <p style="margin-top:9px"><strong>②の読み方。</strong>縦は①と同じ深さの目盛りで、横がその深さでの電界の強さです。接合のすぐ下がいちばん強く、そこから離れるほど<strong>打ち消し合わずに残っているイオンが減っていく</strong>ので電界は直線的に弱くなり、空乏層の端でちょうどゼロになる。だから三角形です。そして<strong>この三角形の面積が、いま接合にかかっている電圧そのもの</strong>（内蔵電位＋逆バイアス）。電圧を増やせば面積を増やすしかなく、三角形は縦にも横にも伸びる——これが幅Wが√Vでしか増えない理由です。下の物差しは強さの実感用です。既定の値（N<sub>a</sub> 10¹⁵・3 V で約 34 kV/cm）は、空気が放電を始める強さ（約 30 kV/cm）とほぼ同じで、シリコンが壊れる強さ（約 3×10⁵ V/cm）の1割ほどにあたります。</p>
       <p style="margin-top:9px">なお実際の画素は p+/n/p の埋め込み型フォトダイオードで、表面をp+層でフタしていますが、空乏層ができる理屈はここと同じです。</p>
     </figcaption>
   </figure>
@@ -1162,6 +1202,8 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <p>歪みを無くすには、<span class="key">全画素のTXを同時に閉じてしまえばいい</span>。ただしそのあと読み出すには時間がかかるので、<strong>読まれるまでのあいだ電荷を預けておく場所が画素の中に要ります</strong>。この退避先を持つ画素がグローバルシャッター画素です。下の図のボタンで、平行四辺形が長方形になるのが見られます。</p>
       <p>代償は2つあります。ひとつは<strong>面積</strong>。退避用の容量を画素に押し込むぶん受光部が削られ、開口率が 40% から 25% に落ちれば感度は 62% になります。</p>
       <p>もうひとつが厄介で、<strong>退避しているあいだにも光が当たり続ける</strong>ことです。遮光しても完全には防げず、漏れ込んだぶんが偽の信号になります。これを<span class="key">寄生感度</span>と呼び、遮光の良さを分離比で表します。10<sup>&minus;4</sup> なら 80 dB、10<sup>&minus;5</sup> なら 100 dB。<strong>強い光源が画面にあるとき、そこだけ尾を引くように見えるのはこれです。</strong>ローリングシャッターにはそもそも存在しない問題で、グローバルシャッターを選んだ瞬間に背負うことになります。</p>
+      <p>数字で見ておきます。<strong>1 行の時間を決めているのは列の AD 変換</strong>です。12 ビットの単一傾斜型の AD を 1 GHz のクロックで数えるなら、1 行に 2<sup>12</sup>/1 GHz = <b>4.1 µs</b>（仮定: 1 行ごとに満量程まで数える）。3000 行で <b>12.3 ms</b>、横に 600 画素/秒で動く物体は上端と下端で <b>7.4 画素</b>ずれます。列ごとの AD を 4 組にして 4 行を同時に読めば、3.07 ms・<b>1.84 画素</b>まで縮む ― 積層で下の階に AD を増やす動機のひとつです（付録B）。</p>
+      <p>寄生感度も数えられます。3.0 µm の画素（面積 9 µm²・量子効率 0.762 ― PixelLab の既定の画素）に 10⁶ 光子/µm²/s の強い光源が当たっていると、光の電子は 6.9×10⁶ e⁻/s。分離比 80 dB（10⁻⁴）で、最後の行が読み出しの全時間 12.3 ms を待つと、偽の信号は <b>8.4 e⁻</b> ― 読み出しノイズ 2.5 e⁻ の 3 倍を超えます。4 行同時の読み出しで待ちを 3.07 ms に縮め、分離比を 90 dB（3.2×10⁻⁵）にすれば <b>0.67 e⁻</b>。<span class="key">待つ時間を縮めることと遮光を良くすることは、同じ掛け算の 2 つの項</span>です（最後の行が一番長く待つ、最悪の場合で数えています）。</p>
     </div>
     <div>
       <div class="deep deep-note">
@@ -1189,6 +1231,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     </dl>
     <figcaption>左がセンサ面。リセットの線と読み出しの線が、少しずれた間隔を保ったまま上から下へ走り抜けます。<strong>2本の線の間隔がそのまま露光時間</strong>です。右は同じことを「行 × 時間」で描いたもので、平行四辺形の傾きが上端と下端の時間差。この傾きのぶんだけ、速く動く被写体は斜めに写ります。</figcaption>
   </figure>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — PixelLab 第4章</span>
+    <p>ローリングシャッタの歪みと、グローバルシャッタの寄生感度を、設計の数字で合わせる。1 行の時間と分離比を設計して、歪みの画素数と偽の電子数を課題の範囲に収める ― 上の 7.4 画素・8.4 e⁻ がそれぞれの出発点です。</p>
+    <div class="qs"><span class="lab">PixelLab</span><a href="PixelLab/index.html?quest=roll">ローリングシャッタの歪み</a><a href="PixelLab/index.html?quest=gs">グローバルシャッタの寄生感度</a></div>
+  </div>
 </section>
 
 
@@ -1429,6 +1477,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <span class="tag">例題 ― 手で一度解く（05 電荷を電圧に）</span>
     <p><b>問.</b> 変換ゲイン 45 µV/e⁻（FD ≈ 3.5 fF）で、2,160 e⁻ の信号は FD で何 mV か。リセットノイズ √(kT/C) は何 mV・何電子か。夜道で信号が 20 e⁻ しか無いとき、CDS が無かったらどうなるか。</p>
     <p><b>解.</b> 2,160 × 45 µV = <b>97 mV</b>。√(kT/C) = √(1.381×10⁻²³ × 300 / 3.5×10⁻¹⁵) = <b>1.09 mV</b>、÷45 µV で <b>24 e⁻</b>。20 e⁻ の信号は 0.90 mV で、<span class="key">リセットのたびに毎回違う 1.09 mV のずれより小さい</span> ― CDS なしでは SN 比が 1 を切り、暗部は写らない。CDS で kTC を消した後に残るのは読み出しノイズ 2.5 e⁻ だけで、SN 比は 20/√(20 + 2.5²) = <b>3.9</b>。「電子 20 個が写るかどうか」を、引き算ひとつが決めています。</p>
+  </div>
+
+  <div class="ex">
+    <span class="tag">落とし穴 ― 変換ゲインが大きいほど「高感度」？</span>
+    <p>変換ゲイン q/C は、電子を電圧に直す係数です。光子を電子にする割合（QE）は変えないので、同じ光で生まれる電子の数は変わらず、電圧が大きく見えるだけです。効くのは、後段の電圧の雑音が電子に換算して小さくなる（読み出しノイズが下がる）ことと、その代わりに FD で扱える電子（飽和）が減ることの 2 つ。「高感度」の宣伝がどちらを指しているかは、QE と読み出しノイズを別々に見れば分かります。</p>
   </div>
 
   <div class="lab-go">
@@ -1682,10 +1735,16 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p><strong>合成後のダイナミックレンジを、単純に「露光比のぶんだけ足す」として計算しています。</strong>実際にはつなぎ目付近のSN比、位置合わせの精度、量子化の刻みなども効くので、カタログ値どおりの画質が出るとは限りません。</p>
     <p><strong>LOFIC は図に入れていません。</strong>付加容量の大きさが桁で違い、同じ軸に載せると他の2つが潰れてしまうためです。考え方は②の延長として本文で扱っています。</p>
   </div>
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（ダイナミックレンジを広げる）</span>
+    <p><b>問.</b> 長短 1:16 の合成で、ダイナミックレンジはいくつになるか。長い露光が飽和する直前（12,000 e⁻）で短い露光に切り替えるとき、つなぎ目の前後で SN 比はどう変わるか（読み出しノイズ 2.5 e⁻）。</p>
+    <p><b>解.</b> 73.6 + 20log₁₀16 = 73.6 + 24.1 = <b>97.7 dB</b>。つなぎ目の直前は長い露光の 12,000 e⁻ で、SN 比 12,000/√(12,000 + 6.25) = <b>109.5</b>。同じ明るさを短い露光で表すと電子は 1/16 の 750 e⁻ で、SN 比 750/√(750 + 6.25) = <b>27.3</b> ― つなぎ目で SN 比がほぼ 1/4（−12.1 dB）に落ちる。<span class="key">露光比を大きくするほど天井は上がるが、つなぎ目の段差も √(比) で深くなる</span>。グラデーションの中に帯が見えるのはこれです。</p>
+  </div>
+
   <div class="lab-go">
     <span class="tag">手を動かす — PixelLab</span>
     <p>飽和が井戸で切れているのか AD で切れているのかを、謎のカメラ C の PTC から当てる。設計の課題では、AD の桁を減らしたときに量子化雑音がどこで読み出し雑音を追い越すかを見る。</p>
-    <div class="qs"><span class="lab">PixelLab</span><a href="PixelLab/index.html?quest=limit">飽和を決めているのは井戸か AD か</a><a href="PixelLab/index.html?quest=adc">AD の桁</a><a href="PixelLab/index.html?quest=hdr">長短合成で 100 dB</a></div>
+    <div class="qs"><span class="lab">PixelLab</span><a href="PixelLab/index.html?quest=limit">飽和を決めているのは井戸か AD か</a><a href="PixelLab/index.html?quest=adc">AD の桁</a><a href="PixelLab/index.html?quest=hdr">長短合成で 100 dB</a><a href="PixelLab/index.html?quest=seam">HDR の露光比の窓（つなぎ目の SN 比）</a></div>
   </div>
 </section>
 
@@ -2003,6 +2062,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p><b>解.</b> 傾き ＝ 1/K なので <b>K = 1/0.307 = 3.26 e⁻/DN</b>。切片は読み出しノイズの分散なので σ<sub>read</sub> = √0.59 = 0.768 DN、電子に直して 0.768 × 3.26 = <b>2.50 e⁻</b>。飽和は 3,686 × 3.26 = <b>12,020 e⁻</b>。ダイナミックレンジ 20 log₁₀(12,020/2.50) = <b>73.6 dB</b>。<span class="key">冒頭で仮定した 3 つの仕様が、DN の平均と分散だけから戻ってくる</span> ― 電子を1個も数えずに。QE だけはこの手順では出ない（入射光子数を別に測る必要がある）ことも、あわせて確かめてください。</p>
   </div>
 
+  <div class="ex">
+    <span class="tag">落とし穴 ― 差分を取らずに 1 枚の分散で当てはめる</span>
+    <p>1 枚の画像のばらつきには、画素ごとの感度ムラ（PRNU）が入っています。その分散は信号の 2 乗に比例して増えるので、そのまま平均と分散で直線を引くと傾きが大きく、つまり K が小さく出ます（PixelLab の検査では、差分を取らない K は真の値の 9 割を切る）。同じ条件の 2 枚の差から分散を取る ― この 1 手間を省くと、K も読み出しノイズも飽和も、全部ずれます。</p>
+  </div>
+
   <div class="lab-go">
     <span class="tag">手を動かす — PixelLab 第1章</span>
     <p>この節で「測り返してみた」ことを、中身の伏せられたカメラで本当にやる。露光を掃いて明るい2枚・暗い2枚ずつ撮り、差分の分散と平均の傾きから K を、切片から読み出し雑音を、頂点から飽和電荷を読む。外れても真の値は見せない ― 測る意味がなくなるので。</p>
@@ -2138,7 +2202,13 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     </div>
     <figcaption>4.5 V と 6.7 V のあいだは両方が混ざる領域です。<strong>温度係数の符号を測ればどちらが起きているか分かる</strong>——これは今日でも実験室で使える判別法です。ちなみに温度で降伏電圧が上がるということは、SPADを一定バイアスで使うと<strong>温度が上がるほど過剰バイアスが減り、検出効率が落ちる</strong>ということでもあります。SPADモジュールに温度補償が要るのはこのためです。</figcaption>
   </figure>
-</section>
+<div class="ex">
+    <span class="tag">例題 ― 手で一度解く（付録 A トンネル効果）</span>
+    <p><b>問.</b> SiO₂ の Fowler–Nordheim の透過率 exp(−B/E)（B = 2.4×10⁸ V/cm）は、電界 5 MV/cm と 10 MV/cm でいくつか。厚み 10 nm の酸化膜なら、それぞれ何 V か。5 nm の膜に 5 MV/cm をかけた場合、この式は使えるか。</p>
+    <p><b>解.</b> 10 MV/cm で exp(−24) = <b>3.8×10⁻¹¹</b>、5 MV/cm で exp(−48) = <b>1.4×10⁻²¹</b> ― 電界が半分になるだけで 24/ln10 = 約 10 桁小さい。10 nm の膜ではそれぞれ 10 V と 5 V で、どちらも障壁の高さ 3.1 V を超えるので障壁は三角形になり、FN の式が使えます。5 nm の膜に 5 MV/cm は 2.5 V で、3.1 V に届かず障壁は台形のまま（直接トンネル）なので、<span class="key">FN の式をそのまま当てはめてはいけない</span> ― 図①の「障壁の形」の読み値がこの切り替えです。</p>
+  </div>
+
+  </section>
 
 <!-- ================= B ================= -->
 <section class="stage" id="sb">
@@ -2268,6 +2338,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <p>A<sub>Vt</sub> はプロセスで決まる定数で、酸化膜厚にほぼ比例します。画素が数百万個ある以上、<span class="key">この分布の裾にいる画素が必ず存在します</span>。<br>ただしセンサにとって救いがあって、<strong>ソースフォロワのしきい値ばらつきは05のCDSで消えます</strong>——同じ画素のリセット後と信号後の差を取るので、そのトランジスタ固有のオフセットは引き算で落ちるからです。消えないのは列ごとの回路のばらつき（縦筋のFPN）と、次のCでやる暗電流のばらつきです。</p>
     </div>
   </div>
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（付録 B 短チャネル効果）</span>
+    <p><b>問.</b> このページの図の構造（t<sub>ox</sub> 5 nm・t<sub>dep</sub> 100 nm、λ = 38.7 nm、C<sub>dep</sub>/C<sub>ox</sub> = 0.15）で、L = 180 nm と 100 nm のトランジスタの S 値はいくつか（V<sub>ds</sub> = 0 の対称な場合の式）。しきい値より 0.3 V 下のオフ電流は、しきい値での電流の何分の一か。</p>
+    <p><b>解.</b> S = 59.5 × 1.15 / (1 − sech(L/2λ))。<b>L = 180 nm</b>: L/2λ = 2.32、sech = 0.194 で S = <b>84.9 mV/桁</b>。<b>L = 100 nm</b>: L/2λ = 1.29、sech = 0.511 で S = <b>140 mV/桁</b>。0.3 V 下では電流は 10<sup>−300/84.9</sup> = 2.9×10⁻⁴ と 10<sup>−300/140</sup> = 7.2×10⁻³ で、<span class="key">同じしきい値でも短いほうが約 25 倍漏れる</span>。L を縮めるなら t<sub>ox</sub> と t<sub>dep</sub> も一緒に縮めて λ を小さくしないと、こうなります。</p>
+  </div>
+
   <div class="lab-go">
     <span class="tag">手を動かす — SemiLab 第5章</span>
     <p>1次元なので短チャネル効果そのものは出ないが、S値 59.5 mV/桁 の壁には同じように当たる。酸化膜を薄くし、基板を低濃度にしてどこまで切れ味が上がるかを、ポアソン方程式で解いた表面ポテンシャルから測る。最後の課題で作る nMOS が、NandLab の NAND の中身。</p>
@@ -2344,7 +2420,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <div class="eq">n<sub>i</sub>(T) &prop; T<sup>3/2</sup> &middot; exp( &minus;<b>E<sub>g</sub></b>(T) / 2kT )</div>
     <p>アレニウスプロットの傾きは d(ln I)/d(&minus;1/kT) で定義されるので、前についている T<sup>3/2</sup> のぶんだけ余分に傾きます。その量は 1.5kT で、300 K では 0.039 eV。</p>
     <div class="eq">E<sub>a</sub>(見かけ) = <b>E<sub>g</sub></b>/2 + 1.5kT = 0.560 + 0.039 = <u>0.599 eV</u></div>
-    <p>これを &Delta;T = ln2&middot;kT&sup2;/E<sub>a</sub> に入れると <strong>9.0 ℃</strong>。03と用語表の「8〜10℃で倍」がここから出ています。さらに E<sub>g</sub> 自体も温度とともに縮む（300 K 付近で約 &minus;0.27 meV/K）ため、実測の見かけ E<sub>a</sub> は 0.55〜0.65 eV に散らばります。<strong>0.56 ちょうどが出ないのは測定が悪いからではなく、そういうものです。</strong></p>
+    <p>これを &Delta;T = ln2&middot;kT&sup2;/E<sub>a</sub> に入れると <strong>9.0 ℃</strong>。03と用語表の「8〜10℃で倍」がここから出ています。さらに E<sub>g</sub> 自体も温度とともに縮む（300 K 付近で約 &minus;0.25 meV/K、Varshni の式）ため、実測の見かけ E<sub>a</sub> は 0.55〜0.65 eV に散らばります。<strong>0.56 ちょうどが出ないのは測定が悪いからではなく、そういうものです。</strong></p>
   </div>
 
   <div class="caveat">
@@ -2367,10 +2443,16 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <p>そして、PPDにしてもなお<strong>転送ゲートの端という難所が残ります</strong>。ここはPPDの外側であり、ゲート酸化膜との界面があり、しかもAで見たGIDLが起きる場所です。<span class="key">現代の低暗電流センサの勝負どころは、フォトダイオードそのものではなく、この転送ゲート周辺の設計</span>にあります。</p>
     </div>
   </div>
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（付録 C 暗電流の出どころ）</span>
+    <p><b>問.</b> 27 ℃（300.15 K）で 10 e⁻/s の暗電流を、見かけの活性化エネルギー 0.60 eV のまま 1/16 にしたい。何 ℃ まで冷やせばよいか（前指数の温度依存は無視した近似）。このページの内訳（生成 8・拡散 1・欠陥 1 e⁻/s、E<sub>a</sub> はそれぞれ 0.60・1.12・0.35 eV と仮定）だと、同じ温度で合計はいくつになるか。</p>
+    <p><b>解.</b> I ∝ exp(−E<sub>a</sub>/kT) なので 1/T₂ = 1/T₁ + ln16·k/E<sub>a</sub> から T₂ = <b>268.1 K（−5.0 ℃）</b>、32 K 下げればよい。「9 ℃ で倍」を 4 回ぶんの 36 ℃ にならないのは、倍になる温度差 ln2·kT²/E<sub>a</sub> が低温ほど縮むからです。内訳で見ると、生成 8 → 0.50、拡散 1 → 0.006、欠陥 1 → 0.20 で合計 <b>0.70 e⁻/s</b> ― 目標の 0.625 に届かない。<span class="key">E<sub>a</sub> の小さい欠陥の成分が、冷やしたぶんほど減らずに残る</span>からで、白キズが冷却で消え切らないのと同じ理由です。</p>
+  </div>
+
   <div class="lab-go">
     <span class="tag">手を動かす — SemiLab 第3章 / PixelLab 第2章</span>
     <p>SemiLab の暗電流は空乏層の生成電流で、温度を動かすと n<sub>i</sub>(T) の指数で桁で変わる。PixelLab の暗電流もその n<sub>i</sub>(T) を呼んでいるので、「約 9℃ で倍」は決め打ちではなく計算から出る。冷やして 60 秒露光を成り立たせる課題で、何℃下げれば足りるかを設計する。</p>
-    <div class="qs"><span class="lab">SemiLab</span><a href="SemiLab/index.html?quest=dark">暗電流を減らす</a><span class="lab">PixelLab</span><a href="PixelLab/index.html?quest=cool">冷やして 60 秒</a><span class="lab">参考書</span><a href="第2部_デバイスの基礎.html#s3">第2部 03 暗電流 ― 温度で桁が動く</a></div>
+    <div class="qs"><span class="lab">SemiLab</span><a href="SemiLab/index.html?quest=dark">暗電流を減らす</a><span class="lab">PixelLab</span><a href="PixelLab/index.html?quest=cool">冷やして 60 秒</a><a href="PixelLab/index.html?quest=defect">冷やしても残る暗電流</a><span class="lab">参考書</span><a href="第2部_デバイスの基礎.html#s3">第2部 03 暗電流 ― 温度で桁が動く</a></div>
   </div>
 </section>
 
@@ -2551,15 +2633,19 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
             <rect x="298" y="80" width="86" height="150" fill="var(--volt-soft)" opacity=".5"/>
             <text x="341" y="248" text-anchor="middle" font-family="var(--sans)" font-size="10.5" fill="var(--volt)">デッドタイム（再充電 τ = R<tspan font-size="8" baseline-shift="sub">Q</tspan>C）</text>
             <path d="M250,80 L296,80 L300,168 C316,110 352,88 384,82 L430,80 L434,168 C450,110 486,88 518,82" fill="none" stroke="var(--volt)" stroke-width="2.5"/>
-            <g stroke="var(--photon)" stroke-width="2"><line x1="298" y1="46" x2="298" y2="72" marker-end="url(#spar2)"/><line x1="432" y1="46" x2="432" y2="72" marker-end="url(#spar2)"/></g>
+            <g stroke="var(--photon)" stroke-width="2"><line x1="298" y1="46" x2="298" y2="72" marker-end="url(#spar2)"><animate attributeName="stroke-opacity" values="0.3;0.3;1;1;0.3;0.3" keyTimes="0;0.06;0.088;0.2;0.3;1" dur="4s" repeatCount="indefinite"/></line><line x1="432" y1="46" x2="432" y2="72" marker-end="url(#spar2)"><animate attributeName="stroke-opacity" values="0.3;0.3;1;1;0.3;0.3" keyTimes="0;0.56;0.588;0.7;0.8;1" dur="4s" repeatCount="indefinite"/></line></g>
             <text x="298" y="40" text-anchor="middle" font-family="var(--sans)" font-size="10.5" fill="var(--photon-2)">光子</text>
             <text x="432" y="40" text-anchor="middle" font-family="var(--sans)" font-size="10.5" fill="var(--photon-2)">光子</text>
             <!-- パルス列 -->
             <g stroke="var(--digital)" stroke-width="2.5" fill="none"><path d="M250,300 L296,300 L296,282 L306,282 L306,300 L430,300 L430,282 L440,282 L440,300 L530,300"/></g>
             <text x="250" y="272" font-family="var(--mono)" font-size="10" fill="var(--digital)">コンパレータ出力（数える）</text>
+            <!-- 動き: ノード電圧をたどる点（道のりに比例した速さ）と、数えた瞬間のパルス -->
+            <rect x="293" y="278" width="16" height="25" fill="var(--digital)" opacity="0"><animate attributeName="opacity" values="0;0;0.35;0;0" keyTimes="0;0.085;0.095;0.2;1" dur="4s" repeatCount="indefinite"/></rect>
+            <rect x="427" y="278" width="16" height="25" fill="var(--digital)" opacity="0"><animate attributeName="opacity" values="0;0;0.35;0;0" keyTimes="0;0.585;0.595;0.7;1" dur="4s" repeatCount="indefinite"/></rect>
+            <circle r="4.5" fill="var(--volt)" stroke="var(--surface)" stroke-width="1.5"><animateMotion dur="4s" repeatCount="indefinite" path="M250,80 L296,80 L300,168 C316,110 352,88 384,82 L430,80 L434,168 C450,110 486,88 518,82"/></circle>
           </svg>
         </div>
-        <figcaption>発火 → R<sub>Q</sub> の電圧降下で V<sub>BD</sub> 以下へ（消火）→ R<sub>Q</sub> 経由で再充電、の繰り返し。急落は雪崩の速さ（サブns）、戻りは RC の遅さ ― 波形が左右非対称なのはそのためです。</figcaption>
+        <figcaption>発火 → R<sub>Q</sub> の電圧降下で V<sub>BD</sub> 以下へ（消火）→ R<sub>Q</sub> 経由で再充電、の繰り返し。急落は雪崩の速さ（サブns）、戻りは RC の遅さ ― 波形が左右非対称なのはそのためです。動く点がノード電圧をたどり、光子が来た瞬間に急落して、再充電のあいだ（色の帯）は次の光子を数えられない。数えた瞬間にだけコンパレータのパルスが光ります。</figcaption>
       </figure>
     </div>
   </div>
@@ -2614,7 +2700,19 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p><strong>数値は桁の目安です。</strong>V<sub>ex</sub>（数V）、デッドタイム（数十ns）、PDE・DCR は素子と波長・温度で桁が動きます。このページの仮想センサの諸元とは独立の話として読んでください。</p>
     <p><strong>ガイガー確率・ジッタの中身（電界分布に依存）には踏み込みません。</strong>入口は下の Cova らの総説が定番です。SPADの並列和（SiPM / MPPC）は、<a href="第5部_光検出デバイス.html">第5部「光検出デバイス」</a>が扱います。</p>
   </div>
-</section>
+<div class="ex">
+    <span class="tag">例題 ― 手で一度解く（SPAD）</span>
+    <p><b>問.</b> 不感時間 20 ns の SPAD に毎秒 10⁷ 個の光子が来ると、何 % を数え落とすか（不感時間中に来た光子を無視する型）。SPAD と TDC の時刻の揺らぎが 100 ps なら、1 光子の距離のばらつきはいくつか。100 光子を積めばどうなるか。</p>
+    <p><b>解.</b> 数えられるのは r/(1 + rτ<sub>d</sub>) = 10⁷/1.2 = 8.3×10⁶ /s で、<b>16.7%</b> を数え落とす（rτ<sub>d</sub> = 0.2）。距離は c·σ/2 = 3×10⁸ × 100 ps / 2 = <b>1.5 cm</b>、100 光子の重心なら 1/√100 で <b>1.5 mm</b>（パルスの幅と背景光を無視した理想）。数え落としは明るいほど増え、しかも早く来た光子ほど数えられやすいので、<span class="key">明るい物体ほど距離の山が手前に偏る</span>（パイルアップ、第5部 06・第10部 06）。</p>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — PixelLab 第5章</span>
+    <p>10⁷ 光子/s・揺らぎ 100 ps の SPAD で、数え落とし 10% 以下と距離のばらつき 2 mm 以下を同時に満たす。数え落としからは不感時間 ≤ 11.1 ns、距離からは光子 ≥ 57 個 ― アフターパルス（不感時間の下限）と 1 点の時間（光子の上限）で、2 つの窓になります。</p>
+    <div class="qs"><span class="lab">PixelLab</span><a href="PixelLab/index.html?quest=spad">SPAD の不感時間と積む光子</a></div>
+  </div>
+
+  </section>
 
 <!-- ================= 光電検出のファミリー ================= -->
 <!-- ================= イベントベース ================= -->
@@ -2658,20 +2756,22 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <text x="1052" y="314">時間 →</text>
         </g>
         <path d="M110,206 L360,206 L400,178 L680,178 L720,210 L1040,210" fill="none" stroke="var(--photon)" stroke-width="2.5"/>
+        <circle r="5" fill="var(--photon)" stroke="var(--surface)" stroke-width="1.5"><animateMotion dur="8s" repeatCount="indefinite" path="M110,206 L360,206 L400,178 L680,178 L720,210 L1040,210"/></circle>
         <!-- フレーム: 等間隔サンプル -->
         <g fill="var(--ink-3)">
           <rect x="150" y="228" width="7" height="16"/><rect x="270" y="228" width="7" height="16"/><rect x="390" y="228" width="7" height="16"/><rect x="510" y="228" width="7" height="16"/><rect x="630" y="228" width="7" height="16"/><rect x="750" y="228" width="7" height="16"/><rect x="870" y="228" width="7" height="16"/><rect x="990" y="228" width="7" height="16"/>
         </g>
+        <g fill="var(--volt)"><rect x="150" y="228" width="7" height="16" opacity="0"><animate attributeName="opacity" values="0;0;1;0;0" keyTimes="0;0.0338;0.0458;0.0758;1" dur="8s" repeatCount="indefinite"/></rect><rect x="270" y="228" width="7" height="16" opacity="0"><animate attributeName="opacity" values="0;0;1;0;0" keyTimes="0;0.1601;0.1721;0.2021;1" dur="8s" repeatCount="indefinite"/></rect><rect x="390" y="228" width="7" height="16" opacity="0"><animate attributeName="opacity" values="0;0;1;0;0" keyTimes="0;0.2942;0.3062;0.3362;1" dur="8s" repeatCount="indefinite"/></rect><rect x="510" y="228" width="7" height="16" opacity="0"><animate attributeName="opacity" values="0;0;1;0;0" keyTimes="0;0.4220;0.4340;0.4640;1" dur="8s" repeatCount="indefinite"/></rect><rect x="630" y="228" width="7" height="16" opacity="0"><animate attributeName="opacity" values="0;0;1;0;0" keyTimes="0;0.5483;0.5603;0.5903;1" dur="8s" repeatCount="indefinite"/></rect><rect x="750" y="228" width="7" height="16" opacity="0"><animate attributeName="opacity" values="0;0;1;0;0" keyTimes="0;0.6864;0.6984;0.7284;1" dur="8s" repeatCount="indefinite"/></rect><rect x="870" y="228" width="7" height="16" opacity="0"><animate attributeName="opacity" values="0;0;1;0;0" keyTimes="0;0.8127;0.8247;0.8547;1" dur="8s" repeatCount="indefinite"/></rect><rect x="990" y="228" width="7" height="16" opacity="0"><animate attributeName="opacity" values="0;0;1;0;0" keyTimes="0;0.9391;0.9511;0.9811;1" dur="8s" repeatCount="indefinite"/></rect></g>
         <text x="560" y="258" text-anchor="middle" font-family="var(--sans)" font-size="10.5" fill="var(--ink-3)">変化がなくても毎フレーム全画素ぶん出る／変化の瞬間はフレーム間隔でしか分からない</text>
         <!-- イベント: 変化点に密集 -->
         <g stroke-width="2.5">
-          <g stroke="var(--one)"><line x1="366" y1="298" x2="366" y2="280"/><line x1="376" y1="298" x2="376" y2="280"/><line x1="386" y1="298" x2="386" y2="280"/><line x1="396" y1="298" x2="396" y2="280"/></g>
-          <g stroke="var(--zero)"><line x1="686" y1="280" x2="686" y2="298"/><line x1="697" y1="280" x2="697" y2="298"/><line x1="708" y1="280" x2="708" y2="298"/><line x1="719" y1="280" x2="719" y2="298"/></g>
+          <g stroke="var(--one)"><animate attributeName="stroke-opacity" values="0.25;0.25;1;1;0.25;0.25" keyTimes="0;0.265;0.271;0.36;0.40;1" dur="8s" repeatCount="indefinite"/><line x1="366" y1="298" x2="366" y2="280"/><line x1="376" y1="298" x2="376" y2="280"/><line x1="386" y1="298" x2="386" y2="280"/><line x1="396" y1="298" x2="396" y2="280"/></g>
+          <g stroke="var(--zero)"><animate attributeName="stroke-opacity" values="0.25;0.25;1;1;0.25;0.25" keyTimes="0;0.61;0.617;0.70;0.74;1" dur="8s" repeatCount="indefinite"/><line x1="686" y1="280" x2="686" y2="298"/><line x1="697" y1="280" x2="697" y2="298"/><line x1="708" y1="280" x2="708" y2="298"/><line x1="719" y1="280" x2="719" y2="298"/></g>
         </g>
         <text x="560" y="318" text-anchor="middle" font-family="var(--sans)" font-size="10.5" fill="var(--ink-2)">変化した瞬間だけ、µs 級の時刻付きで出る（上げはON、下げはOFF）― 静止区間はゼロ</text>
       </svg>
     </div>
-    <figcaption>画素は「絶対の明るさ」を持たず、<b>log I の変化がしきい値（典型で十数%）を超えるたび</b>に1発のイベントを出します。対数を先に取るので、しきい値は<b>コントラスト一定</b> ― 暗所でも明所でも「同じ割合の変化」に反応し、それだけで 120 dB 級のダイナミックレンジが出ます（第2部第5章のサブスレッショルド指数 ― まさに S 値の物理 ― を、対数変換器として順方向に使っています）。</figcaption>
+    <figcaption>画素は「絶対の明るさ」を持たず、<b>log I の変化がしきい値（典型で十数%）を超えるたび</b>に1発のイベントを出します。対数を先に取るので、しきい値は<b>コントラスト一定</b> ― 暗所でも明所でも「同じ割合の変化」に反応し、それだけで 120 dB 級のダイナミックレンジが出ます（第2部第5章のサブスレッショルド指数 ― まさに S 値の物理 ― を、対数変換器として順方向に使っています）。動く点が明るさの変化をたどります。フレームは点の位置に関係なく一定の間隔で光り、イベントは明るさが変わった瞬間にだけ光る ― 同じ時間軸の上で、2 つの出力の違いが見えます。</figcaption>
   </figure>
 
   <div class="two">
@@ -2692,7 +2792,325 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
 </section>
 
 
+<!-- ================= TDI ================= -->
+<section class="stage" id="stdi">
+  <div class="stage-head"><span class="stage-num">—</span>
+    <h2>TDI — 動く像に、電荷をついて行かせる</h2></div>
+  <p class="lede">流れてくるものを撮る仕事があります。ウェーハや液晶パネルの検査、印刷物やフィルムの検査、X 線の手荷物・食品の検査、人工衛星からの地上の撮影。1 本のラインセンサで撮ると、露光できるのは<span class="key">像が 1 画素ぶん進むあいだ</span>だけです。速く流れるほど暗くなる。<strong>TDI（時間遅延積分）</strong>は、電荷を像と同じ速さで隣の行へ送り続けて、N 行ぶんの露光を 1 つの電荷の塊に足し込みます。</p>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">TIME DELAY INTEGRATION — 像といっしょに歩く電荷</span>
+      <div class="btns"><button class="btn" id="bTdiPlay" aria-pressed="true">再生中</button></div>
+    </div>
+    <div class="fig-body">
+      <div class="scroll-x"><canvas role="img" aria-label="TDI の図。左は16段の画素の列を像の明るい点が下へ流れ、電荷の塊が1行の時間ごとに1段ずつ下へ送られながら光を足し込む様子。像と電荷の速さがずれると、塊の中身が像からずれていく。中央は同期のずれによる MTF の曲線、右は段数ごとの SN 比の棒。" id="cvTDI" style="min-width:820px"></canvas></div>
+      <div class="two" style="gap:26px;margin-top:14px">
+        <div class="slider-row" style="margin-top:0">
+          <div class="top"><span class="lab">段数 N</span><span class="num" id="vTdiN">64 段</span></div>
+          <input type="range" id="cTdiN" min="0" max="8" step="1" value="6" aria-label="TDI の段数">
+        </div>
+        <div class="slider-row" style="margin-top:0">
+          <div class="top"><span class="lab">行を送る速さと像の速さのずれ ε</span><span class="num" id="vTdiE">0.50 %</span></div>
+          <input type="range" id="cTdiE" min="0" max="200" step="1" value="50" aria-label="同期のずれ">
+        </div>
+      </div>
+    </div>
+    <dl class="readouts">
+      <div><dt>露光の合計</dt><dd id="rTdiT">—</dd></div>
+      <div><dt>信号（1 行 50 e⁻ × N）</dt><dd id="rTdiS">—</dd></div>
+      <div><dt>SN 比 電荷で足す / 数値で足す</dt><dd id="rTdiSnr">—</dd></div>
+      <div><dt>像のずれ L = N·ε</dt><dd id="rTdiL">—</dd></div>
+      <div><dt>ずれによる MTF（ナイキスト）</dt><dd id="rTdiM">—</dd></div>
+    </dl>
+    <figcaption>
+      <p>①は 16 段だけを描いた模型で、<strong>N 段で生じる像と電荷のずれ（L = N·ε 画素）を、16 段の中に縮めて</strong>描いています。明るい点（像）は滑らかに流れ、電荷の塊は 1 行の時間ごとに 1 段ずつ跳ぶ。塊の明るさが、そこまでに足し込んだ光の量です。ずれ ε を大きくすると、塊の位置と像の位置が段を追うごとに離れていき、最後の段では L 画素ぶんにじんだ像を足したことになります。</p>
+      <p style="margin-top:9px">②はそのにじみの MTF（長さ L の一様なにじみの sinc）で、横軸はナイキスト周波数を 1 とした空間周波数。③は段数ごとの SN 比で、<span class="key">信号は N 倍、ショット雑音は √N 倍なので SN 比は √N 倍</span>。数値で足す CMOS 型では読み出し雑音も N 回ぶん積もるので、電荷で足す CCD 型より少し下がります。数値は下の本文の仮定（画素 7 µm・像の速さ 0.35 m/s・1 行 50 e⁻・読み出し雑音 2.5 e⁻）から計算しています。</p>
+    </figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>足し算の中身 ― N 倍の光、√N 倍の SN 比</h3>
+      <p>画素ピッチ p の列に、像が速さ v で流れてくるとします。像が 1 画素進む時間は p/v で、TDI はちょうどこの時間ごとに電荷を 1 段送ります。画素 7 µm・像面での速さ 0.35 m/s（仮定）なら、1 行の時間は <b>20 µs</b>、行の速さは <b>50 kHz</b>。</p>
+      <p>1 行ぶんの露光で 50 e⁻ しか集まらないとき（仮定）、SN 比は 50/√(50 + 2.5²) = <b>6.7</b>。64 段の TDI なら信号は 3,200 e⁻ になり、電荷のまま足して最後に 1 回だけ読むなら 3,200/√(3,200 + 2.5²) = <b>56.5</b>。<span class="key">露光の時間は 1.28 ms に伸びたのに、像はにじまない</span> ― 電荷が像といっしょに歩いているからです。</p>
+      <p>CCD は電荷を画素から画素へ送る仕組みそのものなので、TDI は CCD の得意技でした。CMOS の画素は電荷を隣へ送れないので、各段を読み出してから<strong>数値（または電圧）で足す</strong>形が多く、そのぶん読み出し雑音も N 回積もります: 3,200/√(3,200 + 64 × 2.5²) = <b>53.3</b>。暗いところほど差が開くので、電荷の領域で足せる CMOS 画素（CCD の転送を CMOS の工程に入れたもの）も作られています。</p>
+    </div>
+    <div class="body-col">
+      <h3>同期がずれると ― 段数が多いほど厳しい</h3>
+      <p>行を送る速さと像の速さが相対的に ε ずれると、1 段ごとに ε 画素ずつ像が電荷から逃げ、N 段の終わりには <b>L = N·ε 画素</b>ずれます。足し込んだ像は長さ L の一様なにじみになり、その MTF は sinc(π L f p)。ナイキスト周波数 f = 1/(2p) では <b>sinc(π L/2)</b> です。</p>
+      <p>ずれ 0.5% でも、64 段なら L = 0.32 画素で MTF 0.96、256 段なら L = 1.28 画素で <b>0.45</b> まで落ちる。<span class="key">段数を増やして光を稼ぐほど、同期の精度が要る</span>。だから検査装置では、搬送の軸に付けたエンコーダのパルスで行を送り、速さの揺れに電荷の行進を合わせます。衛星では地面の見かけの速さ（高度と軌道で決まる）に合わせて行の速さを設定します。</p>
+      <p>明るすぎる対象では、N 段ぶん足すと井戸があふれます。飽和 12,000 e⁻ の画素で 1 行 50 e⁻ なら、足せるのは 240 段まで。<strong>段数を切り替えられる TDI センサが多い</strong>のは、明るさに合わせて N を選ぶためです。</p>
+    </div>
+  </div>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — 電荷は跳ぶ、像は滑る：段送りの MTF</span>
+    <p>像は連続に動くのに、電荷は 1 行の時間ごとに<strong>跳んで</strong>移ります。1 回の跳びのあいだ、像は電荷に対して 0 から 1 画素まで一様にずれていくので、同期が完全でも長さ 1 画素のにじみが残り、ナイキストの MTF は sinc(π/2) = <b>0.64</b> です。</p>
+    <p>CCD の転送はもともと多相のクロック（この部の「CCD という別解」）で、1 画素を m 回に分けて少しずつ送れます。1 回の跳びが p/m になるので、にじみも 1/m に縮み、MTF は sinc(π/(2m)): 2 相で <b>0.90</b>、3 相で 0.95、4 相で <b>0.97</b>。<span class="key">TDI の解像は、同期の精度と、1 画素を何回に刻んで送るかの 2 つで決まる</span>。どちらも「電荷が像からどれだけ離れていたか」を平均した結果です。</p>
+    <div class="eq">MTF<sub>ずれ</sub>(f) = sinc(π·<b>N·ε</b>·f·p) ,&nbsp;&nbsp; MTF<sub>段送り</sub>(f) = sinc(π·f·p/<i>m</i>)</div>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（TDI）</span>
+    <p><b>問.</b> 画素 7 µm、像面での速さ 0.35 m/s、1 行の露光で 50 e⁻、読み出し雑音 2.5 e⁻ の CCD 型 TDI で、SN 比 50 以上に要る段数は？（段数は 2 のべき乗から選ぶ）。そのとき同期が 0.5% ずれていたら、ナイキストの MTF はいくつか。</p>
+    <p><b>解.</b> S/√(S + 6.25) ≥ 50 を解いて S ≥ 2,506 e⁻、段数 N ≥ 2,506/50 = 50.1 なので <b>64 段</b>（SN 比 56.5、露光の合計 64 × 20 µs = 1.28 ms）。ずれは L = 64 × 0.005 = 0.32 画素、MTF = sinc(π × 0.32/2) = <b>0.96</b>。<span class="key">128 段にすれば SN 比は 80 に上がるが、同じ 0.5% のずれで MTF は 0.84 に下がる</span> ― 光と解像の取り合いです。</p>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — PixelLab 第4章</span>
+    <p>1 段 5 e⁻・読み出し雑音 1.50 e⁻ の条件で、TDI の段数を選ぶ。電荷で足すなら 81 段で SN 比 20 に届く（405/√(405 + 1.50²) = 20.07。80 段では 19.94）が、数値で足すと 100 段でも 500/√(500 + 100 × 1.50²) = <b>18.6</b> で届かない。速さのずれが 1% なら、100 段で 1 画素にじむ ― 段数・足し方・同期の 3 つを同時に満たす設計になります。</p>
+    <div class="qs"><span class="lab">PixelLab</span><a href="PixelLab/index.html?quest=tdi">TDI の段数</a></div>
+  </div>
+
+  <div class="caveat">
+    <span class="tag">この節の数字について</span>
+    <p>画素 7 µm・像の速さ 0.35 m/s・1 行 50 e⁻ は<strong>説明のための仮定</strong>です。読み出し雑音 2.5 e⁻・飽和 12,000 e⁻ はこのページの仮想センサの値。MTF は、にじみと段送りの効果だけを取り出したもので、レンズと画素の開口の MTF は別に掛かります。</p>
+  </div>
+</section>
+
+<!-- ================= 深サブ電子 ================= -->
+<section class="stage" id="ssub">
+  <div class="stage-head"><span class="stage-num">—</span>
+    <h2>深サブ電子の読み出し — 増倍なしで、電子を 1 個ずつ数える</h2></div>
+  <p class="lede">このページの仮想センサの読み出しノイズは 2.5 e⁻ でした。これでは 1 個と 2 個の違いは雑音に埋もれます。読み出しノイズを <b>0.3 e⁻ より下</b>まで下げると、出力のヒストグラムに<span class="key">整数の山</span>が立ち、光電子を 1 個ずつ数えられるようになります。EM-CCD の増倍も、SPAD の雪崩も使わずに。</p>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">PHOTON-NUMBER RESOLVING — 雑音が 0.3 e⁻ を切ると、整数が立ち上がる</span>
+      <div class="btns"><button class="btn" id="bSubPlay" aria-pressed="true">再生中</button></div>
+    </div>
+    <div class="fig-body">
+      <div class="scroll-x"><canvas role="img" aria-label="深サブ電子読み出しのヒストグラム。左は同じ明るさで何千回も読んだ出力の分布で、読み出しノイズが小さいと 0、1、2、3 個の整数の位置に山が分かれる。右は読み出しノイズと、整数を取り違える確率の関係の片対数グラフ。" id="cvSub" style="min-width:820px"></canvas></div>
+      <div class="two" style="gap:26px;margin-top:14px">
+        <div class="slider-row" style="margin-top:0">
+          <div class="top"><span class="lab">読み出しノイズ σ</span><span class="num" id="vSubS">0.25 e⁻</span></div>
+          <input type="range" id="cSubS" min="5" max="100" step="1" value="25" aria-label="読み出しノイズ">
+        </div>
+        <div class="slider-row" style="margin-top:0">
+          <div class="top"><span class="lab">1 回の露光の平均の光電子数 λ</span><span class="num" id="vSubL">2.0 個</span></div>
+          <input type="range" id="cSubL" min="2" max="60" step="1" value="20" aria-label="平均の光電子数">
+        </div>
+      </div>
+    </div>
+    <dl class="readouts">
+      <div><dt>整数を取り違える確率</dt><dd id="rSubErr">—</dd></div>
+      <div><dt>要る変換ゲイン（電圧雑音 112.5 µV のとき）</dt><dd id="rSubCG">—</dd></div>
+      <div><dt>FD の容量 / 同じ振幅での飽和</dt><dd id="rSubC">—</dd></div>
+      <div><dt>SN 比 この雑音 / EM-CCD</dt><dd id="rSubSnr">—</dd></div>
+    </dl>
+    <figcaption>
+      <p>①の棒は、平均 λ 個のポアソン分布に従う光電子を、雑音 σ の読み出しで読んだ値を積み上げたもの（決まった手順で作った<strong>一例の標本</strong>）。細い線は同じ分布の厳密な形です。点線は四捨五入の境目（k + 0.5）で、読みがこれを越えると隣の整数に数えられる。σ = 0.5 e⁻ では山は溶け合い、0.3 e⁻ で谷が見え、0.2 e⁻ でくっきり分かれます。</p>
+      <p style="margin-top:9px">②は、読みが四捨五入の境目を越える確率 P = erfc(0.5/(√2·σ)) を片対数で描いたもの（内側の整数について、両側の境目を足した値）。<span class="key">σ を半分にするだけで、取り違えは桁で減る</span> ― 正規分布の裾が指数関数的に細いからです。</p>
+    </figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>山が分かれる条件 ― 0.5 e⁻ の距離と σ の比</h3>
+      <p>隣り合う整数の山は 1 e⁻ 離れていて、読みを四捨五入するなら境目までは 0.5 e⁻。雑音が正規分布なら、境目を越える確率は erfc(0.5/(√2σ)) で決まります。</p>
+      <p>σ = 0.5 e⁻ で <b>32%</b>、0.3 e⁻ で <b>9.6%</b>、0.25 e⁻ で 4.6%、0.2 e⁻ で <b>1.2%</b>、0.15 e⁻ で <b>0.086%</b>。「光子（光電子）の数を分解できる」と言えるのはおおむね 0.3 e⁻ より下で、数え間違いを 0.1% 以下にするには 0.15 e⁻ まで下げる必要があります。</p>
+      <p>こうして数えた画像は、1 画素・1 回の露光では 0 か 1 か 2 … の整数しか持ちません。<strong>何枚も数えて足せば</strong>、読み出しノイズの床を持たない濃淡の画像になる。この発想を突き詰めたのが、ごく小さな画素（jot）で 0 と 1 を数え、足し合わせて像を作る<strong>QIS（量子画像センサ）</strong>の構想です（Fossum）。</p>
+    </div>
+    <div class="body-col">
+      <h3>雑音を電子で下げる 2 つの道</h3>
+      <p><strong>① 容量を小さくする。</strong>変換ゲインは CG = q/C。FD 3.5 fF なら 45.8 µV/e⁻ で、読み出しノイズ 2.5 e⁻ は電圧にして約 112.5 µV にあたります。同じ電圧の雑音のまま 0.2 e⁻ にするには CG を 12.5 倍の <b>562 µV/e⁻</b> に、容量を <b>0.28 fF</b> にする必要がある。代償は井戸です: 同じ 0.54 V の振幅で扱える電子は <b>約 960 e⁻</b> まで減り、明るい側の余裕が消える（05 の変換ゲインと飽和の取り合いと同じ）。</p>
+      <p><strong>② 同じ電荷を何度も読む。</strong>電荷を壊さずに読める構造なら、N 回読んで平均すると雑音は σ/√N に減ります。1 回 3.5 e⁻ の読み出しでも、1,000 回で 0.11 e⁻、4,000 回で 0.055 e⁻（計算）。この方式の <b>Skipper CCD</b> は、数千回の平均で 0.07 e⁻ rms 程度を実測し、1 個の電子を数えてみせました（Tiffenberg ほか 2017）。代わりに<span class="key">読み出しの時間が N 倍</span>になるので、速さを捨てられる用途（暗黒物質の探索・天文）に向きます。</p>
+    </div>
+  </div>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — EM-CCD より良いのはどこか</span>
+    <p>平均 λ 個の光電子の SN 比は、深サブ電子の読み出しなら λ/√(λ + σ²)、EM-CCD なら増倍の揺らぎで分散が 2 倍になるので λ/√(2λ)（第5部・第10部 03）。λ = 1 個のとき、σ = 0.2 e⁻ で <b>0.98</b>、EM-CCD で <b>0.71</b>、ふつうの 2.5 e⁻ の読み出しで <b>0.37</b>。λ = 0.1 個でも 0.27 / 0.22 / 0.04 の順です。<span class="key">過剰雑音のない数え方</span>が、暗いところで効きます。</p>
+    <p>ただし、雑音の床が 0.2 e⁻ まで下がると、それまで隠れていた<strong>暗電流とランダムテレグラフ信号（付録D）</strong>が主役になります。暗電流 0.1 e⁻/s の画素でも、10 秒の露光で平均 1 個 ― 光子と区別できない 1 個です。深サブ電子の画素は、冷却と、RTS を持つ画素を選び出して扱う処理と組み合わせて使われます。</p>
+    <div class="eq">P<sub>取り違え</sub> = erfc( 0.5 / (√2·<i>σ</i>) ) ,&nbsp;&nbsp; CG = q / <b>C<sub>FD</sub></b> ,&nbsp;&nbsp; σ<sub>N 回</sub> = σ / √N</div>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（深サブ電子）</span>
+    <p><b>問.</b> 読み出しノイズ 0.25 e⁻ で、平均 2 個の光電子を読むと、何% の読みが隣の整数に取り違えられるか。回路の電圧雑音が 112.5 µV のままこの雑音にするには、FD の容量はいくつ要るか。</p>
+    <p><b>解.</b> P = erfc(0.5/(√2 × 0.25)) = erfc(1.414) = <b>4.6%</b>（内側の整数について。0 個の読みはマイナス側に越えても 0 と数える約束なら半分）。CG = 112.5 µV / 0.25 e⁻ = 450 µV/e⁻、C = q/CG = 1.602×10⁻¹⁹ / 450 µV = <b>0.36 fF</b>。3.5 fF の約 1/10 ― <span class="key">雑音を電子で 1/10 にする近道は、容量を 1/10 にすること</span>で、そのぶん井戸も 1/10 になります。</p>
+  </div>
+</section>
+
+<!-- ================= 波長の外側 ================= -->
+<section class="stage" id="sband">
+  <div class="stage-head"><span class="stage-num">—</span>
+    <h2>波長の外側 — 紫外・近赤外・X 線をシリコンで撮る</h2></div>
+  <p class="lede">02 では可視の光が止まる深さを見ました（400 nm で 0.1 µm、1,000 nm で 150 µm）。範囲を広げると、同じシリコンの中で光子が止まる深さは<span class="key">数 nm から 1 mm まで、6 桁</span>動きます。紫外は表面の数 nm で決まり、近赤外は厚みが足りず、X 線は突き抜ける。<strong>画素の作り方が波長で変わる理由は、この 1 本の物差しで説明できます。</strong></p>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">ABSORPTION DEPTH — 6 桁の物差しの上で、光子はどこで止まるか</span>
+      <div class="btns">
+        <button class="btn" data-band="250" aria-pressed="false">250 nm</button>
+        <button class="btn" data-band="300" aria-pressed="true">300 nm</button>
+        <button class="btn" data-band="400" aria-pressed="false">400 nm</button>
+        <button class="btn" data-band="550" aria-pressed="false">550 nm</button>
+        <button class="btn" data-band="850" aria-pressed="false">850 nm</button>
+        <button class="btn" data-band="940" aria-pressed="false">940 nm</button>
+        <button class="btn" data-band="x10" aria-pressed="false">X 線 10 keV</button>
+        <button class="btn" data-band="x20" aria-pressed="false">X 線 20 keV</button>
+      </div>
+    </div>
+    <div class="fig-body scroll-x"><canvas role="img" aria-label="シリコンの中で光子が止まる深さの図。縦軸は 1 ナノメートルから 1 ミリメートルまでの対数の深さで、表面の不感層 10 ナノメートル、画素の受光層 3 マイクロメートル、厚い完全空乏層 300 マイクロメートルの境目が引かれている。選んだ波長の光子が上から入り、指数分布に従った深さで止まる。右は止まった場所ごとの割合の帯。" id="cvBand" style="min-width:820px"></canvas></div>
+    <dl class="readouts">
+      <div><dt>吸収長（1/e の深さ）</dt><dd id="rBandL">—</dd></div>
+      <div><dt>表面 10 nm の不感層で失う</dt><dd id="rBandDead">—</dd></div>
+      <div><dt>受光層 3 µm で止まる</dt><dd id="rBand3">—</dd></div>
+      <div><dt>厚い 300 µm で止まる</dt><dd id="rBand300">—</dd></div>
+    </dl>
+    <figcaption>
+      <p>光子が止まる深さは指数分布で、平均が吸収長 L です。図の光子は分布の分位点どおりに深さを割り振って落としているので、<strong>十分に待つと点の並びがそのまま分布</strong>になります。縦軸は対数なので、1 目盛りで 10 倍深い。吸収長は、紫外（250〜400 nm）が Green &amp; Keevers の表、可視と近赤外が 02 と同じ表、X 線が NIST XCOM の減衰係数（第5部 09 と同じ 127 µm・0.96 mm）です。</p>
+      <p style="margin-top:9px">300 nm を選ぶと、光子の大半が一番上の帯（不感層の 10 nm）で止まってしまう。940 nm では 3 µm の受光層をほとんどが素通りし、X 線 20 keV では 300 µm でも 3/4 が突き抜ける。<span class="key">同じ「量子効率」の悩みでも、紫外は表面、近赤外は厚み、X 線は材料と厚み</span>と、効く場所が違います。</p>
+    </figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>紫外 ― 表面の数 nm が勝負</h3>
+      <p>シリコンの吸収長は 250 nm で <b>5.4 nm</b>、300 nm で 5.8 nm、350 nm で 9.5 nm。光子は表面から 10 nm 以内でほとんど止まります。ところが表面には、酸化膜との界面の欠陥や高濃度層があって、そこで生まれた電子は再結合で失われやすい（02 の「青の対策は表面から遠ざける」）。仮に厚さ 10 nm の不感層があると、300 nm の光は exp(−10/5.8) = <b>18%</b> しか通り抜けられず、8 割が失われます。</p>
+      <p>だから紫外の画素は、配線のない<strong>裏面照射</strong>にして、裏面の終端をきわめて薄く作ります。代表例が、裏面に数 nm の高濃度層を分子線エピタキシーで作る<strong>デルタドープ</strong>（Hoenk ほか 1992）で、界面の電界で電子を内側へ押し戻し、紫外の内部量子効率をほぼ 1 にしました。約 354 nm より短い光では 1 個の光子が 2 個以上の対を作る（02・Q3）ので、量子効率が 1 を超えることもあります。</p>
+      <p>もうひとつの悩みは、<strong>紫外が表面の電荷の状態そのものを変える</strong>ことです。照射の履歴で感度が変わることがあり、紫外用の画素では表面の安定化が設計の一部になります。</p>
+    </div>
+    <div class="body-col">
+      <h3>近赤外 ― 厚みが足りない</h3>
+      <p>近赤外では逆に、光子が深く潜ります。吸収長は 850 nm で <b>19 µm</b>、940 nm で約 <b>55 µm</b>。3 µm の受光層で止まるのは 850 nm で <b>14.6%</b>、940 nm では <b>5.4%</b> だけです。</p>
+      <p>手は 3 つ。<strong>受光層を厚くする</strong>（10 µm なら 850 nm で 40.9%）。<strong>光を往復させる</strong>（裏面を反射させれば実効の厚みは 2 倍。3 µm で 27.1%）。<strong>表面の凹凸で光を斜めに曲げる</strong>（「光路長を稼ぐ構造」、用語表）。どれも「光が進む道を長くする」ことです。</p>
+      <p>ただし深く潜るほど、生まれた電子は電界の届かない場所を拡散して、<span class="key">隣の画素に紛れ込みやすく</span>なります（クロストーク）。近赤外向けの画素が、画素の境目に深い溝を掘って酸化膜で埋める <strong>DTI（深いトレンチ分離）</strong>を使うのは、この迷子を止めるためです。LiDAR や顔認証が 850 nm・940 nm を使うたびに、この取り合いが出てきます（第10部 05）。</p>
+    </div>
+  </div>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>X 線 ― 直接当てるなら、厚く完全空乏に</h3>
+      <p>X 線をシリコンで直接止めると、1 個の光子が一度に大量の電子を作ります。10 keV なら 10,000/3.62 = <b>2,762 個</b>（w 値 3.62 eV、第5部 09）。飽和 12,000 e⁻ の画素は、X 線 <b>4 個</b>で満杯です。だから X 線の直接検出は、1 個ずつの事象を数え、その電子の数からエネルギーを測る<strong>光子計数・エネルギー分解</strong>の使い方になります。10 keV での分解能は、ファノの揺らぎ（F = 0.115）と読み出し 2.5 e⁻ を足して FWHM = 2.355 × 3.62 eV × √(0.115 × 2,762 + 2.5²) = <b>153 eV</b>（1.5%）。</p>
+      <p>難しいのは止めることです。10 keV の吸収長 127 µm に対して、3 µm の画素が止めるのは <b>2.3%</b>。基板ごと 300 µm を完全に空乏化させれば <b>91%</b> を止められる（20 keV では 27%）。<span class="key">X 線用の直接検出の画素が、厚い高抵抗のシリコンを全部空乏化させて使う</span>のはこのためです。</p>
+    </div>
+    <div class="body-col">
+      <h3>X 線 ― 間接に、シンチレータで翻訳する</h3>
+      <p>もうひとつの道は、X 線をシンチレータで可視光に<strong>翻訳</strong>してから、ふつうの画素で受けることです（第5部 05）。CsI(Tl) は 1 keV あたり約 54 光子なので、20 keV の X 線 1 個は約 <b>1,080 光子</b>になります。これを 02〜06 の画素がそのまま受ける。</p>
+      <p>シンチレータを厚くすれば X 線は多く止まるが、光が横に広がって像がぼける。CsI を細い柱状の結晶に育てて、光を縦に導くのはこのためです（第5部 05）。画素とのあいだに<strong>ファイバオプティックプレート（FOP）</strong>を挟んで、光を画素まで導く構成もあります。</p>
+      <p>直接と間接の使い分けは、<span class="key">エネルギーを測りたい（直接）か、広い面を安く・高い X 線まで撮りたい（間接）か</span>で決まります。</p>
+    </div>
+  </div>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — 深いところで止まった電荷は、横に広がる</span>
+    <p>電界のある層（空乏層）の中で止まった光子の電荷は、電界に引かれてまっすぐ画素に集まります。電界のない層で止まった電荷は、集められるまでに拡散で横へ広がる。広がりの目安は、電界のない層を進む距離と同じくらいです。</p>
+    <p>だから、近赤外や X 線で<strong>深く止まった電荷ほど、隣の画素に分かれて入り</strong>ます。可視では解像のにじみ（クロストーク）として、X 線では 1 個の光子の電荷が 2〜4 画素に分かれる<strong>分割事象</strong>として現れる。X 線の光子計数では、分かれた電荷を足し戻してからエネルギーを求める処理が欠かせません。<span class="key">深く止まる光ほど、厚く空乏化した層で受けたい</span> ― 近赤外と X 線の画素設計が、同じ方向を向く理由です。</p>
+    <div class="eq">止まる割合（厚さ t） = 1 − e<sup>−t/<b>L</b></sup> ,&nbsp;&nbsp; 不感層 d を抜ける割合 = e<sup>−d/<b>L</b></sup></div>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（波長の外側）</span>
+    <p><b>問.</b> 850 nm の光の吸収（量子効率のうち吸収のぶん）を 50% 以上にしたい。受光層の厚みはいくつ要るか。裏面の反射で光を往復させられるならどうか。10 keV の X 線の 90% を止めるシリコンの厚みは？</p>
+    <p><b>解.</b> 1 − e<sup>−t/19</sup> ≥ 0.5 から t ≥ 19 × ln 2 = <b>13.2 µm</b>。往復させれば道のりが 2 倍なので <b>6.6 µm</b>。X 線は 1 − e<sup>−t/127</sup> ≥ 0.9 から t ≥ 127 × ln 10 = <b>292 µm</b>。<span class="key">近赤外は 10 µm 級、X 線は 300 µm 級</span> ― 可視の 3 µm の画素とは、厚みの桁が違います。</p>
+  </div>
+
+  <div class="caveat">
+    <span class="tag">この節の数字について</span>
+    <p>不感層 10 nm は<strong>説明のための仮定</strong>です（実際の厚みは表面の作り方で大きく変わる）。吸収だけを見ていて、表面の反射と、不感層より内側での再結合は入れていません。X 線の吸収長は光電吸収を中心とした全減衰の係数からの値で、実際の検出効率は電極や保護膜の吸収でさらに下がります。</p>
+  </div>
+</section>
+
 <!-- ================= むすび ================= -->
+<!-- ================= 画素の MTF とクロストーク ================= -->
+<section class="stage" id="smtf">
+  <div class="stage-head"><span class="stage-num">—</span>
+    <h2>画素の MTF とクロストークを測る — 細かさは画素ピッチだけでは決まらない</h2></div>
+  <p class="lede">カタログの画素ピッチは「目盛りの細かさ」でしかありません。光はマイクロレンズの縁から隣へこぼれ、深いところで生まれた電子は拡散して隣の井戸に入る。<span class="key">画素が実際にどれだけ細かく写すかは MTF で、隣へどれだけ漏れるかはクロストークで測ります</span>。検査装置・分光・微弱光のカメラでは、この 2 つが画素数より効く。測り方の定番は、傾けたエッジを撮るスラントエッジ法（ISO 12233）と、小さな光点で画素をなぞるスポット走査です。</p>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">SLANTED EDGE — 傾けたエッジで、画素より細かく測る</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 900 290" role="img" aria-label="スラントエッジ法の図。左は傾けたエッジから並べ直したエッジの応答（ESF）で、1/10 画素ごとの標本の点が順に打たれていく。右はその MTF で、画素の開口だけの破線と、電荷のにじみを含む実線。ナイキスト周波数で 0.637 と 0.555。" style="min-width:760px">
+        <text x="70" y="24" font-size="11" fill="var(--ink-2)">ESF — エッジの応答（標本は 1/10 画素ごと）</text>
+        <text x="520" y="24" font-size="11" fill="var(--ink-2)">MTF — 周波数ごとの細かさの伝わり方</text>
+        <g stroke="var(--line)" stroke-width="1" fill="none"><path d="M70 40 V240 H400"/><path d="M520 40 V240 H860"/></g>
+        <g stroke="var(--line)" stroke-width="1" fill="none" stroke-dasharray="2 4"><path d="M70 140 H400"/><path d="M520 140 H860"/></g>
+        <path d="M690 40 V240" stroke="var(--warn)" stroke-width="1.2" stroke-dasharray="5 4" fill="none"/>
+        <text x="696" y="56" font-size="10" fill="var(--warn)">ナイキスト 166.7 本/mm</text>
+        <polyline points="70.0,240.0 78.3,240.0 86.5,240.0 94.8,240.0 103.0,240.0 111.3,240.0 119.5,240.0 127.8,240.0 136.0,240.0 144.3,240.0 152.5,240.0 160.8,239.9 169.0,239.5 177.3,238.1 185.5,234.4 193.8,226.7 202.0,214.4 210.3,198.1 218.5,179.5 226.8,159.9 235.0,140.0 243.3,120.1 251.5,100.5 259.8,81.9 268.0,65.6 276.3,53.3 284.5,45.6 292.8,41.9 301.0,40.5 309.3,40.1 317.5,40.0 325.8,40.0 334.0,40.0 342.3,40.0 350.5,40.0 358.8,40.0 367.0,40.0 375.3,40.0 383.5,40.0 391.8,40.0 400.0,40.0" fill="none" stroke="var(--electron)" stroke-width="2"/>
+        <circle cx="70.0" cy="240.0" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.050;0.060;0.95;1" dur="7s" repeatCount="indefinite"/></circle><circle cx="78.3" cy="240.0" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.070;0.080;0.95;1" dur="7s" repeatCount="indefinite"/></circle><circle cx="86.5" cy="240.0" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.090;0.100;0.95;1" dur="7s" repeatCount="indefinite"/></circle><circle cx="94.8" cy="240.0" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.110;0.120;0.95;1" dur="7s" repeatCount="indefinite"/></circle><circle cx="103.0" cy="240.0" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.130;0.140;0.95;1" dur="7s" repeatCount="indefinite"/></circle><circle cx="111.3" cy="240.0" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.150;0.160;0.95;1" dur="7s" repeatCount="indefinite"/></circle><circle cx="119.5" cy="240.0" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.170;0.180;0.95;1" dur="7s" repeatCount="indefinite"/></circle><circle cx="127.8" cy="240.0" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.190;0.200;0.95;1" dur="7s" repeatCount="indefinite"/></circle><circle cx="136.0" cy="240.0" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.210;0.220;0.95;1" dur="7s" repeatCount="indefinite"/></circle><circle cx="144.3" cy="240.0" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.230;0.240;0.95;1" dur="7s" repeatCount="indefinite"/></circle><circle cx="152.5" cy="240.0" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.250;0.260;0.95;1" dur="7s" repeatCount="indefinite"/></circle><circle cx="160.8" cy="239.9" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.270;0.280;0.95;1" dur="7s" repeatCount="indefinite"/></circle><circle cx="169.0" cy="239.5" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.290;0.300;0.95;1" dur="7s" repeatCount="indefinite"/></circle><circle cx="177.3" cy="238.1" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.310;0.320;0.95;1" dur="7s" repeatCount="indefinite"/></circle><circle cx="185.5" cy="234.4" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.330;0.340;0.95;1" dur="7s" repeatCount="indefinite"/></circle><circle cx="193.8" cy="226.7" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.350;0.360;0.95;1" dur="7s" repeatCount="indefinite"/></circle><circle cx="202.0" cy="214.4" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.370;0.380;0.95;1" dur="7s" repeatCount="indefinite"/></circle><circle cx="210.3" cy="198.1" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.390;0.400;0.95;1" dur="7s" repeatCount="indefinite"/></circle><circle cx="218.5" cy="179.5" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.410;0.420;0.95;1" dur="7s" repeatCount="indefinite"/></circle><circle cx="226.8" cy="159.9" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.430;0.440;0.95;1" dur="7s" repeatCount="indefinite"/></circle><circle cx="235.0" cy="140.0" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.450;0.460;0.95;1" dur="7s" repeatCount="indefinite"/></circle><circle cx="243.3" cy="120.1" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.470;0.480;0.95;1" dur="7s" repeatCount="indefinite"/></circle><circle cx="251.5" cy="100.5" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.490;0.500;0.95;1" dur="7s" repeatCount="indefinite"/></circle><circle cx="259.8" cy="81.9" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.510;0.520;0.95;1" dur="7s" repeatCount="indefinite"/></circle><circle cx="268.0" cy="65.6" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.530;0.540;0.95;1" dur="7s" repeatCount="indefinite"/></circle><circle cx="276.3" cy="53.3" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.550;0.560;0.95;1" dur="7s" repeatCount="indefinite"/></circle><circle cx="284.5" cy="45.6" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.570;0.580;0.95;1" dur="7s" repeatCount="indefinite"/></circle><circle cx="292.8" cy="41.9" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.590;0.600;0.95;1" dur="7s" repeatCount="indefinite"/></circle><circle cx="301.0" cy="40.5" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.610;0.620;0.95;1" dur="7s" repeatCount="indefinite"/></circle><circle cx="309.3" cy="40.1" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.630;0.640;0.95;1" dur="7s" repeatCount="indefinite"/></circle><circle cx="317.5" cy="40.0" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.650;0.660;0.95;1" dur="7s" repeatCount="indefinite"/></circle><circle cx="325.8" cy="40.0" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.670;0.680;0.95;1" dur="7s" repeatCount="indefinite"/></circle><circle cx="334.0" cy="40.0" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.690;0.700;0.95;1" dur="7s" repeatCount="indefinite"/></circle><circle cx="342.3" cy="40.0" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.710;0.720;0.95;1" dur="7s" repeatCount="indefinite"/></circle><circle cx="350.5" cy="40.0" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.730;0.740;0.95;1" dur="7s" repeatCount="indefinite"/></circle><circle cx="358.8" cy="40.0" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.750;0.760;0.95;1" dur="7s" repeatCount="indefinite"/></circle><circle cx="367.0" cy="40.0" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.770;0.780;0.95;1" dur="7s" repeatCount="indefinite"/></circle><circle cx="375.3" cy="40.0" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.790;0.800;0.95;1" dur="7s" repeatCount="indefinite"/></circle><circle cx="383.5" cy="40.0" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.810;0.820;0.95;1" dur="7s" repeatCount="indefinite"/></circle><circle cx="391.8" cy="40.0" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.830;0.840;0.95;1" dur="7s" repeatCount="indefinite"/></circle><circle cx="400.0" cy="40.0" r="3" fill="var(--photon)"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.850;0.860;0.95;1" dur="7s" repeatCount="indefinite"/></circle>
+        <polyline points="520.0,40.0 527.1,40.1 534.2,40.6 541.3,41.3 548.3,42.3 555.4,43.6 562.5,45.1 569.6,46.9 576.7,49.0 583.8,51.4 590.8,54.0 597.9,56.8 605.0,59.9 612.1,63.3 619.2,66.8 626.3,70.6 633.3,74.6 640.4,78.8 647.5,83.2 654.6,87.7 661.7,92.4 668.8,97.3 675.8,102.3 682.9,107.4 690.0,112.7 697.1,118.0 704.2,123.5 711.3,129.0 718.3,134.6 725.4,140.2 732.5,145.9 739.6,151.6 746.7,157.3 753.8,163.0 760.8,168.7 767.9,174.4 775.0,180.0 782.1,185.5 789.2,191.0 796.3,196.5 803.3,201.8 810.4,207.0 817.5,212.2 824.6,217.2 831.7,222.0 838.8,226.8 845.8,231.3 852.9,235.7 860.0,240.0" fill="none" stroke="var(--ink-2)" stroke-width="1.6" stroke-dasharray="5 4"/>
+        <polyline points="520.0,40.0 527.1,40.2 534.2,40.8 541.3,41.7 548.3,43.0 555.4,44.7 562.5,46.8 569.6,49.2 576.7,51.9 583.8,55.0 590.8,58.4 597.9,62.0 605.0,66.0 612.1,70.2 619.2,74.7 626.3,79.4 633.3,84.4 640.4,89.5 647.5,94.8 654.6,100.2 661.7,105.8 668.8,111.5 675.8,117.3 682.9,123.1 690.0,129.0 697.1,134.9 704.2,140.8 711.3,146.7 718.3,152.5 725.4,158.3 732.5,164.0 739.6,169.7 746.7,175.2 753.8,180.6 760.8,185.8 767.9,191.0 775.0,195.9 782.1,200.7 789.2,205.3 796.3,209.7 803.3,213.9 810.4,217.9 817.5,221.7 824.6,225.3 831.7,228.7 838.8,231.8 845.8,234.8 852.9,237.5 860.0,240.0" fill="none" stroke="var(--electron)" stroke-width="2"/>
+        <circle cx="690" cy="112.7" r="3.5" fill="var(--ink-2)"/>
+        <circle cx="690" cy="129.0" r="3.5" fill="var(--electron)"/>
+        <g font-size="10"><path d="M706 80 H726" stroke="var(--ink-2)" stroke-width="1.6" stroke-dasharray="5 4" fill="none"/><text x="732" y="84" fill="var(--ink-2)">画素の開口だけ（100%）</text>
+          <path d="M706 98 H726" stroke="var(--electron)" stroke-width="2" fill="none"/><text x="732" y="102" fill="var(--electron-2)">開口 × にじみ σ 0.5 µm</text></g>
+        <g font-family="var(--mono)" font-size="9.5" fill="var(--ink-3)">
+          <text x="62" y="44" text-anchor="end">1</text><text x="62" y="144" text-anchor="end">0.5</text><text x="62" y="244" text-anchor="end">0</text>
+          <text x="70" y="258" text-anchor="middle">−6</text><text x="152.5" y="258" text-anchor="middle">−3</text><text x="235" y="258" text-anchor="middle">0</text><text x="317.5" y="258" text-anchor="middle">3</text><text x="400" y="258" text-anchor="middle">6</text>
+          <text x="512" y="44" text-anchor="end">1</text><text x="512" y="144" text-anchor="end">0.5</text><text x="512" y="244" text-anchor="end">0</text>
+          <text x="520" y="258" text-anchor="middle">0</text><text x="605" y="258" text-anchor="middle">0.5</text><text x="690" y="258" text-anchor="middle">1</text><text x="775" y="258" text-anchor="middle">1.5</text><text x="860" y="258" text-anchor="middle">2</text>
+        </g>
+        <text x="235" y="280" font-size="10" fill="var(--ink-3)" text-anchor="middle">エッジからの位置 [µm]（画素 3.0 µm）</text>
+        <text x="690" y="280" font-size="10" fill="var(--ink-3)" text-anchor="middle">空間周波数 ÷ ナイキスト</text>
+      </svg>
+    </div>
+    <figcaption>左は、tan θ = 1/10 で傾けたエッジを撮り、行ごとの応答を位置の順に並べ直したエッジの応答（ESF）です。点が 1/10 画素ごとの標本で、並べ直しで標本が埋まっていく様子を順に打っています。線は 3.0 µm の開口と σ 0.5 µm のにじみ（仮定）から計算したもの。右はその MTF で、破線が開口だけ（ナイキストで <b>0.637</b>）、実線がにじみ込み（<b>0.555</b>）。<span class="key">ESF を微分すると線の応答（LSF）、それをフーリエ変換すると MTF</span> ― 右の図は左の図から計算で出ます。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>画素の開口と、電荷のにじみ</h3>
+      <p>画素を幅 p の窓（開口）と見ると、その MTF は |sinc(f·p)|（sinc(x) = sin(πx)/(πx)）です。開口 100% ならナイキスト f<sub>N</sub> = 1/(2p) で sinc(1/2) = 2/π = <b>0.637</b>。3.0 µm の画素では f<sub>N</sub> = <b>166.7 本/mm</b> です。</p>
+      <p>これに、深いところで生まれた電子が横へ拡散して隣の井戸に入る「にじみ」が掛かります。にじみを標準偏差 σ のガウスで近似すると（仮定）、その MTF は exp(−2π²σ²f²)。σ = 0.5 µm ならナイキストで 0.872 で、画素の MTF は 0.637 × 0.872 = <b>0.555</b>。σ = 1.0 µm なら 0.578 で、合わせて <b>0.368</b> まで落ちる。</p>
+      <div class="eq">MTF<sub>画素</sub>(f) = |sinc(f·p)| · exp(−2π²σ²f²)</div>
+    </div>
+    <div class="body-col">
+      <h3>クロストーク — 隣へ漏れる割合</h3>
+      <p>中心の画素だけに一様に光を当て、隣の画素に入った信号の割合をクロストークと呼びます。上と同じガウスのにじみ（仮定）で数えると、3.0 µm の画素で σ = 0.3 µm なら上下左右の 1 画素あたり <b>3.7%</b>（4 画素で 14.7%）、σ = 0.5 µm なら <b>5.8%</b>（23.1%）、σ = 1.0 µm なら <b>9.8%</b>（39.0%）です。</p>
+      <p>漏れ方には 2 つの道があります。<b>光学的</b>（マイクロレンズの縁や斜めの光が隣の画素に入る）と<b>電気的</b>（電子の拡散）。長い波長ほど深いところで吸収されて電気的な漏れが増えるので、<span class="key">波長を変えて測ると 2 つを分けられる</span>（02 の吸収の深さ）。画素の間を深い溝で仕切る DTI は、この電気的な道を断つ構造です。</p>
+    </div>
+  </div>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>スラントエッジ法 — 傾けるのが要</h3>
+      <p>白と黒の境目（エッジ）を、画素の列に対してわずかに傾けて撮ります。tan θ = 1/N なら、N 行進むごとにエッジが 1 画素ずれるので、行ごとの応答を位置の順に並べ直すと、<b>画素ピッチの 1/N の細かさで</b> ESF が標本化できる。1/10 なら θ = <b>5.71°</b>。ESF を微分して LSF、それをフーリエ変換して MTF。ISO 12233 はこの手順と、約 5° の傾き、線形化（センサの出力を光の量に比例した値に戻すこと）を定めています。</p>
+    </div>
+    <div class="body-col">
+      <h3>スポット走査 — 画素の中の感度の地図</h3>
+      <p>画素より十分小さい光点を細かい刻み（0.1 µm 程度）で動かしながら、その画素と隣の画素の出力を記録すると、<b>画素の応答関数</b>（位置ごとの感度）とクロストークを直接測れます。応答関数をフーリエ変換すれば MTF にもなる。装置は大がかりですが、画素の中のどこで感度が落ちているか（配線の影・分離の端）まで見えるので、画素の設計の検証に使われます。</p>
+    </div>
+  </div>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — 系の MTF は掛け算、比べるなら MTF50</span>
+    <p>レンズ・画素の開口・電荷のにじみ・（あれば）光学ローパスフィルタの MTF は、互いに独立なら<b>掛け算</b>で系の MTF になります（第7部 15）。比べるときの物差しには、MTF が 0.5 になる周波数 MTF50 がよく使われる。3.0 µm・開口 100% だけなら MTF50 は <b>201 本/mm</b>（ナイキストの 1.21 倍）、σ 0.5 µm のにじみが入ると <b>180 本/mm</b>、σ 1.0 µm で <b>140 本/mm</b>（ナイキストの 0.84 倍）。<span class="key">同じ画素ピッチでも、にじみの大きさで「解像」は 3 割変わる</span>。</p>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（MTF とクロストーク）</span>
+    <p><b>問.</b> 画素 3.0 µm・開口 100%、拡散のにじみ σ = 0.5 µm（ガウスと仮定）の画素で、ナイキストでの MTF と MTF50 はいくつか。レンズの MTF がナイキストで 0.5 なら、系の MTF は？ 中心の画素だけに光を当てたとき、右隣の 1 画素に入る割合は？</p>
+    <p><b>解.</b> f<sub>N</sub> = 1/(2 × 3.0 µm) = 166.7 本/mm。開口は sinc(1/2) = 0.637、にじみは exp(−2π² × 0.5² × (1/6)²) = 0.872 で、画素の MTF は <b>0.555</b>。MTF50 は <b>180 本/mm</b>（ナイキストの 1.08 倍）。レンズを掛けて系は 0.555 × 0.5 = <b>0.28</b>。右隣に入るのは <b>5.8%</b>（上下左右の 4 画素で 23.1%、中心に残るのは 75.2%）。<span class="key">にじみの σ が画素の 1/6 でも、4 方向で 2 割以上が漏れる</span>。</p>
+  </div>
+
+  <div class="ex">
+    <span class="tag">落とし穴 ― エッジを傾けずに撮る</span>
+    <p>エッジを画素の列と平行に置くと、ESF は画素ピッチの間隔でしか取れず、ナイキストより上の成分が折り返して（「解像の限界」のエイリアス）MTF を正しく出せません。傾きを変えたら、並べ直しの倍率 N = 1/tan θ も合わせる。</p>
+  </div>
+  <div class="ex">
+    <span class="tag">落とし穴 ― 線形化を忘れる</span>
+    <p>カメラの出力にガンマやトーンカーブが掛かったまま ESF を取ると、エッジの形がゆがんで MTF が正しく出ません。ISO 12233 は、センサの応答を光の量に比例した値に戻してから（OECF で線形化してから）計算することを求めています。飽和したエッジも同じ理由で使えない。</p>
+  </div>
+
+  <div class="ex">
+    <span class="tag">役割別の一言</span>
+    <p><b>営業・企画</b>: 画素ピッチより MTF50（本/mm）で比べる。同じ 3.0 µm でも、にじみで 3 割違う。<br><b>設計・開発</b>: 電気的なにじみは深いところで生まれる電子から来る。長い波長の用途ほど、DTI と層の厚みの設計が効く。<br><b>研究・製造</b>: 測る前に、エッジの傾き・線形化・飽和していないことを確かめる。波長を変えて、光学的と電気的なクロストークを分ける。</p>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — PixelLab 第4章</span>
+    <p>画素を細かくすると、目盛りは増えるが光と井戸が減り、回折の限界 λN/2 より細かい画素は何も新しく写さない。画素数・S/N・回折の窓の中で画素ピッチを選ぶ課題で、この節の「細かさ」の上限の側を踏めます。</p>
+    <div class="qs"><span class="lab">PixelLab</span><a href="PixelLab/index.html?quest=pitch">画素を細かくする限界</a></div>
+  </div>
+
+  <div class="caveat">
+    <span class="tag">この節の数字について</span>
+    <p><strong>にじみをガウスの σ 一つで表したのは、説明のための近似です。</strong>実際の拡散の広がりは、光が吸収される深さと電界の分布で決まり、裾が長くなります。開口 100% も仮定で、実際の開口はマイクロレンズとフォトダイオードの形で決まります。σ 0.3・0.5・1.0 µm は、比べるための例です。</p>
+  </div>
+</section>
+
 <section class="stage" id="send">
   <div class="stage-head"><span class="stage-num">—</span>
     <h2>4つの境目に戻る</h2></div>
@@ -2757,7 +3175,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
 <!-- ================= 数字の根拠 ================= -->
 <section class="stage" id="scheck">
   <div class="stage-head"><span class="stage-num">—</span>
-    <h2>理解の確認 ― 12問で「4つの境目」をつなぎ直す</h2></div>
+    <h2>理解の確認 ― 24問で「4つの境目」をつなぎ直す</h2></div>
   <p class="lede">光 → 電荷 → 電圧 → 数値の順に並べてあります。答えを開く前に、どの段のどの式を使うかを先に言ってみてください。</p>
   <div class="chk">
     <details><summary><span class="qn">Q1 · 02</span>シリコンのセンサが 1,107 nm より長い光に反応しないのはなぜか。</summary><p>光子のエネルギー 1240/λ[nm] eV が、バンドギャップ 1.12 eV に届かないから（1240 ÷ 1.12 = 1107）。何枚レンズを良くしても写らない。</p></details>
@@ -2772,6 +3190,18 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <details><summary><span class="qn">Q10 · 08</span>3,000 lx で 18% グレーの SN 比はおよそいくつか。暗い側で効く手と明るい側で効く手は？</summary><p>信号 ≈ 2,100〜2,160 e⁻、ノイズ ≈ √信号 ≈ 46 e⁻ で SN 比 ≈ 46（33 dB）。明るい側はショットノイズ支配なので「光を増やす」だけが効き、暗い側は読み出しノイズの床を下げる手が効く。</p></details>
     <details><summary><span class="qn">Q11 · 測る</span>PTC の傾きが K の逆数になるのはなぜか。</summary><p>DN = N/K なので平均は K で、分散は K² で割られる。ポアソンの Var(N) = E(N) を使うと σ²<sub>DN</sub> = μ<sub>DN</sub>/K + σ²<sub>read</sub> ― 電子数が式から消える。</p></details>
     <details><summary><span class="qn">Q12 · 測る</span>PTC で出ない仕様を1つ挙げ、どう測るかを言え。</summary><p><b>QE</b>。PTC は「電子になったぶん」しか見ないので、校正された光源か基準検出器で<b>入射光子数を別に</b>測る（EMVA 1288 の手順）。暗電流も遮光して露光時間を振る別測定。</p></details>
+      <details><summary><span class="qn">Q13 · TDI</span>TDI の段数を 4 倍にすると、ショット雑音で決まる SN 比は何倍になるか。CMOS で数値として足す場合、読み出し雑音はどうなるか。</summary><p>信号は 4 倍、ショット雑音は √4 = 2 倍なので <b>SN 比は 2 倍</b>（√N 倍）。数値で足すと読み出し雑音も 4 回ぶん積もって √4 倍になる。電荷のまま足して 1 回だけ読む CCD 型では読み出し雑音は 1 回ぶんのまま。</p></details>
+    <details><summary><span class="qn">Q14 · TDI</span>256 段の TDI で、行を送る速さが像の速さより 0.5% ずれていた。ナイキスト周波数での MTF はいくつか。</summary><p>ずれは L = 256 × 0.005 = 1.28 画素、MTF = sinc(π × 1.28/2) = <b>0.45</b>。64 段なら 0.96。段数を増やして光を稼ぐほど、同期の精度が要る。</p></details>
+    <details><summary><span class="qn">Q15 · 深サブ電子</span>読み出しノイズ 0.3 e⁻ と 0.15 e⁻ で、読みが隣の整数に取り違えられる確率はそれぞれいくつか。</summary><p>erfc(0.5/(√2σ)) から <b>9.6%</b> と <b>0.086%</b>。σ を半分にするだけで桁で減るのは、正規分布の裾が指数関数的に細いから。</p></details>
+    <details><summary><span class="qn">Q16 · 深サブ電子</span>FD の容量を小さくして読み出しノイズを電子の単位で下げると、何を失うか。</summary><p>変換ゲイン q/C が上がるので同じ電圧の雑音が電子で小さくなるが、同じ電圧の振幅で扱える電子数（飽和）も C に比例して減る。3.5 fF で約 12,000 e⁻ だった井戸が、0.28 fF では約 960 e⁻。明るい側の余裕と引き換え。</p></details>
+    <details><summary><span class="qn">Q17 · 波長</span>300 nm の光は、表面の不感層 10 nm で何% 失われるか（吸収長 5.8 nm）。</summary><p>通り抜けるのは e<sup>−10/5.8</sup> = 18% なので、<b>約 82%</b> が失われる。紫外の画素は裏面照射にして、裏面の終端（デルタドープなど）を数 nm まで薄くする。</p></details>
+    <details><summary><span class="qn">Q18 · 波長</span>10 keV の X 線を、3 µm の画素と、300 µm を完全空乏化させたシリコンは、それぞれ何% 止めるか（吸収長 127 µm）。</summary><p>1 − e<sup>−3/127</sup> = <b>2.3%</b>、1 − e<sup>−300/127</sup> = <b>91%</b>。X 線の直接検出は、厚い高抵抗のシリコンを全部空乏化させて使う。</p></details>
+    <details><summary><span class="qn">Q19 · HDR</span>長短 1:16 の合成で、長い露光が飽和する直前（12,000 e⁻）から短い露光に切り替えると、つなぎ目の SN 比はどう変わるか（読み出し 2.5 e⁻）。</summary><p>109.5 → 750 e⁻ の 27.3 で、<b>ほぼ 1/4（−12 dB）</b>。天井は 20log16 = 24 dB 上がるが、段差も √(比) で深くなる。</p></details>
+    <details><summary><span class="qn">Q20 · 付録 C</span>E<sub>a</sub> 0.60 eV の暗電流を 1/16 にするのに、9 ℃ × 4 回 = 36 ℃ ではなく約 32 K の冷却で足りるのはなぜか。</summary><p>倍になる温度差 ΔT = ln2·kT²/E<sub>a</sub> が T² に比例して、<b>低温ほど縮む</b>から（27 ℃ から −5 ℃ で 1/16）。ただし E<sub>a</sub> の小さい欠陥の成分は同じ冷却で 1/5 にしかならず、合計は目標に届かない。</p></details>
+    <details><summary><span class="qn">Q21 · 付録 B</span>λ = 38.7 nm の構造で、L = 180 nm と 100 nm の S 値はそれぞれいくつか（対称な場合）。</summary><p>59.5 × 1.15 / (1 − sech(L/2λ)) から <b>84.9</b> と <b>140 mV/桁</b>。しきい値の 0.3 V 下では、短いほうが約 25 倍漏れる。</p></details>
+    <details><summary><span class="qn">Q22 · SPAD</span>不感時間 20 ns の SPAD に 10⁷ 光子/s が来ると、何 % 数え落とすか。明るい物体の距離はどちらへ偏るか。</summary><p>r/(1 + rτ<sub>d</sub>) で <b>16.7%</b>。早く来た光子ほど数えられやすいので、<b>手前に偏る</b>（パイルアップ）。</p></details>
+    <details><summary><span class="qn">Q23 · MTF</span>3.0 µm・開口 100% の画素の、ナイキストでの MTF はいくつか。拡散のにじみ σ 0.5 µm（ガウス）が加わると？</summary><p>開口は sinc(1/2) = 2/π = <b>0.637</b>。にじみは exp(−2π²σ²f<sub>N</sub>²) = 0.872 なので、合わせて <b>0.555</b>。系の MTF はレンズとの掛け算。</p></details>
+    <details><summary><span class="qn">Q24 · MTF</span>スラントエッジ法でエッジを傾けるのはなぜか。tan θ = 1/10 なら何度で、何倍細かく標本化できるか。</summary><p>行ごとにエッジの位置が 1/N 画素ずつずれるので、並べ直すと画素ピッチの 1/N で ESF が取れる。<b>5.71°</b>・<b>10 倍</b>。傾けないとナイキストより上の成分が折り返して、MTF を正しく出せない。</p></details>
   </div>
 </section>
 
@@ -2818,9 +3248,9 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>内蔵電位 V<sub>bi</sub></td><td class="num">0.78 V</td>
             <td>接合の両側の濃度差から決まる。(kT/q)·ln(N<sub>a</sub>N<sub>d</sub>/n<sub>i</sub>²) に kT/q = 0.0259 V、N<sub>a</sub> = 10<sup>15</sup>、N<sub>d</sub> = 10<sup>18</sup>/cm³ を入れると 0.0259 × ln(10<sup>13</sup>) = 0.78 V。</td></tr>
           <tr><td>空乏層の幅 W</td><td class="num">2.2 μm<br>(V=3V時)</td>
-            <td>ポアソン方程式を接合の両側で解くと W = √(2ε(V<sub>bi</sub>+V)/qN<sub>a</sub>)（n側が十分濃い片側階段接合の近似）。上の値を入れて 2.2 μm。<strong>√の中にあるので、電圧を10倍にしても幅は3倍ちょっと</strong>にしかなりません。</td></tr>
+            <td>ポアソン方程式を接合の両側で解くと W = √(2ε(V<sub>bi</sub>+V)/qN<sub>a</sub>)（n側が十分濃い片側階段接合の近似）。上の値を入れて 2.2 μm。<strong>√の中にあるので、逆バイアスを 3 V → 30 V と 10 倍にしても幅は 2.9 倍</strong>にしかなりません（内蔵電位 0.78 V も √ の中に入るため）。</td></tr>
           <tr><td>暗電流が倍になる<br>温度差</td><td class="num">約 9 ℃</td>
-            <td>熱で電子が励起される割合はおよそ exp(−E<sub>g</sub>/2kT) に比例する。300 K 付近でこれを温度で微分すると 1 K あたり約7.7 %増、ln2 ÷ 0.077 ≈ 9 ℃で2倍。</td></tr>
+            <td>空乏層の生成電流は n<sub>i</sub> ∝ T<sup>3/2</sup>·exp(−E<sub>g</sub>/2kT) に比例する（見かけの活性化エネルギー 0.60 eV、下の行）。300 K 付近で温度で微分すると 1 K あたり E<sub>a</sub>/kT² ≈ 7.7 %増、ln2 ÷ 0.077 ≈ 9 ℃で2倍。指数だけ（E<sub>g</sub>/2 = 0.56 eV）で数えると 7.2 %・9.6 ℃ になる。</td></tr>
           <tr><td>生成支配の<br>見かけの E<sub>a</sub></td><td class="num">0.599 eV</td>
             <td>空乏層生成は n<sub>i</sub> に比例し、n<sub>i</sub> &prop; T<sup>3/2</sup>exp(&minus;E<sub>g</sub>/2kT)。アレニウスの傾きには前指数の T<sup>3/2</sup> ぶんの 1.5kT = 0.039 eV が上乗せされる。E<sub>g</sub>/2 + 1.5kT = 0.560 + 0.039。<strong>実測で 0.56 ちょうどが出ないのは、これが理由。</strong><span class="key">Cで使用。</span></td></tr>
           <tr><td>暗電流が倍になる<br>温度差（一般化）</td><td class="num">&Delta;T = ln2&middot;kT&sup2;/E<sub>a</sub></td>
@@ -2877,6 +3307,17 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
             <td>v<sub>sat</sub>/&micro;。飽和速度 1&times;10<sup>7</sup> cm/s はシリコンの実測値（光学フォノン放出で頭打ちになる）。反転層の実効移動度を 300〜450 cm&sup2;/V&middot;s とした。L = 0.2 &micro;m に 1 V かけると 5&times;10<sup>4</sup> V/cm なので、<strong>短チャネルは常時この領域</strong>。<span class="key">Bで使用。</span></td></tr>
           <tr><td>チャネル下の<br>不純物原子数</td><td class="num">約 100 個</td>
             <td>100 nm 角 &times; 深さ 100 nm の体積 10<sup>&minus;15</sup> cm&sup3; に、濃度 10<sup>17</sup>/cm&sup3;。<strong>100個の統計ゆらぎは &radic;100 = 10、つまり 10 %。</strong>しきい値ばらつきが面積の平方根に反比例する（Pelgrom則）根っこはここ。<span class="key">Bで使用。</span></td></tr>
+        <tr class="grp"><td colspan="3">動き・時間・波長の外側（04 の追記・TDI・深サブ電子・波長の外側）</td></tr>
+          <tr><td>1 行の時間<br>（単一傾斜 AD）</td><td class="num">4.1 µs</td>
+            <td>2<sup>12</sup> ÷ 1 GHz（仮定: 1 行ごとに満量程まで数える）。3000 行で 12.3 ms、600 画素/秒の物体は上下で 7.4 画素ずれる。4 行同時なら 3.07 ms・1.84 画素。PixelLab 第4章と同じ式。<span class="key">04 で使用。</span></td></tr>
+          <tr><td>寄生感度の<br>偽の信号</td><td class="num">8.4 e⁻ / 0.67 e⁻</td>
+            <td>量子効率 0.762（PixelLab の既定の画素）× 10⁶ 光子/µm²/s × 9 µm² × 分離比 × 待ち時間。80 dB・12.3 ms で 8.4、90 dB・3.07 ms で 0.67。最後の行が一番長く待つ最悪の場合。<span class="key">04 で使用。</span></td></tr>
+          <tr><td>TDI の 1 行の時間</td><td class="num">20 µs</td>
+            <td>画素ピッチ ÷ 像の速さ = 7 µm ÷ 0.35 m/s（仮定）。64 段で露光 1.28 ms、SN 比は電荷で足して 56.5・数値で足して 53.3。<span class="key">TDI で使用。</span></td></tr>
+          <tr><td>整数の取り違え</td><td class="num">erfc(0.5/(√2σ))</td>
+            <td>隣の整数までの距離 0.5 e⁻ を、正規分布の雑音 σ が越える確率（内側の整数の両側）。σ = 0.3 e⁻ で 9.6%、0.15 e⁻ で 0.086%。<span class="key">深サブ電子で使用。</span></td></tr>
+          <tr><td>X 線 10 keV の電子数</td><td class="num">2,762 e⁻</td>
+            <td>10,000 eV ÷ w 値 3.62 eV（第5部 09）。ファノ因子 0.115 と読み出し 2.5 e⁻ を合わせた分解能は FWHM 153 eV。<span class="key">波長の外側で使用。</span></td></tr>
         </tbody>
       </table>
     </div>
@@ -2961,6 +3402,24 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>曖昧距離</td><td>iToF で位相が 2&pi; を一周して距離が巻き戻る間隔 c/(2f)。2周波数の併用で解く</td><td class="num">1.5 m @100 MHz</td></tr>
           <tr><td>Cu-Cu ハイブリッド接合</td><td>バンプを使わず、絶縁膜と銅パッドの平面同士を直接貼り合わせる接続。画素直下の縦配線を可能にした</td><td class="num">ピッチ数µm→1µm級</td></tr>
           <tr><td>4:2:0</td><td>色差 Cb・Cr を縦横半分に間引く記法。目の色解像度の低さを使う ― Bayer と同じ判断の保存版</td><td class="num">データ量 1/2</td></tr>
+                  <tr><td>TDI</td><td>時間遅延積分。電荷を像と同じ速さで隣の行へ送り続け、N 行ぶんの露光を 1 つの電荷に足し込む撮り方。流れるものの検査・衛星の撮影で使う</td><td class="num">SN 比 √N 倍</td></tr>
+          <tr><td>TDI の同期ずれ</td><td>行を送る速さと像の速さの相対的なずれ ε。N 段で L = N·ε 画素のにじみになり、ナイキストの MTF は sinc(πL/2)</td><td class="num">256 段・0.5% で 0.45</td></tr>
+          <tr><td>段送りの MTF</td><td>電荷が 1 行の時間ごとに跳んで移ることで残る 1 画素ぶんのにじみ。1 画素を m 回に分けて送れば sinc(π/(2m)) まで戻る</td><td class="num">1 相 0.64・4 相 0.97</td></tr>
+          <tr><td>深サブ電子読み出し</td><td>読み出しノイズが 1 e⁻ を大きく下回り、出力の分布に整数の山が分かれるほど静かな読み出し。増倍なしで光電子を数えられる</td><td class="num">&lt; 0.3 e⁻ rms</td></tr>
+          <tr><td>光子数分解</td><td>1 画素・1 回の露光で、光電子が 0・1・2…個のどれかを見分けること。取り違えの確率は erfc(0.5/(√2σ))</td><td class="num">σ 0.15 で 0.09%</td></tr>
+          <tr><td>Skipper CCD</td><td>同じ電荷を壊さずに何度も読み、平均して雑音を σ/√N に下げる CCD。数千回の平均で 1 個の電子を数える。速さを捨てる</td><td class="num">0.07 e⁻ rms 程度</td></tr>
+          <tr><td>QIS / jot</td><td>量子画像センサ。ごく小さな画素（jot）で 0 か 1 かを数え、何枚も足して像を作る構想</td><td class="num">Fossum</td></tr>
+          <tr><td>不感層</td><td>表面の近くで、生まれた電子が再結合で失われやすい層。紫外と青の量子効率を削る。通り抜ける割合は e<sup>−d/L</sup></td><td class="num">nm 級</td></tr>
+          <tr><td>デルタドープ</td><td>裏面に数 nm の高濃度層を分子線エピタキシーで作り、界面の電界で電子を内側へ押し戻す終端。紫外の内部量子効率をほぼ 1 にした</td><td class="num">Hoenk 1992</td></tr>
+          <tr><td>DTI</td><td>深いトレンチ分離。画素の境目に深い溝を掘って絶縁物で埋め、深く潜った光で生まれた電子が隣の画素へ迷い込むのを止める</td><td class="num">近赤外で効く</td></tr>
+          <tr><td>分割事象</td><td>電界のない層で止まった X 線 1 個の電荷が拡散で広がり、2〜4 画素に分かれて入ること。足し戻してからエネルギーを求める</td><td class="num">X 線の光子計数</td></tr>
+          <tr><td>完全空乏（厚い Si）</td><td>厚い高抵抗のシリコンを基板まで全部空乏化させた受光層。深く止まる近赤外や X 線の電荷を、電界で横に広げずに集める</td><td class="num">300 µm で 10 keV の 91%</td></tr>
+                  <tr><td>スラントエッジ法</td><td>画素の列に対して少し傾けたエッジを撮り、行ごとの応答を並べ直して画素ピッチより細かく ESF を取る MTF の測り方（ISO 12233）</td><td class="num">傾き約 5°</td></tr>
+          <tr><td>ESF / LSF</td><td>エッジの応答と、それを微分した線の応答。LSF をフーリエ変換すると MTF</td><td class="num">―</td></tr>
+          <tr><td>画素の開口の MTF</td><td>幅 p の窓で平均することによる MTF |sinc(f·p)|。開口 100% ならナイキストで 2/π</td><td class="num">0.637</td></tr>
+          <tr><td>クロストーク（光学的・電気的）</td><td>隣の画素へ漏れる信号の割合。光学的はマイクロレンズの縁や斜めの光、電気的は電子の拡散による</td><td class="num">σ 0.5 µm で 1 画素 5.8%</td></tr>
+          <tr><td>スポット走査</td><td>画素より小さな光点で画素をなぞり、位置ごとの感度（画素の応答関数）とクロストークを直接測る方法</td><td class="num">刻み 0.1 µm 程度</td></tr>
+          <tr><td>MTF50</td><td>MTF が 0.5 になる空間周波数。解像の比べる物差し</td><td class="num">3.0 µm で 140〜201 本/mm</td></tr>
         </tbody>
       </table>
     </div>
@@ -3011,6 +3470,8 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <p><strong>EMVA Standard 1288</strong> — Standard for Characterization of Image Sensors and Cameras（European Machine Vision Association）</p>
       <p style="margin-top:12px">「センサを測る」で扱ったフォトントランスファーカーブを含め、<span class="key">量子効率・変換ゲイン・読み出しノイズ・暗電流・非線形性・不均一性の測り方を統一した規格</span>です。何枚撮るか、どの範囲で直線を当てはめるか、どう報告するかまで決めてあります。</p>
       <p style="margin-top:12px">メーカーのデータシートに「EMVA1288準拠」と書いてあれば、<strong>少なくとも測り方は他社と揃っている</strong>ということです。逆に書いていない数値は、条件を確認しないと比較できません。実務でいちばん役に立つ知識かもしれません。</p>
+      <p style="margin-top:12px"><strong>ISO 12233:2017</strong> — Photography — Electronic still picture imaging — Resolution and spatial frequency responses</p>
+      <p style="margin-top:12px">「画素の MTF とクロストークを測る」のスラントエッジ法の規格です。エッジの傾き、線形化、ESF から MTF までの計算の手順を定めています。</p>
     </div>
   </figure>
 
@@ -3037,6 +3498,13 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
             <td>「降伏の先 — SPAD」。ガイガーモード動作と受動／能動クエンチを整理した定番の総説です。</td></tr>
           <tr><td>イベントベース視覚<br>（DVS）</td><td>P. Lichtsteiner, C. Posch,<br>T. Delbruck<br>IEEE J. Solid-State Circuits, 2008</td>
             <td>「イベントベースセンサ」。128×128 の DVS ― 対数画素＋変化検出＋非同期出力という原型を確立した仕事です。</td></tr>
+                  <tr><td>TDI の CMOS での<br>作り方</td><td>G. Lepage, J. Bogaerts, G. Meynants<br>IEEE Trans. Electron Devices 56, 2524 (2009)</td><td>「TDI」。電荷で足す・電圧で足す・数値で足す TDI の構成と、雑音と同期の比較。</td></tr>
+          <tr><td>Skipper CCD による<br>1 電子の計数</td><td>J. Tiffenberg ほか<br>Phys. Rev. Lett. 119, 131802 (2017)</td><td>「深サブ電子の読み出し」。同じ電荷を数千回読んで平均し、電子を 1 個ずつ数えた。</td></tr>
+          <tr><td>量子画像センサ<br>（QIS）</td><td>E. R. Fossum ほか<br>Sensors 16, 1260 (2016)</td><td>「深サブ電子の読み出し」。jot で 0/1 を数えて足し合わせる構想と、光子数分解の読み出しの条件。</td></tr>
+          <tr><td>デルタドープによる<br>紫外の感度</td><td>M. E. Hoenk ほか<br>Appl. Phys. Lett. 61, 1084 (1992)</td><td>「波長の外側」。裏面に分子線エピタキシーで作った高濃度の薄い層で、紫外の内部量子効率をほぼ 1 にした。</td></tr>
+          <tr><td>シリコンの吸収係数<br>（紫外〜近赤外）</td><td>M. A. Green, M. J. Keevers<br>Prog. Photovolt. 3, 189 (1995)</td><td>「波長の外側」の紫外の吸収長（250 nm で 5.4 nm など）。SemiLab の吸収の表も同じ出典。</td></tr>
+          <tr><td>X 線の減衰係数</td><td>M. J. Berger ほか<br>NIST XCOM: Photon Cross Sections Database</td><td>「波長の外側」の X 線の吸収長（10 keV で 127 µm、20 keV で 0.96 mm）。第5部 09 と同じ値。</td></tr>
+                  <tr><td>スラントエッジ法の<br>MTF の計算</td><td>P. D. Burns<br>Proc. IS&amp;T PICS Conference, pp. 135–138 (2000)</td><td>「画素の MTF とクロストークを測る」。傾けたエッジから ESF → LSF → MTF を出す手順。</td></tr>
         </tbody>
       </table>
     </div>
@@ -3073,6 +3541,8 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
 
 /* 動きを減らす設定かどうか。粒子の初期化で draws からも参照するので先に決める */
 var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+/* SVG の SMIL（animate・animateMotion）は CSS の設定では止まらないので、ここで止める */
+if (reduce) { [].forEach.call(document.querySelectorAll("svg"), function (s) { if (s.pauseAnimations) s.pauseAnimations(); }); }
 
 /* ---------------- theme colors ---------------- */
 var CSSV = {};
@@ -7161,6 +7631,345 @@ function drawHDR(){
   ce.style.color= HDR.mode===0? C("ink-3") : C("warn");
 }
 draws.push(drawHDR);
+
+
+/* ================= TDI ================= */
+var TDI={nIdx:6, eps:0.005, t:0, play:true, acc:[], seeded:false};
+var TDI_P=7e-6, TDI_V=0.35, TDI_S1=50, TDI_RN=2.5;
+function tdiN(){ return Math.pow(2, TDI.nIdx); }
+function sincF(x){ return Math.abs(x)<1e-9? 1 : Math.sin(x)/x; }
+function tdiCalc(){
+  var N=tdiN(), S=N*TDI_S1, L=N*TDI.eps;
+  return { N:N, S:S, tLine:TDI_P/TDI_V, snrC:S/Math.sqrt(S+TDI_RN*TDI_RN),
+           snrD:S/Math.sqrt(S+N*TDI_RN*TDI_RN), L:L, mtf:sincF(Math.PI*L/2) };
+}
+document.getElementById("cTdiN").addEventListener("input", function(){ TDI.nIdx=+this.value; tdiReset(); TDI.seeded=false; drawTDI(); });
+document.getElementById("cTdiE").addEventListener("input", function(){ TDI.eps=(+this.value)/10000; tdiReset(); TDI.seeded=false; drawTDI(); });
+document.getElementById("bTdiPlay").addEventListener("click", function(){
+  TDI.play=!TDI.play; this.setAttribute("aria-pressed",String(TDI.play));
+  this.textContent=TDI.play?"再生中":"一時停止";
+});
+var TDI_ROWS=16;
+function tdiReset(){ TDI.t=0; TDI.acc=[]; }
+/* t は「1 行の時間」を単位にした時刻。像の位置（段）は t + (t/16)·L ― N 段で生じる L 画素のずれを 16 段に縮めて描く */
+function tdiImg(t, L){ return t + (t/TDI_ROWS)*L; }
+function stepTDI(){
+  if(!TDI.play) return;
+  var r=tdiCalc(), dt=1/48, tPrev=TDI.t;
+  TDI.t += dt;
+  /* 電荷の塊は floor(t) 段目にいて、そのあいだ像と重なったぶんを足し込む */
+  var k=Math.floor(tPrev);
+  if(k<TDI_ROWS){
+    var y0=tdiImg(tPrev, r.L), y1=tdiImg(TDI.t, r.L);
+    var ym=(y0+y1)/2;
+    var ov=Math.max(0, Math.min(ym+1, k+1)-Math.max(ym, k));   /* 像（1 段ぶんの高さ）と塊のマスの重なり */
+    TDI.acc[k]=(TDI.acc[k]||0)+ov*dt;
+  }
+  if(TDI.t>TDI_ROWS+3){ tdiReset(); }
+}
+function drawTDI(){
+  var cv=document.getElementById("cvTDI"); var f=fit(cv,2.7,300,330); var g=f.g,W=f.w,H=f.h;
+  if(reduce && !TDI.seeded){ TDI.seeded=true; TDI.play=true; for(var sb=0; sb<48*TDI_ROWS; sb++) stepTDI(); TDI.play=false; }
+  var r=tdiCalc();
+  var yTop=40, yBot=H-40;
+  /* ---------- ① 16 段の模型 ---------- */
+  var x0=44, cols=5, cw=Math.min(34,(W*0.30-x0)/cols), x1=x0+cols*cw;
+  var rh=(yBot-yTop)/TDI_ROWS;
+  txt(g,"① 像と電荷の行進（16 段の模型）", x0-30, 20, {size:10.5,weight:"600",color:C("ink")});
+  for(var i=0;i<TDI_ROWS;i++){
+    for(var j=0;j<cols;j++){
+      g.fillStyle=C("surface-2"); g.fillRect(x0+j*cw+1, yTop+i*rh+1, cw-2, rh-2);
+    }
+  }
+  g.strokeStyle=C("line"); g.lineWidth=1; g.strokeRect(x0+.5,yTop+.5,x1-x0-1,yBot-yTop-1);
+  /* 段番号（左） */
+  for(var i2=0;i2<TDI_ROWS;i2+=5){ txt(g,String(i2+1), x0-6, yTop+i2*rh+rh*0.7, {align:"right",size:9,color:C("ink-3")}); }
+  var cc=2; /* 像の通る列 */
+  var kNow=Math.floor(TDI.t);
+  /* 足し込んだ電荷の塊: いまの段に、ここまでの合計の明るさで描く */
+  var sum=0; for(var a=0;a<TDI.acc.length;a++) sum+=(TDI.acc[a]||0);
+  if(kNow<TDI_ROWS){
+    var fr=Math.min(1, sum/TDI_ROWS);
+    g.fillStyle=C("electron"); g.globalAlpha=0.25+0.75*fr;
+    g.fillRect(x0+cc*cw+3, yTop+kNow*rh+2, cw-6, rh-4); g.globalAlpha=1;
+  }
+  /* 像（明るい点）: 連続に動く */
+  var yi=tdiImg(TDI.t, r.L);
+  if(yi<TDI_ROWS){
+    var yc=yTop+(yi+0.5)*rh;
+    g.fillStyle=C("photon"); g.globalAlpha=0.9;
+    g.beginPath(); g.arc(x0+cc*cw+cw/2, Math.min(yBot-3,Math.max(yTop+3,yc)), Math.min(cw,rh)*0.32, 0, 6.3); g.fill(); g.globalAlpha=1;
+  }
+  /* 凡例（下） */
+  g.fillStyle=C("photon"); g.beginPath(); g.arc(x0-24, yBot+18, 4, 0, 6.3); g.fill();
+  txt(g,"像", x0-16, yBot+22, {size:9.5,color:C("ink-2")});
+  g.fillStyle=C("electron"); g.fillRect(x0+6, yBot+13, 12, 10);
+  txt(g,"電荷の塊（明るさ＝足した光）", x0+22, yBot+22, {size:9.5,color:C("ink-2")});
+
+  /* ---------- ② ずれの MTF ---------- */
+  var bx0=Math.max(x1+72, W*0.36), bx1=W*0.64, by0=yTop+6, by1=yBot-8;
+  txt(g,"② ずれ L = N·ε による MTF", bx0-34, 20, {size:10.5,weight:"600",color:C("ink")});
+  g.strokeStyle=C("line"); g.lineWidth=1;
+  g.beginPath(); g.moveTo(bx0,by0); g.lineTo(bx0,by1); g.lineTo(bx1,by1); g.stroke();
+  [0,0.5,1].forEach(function(v){ var yy=by1-v*(by1-by0);
+    g.strokeStyle=C("line-2"); g.setLineDash([2,3]); g.beginPath(); g.moveTo(bx0,yy); g.lineTo(bx1,yy); g.stroke(); g.setLineDash([]);
+    txt(g,v.toFixed(1), bx0-6, yy+4, {align:"right",size:9,color:C("ink-3")}); });
+  [0,0.5,1].forEach(function(v){ var xx=bx0+v*(bx1-bx0); txt(g,v.toFixed(1), xx, by1+14, {align:"center",size:9,color:C("ink-3")}); });
+  txt(g,"空間周波数 ÷ ナイキスト", (bx0+bx1)/2, by1+28, {align:"center",size:9,color:C("ink-3")});
+  function mtfCurve(L, col, dash){
+    g.strokeStyle=col; g.lineWidth=2; g.setLineDash(dash||[]);
+    g.beginPath();
+    for(var q=0;q<=60;q++){ var u=q/60; var m=Math.abs(sincF(Math.PI*L*u/2)); var xx=bx0+u*(bx1-bx0), yy=by1-m*(by1-by0);
+      if(q===0) g.moveTo(xx,yy); else g.lineTo(xx,yy); }
+    g.stroke(); g.setLineDash([]);
+  }
+  mtfCurve(1/4, C("ink-3"), [4,3]);   /* 4 相の段送り（1/4 画素のにじみ） */
+  mtfCurve(r.L, C("electron"));
+  g.fillStyle=C("electron"); g.beginPath(); g.arc(bx1, by1-Math.abs(r.mtf)*(by1-by0), 4, 0, 6.3); g.fill();
+  /* 凡例は左下に置く（曲線は低い周波数ほど 1 に近く、左下は空いている） */
+  txt(g,"実線: いまのずれ L = "+r.L.toFixed(2)+" 画素", bx0+8, by1-26, {size:9.5,color:C("electron-2")});
+  txt(g,"破線: 4 相の段送り（1/4 画素）", bx0+8, by1-12, {size:9.5,color:C("ink-3")});
+
+  /* ---------- ③ 段数と SN 比 ---------- */
+  var cx0=W*0.70, cx1=W-16, cy0=yTop+6, cy1=yBot-8;
+  txt(g,"③ 段数 N と SN 比", cx0-26, 20, {size:10.5,weight:"600",color:C("ink")});
+  var Ns=[1,2,4,8,16,32,64,128,256], smax=120;
+  var bw=(cx1-cx0)/Ns.length;
+  g.strokeStyle=C("line"); g.lineWidth=1; g.beginPath(); g.moveTo(cx0,cy1); g.lineTo(cx1,cy1); g.stroke();
+  [0,50,100].forEach(function(v){ var yy=cy1-v/smax*(cy1-cy0);
+    g.strokeStyle=C("line-2"); g.setLineDash([2,3]); g.beginPath(); g.moveTo(cx0,yy); g.lineTo(cx1,yy); g.stroke(); g.setLineDash([]);
+    txt(g,String(v), cx0-6, yy+4, {align:"right",size:9,color:C("ink-3")}); });
+  Ns.forEach(function(N,k){
+    var S=N*TDI_S1, sc=S/Math.sqrt(S+TDI_RN*TDI_RN), sd=S/Math.sqrt(S+N*TDI_RN*TDI_RN);
+    var on=(N===r.N), xx=cx0+k*bw+bw*0.15, ww=bw*0.34;
+    g.fillStyle=C("electron"); g.globalAlpha=on?1:0.45; g.fillRect(xx, cy1-sc/smax*(cy1-cy0), ww, sc/smax*(cy1-cy0));
+    g.fillStyle=C("digital"); g.fillRect(xx+ww+1, cy1-sd/smax*(cy1-cy0), ww, sd/smax*(cy1-cy0)); g.globalAlpha=1;
+    txt(g,String(N), cx0+k*bw+bw/2, cy1+14, {align:"center",size:9,weight:on?"600":"400",color:on?C("ink"):C("ink-3")});
+  });
+  txt(g,"段数 N", (cx0+cx1)/2, cy1+28, {align:"center",size:9,color:C("ink-3")});
+  g.fillStyle=C("electron"); g.fillRect(cx0+4, cy0+4, 10, 9);
+  txt(g,"電荷で足す（CCD 型）", cx0+18, cy0+12, {size:9.5,color:C("ink-2")});
+  g.fillStyle=C("digital"); g.fillRect(cx0+4, cy0+20, 10, 9);
+  txt(g,"数値で足す（CMOS 型）", cx0+18, cy0+28, {size:9.5,color:C("ink-2")});
+
+  /* 読み値 */
+  document.getElementById("vTdiN").textContent=r.N+" 段";
+  document.getElementById("vTdiE").textContent=(TDI.eps*100).toFixed(2)+" %";
+  document.getElementById("rTdiT").innerHTML=(r.N*r.tLine*1e3).toFixed(r.N*r.tLine<1e-3?3:2)+" <small>ms</small>";
+  document.getElementById("rTdiS").innerHTML=Math.round(r.S).toLocaleString("en-US")+" <small>e⁻</small>";
+  document.getElementById("rTdiSnr").textContent=r.snrC.toFixed(1)+" / "+r.snrD.toFixed(1);
+  document.getElementById("rTdiL").innerHTML=r.L.toFixed(2)+" <small>画素</small>";
+  document.getElementById("rTdiM").textContent=Math.abs(r.mtf).toFixed(2);
+}
+draws.push(drawTDI);
+anims.push({el:document.getElementById("cvTDI"), step:stepTDI, draw:drawTDI, vis:false});
+
+/* ================= 深サブ電子 ================= */
+var SUB={sig:0.25, lam:2.0, hist:null, n:0, seed:12345, play:true, seeded:false};
+var SUB_BW=0.05, SUB_NMAX=4000;
+function subErfc(x){ var t=1/(1+0.3275911*x);
+  var y=t*(0.254829592+t*(-0.284496736+t*(1.421413741+t*(-1.453152027+t*1.061405429)))); return y*Math.exp(-x*x); }
+function subPerr(s){ return subErfc(0.5/(Math.SQRT2*s)); }
+function subRnd(){ SUB.seed=(SUB.seed*1103515245+12345)%2147483648; return (SUB.seed+0.5)/2147483648; }
+function subXmax(){ return Math.max(5, Math.ceil(SUB.lam+4*Math.sqrt(SUB.lam)+1)); }
+function subReset(){ SUB.hist=null; SUB.n=0; SUB.seed=12345; }
+function subSample(){
+  /* ポアソン（逆関数法）＋ 正規（ボックス＝ミュラー）。決まった擬似乱数列なので毎回同じ標本 */
+  var u=subRnd(), k=0, p=Math.exp(-SUB.lam), c=p;
+  while(u>c && k<60){ k++; p*=SUB.lam/k; c+=p; }
+  var z=Math.sqrt(-2*Math.log(subRnd()))*Math.cos(2*Math.PI*subRnd());
+  return k+SUB.sig*z;
+}
+function subAdd(m){
+  var xmin=-1, xmax=subXmax(), nb=Math.round((xmax-xmin)/SUB_BW);
+  if(!SUB.hist){ SUB.hist=new Array(nb); for(var i=0;i<nb;i++) SUB.hist[i]=0; }
+  for(var j=0;j<m && SUB.n<SUB_NMAX;j++){
+    var x=subSample(), b=Math.floor((x-xmin)/SUB_BW);
+    if(b>=0 && b<nb) SUB.hist[b]++;
+    SUB.n++;
+  }
+}
+document.getElementById("cSubS").addEventListener("input", function(){ SUB.sig=(+this.value)/100; subReset(); if(reduce) subAdd(SUB_NMAX); drawSub(); });
+document.getElementById("cSubL").addEventListener("input", function(){ SUB.lam=(+this.value)/10; subReset(); if(reduce) subAdd(SUB_NMAX); drawSub(); });
+document.getElementById("bSubPlay").addEventListener("click", function(){
+  SUB.play=!SUB.play; this.setAttribute("aria-pressed",String(SUB.play));
+  this.textContent=SUB.play?"再生中":"一時停止";
+});
+function stepSub(){
+  if(!SUB.play) return;
+  if(SUB.n>=SUB_NMAX){ SUB.hold=(SUB.hold||0)+1; if(SUB.hold>120){ SUB.hold=0; subReset(); } return; }
+  subAdd(40);
+}
+function drawSub(){
+  var cv=document.getElementById("cvSub"); var f=fit(cv,2.6,300,330); var g=f.g,W=f.w,H=f.h;
+  if(reduce && !SUB.seeded){ SUB.seeded=true; subReset(); subAdd(SUB_NMAX); }
+  if(!SUB.hist) subAdd(0);
+  var xmin=-1, xmax=subXmax();
+  var ax0=56, ax1=W*0.60, ay0=44, ay1=H-40;
+  function X(x){ return ax0+(x-xmin)/(xmax-xmin)*(ax1-ax0); }
+  /* 厳密な分布（標本数 SUB_NMAX に合わせた期待値の高さ） */
+  function pdf(x){ var s=0, p=Math.exp(-SUB.lam);
+    for(var k=0;k<=xmax+2;k++){ if(k>0) p*=SUB.lam/k; var d=(x-k)/SUB.sig; s+=p*Math.exp(-0.5*d*d); }
+    return s/(SUB.sig*Math.sqrt(2*Math.PI)); }
+  var ymax=0; for(var q=0;q<=400;q++){ var xx=xmin+(xmax-xmin)*q/400; ymax=Math.max(ymax,pdf(xx)); }
+  ymax*=Math.max(SUB.n,1000)*SUB_BW*1.12;   /* 標本が少ないうちも形が見える高さに（1,000 回ぶんを下限に） */
+  function Y(v){ return ay1-v/ymax*(ay1-ay0); }
+  txt(g,"① 同じ明るさを何千回も読んだ出力の分布", ax0-30, 20, {size:10.5,weight:"600",color:C("ink")});
+  g.strokeStyle=C("line"); g.lineWidth=1;
+  g.beginPath(); g.moveTo(ax0,ay0); g.lineTo(ax0,ay1); g.lineTo(ax1,ay1); g.stroke();
+  /* 四捨五入の境目 */
+  for(var kb=0; kb<xmax; kb++){
+    var xb=X(kb+0.5);
+    /* 上端の凡例に掛からないよう、少し下から引く */
+    g.strokeStyle=C("line-2"); g.setLineDash([3,3]); g.beginPath(); g.moveTo(xb,ay0+24); g.lineTo(xb,ay1); g.stroke(); g.setLineDash([]);
+  }
+  for(var kt=0; kt<=xmax; kt++){ txt(g,String(kt), X(kt), ay1+14, {align:"center",size:9.5,color:C("ink-3")}); }
+  txt(g,"読んだ値（電子の数に換算）", (ax0+ax1)/2, ay1+28, {align:"center",size:9,color:C("ink-3")});
+  /* 標本の棒 */
+  var h=SUB.hist||[], nb=h.length;
+  g.fillStyle=C("electron"); g.globalAlpha=0.7;
+  for(var b=0;b<nb;b++){ if(!h[b]) continue; var xl=X(xmin+b*SUB_BW), xr=X(xmin+(b+1)*SUB_BW);
+    g.fillRect(xl, Y(h[b]), Math.max(1,xr-xl-0.5), ay1-Y(h[b])); }
+  g.globalAlpha=1;
+  /* 厳密な形（いまの標本数に合わせる） */
+  g.strokeStyle=C("photon"); g.lineWidth=1.6; g.beginPath();
+  for(var q2=0;q2<=400;q2++){ var x2=xmin+(xmax-xmin)*q2/400, yv=pdf(x2)*SUB.n*SUB_BW;
+    if(q2===0) g.moveTo(X(x2),Y(yv)); else g.lineTo(X(x2),Y(yv)); }
+  g.stroke();
+  txt(g,"棒: 標本 "+SUB.n+" 回", ax1-4, ay0+2, {align:"right",size:9.5,color:C("electron-2")});
+  txt(g,"線: 厳密な分布　点線: 四捨五入の境目", ax1-4, ay0+16, {align:"right",size:9.5,color:C("ink-3")});
+
+  /* ---------- ② σ と取り違えの確率 ---------- */
+  var bx0=W*0.70, bx1=W-18, by0=44, by1=H-40;
+  var smin=0.05, smax=1.0, lmin=-8, lmax=0;
+  function BX(s){ return bx0+(s-smin)/(smax-smin)*(bx1-bx0); }
+  function BY(p){ var l=Math.log10(Math.max(p,1e-8)); return by1-(l-lmin)/(lmax-lmin)*(by1-by0); }
+  txt(g,"② 読み出しノイズと取り違えの確率", bx0-44, 20, {size:10.5,weight:"600",color:C("ink")});
+  g.strokeStyle=C("line"); g.lineWidth=1;
+  g.beginPath(); g.moveTo(bx0,by0); g.lineTo(bx0,by1); g.lineTo(bx1,by1); g.stroke();
+  [0,-2,-4,-6,-8].forEach(function(l){ var yy=BY(Math.pow(10,l));
+    g.strokeStyle=C("line-2"); g.setLineDash([2,3]); g.beginPath(); g.moveTo(bx0,yy); g.lineTo(bx1,yy); g.stroke(); g.setLineDash([]);
+    txt(g,l===0?"1":"10"+(l===-2?"⁻²":l===-4?"⁻⁴":l===-6?"⁻⁶":"⁻⁸"), bx0-6, yy+4, {align:"right",size:9,color:C("ink-3")}); });
+  [0.1,0.3,0.5,1.0].forEach(function(s){ txt(g,s.toFixed(1), BX(s), by1+14, {align:"center",size:9,color:C("ink-3")}); });
+  txt(g,"σ（e⁻ rms）", (bx0+bx1)/2, by1+28, {align:"center",size:9,color:C("ink-3")});
+  g.strokeStyle=C("photon"); g.lineWidth=2; g.beginPath();
+  for(var q3=0;q3<=120;q3++){ var s3=smin+(smax-smin)*q3/120; var yy3=BY(subPerr(s3));
+    if(q3===0) g.moveTo(BX(s3),yy3); else g.lineTo(BX(s3),yy3); }
+  g.stroke();
+  var pe=subPerr(SUB.sig);
+  g.fillStyle=C("electron"); g.beginPath(); g.arc(BX(SUB.sig), BY(pe), 4.5, 0, 6.3); g.fill();
+
+  /* 読み値 */
+  var cg=112.5/SUB.sig, cff=1.602176634e-19/(cg*1e-6)*1e15, fw=0.54/(cg*1e-6);
+  document.getElementById("vSubS").textContent=SUB.sig.toFixed(2)+" e⁻";
+  document.getElementById("vSubL").textContent=SUB.lam.toFixed(1)+" 個";
+  document.getElementById("rSubErr").textContent=(pe>=0.01? (pe*100).toFixed(1)+" %" : (pe*100).toPrecision(2)+" %");
+  document.getElementById("rSubCG").innerHTML=Math.round(cg)+" <small>µV/e⁻</small>";
+  document.getElementById("rSubC").innerHTML=cff.toFixed(2)+" fF / "+Math.round(fw).toLocaleString("en-US")+" <small>e⁻</small>";
+  document.getElementById("rSubSnr").textContent=(SUB.lam/Math.sqrt(SUB.lam+SUB.sig*SUB.sig)).toFixed(2)+" / "+(SUB.lam/Math.sqrt(2*SUB.lam)).toFixed(2);
+}
+draws.push(drawSub);
+anims.push({el:document.getElementById("cvSub"), step:stepSub, draw:drawSub, vis:false});
+
+/* ================= 波長の外側 ================= */
+/* 吸収長 [µm]: 紫外は Green & Keevers (1995)、可視と近赤外は 02 と同じ表（absLen）、X 線は NIST XCOM */
+var BAND={key:"300", ph:[], k:0, seeded:false};
+var BAND_SRC={
+  "250":{L:1e4/1.84e6, name:"250 nm（紫外）", col:"#8a5cf6"},
+  "300":{L:1e4/1.73e6, name:"300 nm（紫外）", col:"#8a5cf6"},
+  "400":{L:absLen(400), name:"400 nm（紫）", col:wlColor(400)},
+  "550":{L:absLen(550), name:"550 nm（緑）", col:wlColor(550)},
+  "850":{L:absLen(850), name:"850 nm（近赤外）", col:wlColor(850)},
+  "940":{L:absLen(940), name:"940 nm（近赤外）", col:wlColor(940)},
+  "x10":{L:127, name:"X 線 10 keV", col:null},
+  "x20":{L:960, name:"X 線 20 keV", col:null}
+};
+var BAND_DEAD=0.010, BAND_PIX=3.0, BAND_THICK=300;   /* µm */
+[].forEach.call(document.querySelectorAll("#sband .btn[data-band]"), function(b){
+  b.addEventListener("click", function(){
+    BAND.key=b.getAttribute("data-band"); BAND.ph=[]; BAND.k=0;
+    [].forEach.call(document.querySelectorAll("#sband .btn[data-band]"), function(o){ o.setAttribute("aria-pressed", String(o===b)); });
+    if(reduce) bandSeed();
+    drawBand();
+  });
+});
+function bandU(k){ var v=(k*0.6180339887498949)%1; return 0.02+0.96*v; }       /* 分位点の列（決まった順） */
+function bandX(k){ var v=(k*0.7548776662466927)%1; return v; }
+function bandSeed(){ BAND.ph=[]; for(var k=0;k<60;k++){ var u=bandU(k); BAND.ph.push({u:u, x:bandX(k), d:-BAND_SRC[BAND.key].L*Math.log(1-u), f:1, age:0}); } }
+function stepBand(){
+  var s=BAND_SRC[BAND.key];
+  if(BAND.ph.length<60 && (BAND.k%3===0)){ var k=BAND.ph.length; var u=bandU(BAND.k/3|0);
+    BAND.ph.push({u:u, x:bandX(BAND.k/3|0), d:-s.L*Math.log(1-u), f:0, age:0}); }
+  BAND.k++;
+  BAND.ph.forEach(function(p){ if(p.f<1) p.f=Math.min(1,p.f+0.03); else p.age++; });
+  if(BAND.k>60*3+200){ BAND.ph=[]; BAND.k=0; }
+}
+function drawBand(){
+  var cv=document.getElementById("cvBand"); var f=fit(cv,2.6,320,340); var g=f.g,W=f.w,H=f.h;
+  if(reduce && !BAND.seeded){ BAND.seeded=true; bandSeed(); }
+  var s=BAND_SRC[BAND.key], col=s.col||C("digital");
+  var yTop=40, yBot=H-36, dmin=1e-3, dmax=1e3;          /* µm: 1 nm〜1 mm */
+  function DY(d){ var l=Math.log10(Math.max(d,dmin)/dmin)/6; return yTop+Math.min(1,l)*(yBot-yTop); }
+  var x0=90, x1=W*0.40;
+  txt(g,"① 光子が止まる深さ（対数・1 目盛りで 10 倍）", x0-62, 20, {size:10.5,weight:"600",color:C("ink")});
+  g.fillStyle=C("si-soft"); g.fillRect(x0,yTop,x1-x0,yBot-yTop);
+  g.strokeStyle=C("si"); g.lineWidth=1; g.strokeRect(x0+.5,yTop+.5,x1-x0-1,yBot-yTop-1);
+  var tk=[[1e-3,"1 nm"],[1e-2,"10 nm"],[1e-1,"100 nm"],[1,"1 µm"],[10,"10 µm"],[100,"100 µm"],[1000,"1 mm"]];
+  tk.forEach(function(t){ var y=DY(t[0]);
+    g.strokeStyle=C("line"); g.beginPath(); g.moveTo(x0-4,y); g.lineTo(x0,y); g.stroke();
+    txt(g,t[1], x0-8, y+4, {align:"right",size:9.5,color:C("ink-3")}); });
+  /* 層の境目 */
+  var lay=[[BAND_DEAD,"不感層 10 nm（仮定）",C("warn")],[BAND_PIX,"画素の受光層 3 µm",C("electron")],[BAND_THICK,"厚い完全空乏 300 µm",C("digital")]];
+  lay.forEach(function(L){ var y=DY(L[0]);
+    g.setLineDash([4,3]); g.strokeStyle=L[2]; g.lineWidth=1.2; g.beginPath(); g.moveTo(x0,y); g.lineTo(x1+8,y); g.stroke(); g.setLineDash([]);
+    txt(g,L[1], x1+12, y+4, {size:9.5,color:L[2],weight:"600"}); });
+  /* 光子 */
+  BAND.ph.forEach(function(p){
+    var xx=x0+10+p.x*(x1-x0-20);
+    var dEnd=Math.min(p.d, dmax), yEnd=DY(dEnd);
+    var yNow=yTop+(yEnd-yTop)*p.f;
+    if(p.f<1){
+      g.strokeStyle=col; g.lineWidth=1.6; g.globalAlpha=0.9;
+      g.beginPath(); g.moveTo(xx, Math.max(yTop,yNow-10)); g.lineTo(xx, yNow); g.stroke(); g.globalAlpha=1;
+    } else {
+      var a=Math.max(0.25, 1-p.age/260);
+      g.globalAlpha=a; g.fillStyle= p.d>dmax? C("ink-3") : col;
+      g.beginPath(); g.arc(xx, p.d>dmax? yBot-4 : yEnd, 3, 0, 6.3); g.fill(); g.globalAlpha=1;
+    }
+  });
+  txt(g,"いま: "+s.name+"　吸収長 L = "+(s.L<1? (s.L*1000).toFixed(s.L<0.01?1:0)+" nm" : (s.L<10? s.L.toFixed(1): Math.round(s.L))+" µm"),
+      x0, yBot+22, {size:9.5,color:C("ink-2"),weight:"600"});
+
+  /* ---------- ② 止まった場所の割合 ---------- */
+  var fDead=1-Math.exp(-BAND_DEAD/s.L);
+  var fPix=Math.exp(-BAND_DEAD/s.L)-Math.exp(-BAND_PIX/s.L);
+  var fThick=Math.exp(-BAND_PIX/s.L)-Math.exp(-BAND_THICK/s.L);
+  var fOut=Math.exp(-BAND_THICK/s.L);
+  var px0=W*0.66, px1=W-18, py=yTop+6, ph=24;
+  txt(g,"② 光子 100 個はどこで止まるか", px0, 20, {size:10.5,weight:"600",color:C("ink")});
+  var segs=[[fDead,C("warn"),"不感層（0〜10 nm）","→ 失われやすい"],
+            [fPix,C("electron"),"受光層（10 nm〜3 µm）","→ ふつうの画素の信号"],
+            [fThick,C("digital"),"深い層（3〜300 µm）","→ 厚く空乏化させれば信号"],
+            [fOut,C("surface-3"),"300 µm を突き抜ける","→ シリコンでは止まらない"]];
+  var cx=px0, bw=px1-px0;
+  segs.forEach(function(sg){ var w=sg[0]*bw; g.fillStyle=sg[1]; g.fillRect(cx,py,Math.max(0,w),ph); cx+=w; });
+  g.strokeStyle=C("line"); g.lineWidth=1; g.strokeRect(px0+.5,py+.5,bw-1,ph-1);
+  segs.forEach(function(sg,i){ var yy=py+ph+28+i*38;
+    g.fillStyle=sg[1]; g.fillRect(px0, yy-10, 13, 13);
+    g.strokeStyle=C("line"); g.strokeRect(px0+.5, yy-9.5, 12, 12);
+    var pc=sg[0]*100;
+    txt(g,(pc>=10? pc.toFixed(0) : pc>=0.1? pc.toFixed(1) : pc>0? "< 0.1" : "0")+" %", px0+20, yy+1, {size:12,weight:"600",color:C("ink")});
+    txt(g,sg[2], px0+92, yy-3, {size:9.5,color:C("ink-2")});
+    txt(g,sg[3], px0+92, yy+10, {size:9.5,color:C("ink-3")});
+  });
+
+  document.getElementById("rBandL").textContent= s.L<1? (s.L*1000).toFixed(s.L<0.01?1:0)+" nm" : (s.L<10? s.L.toFixed(2): Math.round(s.L))+" µm";
+  document.getElementById("rBandDead").textContent=(fDead*100).toFixed(fDead<0.01?2:1)+" %";
+  document.getElementById("rBand3").textContent=((1-Math.exp(-BAND_PIX/s.L))*100).toFixed(1)+" %";
+  document.getElementById("rBand300").textContent=((1-Math.exp(-BAND_THICK/s.L))*100).toFixed(1)+" %";
+}
+draws.push(drawBand);
+anims.push({el:document.getElementById("cvBand"), step:stepBand, draw:drawBand, vis:false});
 
 /* ================= animation loop ================= */
 if("IntersectionObserver" in window){

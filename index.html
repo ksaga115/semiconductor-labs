@@ -196,11 +196,11 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       <dl class="spec">
         <div><dt>参考書</dt><dd>11<small>部＋付録</small></dd></div>
         <div><dt>ラボ</dt><dd>11<small>本</small></dd></div>
-        <div><dt>採点つき課題</dt><dd>190<small>問</small></dd></div>
+        <div><dt>採点つき課題</dt><dd>193<small>問</small></dd></div>
         <div><dt>依存</dt><dd>0<small>ブラウザのみ</small></dd></div>
         <div><dt>通信</dt><dd>0<small>手元で完結</small></dd></div>
-        <div><dt>自動検査</dt><dd>5,194<small>件 (Node)</small></dd></div>
-        <div class="spec-cap">課題数は ProcessLab 13 ＋ SemiLab 26 ＋ CharLab 13 ＋ NandLab 31 ＋ PixelLab 16 ＋ PhotonLab 15 ＋ AnalogLab 16 ＋ OptoLab 15 ＋ QALab 21 ＋ LaserLab 12 ＋ DesignLab 12。検査は11本の <code>node tests/all.js</code> の合計（2026-09-13 時点）。</div>
+        <div><dt>自動検査</dt><dd>5,255<small>件 (Node)</small></dd></div>
+        <div class="spec-cap">課題数は ProcessLab 13 ＋ SemiLab 26 ＋ CharLab 13 ＋ NandLab 31 ＋ PixelLab 19 ＋ PhotonLab 15 ＋ AnalogLab 16 ＋ OptoLab 15 ＋ QALab 21 ＋ LaserLab 12 ＋ DesignLab 12。検査は11本の <code>node tests/all.js</code> の合計（2026-09-13 時点）。</div>
       </dl>
     </div>
   </div>
@@ -563,7 +563,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       </div>
       <div class="pair">
         <div><span class="kind read">参考書</span><a href="第4部_イメージセンサ.html">イメージセンサ解剖ラボ</a><small>光子が像になるまでの7つの段 · 23節</small></div>
-        <div><span class="kind lab">ラボ</span><a href="PixelLab/index.html">PixelLab</a><small>原始部品 ＝ 光子と電子を数えること · 4章 16問 · <a href="PixelLab/README.md">README</a></small></div>
+        <div><span class="kind lab">ラボ</span><a href="PixelLab/index.html">PixelLab</a><small>原始部品 ＝ 光子と電子を数えること · 5章 19問 · <a href="PixelLab/README.md">README</a></small></div>
       </div>
     </div>
     <div class="chap">
@@ -594,6 +594,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       <div><span class="cn">—</span><div class="ct"><a href="第4部_イメージセンサ.html#sptc">ノイズの正体 / センサを測る（PTC）</a></div><div class="cd">分散と平均から電子が数えられる。合わせ込む係数がひとつも無い物差し。</div></div>
       <div class="do"><span class="lbl">PixelLab 第1章</span><a class="q" href="PixelLab/index.html?quest=k">K を当てる</a><a class="q" href="PixelLab/index.html?quest=read">読み出し雑音</a><a class="q" href="PixelLab/index.html?quest=fw">飽和電荷</a><a class="q" href="PixelLab/index.html?quest=dark">暗電流</a><a class="q" href="PixelLab/index.html?quest=prnu">PRNU</a></div>
       <div class="do"><span class="lbl">PixelLab 第4章</span><a class="q" href="PixelLab/index.html?quest=roll">ローリングシャッタの歪み</a><a class="q" href="PixelLab/index.html?quest=gs">グローバルシャッタの寄生感度</a><a class="q" href="PixelLab/index.html?quest=pitch">画素を細かくする限界</a><a class="q" href="PixelLab/index.html?quest=tdi">TDI の段数</a></div>
+      <div class="do"><span class="lbl">PixelLab 第5章</span><a class="q" href="PixelLab/index.html?quest=seam">HDR のつなぎ目の SN 比</a><a class="q" href="PixelLab/index.html?quest=defect">欠陥の暗電流と冷却</a><a class="q" href="PixelLab/index.html?quest=spad">SPAD の不感時間と光子数</a></div>
     </div>
     <div class="chap">
       <div><span class="cn">A–B</span><div class="ct"><a href="第4部_イメージセンサ.html#sa">トンネル効果 / 短チャネル効果</a></div><div class="cd">薄ければ抜ける。S値 59.5 mV/桁 は熱が決める壁。</div></div>
@@ -942,7 +943,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
 node SemiLab\tests\all.js    1,255 件
 node CharLab\tests\all.js      281 件
 node NandLab\tests\all.js      725 件
-node PixelLab\tests\all.js     372 件
+node PixelLab\tests\all.js     433 件
 node PhotonLab\tests\all.js    333 件
 node AnalogLab\tests\all.js    334 件
 node OptoLab\tests\all.js      301 件

@@ -144,4 +144,22 @@ T('第4章 動き・細かさ・時間（第4部の数字と突き合わせる�
   near('ずれ 1% で 100 段なら にじみ 1 画素', W({ tdiN: 100 }).tdiSmear, 1, 1e-12);
 });
 
+
+T('第5章 ― つなぎ目・欠陥の成分・SPAD（第4部の例題の数字）', () => {
+  const PIX5 = PX.pixel;
+  /* 第4部「ダイナミックレンジを広げる」の例題: 12,000 e⁻・1:16・読み出し 2.5 e⁻ */
+  const sm = PIX5.seamSnr(12000, 16, 2.5);
+  ok('つなぎ目の長い側 109.5', Math.abs(sm.long - 109.5) < 0.05);
+  ok('つなぎ目の短い側 27.3', Math.abs(sm.short - 27.3) < 0.05);
+  ok('つなぎ目の段差 −12.1 dB', Math.abs(20 * Math.log10(sm.short / sm.long) + 12.1) < 0.05);
+  /* 第4部 付録C の例題: E_a 0.35 eV の欠陥の成分は 27℃ → −5℃ で約 1/5（0.199） */
+  ok('欠陥の成分 27→−5℃ で 0.199', Math.abs(PIX5.arrScale(0.35, -5, 27) - 0.199) < 0.001);
+  ok('欠陥の成分が無ければ暗電流は今までと同じ', PIX5.evaluate(PIX5.defaults()).darkDef === 0);
+  /* 第4部 SPAD の例題: 10⁷ /s・20 ns で 16.7%、100 ps で 1.5 cm、100 光子で 1.5 mm */
+  const sp = PIX5.evaluate(Object.assign(PIX5.defaults(), { spadN: 100 }));
+  ok('SPAD 数え落とし 16.7%', Math.abs(sp.spadLoss - 1 / 6) < 1e-9);
+  ok('SPAD 1 光子 1.5 cm', Math.abs(sp.spadSig1 - 1.499) < 0.001);
+  ok('SPAD 100 光子 1.5 mm', Math.abs(sp.spadSigN * 10 - 1.499) < 0.001);
+});
+
 report();

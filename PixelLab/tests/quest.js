@@ -95,4 +95,34 @@ T('第4章 ― 窓の両側と反則', () => {
   ok('tdi: 読み出し雑音を削るのは反則（ここでは足し方を選ぶ課題）', !g('tdi', { tdiMode: 0, tdiN: 100, cfd: 1.0 }));
 });
 
+T('第5章 ― 窓の両側と反則', () => {
+  const g = (id, patch) => Q.grade(id, { design: Object.assign({}, A.get(id).design(), patch) }).ok;
+  ok('第5章の課題が 3 問ある', Q.LIST.filter((q) => q.ch === 5).length === 3);
+  /* seam: 88 dB には R ≥ 5.89、つなぎ目 30 には R ≤ 7.48 */
+  ok('seam: 5.9 は通る', g('seam', { hdrR: 5.9 }));
+  ok('seam: 5.8 は合成が 88 dB に届かない', !g('seam', { hdrR: 5.8 }));
+  ok('seam: 7.4 は通る', g('seam', { hdrR: 7.4 }));
+  ok('seam: 7.5 はつなぎ目が 30 を切る', !g('seam', { hdrR: 7.5 }));
+  ok('seam: 16 は天井は届くがつなぎ目が 20.5', !g('seam', { hdrR: 16 }));
+  ok('seam: 浮遊拡散を下げて単発の DR を稼ぐのは反則', !g('seam', { hdrR: 4, cfd: 1.2 }));
+  ok('seam: 桁を増やすのは反則', !g('seam', { bits: 14 }));
+  /* defect: 欠陥の成分が無ければ −10℃ で足りるが、10 pA/cm² で −29℃ まで要る */
+  ok('defect: −29℃ は通る', g('defect', { T: -29 }));
+  ok('defect: −28.9℃ は届かない', !g('defect', { T: -28.9 }));
+  ok('defect: −20℃（欠陥なしなら足りる温度）は届かない', !g('defect', { T: -20 }));
+  ok('defect: −40℃ は通る', g('defect', { T: -40 }));
+  ok('defect: −41℃ は冷却の上限破り', !g('defect', { T: -41 }));
+  ok('defect: 欠陥を減らしたことにするのは反則', !g('defect', { T: -20, jdDef: 1 }));
+  ok('defect: 読み出し雑音を増やして基準を緩めるのは反則', !g('defect', { T: -20, sf: 400 }));
+  /* spad: τ ≤ 11.1 ns・N ≥ 57 */
+  ok('spad: 11.1 ns は通る', g('spad', { spadTd: 11.1 }));
+  ok('spad: 11.2 ns は数え落としが 10% を超える', !g('spad', { spadTd: 11.2 }));
+  ok('spad: 4.9 ns はアフターパルスの下限破り', !g('spad', { spadTd: 4.9 }));
+  ok('spad: 57 光子は通る', g('spad', { spadN: 57 }));
+  ok('spad: 56 光子は 2.003 mm で届かない', !g('spad', { spadN: 56 }));
+  ok('spad: 101 光子は時間の上限破り', !g('spad', { spadN: 101 }));
+  ok('spad: 揺らぎを小さくするのは反則', !g('spad', { spadN: 20, spadJit: 50 }));
+  ok('spad: 光を弱めて数え落としを減らすのは反則', !g('spad', { spadTd: 20, spadRate: 3e6 }));
+});
+
 report();
