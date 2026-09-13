@@ -379,7 +379,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <a class="back" href="index.html">&larr; Labs / 半導体 ― 付録 物性値と索引（引くための巻末）</a><br>
       <span class="eyebrow">Materials &rarr; Formulas &rarr; Index</span>
       <h1>引くための<span class="lit">巻末</span><br>― 物性値と索引</h1>
-      <p class="sub">第0〜9部を読み終えたあと、あるいは読んでいる途中で「あの値は何だったか」「あの式はどの部だったか」「この言葉の意味は」を<strong>引く</strong>ためのページです。3 つの道具を置きました: 主な半導体と絶縁膜の<strong>物性値の表</strong>（01）、部をまたいで使う<strong>式の索引</strong>（02）、そして全部の部の用語表をまとめて検索できる<strong>統一索引</strong>（03）。</p>
+      <p class="sub">第0〜9部を読み終えたあと、あるいは読んでいる途中で「あの値は何だったか」「あの式はどの部だったか」「この言葉の意味は」を<strong>引く</strong>ためのページです。6 つの道具を置きました: 主な半導体と絶縁膜の<strong>物性値の表</strong>（01）、部をまたいで使う<strong>式の索引</strong>（02）、全部の部の用語表をまとめて検索できる<strong>統一索引</strong>（03）、部によって意味の変わる<strong>記号表</strong>（04）、データシートと論文を読むための<strong>英日対訳</strong>（05）、そして何がどの順で可能になったかの<strong>年表</strong>（06）。</p>
       <div class="depth-row">
         <div class="depth" role="group" aria-label="説明の深さ">
           <button id="dSimple" aria-pressed="true">かんたん</button>
@@ -407,6 +407,9 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li><a href="#s1"><span class="n">01</span><span>物性値の表</span></a></li>
     <li><a href="#s2"><span class="n">02</span><span>式の索引</span></a></li>
     <li><a href="#s3"><span class="n">03</span><span>用語の統一索引</span></a></li>
+    <li><a href="#s4"><span class="n">04</span><span>記号表</span></a></li>
+    <li><a href="#s5"><span class="n">05</span><span>英日対訳</span></a></li>
+    <li><a href="#s6"><span class="n">06</span><span>年表</span></a></li>
     <li class="dom"><span>付録</span></li>
     <li><a href="#sref"><span class="n">—</span><span>出典</span></a></li>
   </ol>
@@ -422,6 +425,9 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li><a href="#s1"><span class="n">01</span><span>物性値</span></a></li>
     <li><a href="#s2"><span class="n">02</span><span>式の索引</span></a></li>
     <li><a href="#s3"><span class="n">03</span><span>統一索引</span></a></li>
+    <li><a href="#s4"><span class="n">04</span><span>記号表</span></a></li>
+    <li><a href="#s5"><span class="n">05</span><span>英日対訳</span></a></li>
+    <li><a href="#s6"><span class="n">06</span><span>年表</span></a></li>
     <li class="dom"><span>付録</span></li>
     <li><a href="#sref"><span class="n">—</span><span>出典</span></a></li>
   </ol>
@@ -927,6 +933,380 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       </table>
     </div>
     <figcaption>この表は各部の用語表から機械的に集めたものです（並びは日本語の辞書順の近似）。意味の文は各部の文脈で書かれているので、詳しくはリンク先の部で読んでください。</figcaption>
+  </figure>
+</section>
+
+<!-- ================= 04 ================= -->
+<section class="stage" id="s4">
+  <div class="stage-head"><span class="stage-num">04</span>
+    <h2>記号表 ― 同じ文字が、部によって違うものを指す</h2></div>
+  <p class="lede">物理と工学の記号は、アルファベットとギリシャ文字だけでは足りないので、同じ文字が分野ごとに別の量に使われます。この本の中でも、α は吸収係数にも動作率にも内部損失にもなる。<span class="key">式を読むときは、まず「この部ではこの文字が何か」を確かめる</span> ― そのための一覧です。</p>
+  <figure class="full">
+    <div class="scroll-x">
+      <table>
+        <thead><tr><th>記号</th><th>意味</th><th>単位</th><th>主に使う場所</th></tr></thead>
+        <tbody>
+          <tr class="grp"><td colspan="4">ギリシャ文字</td></tr>
+          <tr><td>α</td><td>吸収係数（光が 1/e に弱まる深さの逆数）</td><td class="num">cm⁻¹</td><td>第2部 04・第4部 02</td></tr>
+          <tr><td>α</td><td>動作率（1 秒あたりに切り替わる部分の割合）: P = αCV²f</td><td class="num">―</td><td>第3部 01</td></tr>
+          <tr><td>α<sub>i</sub></td><td>レーザーの内部の損失</td><td class="num">cm⁻¹</td><td>第9部 04・05</td></tr>
+          <tr><td>α（ヘンリーの）</td><td>線幅増大係数</td><td class="num">―</td><td>第9部 05</td></tr>
+          <tr><td>β</td><td>BJT の電流利得 I<sub>C</sub>/I<sub>B</sub></td><td class="num">―</td><td>第2部 BJT</td></tr>
+          <tr><td>β</td><td>帰還率（出力のうち入力へ戻す割合）</td><td class="num">―</td><td>第6部 05</td></tr>
+          <tr><td>β</td><td>自然放出のうちレーザーのモードに入る割合</td><td class="num">―</td><td>第9部 05</td></tr>
+          <tr><td>γ</td><td>MOS の熱雑音の係数（4kTγ/g<sub>m</sub>）</td><td class="num">―</td><td>第6部 07</td></tr>
+          <tr><td>Γ</td><td>光の閉じ込め係数（光が活性層に重なる割合）</td><td class="num">―</td><td>第9部 04</td></tr>
+          <tr><td>Γ</td><td>伝送線路の反射係数 (Z<sub>L</sub>−Z<sub>0</sub>)/(Z<sub>L</sub>+Z<sub>0</sub>)</td><td class="num">―</td><td>第6部 11</td></tr>
+          <tr><td>δ</td><td>ダイノード 1 段の二次電子放出比</td><td class="num">―</td><td>第5部 02</td></tr>
+          <tr><td>ε</td><td>誘電率（ε<sub>r</sub>ε<sub>0</sub>）</td><td class="num">F/cm</td><td>第2部・第0部 08</td></tr>
+          <tr><td>ε</td><td>放射率（黒体に対する放射の割合）</td><td class="num">―</td><td>第9部 01・第5部 05</td></tr>
+          <tr><td>η</td><td>量子効率（光子 1 個あたりの電子）</td><td class="num">―</td><td>第2部 04・第4部 02・第5部 04</td></tr>
+          <tr><td>η</td><td>ワイブル分布の尺度（63% が壊れる時刻）</td><td class="num">h</td><td>第8部 03</td></tr>
+          <tr><td>η</td><td>変換効率（太陽電池・モード結合）</td><td class="num">―</td><td>第2部 太陽電池・第7部 06</td></tr>
+          <tr><td>η<sub>d</sub>・η<sub>i</sub></td><td>レーザーの微分量子効率・注入効率</td><td class="num">―</td><td>第9部 05</td></tr>
+          <tr><td>θ</td><td>熱抵抗（θ<sub>ja</sub>・θ<sub>jc</sub>）</td><td class="num">K/W</td><td>第8部 04</td></tr>
+          <tr><td>θ</td><td>角度（入射角・発散角・ブルースター角）</td><td class="num">rad・°</td><td>第7部</td></tr>
+          <tr><td>λ</td><td>波長</td><td class="num">nm・µm</td><td>全部</td></tr>
+          <tr><td>λ</td><td>チャネル長変調の係数（r<sub>o</sub> = 1/(λI<sub>D</sub>)）</td><td class="num">V⁻¹</td><td>第6部 01</td></tr>
+          <tr><td>λ</td><td>故障率</td><td class="num">1/h・FIT</td><td>第8部 01</td></tr>
+          <tr><td>λ</td><td>ポアソン分布の平均</td><td class="num">個</td><td>第0部 02</td></tr>
+          <tr><td>Λ</td><td>回折格子（DFB）の周期</td><td class="num">nm</td><td>第9部 07</td></tr>
+          <tr><td>µ</td><td>移動度</td><td class="num">cm²/(V·s)</td><td>第2部 01・第6部</td></tr>
+          <tr><td>µ</td><td>平均（分布の中心）</td><td class="num">―</td><td>第8部 06・第4部 PTC</td></tr>
+          <tr><td>ν・ν̃</td><td>周波数・波数（10⁷/λ[nm]）</td><td class="num">Hz・cm⁻¹</td><td>第0部 04・第7部 11</td></tr>
+          <tr><td>ρ</td><td>抵抗率</td><td class="num">Ω·cm</td><td>第2部 01</td></tr>
+          <tr><td>ρ</td><td>反射率（被写体・積分球の内面）</td><td class="num">―</td><td>第7部 03・08</td></tr>
+          <tr><td>σ</td><td>標準偏差（ばらつき）</td><td class="num">量による</td><td>第0部 02・第4部・第8部</td></tr>
+          <tr><td>σ</td><td>導電率 q(nµ<sub>n</sub> + pµ<sub>p</sub>)</td><td class="num">S/cm</td><td>第2部 01</td></tr>
+          <tr><td>σ</td><td>シュテファン・ボルツマン定数 5.67×10⁻⁸</td><td class="num">W/(m²·K⁴)</td><td>第9部 01</td></tr>
+          <tr><td>τ</td><td>キャリアの寿命</td><td class="num">s</td><td>第2部 03・第9部 05</td></tr>
+          <tr><td>τ</td><td>時定数（RC・ロックイン）</td><td class="num">s</td><td>第0部 03・第7部 08</td></tr>
+          <tr><td>τ</td><td>蛍光の寿命</td><td class="num">ns</td><td>第5部 06</td></tr>
+          <tr><td>τ<sub>p</sub></td><td>光子が共振器にとどまる時間</td><td class="num">ps</td><td>第9部 05</td></tr>
+          <tr><td>φ<sub>F</sub></td><td>フェルミポテンシャル（しきい値の 2φ<sub>F</sub>）</td><td class="num">V</td><td>第2部 05</td></tr>
+          <tr><td>χ<sup>(2)</sup>・χ<sup>(3)</sup></td><td>非線形感受率</td><td class="num">―</td><td>第9部 10</td></tr>
+          <tr class="grp"><td colspan="4">ラテン文字</td></tr>
+          <tr><td>A</td><td>面積</td><td class="num">cm²</td><td>全部</td></tr>
+          <tr><td>A</td><td>増幅器の開ループ利得</td><td class="num">―</td><td>第6部 05</td></tr>
+          <tr><td>A<sub>21</sub>・B<sub>21</sub></td><td>アインシュタインの自然放出・誘導放出の係数</td><td class="num">―</td><td>第9部 04</td></tr>
+          <tr><td>c</td><td>光速 299 792 458</td><td class="num">m/s</td><td>全部</td></tr>
+          <tr><td>C</td><td>容量（C<sub>ox</sub>・C<sub>j</sub>・C<sub>FD</sub>）</td><td class="num">F</td><td>第2部・第4部・第6部</td></tr>
+          <tr><td>D</td><td>拡散係数</td><td class="num">cm²/s</td><td>第2部 01・第1部 08</td></tr>
+          <tr><td>D</td><td>ファイバの波長分散</td><td class="num">ps/(nm·km)</td><td>第7部 12</td></tr>
+          <tr><td>D</td><td>DC-DC のデューティ（オンの時間の割合）</td><td class="num">―</td><td>第6部 10</td></tr>
+          <tr><td>D*</td><td>比検出能 √A/NEP</td><td class="num">cm·√Hz/W</td><td>第5部 04</td></tr>
+          <tr><td>E</td><td>エネルギー（E<sub>g</sub>・E<sub>F</sub>・E<sub>a</sub>）</td><td class="num">eV</td><td>全部</td></tr>
+          <tr><td>E</td><td>電界（E<sub>c</sub> は臨界電界）</td><td class="num">V/cm</td><td>第2部</td></tr>
+          <tr><td>E</td><td>照度</td><td class="num">lx・W/m²</td><td>第7部 02・03</td></tr>
+          <tr><td>f</td><td>周波数・焦点距離</td><td class="num">Hz・mm</td><td>全部・第7部</td></tr>
+          <tr><td>F</td><td>過剰雑音係数（増倍の揺らぎ）</td><td class="num">―</td><td>第5部 02・03</td></tr>
+          <tr><td>F</td><td>ファブリ・ペローのフィネス</td><td class="num">―</td><td>第7部 10</td></tr>
+          <tr><td>FF</td><td>太陽電池の曲線因子</td><td class="num">―</td><td>第2部 太陽電池</td></tr>
+          <tr><td>g・g<sub>m</sub></td><td>レーザーの利得 ／ MOS の相互コンダクタンス</td><td class="num">cm⁻¹ ／ S</td><td>第9部 04 ／ 第6部 01</td></tr>
+          <tr><td>I</td><td>電流</td><td class="num">A</td><td>全部</td></tr>
+          <tr><td>I</td><td>光度（点光源のある方向の強さ）・光の強さ</td><td class="num">cd・W/m²</td><td>第7部 02・09</td></tr>
+          <tr><td>k</td><td>ボルツマン定数 1.380 649×10⁻²³</td><td class="num">J/K</td><td>全部</td></tr>
+          <tr><td>k</td><td>APD のイオン化率比</td><td class="num">―</td><td>第5部 03</td></tr>
+          <tr><td>k</td><td>包含係数（U = k·u<sub>c</sub>）</td><td class="num">―</td><td>第8部 10</td></tr>
+          <tr><td>k</td><td>波数ベクトル（E-k 図）</td><td class="num">1/m</td><td>第0部 06・第5部 08</td></tr>
+          <tr><td>L</td><td>拡散長・共振器の長さ・ファイバの長さ</td><td class="num">µm・mm・km</td><td>第2部・第9部・第7部 12</td></tr>
+          <tr><td>L</td><td>輝度（放射輝度）</td><td class="num">cd/m²・W/(m²·sr)</td><td>第7部 03・第9部 11</td></tr>
+          <tr><td>L</td><td>インダクタンス</td><td class="num">H</td><td>第6部 10・11</td></tr>
+          <tr><td>m</td><td>ワイブル分布の形状（m&lt;1 初期・=1 偶発・&gt;1 摩耗）</td><td class="num">―</td><td>第8部 03</td></tr>
+          <tr><td>m</td><td>回折の次数</td><td class="num">―</td><td>第7部 11・第9部 07</td></tr>
+          <tr><td>m*</td><td>有効質量</td><td class="num">m<sub>0</sub> の倍数</td><td>第0部 06・07</td></tr>
+          <tr><td>M</td><td>APD・MPPC・PMT の増倍率</td><td class="num">―</td><td>第5部 02・03</td></tr>
+          <tr><td>M²</td><td>ビーム品質（理想のガウスの何倍絞れないか）</td><td class="num">―</td><td>第7部 05・第9部 06</td></tr>
+          <tr><td>M</td><td>放射発散度（σT⁴）</td><td class="num">W/m²</td><td>第9部 01</td></tr>
+          <tr><td>n</td><td>電子の密度（p は正孔）</td><td class="num">/cm³</td><td>第2部・第0部 07</td></tr>
+          <tr><td>n</td><td>屈折率</td><td class="num">―</td><td>第7部・第9部</td></tr>
+          <tr><td>n</td><td>ダイオードの理想係数</td><td class="num">1〜2</td><td>第2部 03</td></tr>
+          <tr><td>n<sub>i</sub>・n<sub>g</sub>・n<sub>eff</sub></td><td>真性キャリア密度 ／ 群屈折率 ／ 実効屈折率</td><td class="num">/cm³ ／ ― ／ ―</td><td>第2部 ／ 第9部 06・07</td></tr>
+          <tr><td>N</td><td>F 値（f/D）</td><td class="num">―</td><td>第7部 03・04</td></tr>
+          <tr><td>N</td><td>個数（光子・電子・格子の照らされた溝の本数）</td><td class="num">個</td><td>第0部 02・第4部・第7部 11</td></tr>
+          <tr><td>n（第8部）</td><td>管理図の群の大きさ（1 群で取るサンプルの数）</td><td class="num">個</td><td>第8部 09</td></tr>
+          <tr><td>N</td><td>ADC のビット数</td><td class="num">bit</td><td>第4部 06・第6部 09</td></tr>
+          <tr><td>N<sub>a</sub>・N<sub>d</sub>・N<sub>c</sub>・N<sub>v</sub></td><td>アクセプタ・ドナーの濃度、伝導帯・価電子帯の実効状態密度</td><td class="num">/cm³</td><td>第2部・第0部 07</td></tr>
+          <tr><td>NA</td><td>開口数（n·sinθ）</td><td class="num">―</td><td>第7部 04・06・第1部 08</td></tr>
+          <tr><td>q</td><td>電気素量 1.602 176 634×10⁻¹⁹</td><td class="num">C</td><td>全部</td></tr>
+          <tr><td>Q</td><td>電荷（Q<sub>dep</sub> など）</td><td class="num">C</td><td>第2部 05・第4部</td></tr>
+          <tr><td>Q<sub>c</sub></td><td>TEC が吸う熱</td><td class="num">W</td><td>第8部 05</td></tr>
+          <tr><td>R</td><td>抵抗</td><td class="num">Ω</td><td>全部</td></tr>
+          <tr><td>R</td><td>反射率（フレネル・鏡）</td><td class="num">―</td><td>第7部 07・第9部 04</td></tr>
+          <tr><td>R</td><td>受光感度（A/W）</td><td class="num">A/W</td><td>第5部 04</td></tr>
+          <tr><td>R</td><td>分光器の分解能 λ/Δλ = mN</td><td class="num">―</td><td>第7部 11</td></tr>
+          <tr><td>S</td><td>S 値（サブスレッショルド・スイング）</td><td class="num">mV/桁</td><td>第2部 05</td></tr>
+          <tr><td>S</td><td>レーザーの光子密度</td><td class="num">/cm³</td><td>第9部 05</td></tr>
+          <tr><td>S<sub>0</sub>〜S<sub>3</sub></td><td>ストークスパラメータ（偏光の状態）</td><td class="num">―</td><td>第7部 09</td></tr>
+          <tr><td>T</td><td>温度（指数に入れるときは必ず K）</td><td class="num">K</td><td>全部</td></tr>
+          <tr><td>T</td><td>周期・レンズの透過率</td><td class="num">s ／ ―</td><td>第0部 03 ／ 第7部 03</td></tr>
+          <tr><td>T<sub>0</sub></td><td>レーザーの特性温度</td><td class="num">K</td><td>第9部 05</td></tr>
+          <tr><td>u・U</td><td>標準不確かさ・拡張不確かさ</td><td class="num">量による</td><td>第8部 10</td></tr>
+          <tr><td>V<sub>t</sub> と V<sub>th</sub></td><td><b>別物に注意</b>: 熱電圧 kT/q（25.85 mV）と、MOS のしきい値電圧</td><td class="num">V</td><td>第2部・第6部</td></tr>
+          <tr><td>V<sub>ov</sub></td><td>オーバードライブ電圧 V<sub>GS</sub>−V<sub>th</sub></td><td class="num">V</td><td>第6部 01</td></tr>
+          <tr><td>w・w<sub>0</sub></td><td>ビームの半径・ウェストの半径</td><td class="num">µm・mm</td><td>第7部 05・06</td></tr>
+          <tr><td>W</td><td>空乏層の幅・ドリフト層の厚さ</td><td class="num">µm</td><td>第2部 02・パワー</td></tr>
+          <tr><td>Z<sub>0</sub></td><td>伝送線路の特性インピーダンス</td><td class="num">Ω</td><td>第6部 11</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <figcaption>特に取り違えやすい組: <b>V<sub>t</sub>（熱電圧）と V<sub>th</sub>（しきい値）</b>、<b>λ（波長）と λ（故障率）</b>、<b>N（F 値）と N（個数）</b>、<b>η（効率）と η（ワイブルの尺度）</b>、<b>k（ボルツマン定数）と k（イオン化率比・包含係数）</b>。単位を見れば、たいてい見分けられます。</figcaption>
+  </figure>
+</section>
+
+<!-- ================= 05 ================= -->
+<section class="stage" id="s5">
+  <div class="stage-head"><span class="stage-num">05</span>
+    <h2>英日対訳 ― データシートと論文を読むために</h2></div>
+  <p class="lede">データシート・規格・論文の多くは英語で書かれています。この本で使った日本語の用語と、英語の文献でふつうに使われる表記を分野ごとに並べました。<span class="key">略語はカタログにそのまま出てくる</span>ので、略語の元の言葉も一緒に覚えると、見慣れない仕様も推測できます。</p>
+  <figure class="full">
+    <div class="scroll-x">
+      <table>
+        <thead><tr><th>日本語</th><th>英語（略語）</th><th>分野</th></tr></thead>
+        <tbody>
+          <tr class="grp"><td colspan="3">数・物理の足場（第0部）</td></tr>
+          <tr><td>真性キャリア密度</td><td>intrinsic carrier concentration (n<sub>i</sub>)</td><td>物性</td></tr>
+          <tr><td>状態密度 / 実効状態密度</td><td>density of states / effective density of states</td><td>物性</td></tr>
+          <tr><td>フェルミ準位 / 擬フェルミ準位</td><td>Fermi level / quasi-Fermi level</td><td>物性</td></tr>
+          <tr><td>有効質量</td><td>effective mass</td><td>物性</td></tr>
+          <tr><td>直接遷移 / 間接遷移</td><td>direct / indirect (band gap) transition</td><td>物性</td></tr>
+          <tr><td>禁制帯（バンドギャップ）</td><td>band gap, forbidden band</td><td>物性</td></tr>
+          <tr><td>格子定数 / 面方位</td><td>lattice constant / crystal orientation</td><td>結晶</td></tr>
+          <tr><td>ショットノイズ</td><td>shot noise</td><td>雑音</td></tr>
+          <tr><td>標本化 / 折り返し</td><td>sampling / aliasing</td><td>信号</td></tr>
+          <tr><td>帯域</td><td>bandwidth (BW)</td><td>信号</td></tr>
+          <tr class="grp"><td colspan="3">製造（第1部）</td></tr>
+          <tr><td>前工程 / 後工程</td><td>front-end (wafer fab) / back-end (assembly and test)</td><td>工程</td></tr>
+          <tr><td>熱酸化</td><td>thermal oxidation</td><td>工程</td></tr>
+          <tr><td>イオン注入 / 活性化熱処理</td><td>ion implantation / activation anneal</td><td>工程</td></tr>
+          <tr><td>露光（リソグラフィ）</td><td>lithography, exposure</td><td>工程</td></tr>
+          <tr><td>レジスト / 現像</td><td>photoresist / development</td><td>工程</td></tr>
+          <tr><td>エッチング（ドライ／ウェット）</td><td>etching (dry / wet)</td><td>工程</td></tr>
+          <tr><td>化学機械研磨</td><td>chemical mechanical polishing (CMP)</td><td>工程</td></tr>
+          <tr><td>化学気相成長 / 原子層堆積</td><td>chemical vapor deposition (CVD) / atomic layer deposition (ALD)</td><td>工程</td></tr>
+          <tr><td>エピタキシャル成長</td><td>epitaxial growth (epitaxy)</td><td>工程</td></tr>
+          <tr><td>ダイシング / ワイヤボンディング</td><td>dicing / wire bonding</td><td>工程</td></tr>
+          <tr><td>歩留まり</td><td>yield</td><td>工程</td></tr>
+          <tr><td>設計規則検証 / 回路図との照合</td><td>design rule check (DRC) / layout versus schematic (LVS)</td><td>設計</td></tr>
+          <tr><td>近接効果補正</td><td>optical proximity correction (OPC)</td><td>設計</td></tr>
+          <tr class="grp"><td colspan="3">素子（第2部）</td></tr>
+          <tr><td>移動度 / 拡散係数</td><td>mobility / diffusion coefficient (diffusivity)</td><td>物性</td></tr>
+          <tr><td>ドリフト電流 / 拡散電流</td><td>drift current / diffusion current</td><td>素子</td></tr>
+          <tr><td>空乏層</td><td>depletion region (depletion layer)</td><td>素子</td></tr>
+          <tr><td>内蔵電位</td><td>built-in potential (V<sub>bi</sub>)</td><td>素子</td></tr>
+          <tr><td>逆方向飽和電流</td><td>reverse saturation current</td><td>素子</td></tr>
+          <tr><td>理想係数</td><td>ideality factor</td><td>素子</td></tr>
+          <tr><td>なだれ降伏 / ツェナー降伏</td><td>avalanche breakdown / Zener breakdown</td><td>素子</td></tr>
+          <tr><td>ヘテロ接合 / バンドオフセット</td><td>heterojunction / band offset</td><td>素子</td></tr>
+          <tr><td>二次元電子ガス</td><td>two-dimensional electron gas (2DEG)</td><td>素子</td></tr>
+          <tr><td>高電子移動度トランジスタ</td><td>high-electron-mobility transistor (HEMT)</td><td>素子</td></tr>
+          <tr><td>ヘテロ接合バイポーラトランジスタ</td><td>heterojunction bipolar transistor (HBT)</td><td>素子</td></tr>
+          <tr><td>しきい値電圧</td><td>threshold voltage (V<sub>th</sub>, V<sub>T</sub>)</td><td>素子</td></tr>
+          <tr><td>サブスレッショルド・スイング</td><td>subthreshold swing (SS, S)</td><td>素子</td></tr>
+          <tr><td>チャネル長変調</td><td>channel-length modulation</td><td>素子</td></tr>
+          <tr><td>開放電圧 / 短絡電流 / 曲線因子</td><td>open-circuit voltage (V<sub>oc</sub>) / short-circuit current (I<sub>sc</sub>) / fill factor (FF)</td><td>太陽電池</td></tr>
+          <tr><td>オン抵抗 / 耐圧</td><td>on-resistance (R<sub>on</sub>) / breakdown voltage (BV)</td><td>パワー</td></tr>
+          <tr class="grp"><td colspan="3">論理と計算機（第3部）</td></tr>
+          <tr><td>真理値表 / 積和形</td><td>truth table / sum of products (SOP)</td><td>論理</td></tr>
+          <tr><td>半加算器 / 全加算器</td><td>half adder / full adder</td><td>論理</td></tr>
+          <tr><td>桁上げ先読み</td><td>carry-lookahead (CLA)</td><td>論理</td></tr>
+          <tr><td>2 の補数</td><td>two's complement</td><td>論理</td></tr>
+          <tr><td>フリップフロップ / ラッチ</td><td>flip-flop / latch</td><td>論理</td></tr>
+          <tr><td>セットアップ時間 / ホールド時間</td><td>setup time / hold time</td><td>論理</td></tr>
+          <tr><td>準安定</td><td>metastability</td><td>論理</td></tr>
+          <tr><td>算術論理演算器</td><td>arithmetic logic unit (ALU)</td><td>計算機</td></tr>
+          <tr><td>平均メモリアクセス時間</td><td>average memory access time (AMAT)</td><td>計算機</td></tr>
+          <tr class="grp"><td colspan="3">イメージセンサ（第4部）</td></tr>
+          <tr><td>画素 / 画素ピッチ</td><td>pixel / pixel pitch</td><td>センサ</td></tr>
+          <tr><td>量子効率</td><td>quantum efficiency (QE)</td><td>センサ</td></tr>
+          <tr><td>飽和電荷量</td><td>full well capacity (FWC)</td><td>センサ</td></tr>
+          <tr><td>浮遊拡散層</td><td>floating diffusion (FD)</td><td>センサ</td></tr>
+          <tr><td>変換ゲイン</td><td>conversion gain (µV/e⁻)</td><td>センサ</td></tr>
+          <tr><td>相関二重サンプリング</td><td>correlated double sampling (CDS)</td><td>センサ</td></tr>
+          <tr><td>読み出し雑音</td><td>read noise (e⁻ rms)</td><td>センサ</td></tr>
+          <tr><td>暗電流</td><td>dark current</td><td>センサ</td></tr>
+          <tr><td>固定パターン雑音 / 画素感度の不均一</td><td>fixed-pattern noise (FPN) / photo-response non-uniformity (PRNU)</td><td>センサ</td></tr>
+          <tr><td>暗時の不均一</td><td>dark signal non-uniformity (DSNU)</td><td>センサ</td></tr>
+          <tr><td>ダイナミックレンジ</td><td>dynamic range (DR)</td><td>センサ</td></tr>
+          <tr><td>裏面照射型</td><td>backside illumination (BSI)</td><td>センサ</td></tr>
+          <tr><td>グローバルシャッタ / ローリングシャッタ</td><td>global shutter / rolling shutter</td><td>センサ</td></tr>
+          <tr><td>フォトントランスファーカーブ</td><td>photon transfer curve (PTC)</td><td>評価</td></tr>
+          <tr><td>変調伝達関数</td><td>modulation transfer function (MTF)</td><td>光学</td></tr>
+          <tr><td>ベイヤー配列 / デモザイク</td><td>Bayer pattern / demosaicing</td><td>画像</td></tr>
+          <tr class="grp"><td colspan="3">光検出（第5部）</td></tr>
+          <tr><td>光電子増倍管</td><td>photomultiplier tube (PMT)</td><td>検出器</td></tr>
+          <tr><td>光電面</td><td>photocathode</td><td>検出器</td></tr>
+          <tr><td>アバランシェフォトダイオード</td><td>avalanche photodiode (APD)</td><td>検出器</td></tr>
+          <tr><td>単一光子アバランシェダイオード</td><td>single-photon avalanche diode (SPAD)</td><td>検出器</td></tr>
+          <tr><td>シリコン光電子増倍器（浜松ホトニクスの製品名 MPPC）</td><td>silicon photomultiplier (SiPM), Multi-Pixel Photon Counter (MPPC)</td><td>検出器</td></tr>
+          <tr><td>マイクロチャンネルプレート</td><td>microchannel plate (MCP)</td><td>検出器</td></tr>
+          <tr><td>雑音等価電力 / 比検出能</td><td>noise-equivalent power (NEP) / specific detectivity (D*)</td><td>評価</td></tr>
+          <tr><td>受光感度</td><td>responsivity (A/W)</td><td>評価</td></tr>
+          <tr><td>暗計数率 / 光子検出効率</td><td>dark count rate (DCR) / photon detection efficiency (PDE)</td><td>評価</td></tr>
+          <tr><td>アフターパルス / クロストーク</td><td>afterpulsing / crosstalk</td><td>評価</td></tr>
+          <tr><td>走行時間の広がり</td><td>transit time spread (TTS)</td><td>評価</td></tr>
+          <tr><td>時間相関単一光子計数</td><td>time-correlated single photon counting (TCSPC)</td><td>計測</td></tr>
+          <tr><td>蛍光寿命イメージング</td><td>fluorescence lifetime imaging microscopy (FLIM)</td><td>計測</td></tr>
+          <tr><td>超伝導ナノワイヤ単一光子検出器</td><td>superconducting nanowire single-photon detector (SNSPD)</td><td>検出器</td></tr>
+          <tr class="grp"><td colspan="3">アナログ回路（第6部）</td></tr>
+          <tr><td>相互コンダクタンス</td><td>transconductance (g<sub>m</sub>)</td><td>回路</td></tr>
+          <tr><td>ソース接地 / ソースフォロワ</td><td>common-source (CS) / source follower (SF, common-drain)</td><td>回路</td></tr>
+          <tr><td>カレントミラー / カスコード</td><td>current mirror / cascode</td><td>回路</td></tr>
+          <tr><td>差動対</td><td>differential pair</td><td>回路</td></tr>
+          <tr><td>同相除去比</td><td>common-mode rejection ratio (CMRR)</td><td>回路</td></tr>
+          <tr><td>電源変動除去比</td><td>power-supply rejection ratio (PSRR)</td><td>回路</td></tr>
+          <tr><td>利得帯域幅積 / 位相余裕</td><td>gain–bandwidth product (GBW) / phase margin (PM)</td><td>回路</td></tr>
+          <tr><td>トランスインピーダンス増幅器</td><td>transimpedance amplifier (TIA)</td><td>回路</td></tr>
+          <tr><td>電荷増幅器</td><td>charge-sensitive amplifier (CSA)</td><td>回路</td></tr>
+          <tr><td>バンドギャップ基準</td><td>bandgap reference (BGR)</td><td>回路</td></tr>
+          <tr><td>実効ビット数</td><td>effective number of bits (ENOB)</td><td>ADC</td></tr>
+          <tr><td>逐次比較型 AD 変換器</td><td>successive-approximation-register ADC (SAR ADC)</td><td>ADC</td></tr>
+          <tr><td>低ドロップアウト・レギュレータ</td><td>low-dropout regulator (LDO)</td><td>電源</td></tr>
+          <tr><td>電磁両立性</td><td>electromagnetic compatibility (EMC)</td><td>実装</td></tr>
+          <tr class="grp"><td colspan="3">光学（第7部）</td></tr>
+          <tr><td>放射量 / 測光量</td><td>radiometric / photometric quantities</td><td>測光</td></tr>
+          <tr><td>光束 / 光度 / 照度 / 輝度</td><td>luminous flux (lm) / luminous intensity (cd) / illuminance (lx) / luminance (cd/m²)</td><td>測光</td></tr>
+          <tr><td>放射束 / 放射強度 / 放射照度 / 放射輝度</td><td>radiant flux / radiant intensity / irradiance / radiance</td><td>測光</td></tr>
+          <tr><td>開口数 / F 値</td><td>numerical aperture (NA) / f-number (F/#)</td><td>光学</td></tr>
+          <tr><td>回折限界 / エアリー円盤</td><td>diffraction limit / Airy disk</td><td>光学</td></tr>
+          <tr><td>焦点深度</td><td>depth of focus (DOF)</td><td>光学</td></tr>
+          <tr><td>ビームウェスト / レイリー長</td><td>beam waist / Rayleigh range</td><td>光学</td></tr>
+          <tr><td>モードフィールド径</td><td>mode field diameter (MFD)</td><td>ファイバ</td></tr>
+          <tr><td>エテンデュ</td><td>étendue</td><td>光学</td></tr>
+          <tr><td>反射防止膜</td><td>anti-reflection (AR) coating</td><td>光学</td></tr>
+          <tr><td>積分球</td><td>integrating sphere</td><td>計測</td></tr>
+          <tr><td>ロックイン増幅器</td><td>lock-in amplifier</td><td>計測</td></tr>
+          <tr><td>複屈折 / 波長板</td><td>birefringence / wave plate (retarder)</td><td>偏光</td></tr>
+          <tr><td>光アイソレータ</td><td>optical isolator</td><td>偏光</td></tr>
+          <tr><td>可干渉距離</td><td>coherence length</td><td>干渉</td></tr>
+          <tr><td>自由スペクトル領域 / フィネス</td><td>free spectral range (FSR) / finesse</td><td>干渉</td></tr>
+          <tr><td>光干渉断層撮影</td><td>optical coherence tomography (OCT)</td><td>干渉</td></tr>
+          <tr><td>回折格子 / ブレーズ</td><td>diffraction grating / blaze</td><td>分光</td></tr>
+          <tr><td>逆線分散</td><td>reciprocal linear dispersion</td><td>分光</td></tr>
+          <tr><td>次数カットフィルタ</td><td>order-sorting filter</td><td>分光</td></tr>
+          <tr><td>迷光</td><td>stray light</td><td>分光</td></tr>
+          <tr><td>波長分散 / 偏波モード分散</td><td>chromatic dispersion / polarization mode dispersion (PMD)</td><td>ファイバ</td></tr>
+          <tr><td>光パルス試験器</td><td>optical time-domain reflectometer (OTDR)</td><td>ファイバ</td></tr>
+          <tr><td>エルビウム添加ファイバ増幅器</td><td>erbium-doped fiber amplifier (EDFA)</td><td>ファイバ</td></tr>
+          <tr class="grp"><td colspan="3">信頼性と品質（第8部）</td></tr>
+          <tr><td>故障率 / 平均故障時間</td><td>failure rate (FIT) / mean time to failure (MTTF)</td><td>信頼性</td></tr>
+          <tr><td>加速係数 / 活性化エネルギー</td><td>acceleration factor (AF) / activation energy (E<sub>a</sub>)</td><td>信頼性</td></tr>
+          <tr><td>高温動作寿命試験</td><td>high-temperature operating life (HTOL)</td><td>信頼性</td></tr>
+          <tr><td>温度サイクル / 高温高湿バイアス</td><td>temperature cycling (TC) / temperature humidity bias (THB)</td><td>信頼性</td></tr>
+          <tr><td>高度加速寿命試験</td><td>highly accelerated stress test (HAST)</td><td>信頼性</td></tr>
+          <tr><td>静電気放電 / 人体モデル / 帯電デバイスモデル</td><td>electrostatic discharge (ESD) / human body model (HBM) / charged device model (CDM)</td><td>信頼性</td></tr>
+          <tr><td>接合温度 / 熱抵抗</td><td>junction temperature (T<sub>j</sub>) / thermal resistance (θ)</td><td>熱</td></tr>
+          <tr><td>ペルチェ素子</td><td>thermoelectric cooler (TEC)</td><td>熱</td></tr>
+          <tr><td>工程能力指数</td><td>process capability index (Cp, Cpk)</td><td>品質</td></tr>
+          <tr><td>統計的工程管理 / 管理図</td><td>statistical process control (SPC) / control chart</td><td>品質</td></tr>
+          <tr><td>測定システム解析 / ゲージの繰り返し性と再現性</td><td>measurement system analysis (MSA) / gauge repeatability and reproducibility (GR&amp;R)</td><td>品質</td></tr>
+          <tr><td>測定の不確かさ / 包含係数</td><td>measurement uncertainty / coverage factor (k)</td><td>計測</td></tr>
+          <tr><td>故障解析</td><td>failure analysis (FA)</td><td>解析</td></tr>
+          <tr><td>超音波顕微鏡</td><td>scanning acoustic microscopy / tomography (SAM, SAT)</td><td>解析</td></tr>
+          <tr><td>集束イオンビーム</td><td>focused ion beam (FIB)</td><td>解析</td></tr>
+          <tr><td>発光解析 / レーザー加熱抵抗変化</td><td>emission microscopy (EMMI, PEM) / optical beam induced resistance change (OBIRCH)</td><td>解析</td></tr>
+          <tr><td>最大許容露光量 / 被ばく放出限界</td><td>maximum permissible exposure (MPE) / accessible emission limit (AEL)</td><td>安全</td></tr>
+          <tr><td>高懸念物質</td><td>substance of very high concern (SVHC)</td><td>法規</td></tr>
+          <tr class="grp"><td colspan="3">光源とレーザー（第9部）</td></tr>
+          <tr><td>黒体放射 / 色温度</td><td>blackbody radiation / color temperature (CCT)</td><td>光源</td></tr>
+          <tr><td>重水素ランプ / キセノンランプ</td><td>deuterium lamp / xenon (arc) lamp</td><td>光源</td></tr>
+          <tr><td>外部量子効率 / 内部量子効率</td><td>external / internal quantum efficiency (EQE, IQE)</td><td>LED</td></tr>
+          <tr><td>光取り出し効率</td><td>light extraction efficiency (LEE)</td><td>LED</td></tr>
+          <tr><td>壁コンセント効率</td><td>wall-plug efficiency (WPE)</td><td>LED</td></tr>
+          <tr><td>スーパールミネッセントダイオード</td><td>superluminescent diode (SLD)</td><td>光源</td></tr>
+          <tr><td>誘導放出 / 自然放出</td><td>stimulated emission / spontaneous emission</td><td>レーザー</td></tr>
+          <tr><td>反転分布</td><td>population inversion</td><td>レーザー</td></tr>
+          <tr><td>しきい値電流 / スロープ効率</td><td>threshold current (I<sub>th</sub>) / slope efficiency</td><td>レーザー</td></tr>
+          <tr><td>特性温度</td><td>characteristic temperature (T<sub>0</sub>)</td><td>レーザー</td></tr>
+          <tr><td>緩和振動</td><td>relaxation oscillation</td><td>レーザー</td></tr>
+          <tr><td>縦モード / 横モード</td><td>longitudinal mode / transverse mode</td><td>レーザー</td></tr>
+          <tr><td>サイドモード抑圧比</td><td>side-mode suppression ratio (SMSR)</td><td>レーザー</td></tr>
+          <tr><td>分布帰還型 / 分布反射型レーザー</td><td>distributed feedback (DFB) / distributed Bragg reflector (DBR) laser</td><td>レーザー</td></tr>
+          <tr><td>面発光レーザー</td><td>vertical-cavity surface-emitting laser (VCSEL)</td><td>レーザー</td></tr>
+          <tr><td>外部共振器型半導体レーザー</td><td>external-cavity diode laser (ECDL)</td><td>レーザー</td></tr>
+          <tr><td>量子カスケードレーザー</td><td>quantum cascade laser (QCL)</td><td>レーザー</td></tr>
+          <tr><td>量子欠損</td><td>quantum defect</td><td>レーザー</td></tr>
+          <tr><td>モード同期 / Q スイッチ / 利得スイッチ</td><td>mode locking / Q-switching / gain switching</td><td>パルス</td></tr>
+          <tr><td>時間帯域積</td><td>time–bandwidth product (TBP)</td><td>パルス</td></tr>
+          <tr><td>光周波数コム</td><td>optical frequency comb</td><td>パルス</td></tr>
+          <tr><td>第二高調波発生 / 位相整合</td><td>second-harmonic generation (SHG) / phase matching</td><td>非線形</td></tr>
+          <tr><td>光パラメトリック発振器</td><td>optical parametric oscillator (OPO)</td><td>非線形</td></tr>
+          <tr><td>自動出力制御 / 端面の光学損傷</td><td>automatic power control (APC) / catastrophic optical damage (COD)</td><td>駆動</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <figcaption>英語の表記は、分野の教科書と規格で一般的なものを選びました。同じ量に複数の表記がある場合（V<sub>th</sub> と V<sub>T</sub> など）は併記しています。MPPC は浜松ホトニクスの製品名で、一般名は SiPM です。</figcaption>
+  </figure>
+</section>
+
+<!-- ================= 06 ================= -->
+<section class="stage" id="s6">
+  <div class="stage-head"><span class="stage-num">06</span>
+    <h2>年表 ― 何が、どの順で可能になったか</h2></div>
+  <p class="lede">この本で出てきた発見と発明を年の順に並べました。<span class="key">理論が先に立ち、材料と工程がそれに追いつき、製品が生まれる</span> ― その順番を知っていると、今の技術がなぜこの形なのかが見えてきます。年は論文・発表・量産のうち、表の中で断っているものを採っています。</p>
+  <figure class="full">
+    <div class="scroll-x">
+      <table>
+        <thead><tr><th>年</th><th>できごと</th><th>この本のどこ</th></tr></thead>
+        <tbody>
+          <tr class="grp"><td colspan="3">量子と半導体の理論</td></tr>
+          <tr><td class="num">1874</td><td>ブラウンが金属と硫化物の接触での整流（電流が一方向に流れやすい）を報告</td><td>第2部 03</td></tr>
+          <tr><td class="num">1887</td><td>ヘルツが光電効果を観測</td><td>第5部 02</td></tr>
+          <tr><td class="num">1900</td><td>プランクが黒体放射の式を発表（量子の考えの始まり）</td><td>第9部 01</td></tr>
+          <tr><td class="num">1905</td><td>アインシュタインが光量子の考えで光電効果を説明</td><td>第0部 04・第5部 02</td></tr>
+          <tr><td class="num">1917</td><td>アインシュタインが誘導放出を理論的に導入</td><td>第9部 04</td></tr>
+          <tr><td class="num">1926</td><td>高柳健次郎がブラウン管で「イ」の字を映す（電子式テレビの実験）</td><td>―</td></tr>
+          <tr><td class="num">1928</td><td>ブロッホが結晶中の電子の波（ブロッホの定理）を示す</td><td>第0部 06</td></tr>
+          <tr><td class="num">1931</td><td>ウィルソンがバンド理論で半導体と絶縁体の違いを説明</td><td>第0部 06</td></tr>
+          <tr><td class="num">1930 年代半ば</td><td>光電子増倍管が実用化される</td><td>第5部 02</td></tr>
+          <tr class="grp"><td colspan="3">トランジスタと集積回路</td></tr>
+          <tr><td class="num">1940</td><td>オールがシリコンの pn 接合と、その光起電力を見つける</td><td>第2部 02・04</td></tr>
+          <tr><td class="num">1947</td><td>バーディーンとブラッテンが点接触トランジスタを作る</td><td>第2部 BJT</td></tr>
+          <tr><td class="num">1948〜49</td><td>ショックレーが接合型トランジスタと pn 接合の理論を示す</td><td>第2部 02・03</td></tr>
+          <tr><td class="num">1953</td><td>浜松テレビ（現・浜松ホトニクス）創業</td><td>―</td></tr>
+          <tr><td class="num">1954</td><td>ベル研究所がシリコン太陽電池（効率約 6%）を発表</td><td>第2部 太陽電池</td></tr>
+          <tr><td class="num">1956</td><td>ショックレー・バーディーン・ブラッテンにノーベル物理学賞</td><td>―</td></tr>
+          <tr><td class="num">1958〜59</td><td>キルビー（1958）とノイス（1959）が集積回路を作る。ヘルニがプレーナ工程（1959）</td><td>第1部</td></tr>
+          <tr><td class="num">1960</td><td>カーングとアタラが MOSFET を発表</td><td>第2部 05</td></tr>
+          <tr><td class="num">1963</td><td>ワンラスとサーが CMOS を提案</td><td>第3部 01</td></tr>
+          <tr><td class="num">1965</td><td>ムーアが集積度の増え方の予測（ムーアの法則）を発表</td><td>第1部</td></tr>
+          <tr><td class="num">1971</td><td>最初の商用マイクロプロセッサ（Intel 4004）</td><td>第3部 CPU</td></tr>
+          <tr><td class="num">1974</td><td>デナードらが微細化の比例則を発表</td><td>第3部 01</td></tr>
+          <tr><td class="num">2011</td><td>FinFET（立体のゲート）の量産が始まる</td><td>第1部 09</td></tr>
+          <tr><td class="num">2019</td><td>EUV 露光の量産が始まる。SI の定義改定（h・q・k が定義値に）</td><td>第1部 06・第0部 08</td></tr>
+          <tr class="grp"><td colspan="3">光源と光通信</td></tr>
+          <tr><td class="num">1960</td><td>メイマンがルビーレーザーを発振させる</td><td>第9部 04</td></tr>
+          <tr><td class="num">1962</td><td>GaAs の半導体レーザー（ホールら）と、赤色の可視 LED（ホロニアック）</td><td>第9部 04・第5部 08</td></tr>
+          <tr><td class="num">1963</td><td>クレーマーがダブルヘテロ構造のレーザーを提案</td><td>第9部 04・第2部 ヘテロ</td></tr>
+          <tr><td class="num">1966</td><td>カオとホッカムが低損失の光ファイバによる通信を提案</td><td>第7部 12</td></tr>
+          <tr><td class="num">1970</td><td>半導体レーザーの室温連続発振（ダブルヘテロ）と、20 dB/km を切る石英ファイバ</td><td>第9部 04・第7部 12</td></tr>
+          <tr><td class="num">1977</td><td>伊賀健一が面発光レーザー（VCSEL）を提案</td><td>第9部 07</td></tr>
+          <tr><td class="num">1979</td><td>1.55 µm で 0.2 dB/km のファイバ</td><td>第7部 12</td></tr>
+          <tr><td class="num">1980</td><td>三村らが HEMT を発表</td><td>第2部 ヘテロ</td></tr>
+          <tr><td class="num">1982</td><td>モールトンがチタンサファイアレーザーを発振させる（詳しい報告は 1986 年）</td><td>第9部 08・09</td></tr>
+          <tr><td class="num">1986</td><td>天野らが AlN の緩衝層で良質な GaN の膜を得る</td><td>第1部 04</td></tr>
+          <tr><td class="num">1987</td><td>エルビウム添加ファイバ増幅器（EDFA）の報告</td><td>第7部 12</td></tr>
+          <tr><td class="num">1991</td><td>OCT の報告。カーレンズモード同期</td><td>第7部 10・第9部 09</td></tr>
+          <tr><td class="num">1993〜94</td><td>中村らが高輝度の InGaN 青色 LED を発表</td><td>第9部 03・第5部 08</td></tr>
+          <tr><td class="num">1994</td><td>量子カスケードレーザー（QCL）の報告</td><td>第9部 07</td></tr>
+          <tr><td class="num">2000</td><td>アルフェロフ・クレーマー（ヘテロ構造）とキルビー（集積回路）にノーベル物理学賞</td><td>第9部 04</td></tr>
+          <tr><td class="num">2005</td><td>ホールとヘンシュ（光周波数コム）らにノーベル物理学賞</td><td>第9部 09</td></tr>
+          <tr><td class="num">2014</td><td>赤崎・天野・中村（青色 LED）にノーベル物理学賞</td><td>第1部 04・第9部 03</td></tr>
+          <tr class="grp"><td colspan="3">撮像と光検出</td></tr>
+          <tr><td class="num">1969</td><td>ボイルとスミスが CCD を考案</td><td>第4部 04</td></tr>
+          <tr><td class="num">1987</td><td>カミオカンデが超新星からのニュートリノを光電子増倍管で捉える</td><td>第5部 02</td></tr>
+          <tr><td class="num">1993</td><td>フォッサムらが CMOS の能動画素センサ（APS）を発表</td><td>第4部</td></tr>
+          <tr><td class="num">1998</td><td>スーパーカミオカンデがニュートリノ振動の証拠を発表</td><td>第5部 02</td></tr>
+          <tr><td class="num">2001</td><td>超伝導ナノワイヤ単一光子検出器（SNSPD）の報告</td><td>第5部 06</td></tr>
+          <tr><td class="num">2002</td><td>小柴昌俊（ニュートリノ天文学）にノーベル物理学賞</td><td>第5部 02</td></tr>
+          <tr><td class="num">2008〜09</td><td>裏面照射型 CMOS イメージセンサの製品化</td><td>第4部</td></tr>
+          <tr><td class="num">2009</td><td>ボイル・スミス（CCD）とカオ（光ファイバ）にノーベル物理学賞</td><td>第4部 04・第7部 12</td></tr>
+          <tr><td class="num">2012</td><td>積層型 CMOS イメージセンサの発表</td><td>第4部</td></tr>
+          <tr><td class="num">2015</td><td>梶田隆章（ニュートリノ振動）にノーベル物理学賞</td><td>第5部 02</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <figcaption>年は、原典の論文の発表年、または広く認められた発表・量産の年です。同じできごとでも「発表」「論文」「製品」で 1〜2 年ずれることがあるので、表の中では幅を持たせて書いたものがあります。</figcaption>
   </figure>
 </section>
 
