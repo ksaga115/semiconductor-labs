@@ -405,7 +405,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <a class="back" href="index.html">&larr; Labs / 半導体 ― 第5部 光を数える（実践: PhotonLab）</a><br>
       <span class="eyebrow">Photon &rarr; Electron &rarr; Multiply &rarr; Count</span>
       <h1>光検出デバイスの<span class="lit">系統</span>樹<br>― 数える一族</h1>
-      <p class="sub"><a href="第4部_イメージセンサ.html">第4部</a>は「像を結ぶ」検出器を一本道でたどりました。この部は像を結ばずに<strong>数える・測る</strong>側の一族 ― PMT・APD・MPPC から、赤外・X線・時間計測・故障解析まで ― を、同じ物理の言葉で系統立てて読みます。どれも「光子を電子にし、ノイズに埋もれる前に増やすか、数える」という同じ一つの問題への別解です。章の順番も物語です: まず<strong>見取り図</strong>（01）、次に<strong>増やし方の2つの家系</strong>（02 真空・03 半導体）、それを比べる<strong>共通の物差し</strong>（04）、そして応用の3軸 ― <strong>波長</strong>（05）・<strong>時間</strong>（06）・<strong>現場</strong>（07）― <strong>相手役の光源</strong>（08）、放射線と波長の両端（09・10）を経て、最後に数える一族を数字で締めます ― <strong>光電面とパルスの統計</strong>（11）、<strong>数えられる速さ</strong>（12）、<strong>明るさで入れ替わる選び方</strong>（13）、そして一族でいちばん身近な<strong>フォトダイオードの正しい使い方</strong>（14）。</p>
+      <p class="sub"><a href="第4部_イメージセンサ.html">第4部</a>は「像を結ぶ」検出器を一本道でたどりました。この部は像を結ばずに<strong>数える・測る</strong>側の一族 ― PMT・APD・MPPC から、赤外・X線・時間計測・故障解析まで ― を、同じ物理の言葉で系統立てて読みます。どれも「光子を電子にし、ノイズに埋もれる前に増やすか、数える」という同じ一つの問題への別解です。章の順番も物語です: まず<strong>見取り図</strong>（01）、次に<strong>増やし方の2つの家系</strong>（02 真空・03 半導体）、それを比べる<strong>共通の物差し</strong>（04）、そして応用の3軸 ― <strong>波長</strong>（05）・<strong>時間</strong>（06）・<strong>現場</strong>（07）― <strong>相手役の光源</strong>（08）、放射線と波長の両端（09・10）を経て、最後に数える一族を数字で締めます ― <strong>光電面とパルスの統計</strong>（11）、<strong>数えられる速さ</strong>（12）、<strong>明るさで入れ替わる選び方</strong>（13）、一族でいちばん身近な<strong>フォトダイオードの正しい使い方</strong>（14）、そして光を増やして像で撮る<strong>イメージインテンシファイアと ICCD</strong>（15）。</p>
       <div class="depth-row">
         <div class="depth" role="group" aria-label="説明の深さ">
           <button id="dSimple" aria-pressed="true">かんたん</button>
@@ -455,6 +455,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li><a href="#s13"><span class="n">12</span><span>数えられる速さ</span></a></li>
     <li><a href="#s14"><span class="n">13</span><span>明るさで選ぶ</span></a></li>
     <li><a href="#s15"><span class="n">14</span><span>PD の使い方</span></a></li>
+    <li><a href="#s16"><span class="n">15</span><span>II と ICCD</span></a></li>
     <li class="dom"><span>付録</span></li>
     <li><a href="#scheck"><span class="n">—</span><span>理解の確認</span></a></li>
     <li><a href="#s9"><span class="n">—</span><span>用語表</span></a></li>
@@ -482,6 +483,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li><a href="#s13"><span class="n">12</span><span>数えられる速さ</span></a></li>
     <li><a href="#s14"><span class="n">13</span><span>明るさで選ぶ</span></a></li>
     <li><a href="#s15"><span class="n">14</span><span>PD の使い方</span></a></li>
+    <li><a href="#s16"><span class="n">15</span><span>II と ICCD</span></a></li>
     <li class="dom"><span>付録</span></li>
     <li><a href="#scheck"><span class="n">—</span><span>理解の確認</span></a></li>
     <li><a href="#s9"><span class="n">—</span><span>用語表</span></a></li>
@@ -1146,12 +1148,14 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <path d="M580 200 H760" stroke="var(--photon)" stroke-width="6" opacity="0.5" stroke-linecap="round"/>
           <text x="515" y="192" font-size="9" fill="var(--photon-2)" text-anchor="middle">大気の窓 3〜5µm</text>
           <text x="670" y="192" font-size="9" fill="var(--photon-2)" text-anchor="middle">大気の窓 8〜14µm</text>
-          <path d="M700 214 v14" stroke="var(--warn)" stroke-width="2"/>
+          <path class="blink" d="M700 214 v14" stroke="var(--warn)" stroke-width="2" fill="none"/>
           <text x="770" y="244" font-size="9.5" fill="var(--warn)" text-anchor="end">300K の物体のピーク ≒ 9.7µm（ウィーン則 2898/T）</text>
         </g>
+        <path d="M20 82 H760" stroke="var(--line)" stroke-width="1" stroke-dasharray="2 4" fill="none"/>
+        <circle class="scan" cx="30" cy="82" r="4" fill="var(--photon)"/>
       </svg>
     </div>
-    <figcaption>左端の X 線は「翻訳」（シンチレータで可視光へ）、右へ行くほど「狭いギャップの材料」か「熱型」。<span class="key">サーモグラフィが 8〜14µm を使うのは、体温の物体のピークと大気の窓がちょうど重なる</span>から ― 波長の地図は物理と大気の合作です。</figcaption>
+    <figcaption>左端の X 線は「翻訳」（シンチレータで可視光へ）、右へ行くほど「狭いギャップの材料」か「熱型」。<span class="key">サーモグラフィが 8〜14µm を使うのは、体温の物体のピークと大気の窓がちょうど重なる</span>から ― 波長の地図は物理と大気の合作です。動く点は短い波長から長い波長へ地図を掃く ― 真上の帯と真下の材料を、同じ縦の位置で読み合わせてください。</figcaption>
   </figure>
 
   <div class="two">
@@ -1754,6 +1758,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <ul><li>止まる割合を忘れて分解能だけで検出器を選ぶ ― 厚さ 450 µm のシリコンは 20 keV を 37% しか止めない。</li><li>CdTe の低いエネルギー側の裾を、ピークの一部と読む ― 正孔の捕獲による裾。</li><li>計数率を上げるために整形の時間を短くすると、回路の雑音 ENC が増えて分解能が落ちる ― 分解能と計数率の取り合い。</li></ul>
     <dl class="roles"><dt>営業・企画</dt><dd>「何 keV を・どれくらいの分解能で・どれくらいの計数率で」を聞くと、材料と検出器の形が決まる。</dd><dt>設計・開発</dt><dd>FWHM = 2.355w√(FN + ENC²) で、ファノの限界と回路の雑音のどちらが支配かを先に見る。</dd><dt>研究・製造</dt><dd>分解能は ⁵⁵Fe（5.9 keV）や ¹³⁷Cs（662 keV）の線源で定期的に確かめる。</dd></dl>
   </div>
+  <div class="lab-go">
+    <span class="tag">手を動かす — PhotonLab</span>
+    <p>ファノの限界と回路の雑音の二乗和を、ENC を動かして 130 eV に収める。</p>
+    <div class="qs"><span class="lab">PhotonLab</span><a href="PhotonLab/index.html?quest=xres">SDD で 5.9 keV を 130 eV に</a></div>
+  </div>
 </section>
 
 <!-- ================= 10 ================= -->
@@ -2065,6 +2074,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <ul><li>拡張型の検出器で、読んだ m だけから補正する ― 同じ m に真の率が2つある。光を弱めて側を確かめる。</li><li>10% を超える数え落としを式で補正する ― 減光するか、電流の読みに切り替える。</li><li>暗計数と不感時間の窓の外で測定を計画する ― 下は暗計数、上は数え落としで閉じる。</li></ul>
     <dl class="roles"><dt>営業・企画</dt><dd>「何 cps まで直線か」は不感時間で決まる ― 仕様の数字の中身を説明できるようにする。</dd><dt>設計・開発</dt><dd>計数と電流の読みを、重なる範囲で較正してつなぐ。</dd><dt>研究・製造</dt><dd>τ は 2 つの光源の方法で、使う回路ごとに測る。</dd></dl>
   </div>
+  <div class="lab-go">
+    <span class="tag">手を動かす — PhotonLab</span>
+    <p>非拡張型の数え落とし nτ/(1 + nτ) を、パルスの幅の下限と両側から閉じる窓で。TCSPC の重なりも同じ判断。</p>
+    <div class="qs"><span class="lab">PhotonLab</span><a href="PhotonLab/index.html?quest=dead">数え落としを 5% に収める</a><a href="PhotonLab/index.html?quest=pile">TCSPC の繰り返しを選ぶ</a></div>
+  </div>
 </section>
 
 <!-- ================= 13 ================= -->
@@ -2264,14 +2278,131 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   <div class="lab-go">
     <span class="tag">手を動かす — AnalogLab・PhotonLab</span>
     <p>PD の容量と受けの抵抗が速さを決める、を TIA と 50 Ω 受けの両方で。</p>
-    <div class="qs"><span class="lab">AnalogLab</span><a href="AnalogLab/index.html?quest=tia">TIA の Rf を選ぶ</a><span class="lab">PhotonLab</span><a href="PhotonLab/index.html?quest=fast">速さの敵は容量</a></div>
+    <div class="qs"><span class="lab">AnalogLab</span><a href="AnalogLab/index.html?quest=tia">TIA の Rf を選ぶ</a><span class="lab">PhotonLab</span><a href="PhotonLab/index.html?quest=fast">速さの敵は容量</a><a href="PhotonLab/index.html?quest=pdlin">PD で 100 µA を 1% の直線性で</a></div>
+  </div>
+</section>
+
+<!-- ================= 15 ================= -->
+<section class="stage" id="s16">
+  <div class="stage-head"><span class="stage-num">15</span>
+    <h2>光を増やして撮る ― イメージインテンシファイアと ICCD</h2></div>
+  <p class="lede">PMT は光を増やして<b>数える</b>管でした（02）。同じ光電面と電子の増倍を、<b>像を保ったまま</b>行うのがイメージインテンシファイア（II）で、後ろにカメラをつないだものが ICCD です。暗視・蛍光寿命・プラズマや燃焼の撮影・LIBS のように、<span class="key">暗い、または一瞬だけの光を像で撮る</span>用途で使われます。この章は、いつ II が得で、いつ損かを式で決め、II にしかできない「ゲート」の効きを数字で見ます。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>三段の鎖 ― 光電面・MCP・蛍光面</h3>
+      <p>入ってきた光子は光電面で光電子になり（QE、11 の表の光電面と同じ家系）、<b>MCP</b>（マイクロチャネルプレート）に吸い込まれます。MCP は直径 10 µm 前後の管を数百万本束ねた厚さ 1 mm ほどの板で、管の両端に約 1 kV をかけると、電子が壁に当たるたびに二次電子が出て雪だるま式に増える ― 02 のダイノードを管の壁に置き換えたものです（Wiza 1979）。1 段で 10³〜10⁴ 倍、2 段を向きを変えて重ねる（シェブロン）と 10⁶ 級（代表例）。増えた電子は数 kV で蛍光面に打ち込まれ、再び光に戻ります。その光を、ファイバの束（FOP）かレンズでカメラへ渡します（上の図の順）。</p>
+      <p>管 1 本が像の 1 点を運ぶので、像はほぼ保たれます。細かさの上限は管の間隔で、間隔 12 µm（代表例）なら標本化の上限（ナイキスト）は 1/(2 × 0.012 mm) = <b>41.7 lp/mm</b>。光電面と MCP、MCP と蛍光面のすき間での電子の広がりが、これをさらに鈍らせます。</p>
+    </div>
+    <div class="body-col">
+      <h3>何を得て、何を払うか</h3>
+      <p>得るのは<b>読み出し雑音からの解放</b>です。1 個の光電子が数千個以上の光子になってカメラに届くので、カメラの読み出し雑音（数 e⁻〜10 e⁻）は相対的に消える。払うのは2つ。① 光電面の QE（可視で 0.1〜0.3 程度）が、裏面照射のセンサ（0.6〜0.9）より低い。② MCP の増倍の揺らぎと、管の壁の間（開口の外）に当たって増えない光電子のぶん、SN 比が √F だけ悪くなる ― 過剰雑音 F は 1.6〜2 程度（代表例）で、02 の PMT（1.3）より大きい。</p>
+      <div class="eq">SN 比（II）= √(η<sub>pc</sub>N/F)　　SN 比（素のカメラ）= ηN/√(ηN + σ<sub>r</sub>²)</div>
+      <p>η<sub>pc</sub> = 0.2・F = 1.8 の II と、η = 0.6・σ<sub>r</sub> = 10 e⁻ の素のカメラ（どちらも仮定）を比べると、2 本は <b>1 画素あたり約 38 光子</b>で入れ替わります（下の図）。それより暗ければ II、明るければ素のカメラ ― <span class="key">II は明るい光ではかえって損</span>です。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">INTENSIFIER — 光子 1 個が、カメラの画素で光る点になるまで</span><span class="fig-title">点の数は模式（壁に 1 回当たるたびに 2 倍）</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 232" role="img" aria-label="イメージインテンシファイアの信号の鎖。左から光子が光電面に当たり光電子1個が出る。斜めのチャネルが並ぶMCPの中で、電子が壁に当たるたびに1、2、4、8、16個と増えていく。電子の雲は蛍光面で光に戻り、ファイバの束（FOP）やレンズを通ってカメラの画素に届く。" style="min-width:700px;width:100%;display:block">
+        <g font-size="10.5" fill="var(--ink-2)" text-anchor="middle">
+          <text x="78" y="34">光電面</text>
+          <text x="255" y="34">MCP（1 段で 10³〜10⁴ 倍）</text>
+          <text x="475" y="34">リレー（FOP・レンズ）</text>
+          <text x="632" y="34">カメラ（CCD・CMOS）</text>
+          <text x="395" y="182">蛍光面</text>
+        </g>
+        <path class="flow" d="M18 116 H68" stroke="var(--photon)" stroke-width="2" fill="none"/>
+        <path d="M62 111 L72 116 L62 121 Z" fill="var(--photon)"/>
+        <text x="20" y="104" font-size="10" fill="var(--photon-2)">光子</text>
+        <rect x="74" y="70" width="8" height="92" fill="var(--volt)"/>
+        <path d="M82 116 Q120 130 160 146" stroke="var(--electron)" stroke-width="1.3" stroke-dasharray="3 3" fill="none"/>
+        <rect x="150" y="70" width="210" height="92" fill="var(--surface-2)" stroke="var(--line)" stroke-width="1"/>
+        <path d="M150 162 L210 70 M180 162 L240 70 M210 162 L270 70 M240 162 L300 70 M270 162 L330 70 M300 162 L360 70 M330 162 L390 70" stroke="var(--line)" stroke-width="1" fill="none"/>
+        <g class="casc" fill="var(--electron)"><g class="c0"><circle cx="173.3" cy="142.5" r="2.4"/></g><g class="c1"><circle cx="213.8" cy="126.9" r="2.4"/><circle cx="215.5" cy="132.6" r="2.4"/></g><g class="c2"><circle cx="254.2" cy="111.3" r="2.4"/><circle cx="255.4" cy="115.1" r="2.4"/><circle cx="256.6" cy="118.9" r="2.4"/><circle cx="257.8" cy="122.7" r="2.4"/></g><g class="c3"><circle cx="291.5" cy="95.6" r="2.4"/><circle cx="298.1" cy="96.5" r="2.4"/><circle cx="293.2" cy="101.0" r="2.4"/><circle cx="299.8" cy="102.0" r="2.4"/><circle cx="294.9" cy="106.5" r="2.4"/><circle cx="301.5" cy="107.5" r="2.4"/><circle cx="296.6" cy="111.9" r="2.4"/><circle cx="303.2" cy="112.9" r="2.4"/></g><g class="c4"><circle cx="329.1" cy="84.0" r="2.4"/><circle cx="335.3" cy="83.5" r="2.4"/><circle cx="329.9" cy="86.5" r="2.4"/><circle cx="336.1" cy="86.0" r="2.4"/><circle cx="330.7" cy="89.1" r="2.4"/><circle cx="336.8" cy="88.6" r="2.4"/><circle cx="331.5" cy="91.6" r="2.4"/><circle cx="337.6" cy="91.1" r="2.4"/><circle cx="332.3" cy="94.2" r="2.4"/><circle cx="338.4" cy="93.7" r="2.4"/><circle cx="333.1" cy="96.7" r="2.4"/><circle cx="339.2" cy="96.2" r="2.4"/><circle cx="333.9" cy="99.3" r="2.4"/><circle cx="340.0" cy="98.8" r="2.4"/><circle cx="334.6" cy="101.8" r="2.4"/><circle cx="340.8" cy="101.3" r="2.4"/></g></g>
+        <path d="M352 88 Q372 100 390 116" stroke="var(--electron)" stroke-width="1.3" stroke-dasharray="3 3" fill="none"/>
+        <rect x="390" y="70" width="10" height="92" fill="var(--photon)" opacity="0.55"/>
+        <circle class="blink" cx="395" cy="116" r="7" fill="var(--photon)"/>
+        <rect x="430" y="78" width="90" height="76" fill="none" stroke="var(--line)" stroke-width="1"/>
+        <path d="M440 80 V152 M450 80 V152 M460 80 V152 M470 80 V152 M480 80 V152 M490 80 V152 M500 80 V152 M510 80 V152" stroke="var(--line)" stroke-width="1" fill="none"/>
+        <path class="flow" d="M402 116 H566" stroke="var(--photon)" stroke-width="1.6" fill="none" opacity="0.8"/>
+        <rect x="572" y="68" width="24" height="24" fill="none" stroke="var(--line)" stroke-width="1"/><rect x="572" y="92" width="24" height="24" fill="none" stroke="var(--line)" stroke-width="1"/><rect x="572" y="116" width="24" height="24" fill="none" stroke="var(--line)" stroke-width="1"/><rect x="572" y="140" width="24" height="24" fill="none" stroke="var(--line)" stroke-width="1"/><rect x="596" y="68" width="24" height="24" fill="none" stroke="var(--line)" stroke-width="1"/><rect x="596" y="92" width="24" height="24" fill="none" stroke="var(--line)" stroke-width="1"/><rect x="596" y="116" width="24" height="24" fill="none" stroke="var(--line)" stroke-width="1"/><rect x="596" y="140" width="24" height="24" fill="none" stroke="var(--line)" stroke-width="1"/><rect x="620" y="68" width="24" height="24" fill="none" stroke="var(--line)" stroke-width="1"/><rect x="620" y="92" width="24" height="24" fill="none" stroke="var(--line)" stroke-width="1"/><rect x="620" y="116" width="24" height="24" fill="none" stroke="var(--line)" stroke-width="1"/><rect x="620" y="140" width="24" height="24" fill="none" stroke="var(--line)" stroke-width="1"/><rect x="644" y="68" width="24" height="24" fill="none" stroke="var(--line)" stroke-width="1"/><rect x="644" y="92" width="24" height="24" fill="none" stroke="var(--line)" stroke-width="1"/><rect x="644" y="116" width="24" height="24" fill="none" stroke="var(--line)" stroke-width="1"/><rect x="644" y="140" width="24" height="24" fill="none" stroke="var(--line)" stroke-width="1"/><rect x="668" y="68" width="24" height="24" fill="none" stroke="var(--line)" stroke-width="1"/><rect x="668" y="92" width="24" height="24" fill="none" stroke="var(--line)" stroke-width="1"/><rect x="668" y="116" width="24" height="24" fill="none" stroke="var(--line)" stroke-width="1"/><rect x="668" y="140" width="24" height="24" fill="none" stroke="var(--line)" stroke-width="1"/>
+        <rect class="blink" x="597" y="104" width="22" height="22" fill="var(--photon)" opacity="0.6"/>
+        <g font-size="10" fill="var(--ink-3)">
+          <text x="20" y="206">光子 1 個 → 光電子 1 個（QE の確率で）→ MCP で電子の雲 → 蛍光面で光に戻す → カメラで読む</text>
+          <text x="20" y="224">カメラの読み出し雑音は、この増倍の後ろに来るので桁で小さく見える ― 代わりに QE と MCP の揺らぎ F を払う</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>光電面・MCP・蛍光面の三段で、1 個の光電子を数千〜数百万個の光子にしてからカメラに渡す。MCP は直径 10 µm 前後の細い管（チャネル）を束ねた板で、管の壁に当たるたびに二次電子が出て増える（1 段で 10³〜10⁴ 倍、2 段重ねで 10⁶ 級 ― 代表例）。<span class="key">増やしてから読むので、カメラの読み出し雑音が消える</span>のが II の芯です。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>ゲート ― II にしかできないこと</h3>
+      <p>光電面と MCP の間の電圧を逆向きにすると、光電子は MCP に届かず、像は真っ暗になります。この電圧を ns 級で切り替えるのが<b>ゲート</b>で、ICCD はシャッタを数 ns だけ開けることができる（品種によってはさらに短い）。カメラの電子シャッタは µs 級が普通なので、<span class="key">ns の窓で光を選べるのは II の独擅場</span>です。</p>
+      <p>効くのは、パルスで光る信号を、止まない背景の中から取り出すときです。背景は開けている時間に比例して積もるが、パルスの光は短い時間に集まっている。蛍光寿命の撮影（06 の FLIM を像で）、レーザー誘起ブレークダウン分光（LIBS）の最初のプラズマの光を捨てて元素の輝線だけを撮る、燃焼やプラズマの一瞬を止めて撮る、が典型です。</p>
+    </div>
+    <div class="body-col">
+      <h3>蛍光面の残光 ― 速さの上限</h3>
+      <p>蛍光面は打ち込まれた電子を光に変えるが、光り終わるまでに時間がかかる（残光）。代表的な蛍光面の、光が 10% まで減る時間は、P43（Gd<sub>2</sub>O<sub>2</sub>S:Tb、緑）で約 1 ms、P46（YAG:Ce）で約 0.3 µs、P47（Y<sub>2</sub>SiO<sub>5</sub>:Ce）で約 0.1 µs（代表例。実際の減衰は単一の指数ではない）。単一の指数と仮定すると、P43 は 1,000 枚/秒の間隔（1 ms）で前の像が <b>10%</b>、10,000 枚/秒（0.1 ms）では <b>79%</b> も残る。P46 なら 0.1 ms は「10% まで減る時間」の 300 倍以上なので、ほとんど何も残らない。<span class="key">明るく効率の良い P43 は遅く、速い撮影には P46・P47</span> ― ゲートで ns の窓を切っても、蛍光面が遅ければ次の像に前の光が混ざります。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">CROSSOVER — 暗いところは II、明るいところは素のカメラ</span><span class="fig-title">両対数・下の2つの式から計算（値は仮定）</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 244" role="img" aria-label="1画素・1フレームの光子数に対するSN比の両対数グラフ。IIを付けたカメラ（光電面のQE 0.2、MCPの過剰雑音1.8）と、素のカメラ（QE 0.6、読み出し雑音10電子）の2本の曲線が、約38光子で交差する。それより暗いとII、明るいと素のカメラが良い。" style="min-width:700px;width:100%;display:block">
+        <g stroke="var(--line)" stroke-width="1" fill="none"><path d="M80 50 V200 H640"/><path d="M80 150 H640 M80 100 H640 M220 50 V200 M360 50 V200 M500 50 V200" stroke-dasharray="2 4"/></g>
+        <path class="draw" style="--len:569" d="M80.0 173.9 L83.5 173.2 L87.0 172.6 L90.5 172.0 L94.0 171.4 L97.5 170.7 L101.0 170.1 L104.5 169.5 L108.0 168.9 L111.5 168.2 L115.0 167.6 L118.5 167.0 L122.0 166.4 L125.5 165.7 L129.0 165.1 L132.5 164.5 L136.0 163.9 L139.5 163.2 L143.0 162.6 L146.5 162.0 L150.0 161.4 L153.5 160.7 L157.0 160.1 L160.5 159.5 L164.0 158.9 L167.5 158.2 L171.0 157.6 L174.5 157.0 L178.0 156.4 L181.5 155.7 L185.0 155.1 L188.5 154.5 L192.0 153.9 L195.5 153.2 L199.0 152.6 L202.5 152.0 L206.0 151.4 L209.5 150.7 L213.0 150.1 L216.5 149.5 L220.0 148.9 L223.5 148.2 L227.0 147.6 L230.5 147.0 L234.0 146.4 L237.5 145.7 L241.0 145.1 L244.5 144.5 L248.0 143.9 L251.5 143.2 L255.0 142.6 L258.5 142.0 L262.0 141.4 L265.5 140.7 L269.0 140.1 L272.5 139.5 L276.0 138.9 L279.5 138.2 L283.0 137.6 L286.5 137.0 L290.0 136.4 L293.5 135.7 L297.0 135.1 L300.5 134.5 L304.0 133.9 L307.5 133.2 L311.0 132.6 L314.5 132.0 L318.0 131.4 L321.5 130.7 L325.0 130.1 L328.5 129.5 L332.0 128.9 L335.5 128.2 L339.0 127.6 L342.5 127.0 L346.0 126.4 L349.5 125.7 L353.0 125.1 L356.5 124.5 L360.0 123.9 L363.5 123.2 L367.0 122.6 L370.5 122.0 L374.0 121.4 L377.5 120.7 L381.0 120.1 L384.5 119.5 L388.0 118.9 L391.5 118.2 L395.0 117.6 L398.5 117.0 L402.0 116.4 L405.5 115.7 L409.0 115.1 L412.5 114.5 L416.0 113.9 L419.5 113.2 L423.0 112.6 L426.5 112.0 L430.0 111.4 L433.5 110.7 L437.0 110.1 L440.5 109.5 L444.0 108.9 L447.5 108.2 L451.0 107.6 L454.5 107.0 L458.0 106.4 L461.5 105.7 L465.0 105.1 L468.5 104.5 L472.0 103.9 L475.5 103.2 L479.0 102.6 L482.5 102.0 L486.0 101.4 L489.5 100.7 L493.0 100.1 L496.5 99.5 L500.0 98.9 L503.5 98.2 L507.0 97.6 L510.5 97.0 L514.0 96.4 L517.5 95.7 L521.0 95.1 L524.5 94.5 L528.0 93.9 L531.5 93.2 L535.0 92.6 L538.5 92.0 L542.0 91.4 L545.5 90.7 L549.0 90.1 L552.5 89.5 L556.0 88.9 L559.5 88.2 L563.0 87.6 L566.5 87.0 L570.0 86.4 L573.5 85.7 L577.0 85.1 L580.5 84.5 L584.0 83.9 L587.5 83.2 L591.0 82.6 L594.5 82.0 L598.0 81.4 L601.5 80.7 L605.0 80.1 L608.5 79.5 L612.0 78.9 L615.5 78.2 L619.0 77.6 L622.5 77.0 L626.0 76.4 L629.5 75.7 L633.0 75.1 L636.5 74.5 L640.0 73.9" stroke="var(--photon)" stroke-width="2.2" fill="none"/>
+        <path class="draw" style="--len:549" d="M111.5 200.0 L115.0 198.7 L118.5 197.5 L122.0 196.2 L125.5 195.0 L129.0 193.7 L132.5 192.5 L136.0 191.3 L139.5 190.0 L143.0 188.8 L146.5 187.5 L150.0 186.3 L153.5 185.1 L157.0 183.8 L160.5 182.6 L164.0 181.3 L167.5 180.1 L171.0 178.9 L174.5 177.6 L178.0 176.4 L181.5 175.2 L185.0 174.0 L188.5 172.7 L192.0 171.5 L195.5 170.3 L199.0 169.0 L202.5 167.8 L206.0 166.6 L209.5 165.4 L213.0 164.2 L216.5 162.9 L220.0 161.7 L223.5 160.5 L227.0 159.3 L230.5 158.1 L234.0 156.9 L237.5 155.7 L241.0 154.5 L244.5 153.3 L248.0 152.1 L251.5 150.9 L255.0 149.7 L258.5 148.5 L262.0 147.3 L265.5 146.1 L269.0 145.0 L272.5 143.8 L276.0 142.6 L279.5 141.5 L283.0 140.3 L286.5 139.1 L290.0 138.0 L293.5 136.8 L297.0 135.7 L300.5 134.6 L304.0 133.4 L307.5 132.3 L311.0 131.2 L314.5 130.1 L318.0 128.9 L321.5 127.8 L325.0 126.7 L328.5 125.7 L332.0 124.6 L335.5 123.5 L339.0 122.4 L342.5 121.4 L346.0 120.3 L349.5 119.3 L353.0 118.2 L356.5 117.2 L360.0 116.2 L363.5 115.2 L367.0 114.2 L370.5 113.2 L374.0 112.2 L377.5 111.2 L381.0 110.3 L384.5 109.3 L388.0 108.3 L391.5 107.4 L395.0 106.5 L398.5 105.6 L402.0 104.6 L405.5 103.7 L409.0 102.8 L412.5 102.0 L416.0 101.1 L419.5 100.2 L423.0 99.3 L426.5 98.5 L430.0 97.6 L433.5 96.8 L437.0 96.0 L440.5 95.2 L444.0 94.3 L447.5 93.5 L451.0 92.7 L454.5 91.9 L458.0 91.2 L461.5 90.4 L465.0 89.6 L468.5 88.8 L472.0 88.1 L475.5 87.3 L479.0 86.6 L482.5 85.9 L486.0 85.1 L489.5 84.4 L493.0 83.7 L496.5 82.9 L500.0 82.2 L503.5 81.5 L507.0 80.8 L510.5 80.1 L514.0 79.4 L517.5 78.7 L521.0 78.0 L524.5 77.3 L528.0 76.6 L531.5 75.9 L535.0 75.3 L538.5 74.6 L542.0 73.9 L545.5 73.2 L549.0 72.6 L552.5 71.9 L556.0 71.2 L559.5 70.6 L563.0 69.9 L566.5 69.3 L570.0 68.6 L573.5 67.9 L577.0 67.3 L580.5 66.6 L584.0 66.0 L587.5 65.3 L591.0 64.7 L594.5 64.0 L598.0 63.4 L601.5 62.8 L605.0 62.1 L608.5 61.5 L612.0 60.8 L615.5 60.2 L619.0 59.5 L622.5 58.9 L626.0 58.3 L629.5 57.6 L633.0 57.0 L636.5 56.4 L640.0 55.7" stroke="var(--electron)" stroke-width="2.2" fill="none"/>
+        <circle cx="301.0" cy="134.4" r="4.5" fill="var(--warn)"/>
+        <g font-size="10">
+          <path d="M96 62 H116" stroke="var(--photon)" stroke-width="2.2" fill="none"/><text x="122" y="66" fill="var(--photon-2)">II 付き: √(η<tspan font-size="8" dy="2">pc</tspan><tspan dy="-2">N/F)（η</tspan><tspan font-size="8" dy="2">pc</tspan><tspan dy="-2"> 0.2・F 1.8）</tspan></text>
+          <path d="M96 80 H116" stroke="var(--electron)" stroke-width="2.2" fill="none"/><text x="122" y="84" fill="var(--electron-2)">素のカメラ: ηN/√(ηN + σ²)（η 0.6・σ 10 e⁻）</text>
+          <circle cx="106" cy="96" r="4" fill="var(--warn)"/><text x="122" y="100" fill="var(--warn)">交差 ≈ 38 光子/画素</text>
+        </g>
+        <g font-family="var(--mono)" font-size="9.5" fill="var(--ink-3)">
+          <text x="74" y="203" text-anchor="end">0.1</text><text x="74" y="153" text-anchor="end">1</text><text x="74" y="103" text-anchor="end">10</text><text x="74" y="53" text-anchor="end">100</text>
+          <text x="80" y="216" text-anchor="middle">1</text><text x="220" y="216" text-anchor="middle">10</text><text x="360" y="216" text-anchor="middle">100</text><text x="500" y="216" text-anchor="middle">1000</text><text x="640" y="216" text-anchor="middle">10⁴</text>
+        </g>
+        <text x="360" y="236" font-size="10" fill="var(--ink-3)" text-anchor="middle">1 画素・1 フレームの光子数 N →　　縦軸: SN 比</text>
+      </svg>
+    </div>
+    <figcaption>II の曲線は √N に比例するだけ（読み出し雑音が無いぶん、暗いところで床に当たらない）。素のカメラは暗いと読み出し雑音 σ に負け、明るいと QE の高さで勝つ。<span class="key">交差点の位置は QE の比・F・σ で決まる</span> ― 第10部 03 の sCMOS と EM-CCD の交差（S + B = 9σ²）と同じ形の判断です。</figcaption>
+  </figure>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — MCP の雑音と寿命</span>
+    <p>MCP の過剰雑音には2つの出どころがあります。① <b>開口率</b>: 管の断面が板の面積に占める割合は 60% 前後（代表例）で、残りの壁の上に当たった光電子は、増えないか、弱く増える。「数えられない光電子」は QE を実質的に下げるのと同じで、SN 比の √ の中の N を削る。② <b>利得の揺らぎ</b>: 管の中の増倍は段の数も場所もばらつくので、1 段の MCP の利得の分布は幅が広い（02 の第1ダイノードの揺らぎと同じ理屈）。2 段で飽和ぎみに使うと分布が細くなる。MCP の利得は、取り出した電荷の総量とともに少しずつ下がる（壁の表面が変わる）ので、長く使うと電圧を上げて補う ― 強い光を入れないのは、光電面を守るためだけではありません。</p>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（15 II と ICCD）</span>
+    <p><b>問1.</b> 上の仮定（II: η<sub>pc</sub> 0.2・F 1.8、素のカメラ: η 0.6・σ<sub>r</sub> 10 e⁻）で、1 画素に 5 光子・50 光子・1,000 光子が来るとき、それぞれの SN 比は？</p>
+    <p><b>解.</b> 5 光子: II 0.75、素 0.30 ― II が 2 倍以上良い。50 光子: II 2.36、素 2.63 ― もう素のカメラが良い（交差 約 38 光子を越えた）。1,000 光子: II 10.5、素 22.7。<span class="key">II を付けるかは、1 画素・1 フレームの光子数で決まる</span>。</p>
+    <p><b>問2.</b> 1 フレームで 1 画素に 20 光子が 10 ns のパルスに集まって来る。背景光は 10⁶ 光子/画素/s（仮定）。II（η<sub>pc</sub> 0.2・F 1.8）で、ゲート 10 ns と、ゲートなし（露光 10 ms）の SN 比は？</p>
+    <p><b>解.</b> 信号の光電子 0.2 × 20 = 4.0。ゲート 10 ns: 背景 0.2 × 10⁶ × 10⁻⁸ = 0.002 個で、SN 比 = 4.0/√(1.8 × (4.0 + 0.002)) = <b>1.49</b>。ゲートなし: 背景 2000 個で、SN 比 = <b>0.067</b>。<b>22 倍</b>の差 ― 背景は窓の長さに比例して積もるので、光の来る時刻だけ窓を開けるのが最も効きます。</p>
+  </div>
+
+  <div class="pit">
+    <span class="tag">落とし穴と、持ち帰る一言（15）</span>
+    <ul><li>明るい光に II を使う ― QE と F を払うぶん、素のカメラに負ける（この章の仮定で 1 画素・1 フレーム約 38 光子より明るいと逆転）。</li><li>強い光を入れて光電面や MCP を傷める ― 許容の入射を超えないよう、絞りと露光で守る。MCP の利得は取り出した電荷とともに下がる。</li><li>蛍光面の残光を忘れて速いフレームで撮る ― P43 は 1 ms で 10% までしか消えず、前の像が残る。</li></ul>
+    <dl class="roles"><dt>営業・企画</dt><dd>「暗い・一瞬・背景を時間で切る」の3つが II の売りどころ。明るい用途なら素のカメラや EM-CCD・sCMOS と比べる。</dd><dt>設計・開発</dt><dd>光電面の波長・MCP の段数・蛍光面の種類・結合（FOP かレンズか）を、要求の暗さ・速さ・細かさから決める。</dd><dt>研究・製造</dt><dd>MCP の利得の推移と、ゲートの開閉の時間の特性を記録し、電圧で補うときは雑音と寿命の変化も一緒に見る。</dd></dl>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — DesignLab・PhotonLab</span>
+    <p>「増やしてから読む」と「読み出し雑音の床」の交差を、EM-CCD と sCMOS の選定で。背景と窓の関係は計数の SN 比で。</p>
+    <div class="qs"><span class="lab">DesignLab</span><a href="DesignLab/index.html?quest=dark">暗い輝点は EM-CCD</a><span class="lab">PhotonLab</span><a href="PhotonLab/index.html?quest=count">数えて待つ</a></div>
   </div>
 </section>
 
 <!-- ================= 理解の確認 ================= -->
 <section class="stage" id="scheck">
   <div class="stage-head"><span class="stage-num">—</span>
-    <h2>理解の確認 ― 23問で一族を並べ直す</h2></div>
+    <h2>理解の確認 ― 25問で一族を並べ直す</h2></div>
   <p class="lede">答えを開く前に、どの章の何を使うかを先に言ってみてください。後ろの問いほど、前の章を組み合わせます。</p>
   <div class="chk">
     <details><summary><span class="qn">Q1 · 01</span>検出器選定の最初の2問は何か。</summary><p>①光は後段の回路の床より十分強いか（弱ければ床の手前で増やす家系へ）。②「何ワット」で足りるか、「何個」まで要るか（個数なら PMT・SPAD・MPPC）。そのあとに磁場・体積・電圧（Q3）、波長、速さ、値段が続く。</p></details>
@@ -2297,6 +2428,8 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <details><summary><span class="qn">Q21 · 13</span>明るい光（1 nW）でフォトダイオードが PMT や APD より良い SN 比になるのはなぜか。</summary><p>どれもショット雑音の限界で SN 比 = √(N/F) になり、効率が高く（QE 0.70）、増倍の過剰雑音 F を払わないフォトダイオードが最も大きいから。増倍が得になるのは、床が後段の回路にあるときだけ。</p></details>
       <details><summary><span class="qn">Q22 · 14</span>フォトダイオードの開放電圧で光を測ると直線にならないのはなぜか。直線に読むにはどうするか。</summary><p>開放では光電流が全部ダイオードに流れ込み、V<sub>oc</sub> = nV<sub>t</sub>·ln(1 + I<sub>ph</sub>/I<sub>s</sub>) の対数になるから（10 倍で 59.5 mV）。TIA の仮想接地で端子の電圧を 0 V に押さえて電流を読めば、接合に V<sub>j</sub> = I<sub>ph</sub>·R<sub>s</sub> しか立たず、光電流がほぼ全部外へ出る。</p></details>
     <details><summary><span class="qn">Q23 · 14</span>フォトダイオードに逆バイアスをかける得と代償は何か。</summary><p>得: 接合容量が減って速くなり（5 V で 15 → 4.91 pF の例）、負荷で受けるときの直線性の上限が上がる（10 kΩ で 23.8 µA → 0.536 mA）。代償: 暗電流とそのショット雑音が流れ、低い周波数では 1/f の雑音も乗り、温度で増える。微弱な光を遅く測るなら零バイアスが向く。</p></details>
+      <details><summary><span class="qn">Q24 · 15</span>イメージインテンシファイアを付けると、暗いときは得で、明るいときは損になるのはなぜか。</summary><p>増やしてから読むのでカメラの読み出し雑音が消えるが、光電面の QE（0.2 程度）と MCP の過剰雑音 F（1.6〜2）を払うから。SN 比は II で √(η<sub>pc</sub>N/F)、素のカメラで ηN/√(ηN + σ<sub>r</sub>²) で、この章の仮定では 1 画素あたり約 38 光子で入れ替わる。</p></details>
+    <details><summary><span class="qn">Q25 · 15</span>ICCD のゲートが蛍光寿命や LIBS の撮影で効くのはなぜか。</summary><p>背景は窓を開けている時間に比例して積もるが、パルスの光は短い時間に集まっているから。10 ns の窓なら 10 ms の露光より背景は 10⁶ 分の 1 で、例題では SN 比 1.49 対 0.067。カメラの電子シャッタは µs 級で、ns の窓は II にしか切れない。</p></details>
   </div>
 </section>
 
@@ -2359,6 +2492,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>光起電力モード / 光導電モード</td><td>零バイアスで使うか、逆バイアスで使うか。零バイアスは暗電流が無く微弱光・低周波向き、逆バイアスは速く、明るい光まで直線</td><td class="num">5 V で C<sub>j</sub> 約 1/3.1</td></tr>
           <tr><td>開放電圧 V<sub>oc</sub></td><td>負荷をつながないときの電圧 nV<sub>t</sub>·ln(1 + I<sub>ph</sub>/I<sub>s</sub>)。光の対数になる</td><td class="num">10 倍で 59.5 mV</td></tr>
           <tr><td>直線性の上限（飽和）</td><td>負荷と直列抵抗で接合が順方向に振られ、光電流がダイオードへ逃げ始める点。上限 ≈ (V<sub>R</sub> + V<sub>f</sub>)/(R<sub>L</sub> + R<sub>s</sub>)</td><td class="num">10 kΩ 零バイアスで約 23.8 µA</td></tr>
+                  <tr><td>イメージインテンシファイア（II）</td><td>光電面・MCP・蛍光面で、像を保ったまま光を増やす管。後ろにカメラをつないだものが ICCD</td><td class="num">暗さの交差 約 38 光子/画素（仮定の例）</td></tr>
+          <tr><td>MCP（マイクロチャネルプレート）</td><td>細い管を束ねた板。管の壁に当たるたびに二次電子が出て増える。像の細かさの上限は管の間隔で決まる</td><td class="num">1 段 10³〜10⁴ 倍（代表例）</td></tr>
+          <tr><td>蛍光面（P43・P46・P47）</td><td>増えた電子を光に戻す面。明るい P43 は残光が長く、P46・P47 は速い</td><td class="num">10% まで 約 1 ms・0.3 µs・0.1 µs</td></tr>
+          <tr><td>ゲート（ICCD）</td><td>光電面と MCP の間の電圧を切り替え、ns 級の時間だけ像を通す窓。背景を時間で切る</td><td class="num">窓 10 ns で背景 10⁶ 分の 1（10 ms 比）</td></tr>
+          <tr><td>開口率（MCP）</td><td>管の断面が板の面積に占める割合。壁に当たった光電子は増えにくく、過剰雑音の一因になる</td><td class="num">約 60%（代表例）</td></tr>
         </tbody>
       </table>
     </div>
@@ -2406,6 +2544,8 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
                   <tr><td>Si フォトダイオードの<br>技術資料</td><td>浜松ホトニクス<br>Opto-semiconductor handbook, Chapter 2: Si photodiodes（同社サイトで公開）</td><td>14。等価回路・零バイアスと逆バイアス・直線性・温度特性。実際の素子の値はここと各データシートで。</td></tr>
           <tr><td>半導体素子の教科書</td><td>S. M. Sze &amp; K. K. Ng<br>Physics of Semiconductor Devices, 3rd ed., Wiley (2007) 13 章</td><td>14。pn 接合の光電流・開放電圧・光検出器の雑音。</td></tr>
           <tr><td>フォトダイオードの<br>増幅回路</td><td>J. G. Graeme<br>Photodiode Amplifiers: Op Amp Solutions, McGraw-Hill (1996)</td><td>14 と第6部 16。TIA で受けるときの帯域・雑音・安定性。</td></tr>
+                  <tr><td>マイクロチャネルプレート</td><td>J. L. Wiza<br>"Microchannel plate detectors", Nucl. Instrum. Methods 162, 587 (1979)</td><td>15。MCP の構造・利得・雑音の標準的な解説。</td></tr>
+          <tr><td>イメージインテンシファイアの<br>技術資料</td><td>浜松ホトニクス<br>イメージインテンシファイアの技術資料（同社サイトで公開）</td><td>15。光電面・MCP・蛍光面の種類と代表値、ゲートの動作。実際の値は各データシートで。</td></tr>
         </tbody>
       </table>
     </div>

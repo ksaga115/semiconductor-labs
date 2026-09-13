@@ -118,6 +118,24 @@ T('落ちるべきもの', () => {
   ok('scint: クロストークを消すのは反則', !g('scint', { pct: 0 }));
   ok('scint: セル数を増やすのは反則', !g('scint', { ncell: 40000, lce: 0.5, eta: 0.5 }));
   ok('scint: PDE 0.6 は上限破り', !g('scint', { lce: 0.15, eta: 0.6 }));
+
+  /* 第5章: X 線の分解能・不感時間・PD の直線性 ― 窓の両側と反則 */
+  ok('xres: ENC 7 e⁻（131 eV）は落ちる', !g('xres', { enc: 7 }));
+  ok('xres: ENC 6.5 e⁻（129 eV）は通る', g('xres', { enc: 6.5 }));
+  ok('xres: ENC 3 e⁻ は回路の下限破り', !g('xres', { enc: 3 }));
+  ok('xres: ファノ因子を下げるのは反則', !g('xres', { fano: 0.05, enc: 8 }));
+  ok('xres: エネルギーを変えるのは反則', !g('xres', { ekev: 20 }));
+  ok('dead: 30 ns（5.66%）は落ちる', !g('dead', { dtau: 30 }));
+  ok('dead: 26 ns（4.94%）は通る', g('dead', { dtau: 26 }));
+  ok('dead: 8 ns はパルスの幅の下限破り', !g('dead', { dtau: 8 }));
+  ok('dead: 率を下げるのは反則', !g('dead', { ntrue: 1e6, dtau: 40 }));
+  ok('dead: 型を変えるのは反則', !g('dead', { dtype: 1 }));
+  ok('pdlin: 零バイアスは直線性で落ちる', !g('pdlin', { vr: 0 }));
+  ok('pdlin: 0.6 V も直線性で落ちる', !g('pdlin', { vr: 0.6 }));
+  ok('pdlin: 4.5 V は通る', g('pdlin', { vr: 4.5 }));
+  ok('pdlin: 6 V は定格破り', !g('pdlin', { vr: 6 }));
+  ok('pdlin: TIA に替えるのはこの課題では反則', !g('pdlin', { rlk: 0 }));
+  ok('pdlin: 光電流を減らすのは反則', !g('pdlin', { pdua: 20, vr: 0 }));
 });
 
 report();

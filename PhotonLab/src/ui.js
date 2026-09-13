@@ -45,7 +45,16 @@
     ['ekev', '放射線のエネルギー', 'keV', 1, 10000],
     ['ly', 'シンチレータの光量', '光子/keV', 1, 100],
     ['lce', '集光効率', '（0〜1）', 0.01, 1],
-    ['rint', '結晶の固有分解能', '% FWHM', 0, 30]
+    ['rint', '結晶の固有分解能', '% FWHM', 0, 30],
+    ['wev', 'w 値（1 対のエネルギー）', 'eV', 1, 10],
+    ['fano', 'ファノ因子', '（Si は 0.115）', 0.01, 1],
+    ['enc', '回路の雑音 ENC', 'e⁻（rms）', 0, 1000],
+    ['ntrue', '真の計数率', '/s', 0, 1e10],
+    ['dtau', '不感時間 τ', 'ns', 0.1, 10000],
+    ['dtype', '不感時間の型', '0 = 非拡張・1 = 拡張', 0, 1, true],
+    ['pdua', 'PD の光電流', 'µA', 0.001, 1e5],
+    ['rlk', 'PD の負荷', 'kΩ（0 = TIA）', 0, 1000],
+    ['vr', 'PD の逆バイアス', 'V', 0, 50]
   ];
 
   function num(t) {
@@ -250,6 +259,9 @@
     rows.push(['シンチ: 光電子 / 分解能（FWHM）',
       ev.scNpe.toFixed(0) + ' p.e.（' + ev.scNph.toFixed(0) + ' 光子）/ ' + (ev.scRes * 100).toFixed(2) + ' %（統計 ' + (ev.scStat * 100).toFixed(2) + ' %）'
       + (ev.scLin !== undefined ? '・飽和 ' + (ev.scLin * 100).toFixed(2) + ' %' : ''), ev.scLin !== undefined && ev.scLin > 0.05]);
+    rows.push(['X 線: 対の数 / 分解能（FWHM）', ev.xN.toFixed(0) + ' 対 / ' + ev.xFwhm.toFixed(1) + ' eV（ファノの限界 ' + ev.xFano.toFixed(1) + ' eV）']);
+    rows.push(['不感時間: 数えた率 / 数え落とし', ev.mCount.toExponential(3) + ' /s / ' + (ev.deadLoss * 100).toFixed(2) + ' %（' + (S.design.dtype ? '拡張型' : '非拡張型') + '）', ev.deadLoss > 0.1]);
+    rows.push(['PD: 届く割合 / 帯域', (ev.pdRatio * 100).toFixed(2) + ' % / ' + (isFinite(ev.pdBw) ? (ev.pdBw / 1e6).toFixed(2) + ' MHz' : '―（TIA）') + '（C_j ' + (ev.pdCj * 1e12).toFixed(2) + ' pF）', ev.pdRatio < 0.99]);
     document.getElementById('derived').innerHTML = '<div class="dv">' + rows.map(function (r) {
       return '<span class="k">' + esc(r[0]) + '</span><span class="v' + (r[2] ? ' warn' : '') + '">' + esc(r[1]) + '</span>';
     }).join('') + '</div>';

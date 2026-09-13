@@ -196,11 +196,11 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       <dl class="spec">
         <div><dt>参考書</dt><dd>11<small>部＋付録</small></dd></div>
         <div><dt>ラボ</dt><dd>11<small>本</small></dd></div>
-        <div><dt>採点つき課題</dt><dd>199<small>問</small></dd></div>
+        <div><dt>採点つき課題</dt><dd>202<small>問</small></dd></div>
         <div><dt>依存</dt><dd>0<small>ブラウザのみ</small></dd></div>
         <div><dt>通信</dt><dd>0<small>手元で完結</small></dd></div>
-        <div><dt>自動検査</dt><dd>5,400<small>件 (Node)</small></dd></div>
-        <div class="spec-cap">課題数は ProcessLab 16 ＋ SemiLab 26 ＋ CharLab 13 ＋ NandLab 31 ＋ PixelLab 19 ＋ PhotonLab 15 ＋ AnalogLab 16 ＋ OptoLab 18 ＋ QALab 21 ＋ LaserLab 12 ＋ DesignLab 12。検査は11本の <code>node tests/all.js</code> の合計（2026-09-13 時点）。</div>
+        <div><dt>自動検査</dt><dd>5,463<small>件 (Node)</small></dd></div>
+        <div class="spec-cap">課題数は ProcessLab 16 ＋ SemiLab 26 ＋ CharLab 13 ＋ NandLab 31 ＋ PixelLab 19 ＋ PhotonLab 18 ＋ AnalogLab 16 ＋ OptoLab 18 ＋ QALab 21 ＋ LaserLab 12 ＋ DesignLab 12。検査は11本の <code>node tests/all.js</code> の合計（2026-09-13 時点）。</div>
       </dl>
     </div>
   </div>
@@ -620,8 +620,8 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
         <p class="desc">像を結ばずに「数える・測る」検出器の系統樹。真空へ叩き出すPMT、なだれを線形に使うAPD、SPADを並べて足すMPPC ― そこから共通の物差し（A/W・NEP・D*）、赤外と冷却、X線とPET、蛍光寿命、光通信、EMMIまで。第4部が「像」なら、この部は「光子そのもの」。</p>
       </div>
       <div class="pair">
-        <div><span class="kind read">参考書</span><a href="第5部_光検出デバイス.html">光検出デバイスの系統</a><small>光子 → 電子 → 増やす → 数える → 放射線 · 14章</small></div>
-        <div><span class="kind lab">ラボ</span><a href="PhotonLab/index.html">PhotonLab</a><small>原始部品 ＝ 光子とη · 4章 15問 · <a href="PhotonLab/README.md">README</a></small></div>
+        <div><span class="kind read">参考書</span><a href="第5部_光検出デバイス.html">光検出デバイスの系統</a><small>光子 → 電子 → 増やす → 数える → 放射線 · 15章</small></div>
+        <div><span class="kind lab">ラボ</span><a href="PhotonLab/index.html">PhotonLab</a><small>原始部品 ＝ 光子とη · 5章 18問 · <a href="PhotonLab/README.md">README</a></small></div>
       </div>
     </div>
     <div class="chap">
@@ -636,6 +636,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       <div><span class="cn">07-08</span><div class="ct"><a href="第5部_光検出デバイス.html#s7">現場の道具箱 / 光る半導体</a></div><div class="cd">光通信のPDとTIA、TDIと分光器、PSD、EMMI。相手役のLED・LD・VCSEL・QCLと「Siが光らない理由」。</div></div>
       <div class="do"><span class="lbl">PhotonLab 第3章</span><a class="q" href="PhotonLab/index.html?quest=fast">速さの敵は容量</a><a class="q" href="PhotonLab/index.html?quest=nepm">増やして床を沈める</a><a class="q" href="PhotonLab/index.html?quest=bg">背景光の中で</a><a class="q" href="PhotonLab/index.html?quest=count">数えて待つ</a><a class="q" href="PhotonLab/index.html?quest=transit">厚さの綱引き</a><a class="q" href="PhotonLab/index.html?quest=pile">TCSPCの繰り返し</a></div>
       <div class="do"><span class="lbl">PhotonLab 第4章</span><a class="q" href="PhotonLab/index.html?quest=ingaas">k = 0.4 の狭い山</a><a class="q" href="PhotonLab/index.html?quest=thresh">しきい値で暗計数を切る</a><a class="q" href="PhotonLab/index.html?quest=scint">PET の分解能と飽和の窓</a></div>
+      <div class="do"><span class="lbl">PhotonLab 第5章</span><a class="q" href="PhotonLab/index.html?quest=xres">5.9 keV の分解能 130 eV</a><a class="q" href="PhotonLab/index.html?quest=dead">不感時間で数え落とし 5%</a><a class="q" href="PhotonLab/index.html?quest=pdlin">フォトダイオードの直線性と帯域</a></div>
     </div>
     <div class="chap">
       <div><span class="cn">09-10</span><div class="ct"><a href="第5部_光検出デバイス.html#s10">放射線を半導体で数える / 紫外とテラヘルツ</a></div><div class="cd">w 値（Si 3.62 eV）とファノ因子、FWHM = 2.355w√(FN+ENC²) で 5.9 keV に 124 eV。SDD・CdTe・HPGe。ソーラーブラインドと GaN・SiC・Cs-Te、1 THz ＝ 4.14 meV ＜ kT と THz-TDS。</div></div>
@@ -852,7 +853,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
         <li><b>回路層:</b> 第3部 → NandLab<span class="r">31問</span><span class="why">列並列ADCのカウンタも制御ロジックも、この部の部品でできている</span></li>
         <li><b>センサ本体:</b> 第4部 00〜07 → PixelLab 第1〜3章<span class="r">12問</span><span class="why">光子→電子→電圧→数値→像の一本道。謎のカメラを測って当て、自分の画素を設計する</span></li>
         <li><b>床下:</b> 第4部 付録 A〜D とむすび<span class="r">読む</span><span class="why">トンネル・短チャネル・暗電流・ノイズ。すべて同じ欠陥と電界に戻る</span></li>
-        <li><b>センサの外へ:</b> 第5部 → PhotonLab<span class="r">15問</span><span class="why">像を結ばず数える一族（PMT・APD・MPPC）と共通の物差し。SNRの「最適な M」を自分で探す</span></li>
+        <li><b>センサの外へ:</b> 第5部 → PhotonLab<span class="r">18問</span><span class="why">像を結ばず数える一族（PMT・APD・MPPC）と共通の物差し。SNRの「最適な M」を自分で探す</span></li>
         <li><b>読み出しの中身:</b> 第6部 → AnalogLab<span class="r">16問</span><span class="why">列アンプ・TIA・チャージアンプの正体。gm と Vov の九九から差動対と帰還まで</span></li>
         <li><b>光の入り口:</b> 第7部 → OptoLab<span class="r">18問</span><span class="why">センサに届く光を自分で出す。第4部の 0.52%・190光子/px/s の出どころ</span></li>
         <li><b>光をつくる側:</b> 第9部 → LaserLab<span class="r">12問</span><span class="why">照明の LED、dToF の VCSEL、TCSPC のパルス ― センサの相手役の物理</span></li>
@@ -876,7 +877,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
         <li><b>第6部</b> 参考書 01〜16 → AnalogLab<span class="r">16問</span><span class="why">同じ MOSFET をアナログの目で。増幅・帰還・雑音・基準から AD 変換・電源・実装まで</span></li>
         <li><b>第7部</b> 参考書 01〜13 → OptoLab<span class="r">18問</span><span class="why">光の会計。lx と W の換算、結像と回折、ファイバ、偏光・干渉・分光</span></li>
         <li><b>第9部</b> 参考書 01〜11 → LaserLab<span class="r">12問</span><span class="why">光をつくる側。熱・放電・LED・レーザー・パルス・非線形</span></li>
-        <li><b>第5部</b> 参考書 01〜10 → PhotonLab<span class="r">15問</span><span class="why">光を数える一族。PMT・APD・MPPC・SNSPD と、共通の物差し R・NEP・D*</span></li>
+        <li><b>第5部</b> 参考書 01〜10 → PhotonLab<span class="r">18問</span><span class="why">光を数える一族。PMT・APD・MPPC・SNSPD と、共通の物差し R・NEP・D*</span></li>
         <li><b>第4部</b> 参考書 00〜07 → PixelLab 第1〜3章<span class="r">12問</span><span class="why">ここまでの全部が 1 つの製品に集まる。光子→電子→電圧→数値→像と、付録 A〜D の床下</span></li>
         <li><b>第8部</b> 参考書 01〜18 → QALab<span class="r">21問</span><span class="why">信頼性と品質。作った物を 10 年・百万個の側から見直す</span></li>
         <li><b>第10部</b> 1 台を設計する → DesignLab<span class="r">12問</span><span class="why">総仕上げ。カメラ・LiDAR・分光器を、光子から安全と信頼性まで全部の数字でつなぐ</span></li>
@@ -946,7 +947,7 @@ node SemiLab\tests\all.js    1,255 件
 node CharLab\tests\all.js      281 件
 node NandLab\tests\all.js      725 件
 node PixelLab\tests\all.js     433 件
-node PhotonLab\tests\all.js    333 件
+node PhotonLab\tests\all.js    396 件
 node AnalogLab\tests\all.js    334 件
 node OptoLab\tests\all.js      367 件
 node QALab\tests\all.js        442 件

@@ -211,4 +211,24 @@ T('シンチレータの分解能 ― 第5部 05 の PET', () => {
   ok('セル数を入れなければ飽和は出さない', evalWith({ ncell: 0 }).ev.scLin === undefined);
 });
 
+T('第5章 ― X 線の分解能・不感時間・PD の直線性（第5部 09・12・14 の数字）', () => {
+  const x = evalWith({ ekev: 5.9, wev: 3.62, fano: 0.115, enc: 0 }).ev;
+  near('5.9 keV で 1,630 対', x.xN, 5900 / 3.62, 1e-9);
+  near('ファノの限界 117 eV', x.xFwhm, 116.7, 0.3);
+  near('ENC 5 e⁻ で 124 eV', evalWith({ ekev: 5.9, enc: 5 }).ev.xFwhm, 124.3, 0.3);
+  near('ENC 10 e⁻ で 145 eV', evalWith({ ekev: 5.9, enc: 10 }).ev.xFwhm, 144.5, 0.4);
+  const loss = (n, t) => evalWith({ ntrue: n, dtau: 20, dtype: t }).ev.deadLoss;
+  near('非拡張型は 5.05×10⁵ /s で 1%', loss(5.05e5, 0), 0.01, 2e-6);
+  near('拡張型は 5.03×10⁵ /s で 1%', loss(5.025e5, 1), 0.01, 1e-5);
+  near('拡張型の山 1/(eτ) = 1.84×10⁷ /s', evalWith({ dtau: 20 }).ev.deadPeak, 1.8394e7, 2e4);
+  near('例題: 真の 2.13×10⁶ /s を τ 30 ns で数えると 2.0×10⁶', evalWith({ ntrue: 2.128e6, dtau: 30, dtype: 0 }).ev.mCount, 2.0e6, 2e3);
+  const pd = (ua, rk, v) => evalWith({ pdua: ua, rlk: rk, vr: v }).ev;
+  near('零バイアス 10 kΩ の 1% の上限 23.8 µA', pd(23.8, 10, 0).pdRatio, 0.99, 3e-4);
+  ok('逆 5 V の上限 0.536 mA（530 µA は 1% 以内、540 µA は越える ― 膝が急）', pd(530, 10, 5).pdRatio >= 0.99 && pd(540, 10, 5).pdRatio < 0.99);
+  ok('TIA（負荷 0）では 42 mA まで 1% 以内、45 mA で越える', pd(42000, 0, 0).pdRatio >= 0.99 && pd(45000, 0, 0).pdRatio < 0.99);
+  near('5 V で C_j 4.91 pF', pd(10, 10, 5).pdCj, 4.9099e-12, 5e-15);
+  near('0.72 V で 10 kΩ の帯域 1.57 MHz', pd(100, 10, 0.72).pdBw, 1.5738e6, 5e3);
+  ok('100 µA は 0.70 V で届かず 0.74 V で届く', pd(100, 10, 0.70).pdRatio < 0.99 && pd(100, 10, 0.74).pdRatio >= 0.99);
+});
+
 report();

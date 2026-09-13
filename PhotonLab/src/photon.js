@@ -36,6 +36,14 @@
  *   rint   結晶の固有分解能 [% FWHM]     分解能 = √((2.355·√(ENF/N))² + 固有²)、ENF = 1 + pct（MPPC のクロストーク、一次近似）
  *                                        ncell > 0 なら飽和の線形誤差 1 − N_cell(1−e^(−N/N_cell))/N も出す
  *
+ * ---- 第5章（エネルギー・速さ・直線性）----
+ *   wev    w 値（電子正孔対 1 組のエネルギー）[eV]・fano ファノ因子・enc 回路の雑音 [e⁻ rms]
+ *                                        放射線を半導体で直接数える: N = E/w、FWHM = 2.355·w·√(F·N + ENC²)（第5部 09）
+ *   ntrue  真の計数率 [/s]・dtau 不感時間 [ns]・dtype 型（0 = 非拡張 m = n/(1+nτ)、1 = 拡張 m = n·e^(−nτ)）（第5部 12）
+ *   pdua   PD の光電流 [µA]・rlk 負荷 [kΩ]（0 = TIA）・vr 逆バイアス [V]
+ *                                        第5部 14 の仮定の PD（I_s = V_t/1 GΩ = 25.9 pA・R_s 10 Ω・C_j0 15 pF・V_bi 0.6 V）で
+ *                                        I_ph = I_s(e^(V_j/V_t) − 1) + I_L、V_j = I_L(R_s + R_L) − V_R を解き、届く割合と C_j・帯域 1/(2πR_L C_j) を出す
+ *
  * 【約束】数値はすべてこの式から導出できる。乱数は使わない（採点が毎回同じになるように）。
  * 【モデルの外】1/f 雑音・APD の暗電流の非増倍成分・計数のパイルアップ（不感時間）は入れていない。
  * クロストークとアフターパルスは一次近似（確率が小さいとき）だけで、V_ov と温度への依存は入れていない
@@ -61,7 +69,10 @@
       wum: 3, diamum: 30,
       freps: 10, taufl: 2,
       pct: 0, pap: 0, thr: 1, mupe: 10,
-      ekev: 662, ly: 38, lce: 0.5, rint: 5
+      ekev: 662, ly: 38, lce: 0.5, rint: 5,
+      wev: 3.62, fano: 0.115, enc: 20,
+      ntrue: 1e5, dtau: 20, dtype: 0,
+      pdua: 10, rlk: 10, vr: 0
     };
   }
 
@@ -71,6 +82,29 @@
     var s = 0, t = Math.exp(-mu);
     for (var i = 0; i < n; i++) { s += t; t *= mu / (i + 1); }
     return Math.max(0, 1 - s);
+  }
+
+  /* 第5部 14 の仮定のフォトダイオード（300 K） */
+  var PD = { IS: 1.380649e-23 * 300 / Q / 1e9, RS: 10, C0: 15e-12, VBI: 0.6 };
+
+  /** 負荷に流れる電流 I_L を二分法で解く（I_ph = I_s(e^(V_j/V_t) − 1) + I_L、V_j = I_L(R_s + R_L) − V_R） */
+  function pdLoad(Iph, RL, VR) {
+    var VT = 1.380649e-23 * 300 / Q, lo = -1, hi = Iph + 1e-9, i, m;
+    for (i = 0; i < 200; i++) {
+      m = (lo + hi) / 2;
+      var Vj = m * (PD.RS + RL) - VR;
+      var f = Iph - PD.IS * Math.expm1(Math.min(Vj / VT, 700)) - m;
+      if (f > 0) lo = m; else hi = m;
+    }
+    return (lo + hi) / 2;
+  }
+
+  /** 光電流のうち負荷に届く割合（暗いときの分を引く）と、接合容量・負荷での帯域 */
+  function pdLinear(Iph, RL, VR) {
+    var IL = pdLoad(Iph, RL, VR), I0 = pdLoad(0, RL, VR);
+    var cj = PD.C0 / Math.sqrt(1 + Math.max(0, VR) / PD.VBI);
+    return { ratio: Iph > 0 ? (IL - I0) / Iph : 1, cj: cj,
+             bw: RL > 0 ? 1 / (2 * Math.PI * RL * cj) : Infinity, vj: IL * (PD.RS + RL) - VR };
   }
 
   /** マッキンタイアの過剰雑音指数。M=1 なら F=1 */
@@ -183,6 +217,22 @@
     if (d.ncell > 0 && scNpe > 0) {
       out.scLin = 1 - d.ncell * (1 - Math.exp(-scNpe / d.ncell)) / scNpe;
     }
+
+    /* ---- 第5章 ---- */
+    /* 放射線を半導体で直接数える: 対の数と分解能 */
+    var wev = d.wev || 3.62, xN = (d.ekev || 0) * 1000 / wev;
+    out.xN = xN;
+    out.xFano = 2.355 * wev * Math.sqrt((d.fano || 0) * xN);
+    out.xFwhm = 2.355 * wev * Math.sqrt((d.fano || 0) * xN + (d.enc || 0) * (d.enc || 0));
+    out.xRel = xN > 0 ? out.xFwhm / ((d.ekev || 0) * 1000) : Infinity;
+    /* 不感時間 */
+    var nt = d.ntrue || 0, tau = (d.dtau || 0) * 1e-9;
+    out.mCount = d.dtype ? nt * Math.exp(-nt * tau) : nt / (1 + nt * tau);
+    out.deadLoss = nt > 0 ? 1 - out.mCount / nt : 0;
+    out.deadPeak = tau > 0 ? 1 / (Math.E * tau) : Infinity;
+    /* フォトダイオードの直線性 */
+    var pd = pdLinear((d.pdua || 0) * 1e-6, (d.rlk || 0) * 1e3, d.vr || 0);
+    out.pdRatio = pd.ratio; out.pdCj = pd.cj; out.pdBw = pd.bw; out.pdVj = pd.vj;
     return out;
   }
 
@@ -201,6 +251,7 @@
 
   PH.photon = {
     Q: Q, RLOAD: RLOAD,
-    defaults: defaults, excess: excess, evaluate: evaluate, snrSweep: snrSweep, poissonTail: poissonTail
+    defaults: defaults, excess: excess, evaluate: evaluate, snrSweep: snrSweep, poissonTail: poissonTail,
+    pdLinear: pdLinear, PD: PD
   };
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -109,6 +109,18 @@
         d.lce = 0.3; d.eta = 0.3;
         return d;
       }
+    },
+    xres: {
+      note: 'ENC 5 e⁻。N = 1,630、ファノの限界 116.7 eV と二乗和で 124.3 eV（2.1%）。',
+      design: function () { var d = PHO.defaults(); d.ekev = 5.9; d.wev = 3.62; d.fano = 0.115; d.enc = 5; return d; }
+    },
+    dead: {
+      note: 'τ = 20 ns。nτ = 0.04 で数え落とし 3.85%、数えた率 1.92×10⁶ /s。',
+      design: function () { var d = PHO.defaults(); d.ntrue = 2e6; d.dtype = 0; d.dtau = 20; return d; }
+    },
+    pdlin: {
+      note: '逆バイアス 1.0 V。C_j 9.19 pF で帯域 1.73 MHz、目減りは 1% 未満。',
+      design: function () { var d = PHO.defaults(); d.pdua = 100; d.rlk = 10; d.vr = 1; return d; }
     }
   };
 
