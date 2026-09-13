@@ -76,7 +76,31 @@
     ['navg', '平均の回数', '回', 1, 1e7, true],
     ['tint', '1 回の露光', 'ms', 0.001, 1e6],
     ['slope', 'スペクトルの傾き', 'AU/nm', 0, 10],
-    ['dlcal', '校正の残差', 'nm', 0, 10]
+    ['dlcal', '校正の残差', 'nm', 0, 10],
+    ['#', 'D PET'],
+    ['egam', 'γ 線のエネルギー', 'keV', 1, 10000],
+    ['ly', 'シンチの光量', '光子/keV', 0.1, 200],
+    ['lcol', '集光', '（0〜1）', 0.001, 1],
+    ['pdep', 'MPPC の検出効率', '（0〜1）', 0.001, 1],
+    ['pct', 'クロストーク', '（0〜1）', 0, 0.9],
+    ['rint', '固有の分解能', '% FWHM', 0, 50],
+    ['ncell', 'MPPC のセル数', '個', 1, 1e7, true],
+    ['lwin', 'エネルギーの窓の下限', 'keV', 1, 10000],
+    ['latt', '減衰長', 'mm', 0.1, 1000],
+    ['lcr', '結晶の長さ', 'mm', 0.1, 1000],
+    ['wcoin', '同時計数の窓', 'ns', 0.01, 1000],
+    ['sing', '単独の計数（片側）', '/s', 0, 1e9],
+    ['ctr', '時刻の分解能', 'ps FWHM', 1, 1e5],
+    ['fov', '視野の直径', 'cm', 1, 500],
+    ['tdec', '発光の減衰', 'ns', 0.1, 10000],
+    ['rch', '1 チャネルの計数', '/s', 0, 1e9],
+    ['#', 'E 蛍光寿命'],
+    ['tauf', '寿命', 'ns', 0.01, 1e5],
+    ['fflim', 'パルスの繰り返し', 'MHz', 0.001, 1000],
+    ['mu', '1 パルスの検出数 µ', '個', 0.0001, 5],
+    ['nphf', '1 画素の光子', '個', 1, 1e9, true],
+    ['npxl', '画像の一辺', '画素', 1, 10000, true],
+    ['dcr', '暗計数', '/s', 0, 1e9]
   ];
 
   function num(t) {
@@ -465,7 +489,7 @@
   function renderDerived() {
     var ev;
     try { ev = M.evaluate(S.design); } catch (e) { document.getElementById('derived').textContent = '計算できませんでした: ' + e.message; return; }
-    var c = ev.cam, l = ev.lid, p = ev.sp;
+    var c = ev.cam, l = ev.lid, p = ev.sp, pe = ev.pe, fl = ev.fl;
     var rows = [
       ['#', 'カメラ'],
       ['受け入れの半角 / 集める割合', g(c.thetaDeg, 1) + '° / ' + g(c.collect * 100, 1) + ' %'],
@@ -488,7 +512,19 @@
       ['逆線分散 / 1 画素 / 分解能', g(p.recip, 1) + ' nm/mm / ' + g(p.pxnm, 2) + ' / ' + g(p.res, 2) + ' nm'],
       ['入る光', g(p.thru * 100, 2) + ' %（' + g(p.slitFrac * 100, 1) + ' × ' + g(p.angFrac * 100, 1) + '）'],
       ['吸光度の雑音 / 不確かさ', x10(p.dAavg, 3) + ' / ' + x10(p.uA, 3)],
-      ['2 次の重なり', p.overlap ? 'ある（次数カットフィルタ）' : 'ない', p.overlap]
+      ['2 次の重なり', p.overlap ? 'ある（次数カットフィルタ）' : 'ない', p.overlap],
+      ['#', 'PET'],
+      ['光電子 / 分解能', g(pe.npe, 0) + ' / ' + g(pe.resPct, 1) + ' %（統計 ' + g(pe.statPct, 1) + '）'],
+      ['MPPC の飽和', g(pe.satPct, 2) + ' %', pe.satPct > 5],
+      ['窓で落とせる散乱 / 本物を残す', (isFinite(pe.thetaCut) ? 'θ > ' + g(pe.thetaCut, 1) + '°' : '―') + ' / ' + g(pe.keep * 100, 2) + ' %'],
+      ['止まる（片側 / 両側）', g(pe.stop1 * 100, 0) + ' / ' + g(pe.stop2 * 100, 0) + ' %'],
+      ['偶発同時計数 / 窓の下限', g(pe.randoms, 1) + ' /s / ' + g(pe.wminNs, 2) + ' ns', S.design.wcoin < pe.wminNs],
+      ['TOF / パイルアップ', g(pe.tofCm, 2) + ' cm / ' + g(pe.pile * 100, 1) + ' %'],
+      ['#', '蛍光寿命'],
+      ['周期 / 持ち越し', g(fl.Tns, 1) + ' ns / ' + x10(fl.carry, 2)],
+      ['計数 / パイルアップ', x10(fl.rate, 3) + ' /s / ' + g(fl.pile * 100, 2) + ' %'],
+      ['1 画素 / 画像 1 枚', g(fl.tpixMs, 1) + ' ms / ' + g(fl.timgS / 60, 1) + ' 分'],
+      ['寿命の精度 / 暗計数の比', g(fl.prec * 100, 2) + ' % / ' + x10(fl.dcrRatio, 2)]
     ];
     document.getElementById('derived').innerHTML = '<div class="dv">' + rows.map(function (r) {
       if (r[0] === '#') return '<span class="k sect2">' + esc(r[1]) + '</span><span class="v"></span>';

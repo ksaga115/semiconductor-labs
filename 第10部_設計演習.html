@@ -405,7 +405,17 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
 .p10draw{stroke-dasharray:var(--len,800);animation:p10draw 6s linear infinite}
 /* 00 の地図と 12 の振り返りは列が 6 本 ― 細い列に日本語が縦に積まれないよう、狭い画面では横に送る */
 #s0 td,#s10 td{min-width:9em}
-@media (prefers-reduced-motion:reduce){.p10bar,.p10barx,.p10gl,.p10gr,.p10draw{animation:none!important}.p10hitL,.p10hitR{animation:none!important;opacity:0!important}}
+/* 落とし穴と、持ち帰る一言（2 周目）― 例題の直前に置く。どの表示でも見える */
+.p10pit{margin-top:18px;border:1px solid var(--line);border-left:3px solid var(--warn);border-radius:2px;background:var(--surface);padding:12px 16px}
+.p10pit .tag{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--warn);margin-bottom:4px}
+.p10pit .pt{font-size:12.5px;font-weight:700;color:var(--ink);margin:6px 0 2px}
+.p10pit ul{margin:2px 0 6px 1.2em;padding:0}
+.p10pit li{font-size:14px;line-height:1.7;color:var(--ink-2);margin:2px 0}
+.p10pit b{color:var(--ink)}
+/* 05 の範囲の図: 光のパルスが物体（200 m）まで行って戻る（時間は模式） */
+@keyframes p10rt{0%{transform:translateX(0)}50%{transform:translateX(493px)}100%{transform:translateX(0)}}
+.p10pulse{animation:p10rt 4s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){.p10bar,.p10barx,.p10gl,.p10gr,.p10draw,.p10pulse{animation:none!important}.p10hitL,.p10hitR{animation:none!important;opacity:0!important}}
 </style>
 <header class="wrap hero">
   <div class="hero-grid">
@@ -607,6 +617,13 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <figcaption>いちばん大きく減るのは<b>集める段</b>（×0.307）と<b>露光の時間</b>（1 秒 → 10 ms で ×0.01）です。レンズの NA を上げる、明るい色素を選ぶ、露光を延ばす ― どれも効くが、露光を延ばすと速い動きが写らない。<span class="key">光の予算は掛け算なので、どの段の 2 倍も同じ 2 倍</span>で、いちばん安く 2 倍を買える段から手をつけます。</figcaption>
   </figure>
 
+  <div class="p10pit">
+    <span class="tag">落とし穴と、持ち帰る一言</span>
+    <p class="pt">落とし穴</p>
+    <ul><li><b>NA の公式だけで比べる。</b>空気の NA 0.95 は数字の上では 34.4% と油浸（30.7%）より多いが、試料が水とカバーガラスの中にあると臨界角の外の光が入らず、実際は減る（例題）。</li><li><b>等方的な発光という仮定を忘れる。</b>向きのそろった分子では放射の形が偏り、集める割合が変わる。</li><li><b>細かく標本化するほど良いと思う。</b>同じ信号が多くの画素に分かれ、画素ごとの読み出し雑音が増える。</li></ul>
+    <p class="pt">持ち帰る一言</p>
+    <ul class="roles"><li><b>営業・企画</b> 「感度」はセンサの量子効率だけでは決まらない ― いちばん大きく減るのは集める段（×0.307）と露光（10 ms で ×0.01）。</li><li><b>設計・開発</b> 予算は掛け算なので、どの段の 2 倍も同じ 2 倍。いちばん安く 2 倍を買える段から手をつける。</li><li><b>研究・製造</b> 分子の光子 2×10⁵ /s は仮定 ― 色素と励起の強さで大きく変わるので、実測で置き換える。</li></ul>
+  </div>
   <div class="ex">
     <span class="tag">例題 ― 手で一度解く（02 光の予算）</span>
     <p><b>問.</b> 対物レンズを NA 1.4 の油浸から NA 0.95 の乾燥系（空気 n = 1）に替えると、集める割合はいくつになり、10 ms の信号は何電子になるか。</p>
@@ -673,6 +690,13 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p>① <b>読み出し雑音</b>を 1.6 → 1.0 e⁻ にすると、交差点は 23 → <b>9 電子</b>に下がり、sCMOS の守備範囲が広がる。② <b>輝点の画素数</b>を 9 → 25（細かく標本化）にすると、交差点は 64 電子に上がる ― 細かい標本化は暗いところで損をする。③ <b>背景</b>は EM-CCD に不利に効く（F² が背景のショット雑音も 2 倍にする）。④ 光子計数モード（増倍した出力をしきい値で 0/1 に切る使い方）にすると F² の不利は消えるが、1 画素 1 フレームで 1 個までしか数えられないので、ごく暗いときだけ使える。結論を左右する順は、背景 ＞ 読み出し雑音 ＞ 画素数。<b>背景を実測してから選ぶ</b>のが正しい順番です。</p>
   </div>
 
+  <div class="p10pit">
+    <span class="tag">落とし穴と、持ち帰る一言</span>
+    <p class="pt">落とし穴</p>
+    <ul><li><b>読み出し雑音の値だけでセンサを選ぶ。</b>S + B = 9σ<sub>r</sub>² の交差点より明るければ sCMOS、暗ければ EM-CCD ― 信号の大きさで入れ替わる。</li><li><b>EM-CCD の F² = 2 を信号だけに掛ける。</b>背景のショット雑音も 2 倍になるので、背景があると EM-CCD の出番は消える。</li><li><b>要求を満たせない範囲で部品を比べる。</b>例題の SN 比 1 では、どちらを選んでも輝点はほとんど見えない。</li></ul>
+    <p class="pt">持ち帰る一言</p>
+    <ul class="roles"><li><b>営業・企画</b> 「どちらが高感度か」は輝点の明るさで入れ替わる ― 顧客の信号の電子数と背景を先に聞く。</li><li><b>設計・開発</b> 結論を左右する順は、背景 ＞ 読み出し雑音 ＞ 画素数。背景を実測してから選ぶ。</li><li><b>研究・製造</b> 画素数（標本化）を 9 → 25 にすると交差点は 23 → 64 電子に上がる ― 細かい標本化は暗いところで損をする。</li></ul>
+  </div>
   <div class="ex">
     <span class="tag">例題 ― 手で一度解く（03 雑音と選定）</span>
     <p><b>問.</b> 背景が無く、輝点の信号が 2.45 電子（10 倍暗い色素で、さらに 10 倍短い 1 ms の露光）のとき、sCMOS と EM-CCD の SN 比は？ どちらを選ぶか。</p>
@@ -696,7 +720,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <h3>AD 変換 ― ビット数は雑音の床で決める</h3>
       <p>飽和電荷 30,000 e⁻、読み出し雑音 1.6 e⁻ なら、ダイナミックレンジは 20 log(30,000/1.6) = <b>85.5 dB</b>。16 ビットの ADC なら 1 LSB = 30,000/65,536 = <b>0.46 e⁻</b>で、量子化の雑音 LSB/√12 = 0.13 e⁻ は読み出し雑音 1.6 e⁻ に比べて小さい（第4部 06・第6部 09）。<span class="key">1 LSB を読み出し雑音より小さくする</span>のが、ビット数を決める目安です。PTC（第4部）で、この 0.46 e⁻/DN を実測で確かめます。</p>
       <h3>暗電流 ― 露光の長さで効き方が変わる</h3>
-      <p>冷却した sCMOS の暗電流を 0.5 e⁻/画素/秒と仮定すると、10 ms の露光では 0.005 e⁻ で無視できる。1 秒の露光でも 0.5 e⁻。10 秒になると 5 e⁻ で読み出し雑音（1.6 e⁻）の二乗 2.6 を超えて支配項になる ― <b>長い露光のときだけ冷却の効きが見える</b>。暗電流は温度でおよそ指数関数的に増える（第2部 03、生成電流で約 9 ℃ ごとに 2 倍）ので、冷却の目標温度は露光の長さから決まります。</p>
+      <p>冷却した sCMOS の暗電流を 0.5 e⁻/画素/秒と仮定すると、10 ms の露光では 0.005 e⁻ で無視できる。1 秒の露光でも 0.5 e⁻。10 秒になると 5 e⁻ で読み出し雑音（1.6 e⁻）の二乗 2.6 を超えて支配項になる ― <b>長い露光のときだけ冷却の効きが見える</b>。暗電流は温度でおよそ指数関数的に増える（第2部 03、生成電流で約 9 ℃ ごとに 2 倍 ― 300 K 付近で実際に 2 倍になる幅は 8.6 K）ので、冷却の目標温度は露光の長さから決まります。</p>
     </div>
     <div class="body-col">
       <h3>データの量と伝送</h3>
@@ -706,6 +730,13 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     </div>
   </div>
 
+  <div class="p10pit">
+    <span class="tag">落とし穴と、持ち帰る一言</span>
+    <p class="pt">落とし穴</p>
+    <ul><li><b>ビット数は多いほど良いと思う。</b>1 LSB を読み出し雑音より小さくすれば足り、それ以上のビットはデータ量を増やすだけ。</li><li><b>短い露光で冷却の効きを評価する。</b>暗電流は 10 ms で 0.005 e⁻ だが、10 秒で 5 e⁻ ― 長い露光のときだけ効きが見える。</li><li><b>CMOS のビニングで CCD と同じだけ雑音が減ると思う。</b>デジタルの足し合わせでは読み出し雑音は減らず、主にデータが 1/4 になる。</li></ul>
+    <p class="pt">持ち帰る一言</p>
+    <ul class="roles"><li><b>営業・企画</b> 速いカメラの限界は、しばしばセンサではなく伝送と記録（6.7 Gb/s、1 分で 50 GB）。</li><li><b>設計・開発</b> TEC の性能を最後に決めるのは、熱い側の放熱器の熱抵抗（第8部 04）。</li><li><b>研究・製造</b> 0.46 e⁻/DN は PTC（第4部）で実測して確かめる。</li></ul>
+  </div>
   <div class="ex">
     <span class="tag">例題 ― 手で一度解く（04 読み出し・データ・冷却）</span>
     <p><b>問.</b> 同じカメラで、画素を 2×2 まとめて読む（ビニング）と、1 輝点の SN 比とデータ量はどうなるか。読み出し雑音は 4 画素を足した後に 1 回だけ乗る（CCD の電荷の足し合わせ）場合と、4 画素をそれぞれ読んでから足す（CMOS のデジタルの足し合わせ）場合で比べよ。</p>
@@ -748,6 +779,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
         <path d="M90 156.4 H650" stroke="var(--warn)" stroke-width="1.6" stroke-dasharray="6 4" fill="none"/>
         <path d="M90 175.8 H650" stroke="var(--digital)" stroke-width="1.6" stroke-dasharray="6 4" fill="none"/>
         <circle cx="583.3" cy="125.6" r="4.5" fill="var(--photon)"/>
+        <circle class="p10pulse" cx="90" cy="192" r="3.5" fill="var(--photon)"/>
         <g font-size="10">
           <text x="100" y="60" fill="var(--photon-2)">反射の信号（検出、1 パルスあたり）∝ 1/R²</text>
           <text x="590" y="118" fill="var(--photon-2)">200 m で 29.6 個</text>
@@ -761,9 +793,16 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
         <text x="370" y="236" font-size="10" fill="var(--ink-3)" text-anchor="middle">距離 R（m）→　　背景光は反射の山と同じ 5 ns の窓の中の数</text>
       </svg>
     </div>
-    <figcaption>信号の線と背景光の線の間の距離が、1 パルスでの見分けやすさです。遠くへ行くほど信号は下がるが、背景光は下がらない ― <span class="key">最大の測定距離を決めるのは、たいてい背景光</span>です。次の章で、最初の設計がこの背景光でつまずくことを確かめます。</figcaption>
+    <figcaption>信号の線と背景光の線の間の距離が、1 パルスでの見分けやすさです。遠くへ行くほど信号は下がるが、背景光は下がらない ― <span class="key">最大の測定距離を決めるのは、たいてい背景光</span>です。次の章で、最初の設計がこの背景光でつまずくことを確かめます。下の軸の上を動く点は、パルスが 200 m の物体まで行って戻る往復（実際は 1.33 µs、動きの速さは模式）。</figcaption>
   </figure>
 
+  <div class="p10pit">
+    <span class="tag">落とし穴と、持ち帰る一言</span>
+    <p class="pt">落とし穴</p>
+    <ul><li><b>1/R² を往きにも数える。</b>細いビームの往きは広がらないと仮定しているので、逆二乗は帰りだけに効く。</li><li><b>距離を延ばすために尖頭値を上げる。</b>パルスのエネルギーと平均の出力は目の安全の上限で決まる ― 先に「大きく受ける・背景を減らす」。</li><li><b>1 個の SPAD が 1 パルスの 29.6 個を全部数えると思う。</b>不感時間で 1 回しか鳴らないので、SPAD を束ねたマクロ画素で数える。</li></ul>
+    <p class="pt">持ち帰る一言</p>
+    <ul class="roles"><li><b>営業・企画</b> 「最大距離」は反射率と背景光の条件つき ― 反射率 10% と 80% で検出数は 8 倍違う。</li><li><b>設計・開発</b> 受光口の面積・フィルタの幅・視野の順に、信号と背景への効き方を比べる。</li><li><b>研究・製造</b> 1 ns のビン ＝ 15 cm、あいまいさのない距離は c/2f（100 kHz で 1.5 km）。</li></ul>
+  </div>
   <div class="ex">
     <span class="tag">例題 ― 手で一度解く（05 戻ってくる光子）</span>
     <p><b>問.</b> 同じ装置で、反射率 80% の白い物体なら 200 m で何個戻るか。反射率 10% の物体を 29.6 個のまま 300 m で測るには、パルスのエネルギーを何倍にする必要があるか。</p>
@@ -820,6 +859,13 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p>① <b>同時計数</b>: マクロ画素の中の複数の SPAD が、数 ns の中に同時に鳴ったときだけ数える。反射の光子はパルスの中に集まって来るが、背景光はばらばらに来るので、偶然の一致の割合は背景の率の 2 乗で小さくなる。② <b>時間のゲート</b>: 測りたい距離の範囲の時間だけ SPAD を有効にし、それ以外の時間の背景光で不感時間を使わない。③ <b>波長</b>: 1,550 nm は太陽光がさらに弱く、目の安全の上限も大きい（第8部 12）が、シリコンでは感じないので InGaAs の検出器が要る（第5部 05）。どれも「信号は時間と方向に集まっていて、背景は散らばっている」性質を使っています。</p>
   </div>
 
+  <div class="p10pit">
+    <span class="tag">落とし穴と、持ち帰る一言</span>
+    <p class="pt">落とし穴</p>
+    <ul><li><b>夜の試験で昼の性能を言う。</b>背景が 1/1000 なら r·τ<sub>d</sub> は 0.001 だが、昼の最初の設計では 2.16 で飽和する。</li><li><b>フィルタと視野を狭くしすぎる。</b>VCSEL の波長は温度で動き、ビームとの位置合わせにも余裕が要る。</li><li><b>不感時間を延ばせばアフターパルスが減るので良いと思う。</b>背景で埋まる ― 40 ns では r·τ<sub>d</sub> = 1.08 に戻る。</li></ul>
+    <p class="pt">持ち帰る一言</p>
+    <ul class="roles"><li><b>営業・企画</b> LiDAR の性能表の「照度 何 lx の下で」の条件を必ず確かめる。</li><li><b>設計・開発</b> 背景は Δλ と視野の二乗に比例し、信号は受光口の面積だけで決まる ― 背景だけを削る手を先に打つ。</li><li><b>研究・製造</b> 太陽の分光放射照度 0.3 W/(m²·nm) は仮定 ― 天気・時刻・水蒸気で変わるので、標準の表（ASTM G173 など）と実測で置き換える。</li></ul>
+  </div>
   <div class="ex">
     <span class="tag">例題 ― 手で一度解く（06 背景光と飽和）</span>
     <p><b>問.</b> 改善後の設計（背景 2.7×10⁷ /s）で、不感時間を 10 ns から 40 ns に延ばした SPAD を使うと r·τ<sub>d</sub> はいくつか。夜（背景を 1/1000 と仮定）なら？</p>
@@ -860,6 +906,13 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     </div>
   </div>
 
+  <div class="p10pit">
+    <span class="tag">落とし穴と、持ち帰る一言</span>
+    <p class="pt">落とし穴</p>
+    <ul><li><b>1 光子のばらつき 32 cm をそのまま精度と思う。</b>N 個の重心で 1/√N に縮む（256 個で 2 cm）。</li><li><b>理想の √N をそのまま約束する。</b>背景と物体の傾き（パルスが時間に広がる）で悪くなるので、2〜3 倍の余裕を見込む。</li><li><b>目の安全を自前の数字で済ませる。</b>IEC 60825-1 の手順で、複数パルスの規則まで含めて必ず計算し直す。</li></ul>
+    <p class="pt">持ち帰る一言</p>
+    <ul class="roles"><li><b>営業・企画</b> 「精度 数 cm」には、積むパルスの数と 1 点の時間がついてくる（2 cm なら 9 パルス・0.09 ms）。</li><li><b>設計・開発</b> 精度・速さ・距離の三すくみ ― 繰り返しを上げると速くなるが、あいまいさのない距離が縮み、平均の出力が上がる。</li><li><b>研究・製造</b> 車載なら −40〜125 ℃ と温度サイクル、窓の汚れ・雨・霧による信号の減りを予算に入れておく。</li></ul>
+  </div>
   <div class="ex">
     <span class="tag">例題 ― 手で一度解く（07 精度と速さ）</span>
     <p><b>問.</b> 要求を「200 m で精度 2 cm」にすると、何個の光子を集めればよいか。1 パルス 29.6 個なら何パルスで、100 kHz で何 ms かかるか。</p>
@@ -919,6 +972,13 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     </div>
   </div>
 
+  <div class="p10pit">
+    <span class="tag">落とし穴と、持ち帰る一言</span>
+    <p class="pt">落とし穴</p>
+    <ul><li><b>2 次の重なりを忘れる。</b>400〜1,000 nm は 2 倍以上の範囲なので、800〜1,000 nm の場所に 2 次の 400〜500 nm が来る ― 次数カットフィルタが要る。</li><li><b>分解能を格子の R だけで見積もる。</b>R = 4,000 に対して要求は 280 ― 分解能を決めているのはスリットと画素。</li><li><b>波長と画素の関係を直線だと思う。</b>格子方程式の sin とセンサの上の tan で端が数 % ずれるので、多項式で校正する。</li></ul>
+    <p class="pt">持ち帰る一言</p>
+    <ul class="roles"><li><b>営業・企画</b> 分解能と明るさは取り合い ― スリットを広げれば光は増えるが、2 画素の幅を超えたところから分解能が悪くなる。</li><li><b>設計・開発</b> 範囲・分解能・センサの長さは、格子の本数と焦点距離で同時に決まる。</li><li><b>研究・製造</b> 迷光が 10⁻³ あると、測れる吸光度は約 3 で頭打ちになる ― 濃い試料には迷光の小さい格子か 2 段の分光を。</li></ul>
+  </div>
   <div class="ex">
     <span class="tag">例題 ― 手で一度解く（08 光学の設計）</span>
     <p><b>問.</b> 同じセンサで 400〜700 nm だけを 1 nm 以下の分解能で測りたい。格子の本数とスリットの幅はどうするか（f = 50 mm のまま）。</p>
@@ -959,6 +1019,13 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     </div>
   </div>
 
+  <div class="p10pit">
+    <span class="tag">落とし穴と、持ち帰る一言</span>
+    <p class="pt">落とし穴</p>
+    <ul><li><b>平均の回数で精度を上げようとして、波長の目盛りを忘れる。</b>傾き 0.01 AU/nm の坂で 0.1 nm ずれると 0.001 AU ― ショット雑音の 7 倍。</li><li><b>両端の波長も同じ感度だと思う。</b>1,000 nm は厚さ 10 µm の受光層で 6.2% しか吸われない。</li><li><b>校正した温度と違う温度で使う。</b>格子と光学台が伸び縮みして目盛りがずれる ― 使う温度で校正し、温度が変わったら確かめ直す。</li></ul>
+    <p class="pt">持ち帰る一言</p>
+    <ul class="roles"><li><b>営業・企画</b> 分光の精度は、光子を集めるより先に波長の目盛りで決まることが多い。</li><li><b>設計・開発</b> 吸収の山の頂上（傾きの小さい場所）で測る ― 測る波長の選び方が、不確かさの設計そのもの。</li><li><b>研究・製造</b> 輝線（Hg・Ar）で多項式を当てはめ、その残差を不確かさの 1 成分として報告する（第8部 10）。</li></ul>
+  </div>
   <div class="ex">
     <span class="tag">例題 ― 手で一度解く（09 検出と校正）</span>
     <p><b>問.</b> 吸収のスペクトルの傾きが 0.01 AU/nm の場所で、波長の校正のずれが 0.1 nm あった。吸光度はどれだけずれるか。100 回平均のショット雑音（1.4×10⁻⁴）と比べよ。</p>
@@ -1026,6 +1093,13 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p>① <b>集光</b>を 0.3 → 0.45 に上げると光電子は 2,070 個、統計の項は 5.3%、合わせて 9.6% ― 固有の 8% に近づくだけで、それを超えては良くならない。② <b>深さの情報（DOI）</b>: 厚い結晶に斜めに入った光子は、止まった深さによって位置がぼける（視差）。結晶を深さ方向に分ける・両端から読むなどで補う。③ <b>MPPC の利得は温度で変わる</b>（第5部 03）ので、エネルギーの目盛りを温度で補正する。④ 固有の分解能は、結晶の発光がエネルギーに厳密には比例しないこと（非比例性）などから来る。結論を左右する順は、固有の分解能 ＞ 集光 ＞ 検出効率。</p>
   </div>
 
+  <div class="p10pit">
+    <span class="tag">落とし穴と、持ち帰る一言</span>
+    <p class="pt">落とし穴</p>
+    <ul><li><b>固有の分解能を集光で直そうとする。</b>集光を 0.3 → 0.45 にしても 10.3 → 9.6% ― 結晶の固有の 8% より良くはならない。</li><li><b>MPPC の飽和を忘れてエネルギーの目盛りを直線と見る。</b>1,380 光電子で出力は約 4.6% 少なく出るので、校正で直す。</li><li><b>MPPC の利得が温度で変わることを忘れる。</b>エネルギーの目盛りを温度で補正する（第5部 03）。</li></ul>
+    <p class="pt">持ち帰る一言</p>
+    <ul class="roles"><li><b>営業・企画</b> 分解能が良いほど窓を狭められ、散乱を落として像のコントラストが上がる。</li><li><b>設計・開発</b> 支配項は結晶の固有の分解能に近い ― 集光と検出効率の改善の効きは、8% に近づくほど頭打ちになる。</li><li><b>研究・製造</b> 偶発同時計数は W·S₁·S₂、TOF は 200 ps で 3.0 cm ― 窓と時刻の分解能を測って確かめる。</li></ul>
+  </div>
   <div class="ex">
     <span class="tag">例題 ― 手で一度解く（10 PET の検出器）</span>
     <p><b>問.</b> 本物の 511 keV を 99% 残す窓の下限は、分解能 10.3% と 15% のそれぞれでいくつか。落とせる散乱は何度より大きいものか。</p>
@@ -1033,9 +1107,9 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   </div>
 
   <div class="lab-go">
-    <span class="tag">手を動かす — PhotonLab 第4章</span>
-    <p>集光と検出効率で光電子の数を選び、511 keV の分解能 10.5% 以下と MPPC の飽和 5% 以下を両立させる。</p>
-    <div class="qs"><a href="PhotonLab/index.html?quest=scint">PET の分解能と飽和の窓</a></div>
+    <span class="tag">手を動かす — DesignLab 第4章・PhotonLab 第4章</span>
+    <p>エネルギーの窓の下限で散乱を落とし、同時計数の窓と時刻の分解能で偶発と TOF を決める。光電子の数と飽和は PhotonLab で。</p>
+    <div class="qs"><a href="DesignLab/index.html?quest=petwin">エネルギーの窓で散乱を落とす</a><a href="DesignLab/index.html?quest=tof">同時計数の窓と TOF</a><a href="PhotonLab/index.html?quest=scint">PET の分解能と飽和の窓</a></div>
   </div>
 </section>
 
@@ -1087,6 +1161,13 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p>① <b>2 成分の減衰</b>（2 つの寿命が混ざる）を分けるには、同じ精度にずっと多くの光子が要る（F 値が大きくなる、Köllner &amp; Wolfrum 1992）。② <b>パイルアップを式で補正</b>すれば µ を上げられるが、補正は µ が小さい近似の上に立つ。③ 速くするには、検出器と TDC を並べて多チャネルにする（1 本あたりの率は 1% のまま、全体の率を増やす）。④ <b>背景</b>（励起光の漏れ・自家蛍光）は寿命を違って見せる ― フィルタ（第7部 16 の多層膜）で落とす。</p>
   </div>
 
+  <div class="p10pit">
+    <span class="tag">落とし穴と、持ち帰る一言</span>
+    <p class="pt">落とし穴</p>
+    <ul><li><b>繰り返しを速さで決める。</b>寿命 10 ns を 80 MHz で測ると、前のパルスからの持ち越しは 40.2% ― 単純な指数では当てはまらない。</li><li><b>µ を上げて速く撮る。</b>2 個以上だった検出の割合は約 µ/2 で、早い光子に偏って寿命が短く見える。</li><li><b>装置の応答（IRF）を無視して、単純な指数で当てはめる。</b>寿命が IRF の 10 倍より短いときは、IRF を測って畳み込みで当てはめる。</li></ul>
+    <p class="pt">持ち帰る一言</p>
+    <ul class="roles"><li><b>営業・企画</b> 寿命は色素の濃さや励起の強さに左右されにくい物差し ― 細胞の中の pH・イオン・分子どうしの距離を測れる。</li><li><b>設計・開発</b> 繰り返しは寿命で決め、計数は繰り返しの約 1% まで ― 速さは検出器と TDC を並べて稼ぐ。</li><li><b>研究・製造</b> 1% の精度には 1 画素 10⁴ 個 ― 256 × 256 画素で約 27 分（40 MHz・µ 0.01）。</li></ul>
+  </div>
   <div class="ex">
     <span class="tag">例題 ― 手で一度解く（11 蛍光寿命）</span>
     <p><b>問.</b> 寿命 10 ns の試料を 80 MHz のまま測るとどうなるか。繰り返しをどこまで下げればよいか。</p>
@@ -1094,9 +1175,9 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   </div>
 
   <div class="lab-go">
-    <span class="tag">手を動かす — PhotonLab 第3章</span>
-    <p>TCSPC の繰り返しを寿命から選び、パイルアップの目安の中で数えて待つ。</p>
-    <div class="qs"><a href="PhotonLab/index.html?quest=pile">TCSPC の繰り返し</a><a href="PhotonLab/index.html?quest=count">数えて待つ</a></div>
+    <span class="tag">手を動かす — DesignLab 第4章・PhotonLab 第3章</span>
+    <p>寿命 10 ns の繰り返しを持ち越しと撮る時間の窓で選び、µ をパイルアップと撮る時間の窓で選ぶ。</p>
+    <div class="qs"><a href="DesignLab/index.html?quest=flrep">寿命 10 ns の繰り返しを選ぶ</a><a href="DesignLab/index.html?quest=flmu">パイルアップと撮る時間</a><a href="PhotonLab/index.html?quest=pile">TCSPC の繰り返し</a><a href="PhotonLab/index.html?quest=count">数えて待つ</a></div>
   </div>
 </section>
 

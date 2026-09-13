@@ -54,6 +54,22 @@
     calib: {
       note: '200 回・傾き 0.002 AU/nm の場所（吸収の山の頂上寄り）。9.7×10⁻⁵ と 1.0×10⁻⁴ を合わせて 1.39×10⁻⁴。',
       design: function () { return base({ navg: 200, dlcal: 0.05, slope: 0.002 }); }
+    },
+    petwin: {
+      note: '窓の下限 455 keV。28.7° より大きく曲がった散乱を落とし、本物は 99.4% 残る。',
+      design: function () { return base({ lwin: 455 }); }
+    },
+    tof: {
+      note: '窓 2.8 ns（視野を横切る 2.33 ns 以上）で偶発 28 /s。時刻の分解能 150 ps で 2.25 cm。',
+      design: function () { return base({ wcoin: 2.8, ctr: 150 }); }
+    },
+    flrep: {
+      note: '13 MHz。周期 76.9 ns ＝ 7.7τ で持ち越し 0.046%、画像 1 枚 84 分。',
+      design: function () { return base({ tauf: 10, fflim: 13 }); }
+    },
+    flmu: {
+      note: 'µ 0.03。パイルアップ 1.5%、計数 1.18×10⁶ /s で画像 1 枚 9.2 分。',
+      design: function () { return base({ mu: 0.03 }); }
     }
   };
 

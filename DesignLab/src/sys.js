@@ -10,6 +10,8 @@
  *   npix   輝点が広がる画素の数・sigr 読み出し雑音 [e⁻/画素]
  *   bgr    背景光 [e⁻/画素/s]・dark25 暗電流（冷やす前、仮定）[e⁻/画素/s]・dtc 冷やす温度差 [K]
  *                     暗電流 = dark25 · 2^(−dtc/9)（生成電流で約 9 ℃ ごとに 2 倍、第2部 03）
+ *                     9 K は目安の値。300 K 付近の生成電流で実際に 2 倍になる幅は 8.6 K（拡散電流なら 4.3 K）。
+ *                     課題 tec の窓はこの 9 K で決めてあるので、式は目安のまま使う。
  *   emccd  0 = sCMOS、1 = EM-CCD
  *                     sCMOS: SNR = S/√(S + B + npix·σr²)　EM-CCD: SNR = S/√(2(S + B))（F² = 2、読み出し雑音は消える）
  *   fwc    飽和電荷 [e⁻]・nbit ADC のビット数     1 LSB = fwc/2^nbit、ダイナミックレンジ 20 log(fwc/σr)
@@ -62,7 +64,12 @@
       /* C 分光器 */
       lpmm: 400, alpha: 15, fmm: 50, slitum: 25, pxum: 25, npx: 512, lamlo: 400, lamhi: 1000,
       fibum: 200, nafib: 0.22, fnum: 4,
-      ne: 1e5, navg: 100, tint: 5, slope: 0.01, dlcal: 0.1
+      ne: 1e5, navg: 100, tint: 5, slope: 0.01, dlcal: 0.1,
+      /* D PET（第10部 10）*/
+      egam: 511, ly: 30, lcol: 0.3, pdep: 0.3, pct: 0.05, rint: 8, ncell: 14400,
+      lwin: 425, latt: 12, lcr: 20, wcoin: 4, sing: 1e5, ctr: 200, fov: 70, tdec: 40, rch: 1e6,
+      /* E 蛍光寿命（第10部 11）*/
+      tauf: 2.5, fflim: 40, mu: 0.01, nphf: 1e4, npxl: 256, dcr: 100
     };
   }
 
@@ -157,8 +164,60 @@
     };
   }
 
+  /* ---- D PET の検出器モジュール（第10部 10）----
+   *   光電子 = E·光量·集光·検出効率、統計 = 2.355√((1+P_ct)/N)、分解能 = 統計 ⊕ 固有（二乗和、FWHM）
+   *   MPPC の飽和 = 1 − N_cell(1 − e^(−N/N_cell))/N
+   *   窓の下限で落とせる散乱の角: cos θ = 1 − 511·(1/E_win − 1/E)（コンプトン）。本物を残す割合 = Φ((E − E_win)/σ)
+   *   止まる = 1 − e^(−長さ/減衰長)、偶発同時計数 = W·S₁·S₂、窓の下限 = 視野の直径/c、TOF = c·Δt/2、
+   *   パイルアップ = 1 − e^(−r·5τ)（発光の減衰の 5 倍を積分する）
+   */
+  function ncdf(z) {                                    /* 標準正規の累積（Abramowitz & Stegun 7.1.26、誤差 1.5×10⁻⁷） */
+    var x = Math.abs(z) / Math.SQRT2, t = 1 / (1 + 0.3275911 * x);
+    var er = 1 - ((((1.061405429 * t - 1.453152027) * t + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x);
+    return z >= 0 ? 0.5 * (1 + er) : 0.5 * (1 - er);
+  }
+
+  function pet(d) {
+    var npe = d.egam * d.ly * d.lcol * d.pdep;
+    var stat = 2.355 * Math.sqrt((1 + d.pct) / npe) * 100;          /* % FWHM */
+    var res = Math.sqrt(stat * stat + d.rint * d.rint);
+    var x = npe / d.ncell;
+    var sat = 1 - (1 - Math.exp(-x)) / x;
+    var sigma = res / 100 * d.egam / 2.355;                           /* keV */
+    var cth = 1 - 511 * (1 / d.lwin - 1 / d.egam);
+    var cns = C * 1e-7;                                               /* cm/ns */
+    var stop1 = 1 - Math.exp(-d.lcr / d.latt);
+    return {
+      npe: npe, statPct: stat, resPct: res, satPct: sat * 100, sigmaKeV: sigma,
+      keep: ncdf((d.egam - d.lwin) / sigma),
+      thetaCut: Math.abs(cth) <= 1 ? Math.acos(cth) / RAD : NaN,
+      stop1: stop1, stop2: stop1 * stop1,
+      randoms: d.wcoin * 1e-9 * d.sing * d.sing, wminNs: d.fov / cns,
+      tofCm: cns * d.ctr / 1000 / 2, pile: 1 - Math.exp(-d.rch * 5 * d.tdec * 1e-9)
+    };
+  }
+
+  /* ---- E 蛍光寿命・TCSPC（第10部 11）----
+   *   周期 T = 1/f、持ち越し = e^(−T/τ)/(1 − e^(−T/τ))
+   *   1 パルスで検出がある確率 1 − e^(−µ)、計数 = f(1 − e^(−µ))、パイルアップ（2 個以上だった検出の割合）= (1 − e^(−µ) − µe^(−µ))/(1 − e^(−µ)) ≈ µ/2
+   *   1 画素の時間 = 光子/計数、画像 = 画素数 × それ、寿命の精度 ≈ 1/√N（背景なし・IRF が細い理想）
+   */
+  function flim(d) {
+    var T = 1000 / d.fflim;                                           /* ns */
+    var r = Math.exp(-T / d.tauf);
+    var pdet = 1 - Math.exp(-d.mu);
+    var rate = d.fflim * 1e6 * pdet;
+    var tpix = d.nphf / rate;
+    return {
+      Tns: T, carry: r / (1 - r), pdet: pdet, rate: rate,
+      pile: (pdet - d.mu * Math.exp(-d.mu)) / pdet,
+      tpixMs: tpix * 1000, timgS: tpix * d.npxl * d.npxl,
+      prec: 1 / Math.sqrt(d.nphf), dcrRatio: d.dcr / rate
+    };
+  }
+
   function evaluate(d) {
-    return { cam: camera(d), lid: lidar(d), sp: spectro(d) };
+    return { cam: camera(d), lid: lidar(d), sp: spectro(d), pe: pet(d), fl: flim(d) };
   }
 
   /** SNR と信号の関係（sCMOS と EM-CCD）。背景は今の設計の B をそのまま使う */
@@ -188,6 +247,7 @@
   DG.sys = {
     H: H, C: C, HC_EVNM: HC_EVNM,
     defaults: defaults, evaluate: evaluate, camera: camera, lidar: lidar, spectro: spectro,
+    pet: pet, flim: flim, ncdf: ncdf,
     betaDeg: betaDeg, snrSweep: snrSweep, rangeSweep: rangeSweep
   };
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -10,6 +10,50 @@ const M = DG.sys;
 function d(patch) { return Object.assign(M.defaults(), patch || {}); }
 const cam = (p) => M.camera(d(p)), lid = (p) => M.lidar(d(p)), sp = (p) => M.spectro(d(p));
 
+T('D PET の検出器 ― 第10部 10', () => {
+  const p = M.pet(d());
+  within('光電子 1,380 個', p.npe, 1380, 1.001);
+  near('統計の項 6.5%', p.statPct, 6.50, 0.01);
+  near('分解能 10.3%（固有 8% と二乗和）', p.resPct, 10.31, 0.01);
+  near('MPPC の飽和 4.6%', p.satPct, 4.64, 0.01);
+  near('窓 425 keV で 37° より大きく曲がった散乱を落とす', p.thetaCut, 37.09, 0.02);
+  ok('窓 425 keV で本物は 99.99% 残る', p.keep > 0.9999);
+  near('例題: 10.3% で 99% を残す下限 459 keV', 511 - 2.3263 * p.sigmaKeV, 459.0, 0.1);
+  near('例題: 459 keV の窓で落とせるのは 27.5° より大きい散乱', M.pet(d({ lwin: 459 })).thetaCut, 27.5, 0.1);
+  const r15 = Math.sqrt(15 * 15 - p.statPct * p.statPct), p15 = M.pet(d({ rint: r15 }));
+  near('例題: 分解能 15% の σ 32.5 keV', p15.sigmaKeV, 32.55, 0.02);
+  near('例題: 15% の 99% の下限 435 keV では 34.3° から', M.pet(d({ rint: r15, lwin: 511 - 2.3263 * p15.sigmaKeV })).thetaCut, 34.3, 0.1);
+  near('くわしく: 集光 0.45 で 2,070 光電子', M.pet(d({ lcol: 0.45 })).npe, 2069.6, 0.5);
+  near('くわしく: 集光 0.45 で 9.6%', M.pet(d({ lcol: 0.45 })).resPct, 9.60, 0.01);
+  near('20 mm で 81% 止まる', p.stop1, 0.811, 0.001);
+  near('両側とも止まるのは 66%', p.stop2, 0.658, 0.001);
+  near('偶発同時計数 40 /s', p.randoms, 40, 1e-9);
+  near('TOF 200 ps で 3.0 cm', p.tofCm, 3.00, 0.005);
+  near('TOF 500 ps で 7.5 cm', M.pet(d({ ctr: 500 })).tofCm, 7.49, 0.01);
+  near('視野 70 cm を横切るのに 2.33 ns', p.wminNs, 2.335, 0.001);
+  near('パイルアップ 1×10⁶ /s で 18%', p.pile, 0.181, 0.001);
+  near('パイルアップ 2×10⁵ /s で 3.9%', M.pet(d({ rch: 2e5 })).pile, 0.0392, 0.0005);
+  near('Φ(2.3263) = 0.99', M.ncdf(2.3263), 0.99, 1e-5);
+  near('Φ(0) = 0.5', M.ncdf(0), 0.5, 1e-7);
+  near('Φ(−1) = 0.1587', M.ncdf(-1), 0.158655, 1e-6);
+});
+
+T('E 蛍光寿命 ― 第10部 11', () => {
+  const f = M.flim(d());
+  near('40 MHz・2.5 ns で持ち越し 0.0045%', f.carry, 4.54e-5, 1e-7);
+  near('80 MHz で 0.68%', M.flim(d({ fflim: 80 })).carry, 0.00678, 0.00002);
+  near('例題: 10 ns を 80 MHz で測ると 40.2%', M.flim(d({ fflim: 80, tauf: 10 })).carry, 0.402, 0.001);
+  near('例題: 10 ns を 10 MHz なら 0.0045%', M.flim(d({ fflim: 10, tauf: 10 })).carry, 4.54e-5, 1e-7);
+  within('µ 0.01 で計数 398 kcps', f.rate, 398000, 1.001);
+  near('1 画素 25 ms', f.tpixMs, 25.1, 0.1);
+  near('画像 1 枚 27 分', f.timgS / 60, 27.4, 0.1);
+  near('パイルアップ µ 0.01 で 0.50%', f.pile, 0.0050, 0.0001);
+  near('パイルアップ µ 0.05 で 2.5%', M.flim(d({ mu: 0.05 })).pile, 0.0248, 0.0002);
+  near('パイルアップ µ 0.1 で 4.9%', M.flim(d({ mu: 0.1 })).pile, 0.0492, 0.0002);
+  near('暗計数 100 cps は信号の 2.5×10⁻⁴ 倍', f.dcrRatio, 2.51e-4, 1e-6);
+  near('1% に 10⁴ 個', f.prec, 0.01, 1e-12);
+});
+
 T('A-1 光の予算 ― 第10部 02', () => {
   const c = cam();
   near('受け入れの半角 67.3°', c.thetaDeg, 67.26, 0.05);

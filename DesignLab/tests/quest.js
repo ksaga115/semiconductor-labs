@@ -8,8 +8,8 @@ const { DG } = load();
 const Q = DG.quest, A = DG.answer, M = DG.sys;
 
 T('課題の形', () => {
-  ok('課題が 12 問', Q.LIST.length === 12);
-  ok('章が 3 つ', Q.CH.length === 3);
+  ok('課題が 16 問', Q.LIST.length === 16);
+  ok('章が 4 つ', Q.CH.length === 4);
   const seen = new Set();
   Q.LIST.forEach((q) => {
     ok(`${q.id}: 重複しない`, !seen.has(q.id)); seen.add(q.id);
@@ -103,7 +103,36 @@ T('窓の両側 ― 第3章 分光器', () => {
   ok('calib: 201 回は 1 秒を超える', !with_('calib', { navg: 201 }));
 });
 
+T('窓の両側 ― 第4章 PET と蛍光寿命', () => {
+  ok('petwin: 450 keV は 30.2° までしか落とせない（しきい 450.6）', !with_('petwin', { lwin: 450 }));
+  ok('petwin: 451 keV なら通る', with_('petwin', { lwin: 451 }));
+  ok('petwin: 458.5 keV まで本物を 99% 残す', with_('petwin', { lwin: 458.5 }));
+  ok('petwin: 459.5 keV は本物を削りすぎる（しきい 459.0）', !with_('petwin', { lwin: 459.5 }));
+  ok('tof: 窓 2.3 ns は視野の端の組を取り逃す（2.33 ns）', !with_('tof', { wcoin: 2.3 }));
+  ok('tof: 窓 2.4 ns なら通る', with_('tof', { wcoin: 2.4 }));
+  ok('tof: 窓 3.1 ns は偶発 31 /s', !with_('tof', { wcoin: 3.1 }));
+  ok('tof: 170 ps は 2.55 cm で届かない（しきい 166.8）', !with_('tof', { ctr: 170 }));
+  ok('tof: 165 ps なら通る', with_('tof', { ctr: 165 }));
+  ok('tof: 90 ps は時刻の分解能の下限（100 ps）破り', !with_('tof', { ctr: 90 }));
+  ok('flrep: 14.6 MHz は持ち越しが 0.1% を超える（しきい 14.47）', !with_('flrep', { fflim: 14.6 }));
+  ok('flrep: 14.4 MHz なら通る', with_('flrep', { fflim: 14.4 }));
+  ok('flrep: 12.3 MHz なら 90 分に収まる', with_('flrep', { fflim: 12.3 }));
+  ok('flrep: 12.1 MHz は 90 分を超える（しきい 12.20）', !with_('flrep', { fflim: 12.1 }));
+  ok('flmu: µ 0.040 は通る', with_('flmu', { mu: 0.040 }));
+  ok('flmu: µ 0.041 はパイルアップが 2% を超える（しきい 0.0403）', !with_('flmu', { mu: 0.041 }));
+  ok('flmu: µ 0.019 なら 15 分に収まる', with_('flmu', { mu: 0.019 }));
+  ok('flmu: µ 0.018 は 15 分を超える（しきい 0.0184）', !with_('flmu', { mu: 0.018 }));
+});
+
 T('条件固定を破ったら、数字が届いていても落ちる', () => {
+  ok('petwin: 固有の分解能を良くするのは反則', !with_('petwin', { rint: 4, lwin: 470 }));
+  ok('petwin: 集光を上げるのは反則', !with_('petwin', { lcol: 0.45 }));
+  ok('tof: 単独の計数を減らすのは反則', !with_('tof', { sing: 5e4, wcoin: 4 }));
+  ok('tof: 視野を狭くするのは反則', !with_('tof', { fov: 50, wcoin: 2 }));
+  ok('flrep: 寿命の短い試料に替えるのは反則', !with_('flrep', { tauf: 2.5, fflim: 40 }));
+  ok('flrep: µ を上げて時間を稼ぐのは反則', !with_('flrep', { mu: 0.05, fflim: 8 }));
+  ok('flmu: 繰り返しを上げるのは反則', !with_('flmu', { fflim: 80, mu: 0.01 }));
+  ok('flmu: 1 画素の光子を減らすのは反則', !with_('flmu', { nphf: 5e3, mu: 0.01 }));
   ok('fast: 分子の光を盛るのは反則', !with_('fast', { phot: 3e5 }));
   ok('fast: EM-CCD に替えるのは反則（sCMOS の課題）', !with_('fast', { emccd: 1, texp: 5 }));
   ok('fast: 背景を減らすのは反則', !with_('fast', { bgr: 100 }));

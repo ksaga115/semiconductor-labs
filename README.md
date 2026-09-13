@@ -49,7 +49,7 @@
   OptoLab\                       第7部 ラボ ― 原始部品 ＝ 光線とその会計（5章 18問。カメラ方程式・回折・ガウス・ファイバ・λ/4・エテンデュ・cos⁴・モード結合・ブルースター角・格子・回線・MTF と焦点深度・高反射の多層膜・被写界深度）
   QALab\                         第8部 ラボ ― 原始部品 ＝ 故障率と分布（6章 21問。MTTF・加速3種＋HAST・B10・Tj・TEC・Cpk・誤差・GR&R・管理図・不確かさ・Norris-Landzberg・ndc・OC 曲線・LED の L70（TM-21）・修理のある並列・多数決・要因計画の検出力）
   LaserLab\                      第9部 ラボ ― 原始部品 ＝ 共振器の会計と熱の光（4章 12問。黒体・LED・しきい値・スロープ効率・T₀・縦モード・DFB・モード同期・尖頭値・緩和振動・SHG・ファイバ結合）
-  DesignLab\                     第10部 ラボ ― 微弱光カメラ・LiDAR・分光器の予算表（3章 12問。光の予算・sCMOS と EM-CCD・伝送・冷却・戻る光子・背景と SPAD・精度・格子・スリット・吸光度と校正）
+  DesignLab\                     第10部 ラボ ― 微弱光カメラ・LiDAR・分光器の予算表（4章 16問。光の予算・sCMOS と EM-CCD・伝送・冷却・戻る光子・背景と SPAD・精度・格子・スリット・吸光度と校正・PET の窓と TOF・蛍光寿命の繰り返しと µ）
 ```
 
 **ProcessLab と PixelLab は `../SemiLab/src/*.js` を読み込む。SemiLab と必ず兄弟に置く（PhotonLab の実行は単独で可、検査は SemiLab の道具を共用）。**
@@ -93,7 +93,7 @@ node AnalogLab\tests\all.js       334 件
 node OptoLab\tests\all.js         367 件
 node QALab\tests\all.js           442 件
 node LaserLab\tests\all.js        272 件
-node DesignLab\tests\all.js       547 件
+node DesignLab\tests\all.js       727 件
 ```
 
 （件数は 2026-09-13 時点）

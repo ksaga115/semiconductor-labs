@@ -196,11 +196,11 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       <dl class="spec">
         <div><dt>参考書</dt><dd>11<small>部＋付録</small></dd></div>
         <div><dt>ラボ</dt><dd>11<small>本</small></dd></div>
-        <div><dt>採点つき課題</dt><dd>205<small>問</small></dd></div>
+        <div><dt>採点つき課題</dt><dd>209<small>問</small></dd></div>
         <div><dt>依存</dt><dd>0<small>ブラウザのみ</small></dd></div>
         <div><dt>通信</dt><dd>0<small>手元で完結</small></dd></div>
-        <div><dt>自動検査</dt><dd>5,496<small>件 (Node)</small></dd></div>
-        <div class="spec-cap">課題数は ProcessLab 16 ＋ SemiLab 26 ＋ CharLab 13 ＋ NandLab 34 ＋ PixelLab 19 ＋ PhotonLab 18 ＋ AnalogLab 16 ＋ OptoLab 18 ＋ QALab 21 ＋ LaserLab 12 ＋ DesignLab 12。検査は11本の <code>node tests/all.js</code> の合計（2026-09-13 時点）。</div>
+        <div><dt>自動検査</dt><dd>5,676<small>件 (Node)</small></dd></div>
+        <div class="spec-cap">課題数は ProcessLab 16 ＋ SemiLab 26 ＋ CharLab 13 ＋ NandLab 34 ＋ PixelLab 19 ＋ PhotonLab 18 ＋ AnalogLab 16 ＋ OptoLab 18 ＋ QALab 21 ＋ LaserLab 12 ＋ DesignLab 16。検査は11本の <code>node tests/all.js</code> の合計（2026-09-13 時点）。</div>
       </dl>
     </div>
   </div>
@@ -791,7 +791,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       </div>
       <div class="pair">
         <div><span class="kind read">参考書</span><a href="第10部_設計演習.html">1 台を設計する ― カメラ・LiDAR・分光器</a><small>Requirement → Budget → Dominant term → Decision → Check · 12章</small></div>
-        <div><span class="kind lab">ラボ</span><a href="DesignLab/index.html">DesignLab</a><small>微弱光カメラ・LiDAR・分光器の予算表 · 3章 12問 · <a href="DesignLab/README.md">README</a></small></div>
+        <div><span class="kind lab">ラボ</span><a href="DesignLab/index.html">DesignLab</a><small>微弱光カメラ・LiDAR・分光器・PET・蛍光寿命の予算表 · 4章 16問 · <a href="DesignLab/README.md">README</a></small></div>
       </div>
     </div>
     <div class="chap">
@@ -808,6 +808,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       <div class="do"><span class="lbl">DesignLab 第3章</span><a class="q" href="DesignLab/index.html?quest=grat">格子の本数で範囲と分解能を両立</a><a class="q" href="DesignLab/index.html?quest=slit">スリットで明るさを稼ぐ</a><a class="q" href="DesignLab/index.html?quest=absorb">吸光度の雑音を 1×10⁻⁴ に</a><a class="q" href="DesignLab/index.html?quest=calib">波長の目盛りまで含めた不確かさ</a></div>
       <div><span class="cn">10-12</span><div class="ct"><a href="第10部_設計演習.html#s11">PET の検出器 / 蛍光寿命 / 振り返り</a></div><div class="cd">LYSO と MPPC で光電子 1,380 個・分解能 10.3%・飽和 4.6%、エネルギーの窓で散乱を落とし、TOF 200 ps で 3.0 cm。TCSPC はパイルアップ µ/2 と前のパルスからの持ち越し、1 画素 25 ms。3 つ＋2 つの装置の決め手を並べる。</div></div>
       <div class="do"><span class="lbl">関連の課題</span><a class="q" href="PhotonLab/index.html?quest=scint">PET の分解能と飽和の窓</a><a class="q" href="PhotonLab/index.html?quest=pile">TCSPC の繰り返し</a><a class="q" href="PhotonLab/index.html?quest=count">数えて待つ</a></div>
+      <div class="do"><span class="lbl">DesignLab 第4章</span><a class="q" href="DesignLab/index.html?quest=petwin">PET のエネルギーの窓</a><a class="q" href="DesignLab/index.html?quest=tof">TOF と偶発同時計数</a><a class="q" href="DesignLab/index.html?quest=flrep">蛍光寿命の繰り返し</a><a class="q" href="DesignLab/index.html?quest=flmu">パイルアップと µ</a></div>
     </div>
   </article>
 
@@ -859,7 +860,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
         <li><b>光の入り口:</b> 第7部 → OptoLab<span class="r">18問</span><span class="why">センサに届く光を自分で出す。第4部の 0.52%・190光子/px/s の出どころ</span></li>
         <li><b>光をつくる側:</b> 第9部 → LaserLab<span class="r">12問</span><span class="why">照明の LED、dToF の VCSEL、TCSPC のパルス ― センサの相手役の物理</span></li>
         <li><b>出荷まで:</b> 第8部 → QALab<span class="r">21問</span><span class="why">10年もつか・百万個そろうか。FIT・アレニウス・θ・Cpk・管理図・不確かさ ― 保証書の中身</span></li>
-        <li><b>総仕上げ:</b> 第10部 → DesignLab<span class="r">12問</span><span class="why">センサを 1 台のカメラとして設計する。LiDAR と分光器も同じ作法で</span></li>
+        <li><b>総仕上げ:</b> 第10部 → DesignLab<span class="r">16問</span><span class="why">センサを 1 台のカメラとして設計する。LiDAR と分光器も同じ作法で</span></li>
         <li><b>引く:</b> 付録<span class="r">索引</span><span class="why">物性値の表と、全部の部の用語の統一索引</span></li>
       </ol>
     </div>
@@ -881,7 +882,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
         <li><b>第5部</b> 参考書 01〜10 → PhotonLab<span class="r">18問</span><span class="why">光を数える一族。PMT・APD・MPPC・SNSPD と、共通の物差し R・NEP・D*</span></li>
         <li><b>第4部</b> 参考書 00〜07 → PixelLab 第1〜3章<span class="r">12問</span><span class="why">ここまでの全部が 1 つの製品に集まる。光子→電子→電圧→数値→像と、付録 A〜D の床下</span></li>
         <li><b>第8部</b> 参考書 01〜18 → QALab<span class="r">21問</span><span class="why">信頼性と品質。作った物を 10 年・百万個の側から見直す</span></li>
-        <li><b>第10部</b> 1 台を設計する → DesignLab<span class="r">12問</span><span class="why">総仕上げ。カメラ・LiDAR・分光器を、光子から安全と信頼性まで全部の数字でつなぐ</span></li>
+        <li><b>第10部</b> 1 台を設計する → DesignLab<span class="r">16問</span><span class="why">総仕上げ。カメラ・LiDAR・分光器を、光子から安全と信頼性まで全部の数字でつなぐ</span></li>
         <li><b>付録</b> 物性値と索引<span class="r">引く</span><span class="why">材料の表と、全部の部の用語の統一索引</span></li>
       </ol>
     </div>
@@ -953,7 +954,7 @@ node AnalogLab\tests\all.js    334 件
 node OptoLab\tests\all.js      367 件
 node QALab\tests\all.js        442 件
 node LaserLab\tests\all.js     272 件
-node DesignLab\tests\all.js    547 件</pre>
+node DesignLab\tests\all.js    727 件</pre>
       <div class="caveat">
         <span class="tag">配置の注意</span>
         <p>ProcessLab と PixelLab は <code>../SemiLab/src/*.js</code> を読み込む。<b>SemiLab・ProcessLab・PixelLab は必ずこのフォルダに兄弟として置く。</b>1本だけ別の場所へ動かすと、起動はするが物理が無くて動かない。</p>

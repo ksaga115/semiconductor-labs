@@ -58,7 +58,7 @@ T('つなぎ目', () => {
 T('起動と設計', () => {
   const { doc, S, win } = boot({ search: '?fresh=1' });
   ok('設計の欄が 50 以上', $(doc, 'designForm').querySelectorAll('input').length >= 50);
-  eq('装置ごとの小見出しが 3 つ', $(doc, 'designForm').querySelectorAll('.sect').length, 3);
+  eq('装置ごとの小見出しが 5 つ', $(doc, 'designForm').querySelectorAll('.sect').length, 5);
   ok('設計から出る数字にカメラ・LiDAR・分光器', /SN 比/.test($(doc, 'derived').textContent)
      && /検出数/.test($(doc, 'derived').textContent) && /分解能/.test($(doc, 'derived').textContent));
   const c = $(doc, 'board').getContext();
