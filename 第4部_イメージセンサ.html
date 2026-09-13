@@ -304,6 +304,16 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   display:block;margin-bottom:6px}
 .caveat p{font-size:13.5px;color:var(--ink-2);line-height:1.72}
 .caveat p + p{margin-top:10px}
+.ex{margin-top:20px;border:1px solid var(--line);border-left:2px solid var(--photon);border-radius:2px;background:var(--surface);padding:12px 16px;max-width:46em}
+.ex .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;color:var(--photon-2);display:block;margin-bottom:6px}
+.ex p{font-size:14px;line-height:1.8}
+.ex p + p{margin-top:8px}
+.chk{margin-top:18px;max-width:52em}
+.chk details{border-top:1px solid var(--line-2);padding:11px 0}
+.chk details:last-child{border-bottom:1px solid var(--line-2)}
+.chk summary{cursor:pointer;font-weight:700;font-size:14.5px}
+.chk summary .qn{font-family:var(--mono);font-size:10.5px;color:var(--photon-2);margin-right:8px;font-weight:600}
+.chk details p{margin-top:8px;color:var(--ink-2);font-size:14px;line-height:1.75}
 /* 参考書からラボへ渡す箱。読んだことを、隣のラボ（SemiLab / PixelLab）で自分の手で確かめる */
 .lab-go{margin-top:22px;border:1px solid var(--line);border-left:2px solid var(--digital);
   border-radius:2px;background:var(--surface);padding:12px 16px;max-width:46em}
@@ -448,6 +458,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li class="dom"><span>むすび</span></li>
     <li><a href="#send"><span class="n">—</span><span>4つの境目に戻る</span></a></li>
     <li class="dom"><span>付録</span></li>
+    <li><a href="#scheck"><span class="n">—</span><span>理解の確認</span></a></li>
     <li><a href="#snum"><span class="n">—</span><span>数字の根拠</span></a></li>
     <li><a href="#s9"><span class="n">—</span><span>用語表</span></a></li>
     <li><a href="#sref"><span class="n">—</span><span>参考文献</span></a></li>
@@ -490,6 +501,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li class="dom"><span>むすび</span></li>
     <li><a href="#send"><span class="n">—</span><span>4つの境目に戻る</span></a></li>
     <li class="dom"><span>付録</span></li>
+    <li><a href="#scheck"><span class="n">—</span><span>理解の確認</span></a></li>
     <li><a href="#snum"><span class="n">—</span><span>数字の根拠</span></a></li>
     <li><a href="#s9"><span class="n">—</span><span>用語表</span></a></li>
     <li><a href="#sref"><span class="n">—</span><span>参考文献</span></a></li>
@@ -997,6 +1009,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p>ここに設計のジレンマがあります。<strong>赤や近赤外の感度を上げるにはシリコンを厚くしたい。しかし厚くすると、斜めに入った光子が隣の画素で電子になる混色が増え、空乏層も広げにくくなる。</strong>一般的な可視光センサの空乏層は2〜3&micro;m。近赤外を狙うセンサでは10&micro;m級の厚膜や、裏面に反射構造・回折構造を作って光路を稼ぐ工夫をします。</p>
     <p>青と近赤外がそれぞれ難しい理由は、ひとつ上の「両端が難しい」で数字とともに扱いました。<span class="key">吸収長が合わないという同じ一言でも、失敗の仕方と対策が逆向き</span>になる、というのがそこの要点です。</p>
   </div>
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（02 光電変換）</span>
+    <p><b>問.</b> 被写体の照度 3,000 lx（明るい室内）、反射率 18% のグレー、F2.8・レンズ透過率 0.9・露光 1/60 秒で、3.0 µm 角の画素に届く光子は何個か。緑のカラーフィルタ透過 0.35、QE 0.65 なら何個の電子になるか。</p>
+    <p><b>解.</b> センサ面の照度は被写体の ρT/(4N²) = 0.18 × 0.9 / (4 × 2.8²) = <b>0.52%</b>（第7部のカメラ方程式）。1 lx は 555 nm で 4.09×10³ 光子/(µm²·s)（「数字の根拠」）なので、画素 9 µm² には 4.09×10³ × 0.00517 × 9 = <b>190 光子/(s·lx)</b>。3,000 lx・1/60 秒で 190 × 3,000 / 60 = <b>約 9,500 光子</b>。電子は 9,500 × 0.35 × 0.65 = <b>約 2,160 個</b>。<span class="key">入った光子の 4 個に 3 個は、フィルタと QE で失われている</span> ― カラーフィルタの無いモノクロセンサが同じ条件で約 2.9 倍の電子を得るのはこのためです（08 の手計算はこの 2,160 を丸めた ≈ 2,100 から始まります）。</p>
+  </div>
+
   <div class="lab-go">
     <span class="tag">手を動かす — SemiLab 第4章 / PixelLab 第3章</span>
     <p>p⁺ / n / n⁺ のフォトダイオードを自分で積み、波長を変えて量子効率を測る。「短いほうは表面で消え、長いほうは深すぎて届かない」が、表面の濃度と厚みの摘みでそのまま出る。反射率を下げると何%戻るかも数で見える。</p>
@@ -1088,6 +1106,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p>ひとつは<strong>暗電流の低減</strong>。表面の欠陥準位が暗電流の主要な発生源なので、そこを空乏化させずに正孔で埋めておけば発生が桁で減ります。もうひとつが<strong>完全空乏化と完全転送</strong>。蓄積層の不純物濃度と厚みを設計して、電子を全部吐き出したときにちょうど固定電位（ピンニング電位、典型的に1〜1.5V）になるようにしてあります。これにより、転送のたびに電荷が残らず出ていく<span class="key">完全転送</span>が成立します。これが後で出てくるCDSによるリセットノイズ除去を可能にしています。<br><strong>「完全転送」は用語であって、実測がぴったりゼロという意味ではありません。</strong>PDとFDのポテンシャルの繋がりが悪ければ電子が取り残され、次のフレームに遅れて出てきます（イメージラグ）。PPDが変えたのは、<span class="key">残留を原理的に避けられない構造から、設計で追い込める構造にしたこと</span>です。実機のラグは電子数個以下まで下がっていますが、ゼロだと測れるものではありません。</p>
     <div class="eq">ダイナミックレンジ = 20&middot;log&#8321;&#8320;( <b>飽和電子数 12,000</b> / <i>読み出しノイズ 2.5</i> ) &asymp; 73.6 dB</div>
   </div>
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（03 蓄積）</span>
+    <p><b>問.</b> 02 の例題の条件（3,000 lx・F2.8・18% グレーで 1/60 秒に 2,160 e⁻）で、グレーが飽和 12,000 e⁻ に届く露光時間は？ 同じ画面の白い紙（反射率 90%）はどうか。このセンサのダイナミックレンジは「何段（EV）」か。</p>
+    <p><b>解.</b> 信号は露光時間に比例するので、グレーは 12,000/2,160 × 1/60 = <b>0.092 秒（約 1/11 秒）</b>で満杯。白い紙は反射率が 5 倍なので 1/60 秒で 10,800 e⁻ ＝ 井戸の 90%、<b>約 1/54 秒</b>より長くすると白とびする。<span class="key">1/60 秒は「白がぎりぎり飛ばない」露出</span>になっていて、グレーが井戸の 18% に置かれるのはそのためです。ダイナミックレンジ 12,000/2.5 = 4,800 倍 ＝ 73.6 dB は、2 のべき乗で数えると log₂4,800 = <b>約 12.2 段</b> ― 写真の言葉でいう「ラチチュード」です。</p>
+  </div>
+
   <div class="lab-go">
     <span class="tag">手を動かす — SemiLab 第2章 / 第3章</span>
     <p>「井戸」の正体である空乏層を、自分で立てる。濃度の違う一片を隣に置くと、描いたのではなくポアソン方程式を解いた結果として空乏層が現れる。逆バイアスをかけると伸び、温度を上げると暗電流が n<sub>i</sub> の指数で桁で増える。</p>
@@ -1401,6 +1425,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p><span class="key">CDS が効く4T画素ではどちらでも kTC は消える</span>ので、この選択が本当に効くのは CDS の使えない3T画素や一部のグローバルシャッター構成です。「同じスイッチでも閉じ方で雑音が変わる」― kTC が回路でなく熱力学で決まっている、ということの裏返しの一例として。</p>
   </div>
 
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（05 電荷を電圧に）</span>
+    <p><b>問.</b> 変換ゲイン 45 µV/e⁻（FD ≈ 3.5 fF）で、2,160 e⁻ の信号は FD で何 mV か。リセットノイズ √(kT/C) は何 mV・何電子か。夜道で信号が 20 e⁻ しか無いとき、CDS が無かったらどうなるか。</p>
+    <p><b>解.</b> 2,160 × 45 µV = <b>97 mV</b>。√(kT/C) = √(1.381×10⁻²³ × 300 / 3.5×10⁻¹⁵) = <b>1.09 mV</b>、÷45 µV で <b>24 e⁻</b>。20 e⁻ の信号は 0.90 mV で、<span class="key">リセットのたびに毎回違う 1.09 mV のずれより小さい</span> ― CDS なしでは SN 比が 1 を切り、暗部は写らない。CDS で kTC を消した後に残るのは読み出しノイズ 2.5 e⁻ だけで、SN 比は 20/√(20 + 2.5²) = <b>3.9</b>。「電子 20 個が写るかどうか」を、引き算ひとつが決めています。</p>
+  </div>
+
   <div class="lab-go">
     <span class="tag">手を動かす — PixelLab 第2章</span>
     <p>浮遊拡散の容量を 2 fF → 1.3 fF に変えると、変換ゲインが上がり読み出し雑音（電子換算）が下がる。0.5 fF まで下げると、飽和電荷を決めるのが井戸ではなく浮遊拡散に変わる。この節の「小さい容量ほど大きな電圧」の両面が一度に見える。</p>
@@ -1461,6 +1491,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p>12bitなら4096段階。1段の電圧は満量程 0.6 V &divide; 4095 = 146.5 &micro;V、変換ゲイン 45 &micro;V/e&minus; で割ると <strong>1DN = 3.26電子</strong>（ゲイン×1のとき）です（「飽和12,000 &divide; 4096 = 2.93」ではありません——飽和はADCの満量程の90%にしか届かないからです。「センサを測る」と「数字はどこから来たか」参照）。刻んだことで生じる誤差は1段の幅の中でほぼ一様に散らばるので、その分散は <code>LSB&sup2;/12</code>、標準偏差は <code>LSB/&radic;12</code>。つまり <strong>3.26/3.46 = 0.94電子</strong> です。</p>
     <p>これを読み出しノイズ2.5電子と比べると<span class="key">約1/3で、十分に小さい</span>。ここが bit 数の決めどころです。<span class="key">量子化ノイズがアナログノイズより十分小さくなった時点で、それ以上ビットを増やしても新しい情報は入ってきません</span>。逆に足りなければ、せっかくのアナログ信号を刻みすぎで潰してしまいます。</p>
     <p>いまのハイエンドセンサが14〜16bitを持つのは、ダイナミックレンジを稼ぐためです。高ゲイン側と低ゲイン側の2回読みを合成する<strong>デュアルゲイン読み出し</strong>や、変換ゲインを切り替えて2枚を合成するHDR読み出しでは、出力側により広いビット幅が要ります。</p>
+  </div>
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（06 読み出しと AD 変換）</span>
+    <p><b>問.</b> 満量程 0.6 V・変換ゲイン 45 µV/e⁻ のまま、ADC を 10 bit・12 bit・14 bit にしたとき、1 DN は何電子か。量子化ノイズは読み出しノイズ 2.5 e⁻ と比べてどうか。</p>
+    <p><b>解.</b> 1 DN ＝ 0.6 V ÷ (2ⁿ − 1) ÷ 45 µV。10 bit: 586.5 µV → <b>13.0 e⁻</b>、量子化ノイズ 13.0/√12 = <b>3.76 e⁻</b> ― 読み出しノイズより大きく、暗部の床が √(2.5² + 3.76²) = 4.5 e⁻ に持ち上がる。12 bit: <b>3.26 e⁻</b>、0.94 e⁻ で床は 2.67 e⁻（+7%）。14 bit: <b>0.81 e⁻</b>、0.24 e⁻ で床は 2.51 e⁻。<span class="key">12 → 14 bit で床はほぼ動かない</span> ― 量子化ノイズがアナログの床の 1/3 を切ったところが bit 数の決めどころ、という本文の結論の数値版です。14 bit が効くのは、ゲインを切り替えて広い範囲を合成する HDR 読み出しのときです。</p>
   </div>
 </section>
 
@@ -1962,6 +1997,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p><strong>ここで使った感度ムラ 1% は仮定値です。</strong>実機では0.3〜2%程度の幅があり、画素構造とプロセスで決まります。②の傾き1の区間がどこで立ち上がるかは、この値次第で左右に動きます。</p>
     <p>なお図が描いているのは<strong>理想的な測定の結果</strong>です。実際は各点の分散自体が有限枚数から推定した値なのでばらつき、直線は最小二乗で当てはめます。EMVA1288 は測定枚数や当てはめ範囲まで含めて手順を規格化しています。</p>
   </div>
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（センサを測る）</span>
+    <p><b>問.</b> 差分法で測った PTC の直線が、傾き 0.307 DN²/DN・切片 0.59 DN²、崖（飽和）が平均 3,686 DN だった。変換係数 K、読み出しノイズ、飽和電子数、ダイナミックレンジを出せ。</p>
+    <p><b>解.</b> 傾き ＝ 1/K なので <b>K = 1/0.307 = 3.26 e⁻/DN</b>。切片は読み出しノイズの分散なので σ<sub>read</sub> = √0.59 = 0.768 DN、電子に直して 0.768 × 3.26 = <b>2.50 e⁻</b>。飽和は 3,686 × 3.26 = <b>12,020 e⁻</b>。ダイナミックレンジ 20 log₁₀(12,020/2.50) = <b>73.6 dB</b>。<span class="key">冒頭で仮定した 3 つの仕様が、DN の平均と分散だけから戻ってくる</span> ― 電子を1個も数えずに。QE だけはこの手順では出ない（入射光子数を別に測る必要がある）ことも、あわせて確かめてください。</p>
+  </div>
+
   <div class="lab-go">
     <span class="tag">手を動かす — PixelLab 第1章</span>
     <p>この節で「測り返してみた」ことを、中身の伏せられたカメラで本当にやる。露光を掃いて明るい2枚・暗い2枚ずつ撮り、差分の分散と平均の傾きから K を、切片から読み出し雑音を、頂点から飽和電荷を読む。外れても真の値は見せない ― 測る意味がなくなるので。</p>
@@ -2714,6 +2755,26 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
 </section>
 
 <!-- ================= 数字の根拠 ================= -->
+<section class="stage" id="scheck">
+  <div class="stage-head"><span class="stage-num">—</span>
+    <h2>理解の確認 ― 12問で「4つの境目」をつなぎ直す</h2></div>
+  <p class="lede">光 → 電荷 → 電圧 → 数値の順に並べてあります。答えを開く前に、どの段のどの式を使うかを先に言ってみてください。</p>
+  <div class="chk">
+    <details><summary><span class="qn">Q1 · 02</span>シリコンのセンサが 1,107 nm より長い光に反応しないのはなぜか。</summary><p>光子のエネルギー 1240/λ[nm] eV が、バンドギャップ 1.12 eV に届かないから（1240 ÷ 1.12 = 1107）。何枚レンズを良くしても写らない。</p></details>
+    <details><summary><span class="qn">Q2 · 02</span>画素の深さ 3 µm は、何を基準に選ばれた値か。</summary><p>緑（550 nm、吸収長 1.40 µm）を 90% 吸収する厚み 1.40 × ln10 = 3.2 µm。可視の真ん中を過不足なく飲み込む厚みで、赤外側は足りず、青側は余る。</p></details>
+    <details><summary><span class="qn">Q3 · 02</span>紫と赤の光子で、生まれる電子の数は違うか。</summary><p>400〜1000 nm では<b>どちらも1個</b>（衝突電離は約 354 nm より短い波長から）。エネルギーの差は色の情報にならないので、色はカラーフィルタで作るしかない。</p></details>
+    <details><summary><span class="qn">Q4 · 03</span>空乏層を 2 倍に広げたい。逆バイアスと基板濃度、どちらを動かすのが現実的か。</summary><p>W ∝ √((V<sub>bi</sub>+V)/N<sub>a</sub>)。電圧は画素では数 V が上限なので、<b>N<sub>a</sub> を 1/4 に</b>下げるほうが現実的（高抵抗エピ層）。</p></details>
+    <details><summary><span class="qn">Q5 · 03</span>暗電流が 9 ℃で倍になるセンサと、5 ℃で倍になるセンサ。支配しているものは何か。</summary><p>9 ℃ は空乏層の生成（∝ n<sub>i</sub>、見かけの E<sub>a</sub> ≈ 0.6 eV）、約 5 ℃ は拡散（∝ n<sub>i</sub>²、E<sub>a</sub> ≈ 1.12 eV）。ΔT = ln2·kT²/E<sub>a</sub>（付録 C）。</p></details>
+    <details><summary><span class="qn">Q6 · 05</span>FD 3.5 fF のリセットノイズは何電子か。スイッチの抵抗を大きくすると減るか。</summary><p>√(kTC)/q = <b>24 e⁻</b>。<b>減らない</b> ― 抵抗を上げると雑音密度は増えるが帯域が同じだけ狭まり、エネルギー等分配 ½CV² = ½kT で容量だけが残る。</p></details>
+    <details><summary><span class="qn">Q7 · 05</span>CDS で消えるノイズと、消えないノイズを1つずつ。</summary><p>消える: kTC・オフセット・1/f の低周波ぶん（2回に共通だから）。消えない: 2回のあいだに生じた SF の熱雑音、そして光そのもののショットノイズ。</p></details>
+    <details><summary><span class="qn">Q8 · 06</span>このラボの 1 DN が 12,000 ÷ 4,096 = 2.93 e⁻ ではなく 3.26 e⁻ なのはなぜか。</summary><p>1 DN は ADC の満量程 0.6 V ÷ 4,095 = 146.5 µV を変換ゲインで割ったもの。飽和の 0.540 V は満量程の 90% で、飽和は 3,686 DN で頭打ちになる。</p></details>
+    <details><summary><span class="qn">Q9 · 06</span>ISO（アナログゲイン）を上げると SN 比は良くなるか。</summary><p>信号もノイズも同じだけ増幅されるので<b>良くならない</b>。改善するのは ADC の量子化や後段ノイズに埋もれにくくなるぶんだけで、代わりに飽和（ダイナミックレンジ）が縮む。</p></details>
+    <details><summary><span class="qn">Q10 · 08</span>3,000 lx で 18% グレーの SN 比はおよそいくつか。暗い側で効く手と明るい側で効く手は？</summary><p>信号 ≈ 2,100〜2,160 e⁻、ノイズ ≈ √信号 ≈ 46 e⁻ で SN 比 ≈ 46（33 dB）。明るい側はショットノイズ支配なので「光を増やす」だけが効き、暗い側は読み出しノイズの床を下げる手が効く。</p></details>
+    <details><summary><span class="qn">Q11 · 測る</span>PTC の傾きが K の逆数になるのはなぜか。</summary><p>DN = N/K なので平均は K で、分散は K² で割られる。ポアソンの Var(N) = E(N) を使うと σ²<sub>DN</sub> = μ<sub>DN</sub>/K + σ²<sub>read</sub> ― 電子数が式から消える。</p></details>
+    <details><summary><span class="qn">Q12 · 測る</span>PTC で出ない仕様を1つ挙げ、どう測るかを言え。</summary><p><b>QE</b>。PTC は「電子になったぶん」しか見ないので、校正された光源か基準検出器で<b>入射光子数を別に</b>測る（EMVA 1288 の手順）。暗電流も遮光して露光時間を振る別測定。</p></details>
+  </div>
+</section>
+
 <section class="stage" id="snum">
   <div class="stage-head"><span class="stage-num">—</span>
     <h2>数字はどこから来たか</h2></div>
@@ -2959,18 +3020,18 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <table>
         <thead><tr><th>何の話か</th><th>誰の、いつの仕事か</th><th>このページのどこ</th></tr></thead>
         <tbody>
-          <tr><td>CCD の発明</td><td>W. S. Boyle &amp; G. E. Smith<br>Bell System Technical Journal, 1970</td><td>CCD という別解</td></tr>
-          <tr><td>埋め込み<br>フォトダイオード</td><td>寺西信一 ほか<br>IEDM, 1982</td>
+          <tr><td>CCD の発明</td><td>W. S. Boyle &amp; G. E. Smith<br>Bell Syst. Tech. J. 49, 587 (1970)</td><td>CCD という別解</td></tr>
+          <tr><td>埋め込み<br>フォトダイオード</td><td>寺西信一 ほか<br>IEDM Tech. Dig., pp. 324–327 (1982)</td>
             <td>03 蓄積 / 付録C。<strong>暗電流を桁で下げ、完全転送を可能にした</strong>構造で、いまのCMOSセンサの前提になっています。</td></tr>
-          <tr><td>CMOS<br>アクティブピクセル</td><td>Eric R. Fossum<br>IEEE Trans. Electron Devices, 1997 ほか</td>
+          <tr><td>CMOS<br>アクティブピクセル</td><td>Eric R. Fossum<br>IEEE Trans. Electron Devices 44, 1689 (1997) ほか</td>
             <td>04 電荷転送。「カメラ・オン・ア・チップ」という言い方はここから広まりました。</td></tr>
-          <tr><td>相関二重サンプリング<br>（CDS）</td><td>M. H. White ほか<br>IEEE J. Solid-State Circuits, 1974</td>
+          <tr><td>相関二重サンプリング<br>（CDS）</td><td>M. H. White ほか<br>IEEE J. Solid-State Circuits 9, 1 (1974)</td>
             <td>05 電荷を電圧に。低照度CCDの読み出しで、リセットに伴う不定な基準を2回サンプルの差で消す手法を確立した仕事です。</td></tr>
-          <tr><td>ベイヤー配列</td><td>Bryce E. Bayer<br>米国特許, 1976</td><td>01 入射と色分け</td></tr>
-          <tr><td>しきい値ばらつきが<br>面積で決まること</td><td>Marcel Pelgrom ほか<br>IEEE J. Solid-State Circuits, 1989</td><td>付録B 短チャネル効果</td></tr>
-          <tr><td>1/f ノイズの<br>数ゆらぎモデル</td><td>A. L. McWhorter<br>1957</td>
+          <tr><td>ベイヤー配列</td><td>Bryce E. Bayer<br>米国特許 3,971,065 (1976)</td><td>01 入射と色分け</td></tr>
+          <tr><td>しきい値ばらつきが<br>面積で決まること</td><td>Marcel Pelgrom ほか<br>IEEE J. Solid-State Circuits 24, 1433 (1989)</td><td>付録B 短チャネル効果</td></tr>
+          <tr><td>1/f ノイズの<br>数ゆらぎモデル</td><td>A. L. McWhorter<br>『Semiconductor Surface Physics』<br>Univ. Pennsylvania Press, 1957</td>
             <td>付録D。<strong>酸化膜中のトラップへのトンネル捕獲</strong>で 1/f を説明する立場。対抗説（Hooge の移動度ゆらぎ）との決着はついていません。</td></tr>
-          <tr><td>電界増強を含む<br>生成・再結合モデル</td><td>G. A. M. Hurkx ほか<br>IEEE Trans. Electron Devices, 1992</td>
+          <tr><td>電界増強を含む<br>生成・再結合モデル</td><td>G. A. M. Hurkx ほか<br>IEEE Trans. Electron Devices 39, 331 (1992)</td>
             <td>付録A / C。トラップ支援トンネルを、デバイスシミュレータに組み込める形にまとめた仕事です。</td></tr>
           <tr><td>単一光子検出の<br>APDとクエンチ回路</td><td>S. Cova ほか<br>Applied Optics, 1996</td>
             <td>「降伏の先 — SPAD」。ガイガーモード動作と受動／能動クエンチを整理した定番の総説です。</td></tr>
