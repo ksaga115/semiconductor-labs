@@ -304,6 +304,16 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   display:block;margin-bottom:6px}
 .caveat p{font-size:13.5px;color:var(--ink-2);line-height:1.72}
 .caveat p + p{margin-top:10px}
+.ex{margin-top:20px;border:1px solid var(--line);border-left:2px solid var(--photon);border-radius:2px;background:var(--surface);padding:12px 16px;max-width:46em}
+.ex .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;color:var(--photon-2);display:block;margin-bottom:6px}
+.ex p{font-size:14px;line-height:1.8}
+.ex p + p{margin-top:8px}
+.chk{margin-top:18px;max-width:52em}
+.chk details{border-top:1px solid var(--line-2);padding:11px 0}
+.chk details:last-child{border-bottom:1px solid var(--line-2)}
+.chk summary{cursor:pointer;font-weight:700;font-size:14.5px}
+.chk summary .qn{font-family:var(--mono);font-size:10.5px;color:var(--photon-2);margin-right:8px;font-weight:600}
+.chk details p{margin-top:8px;color:var(--ink-2);font-size:14px;line-height:1.75}
 /* 参考書からラボへ渡す箱。読んだことを、隣のラボ（SemiLab / PixelLab）で自分の手で確かめる */
 .lab-go{margin-top:22px;border:1px solid var(--line);border-left:2px solid var(--digital);
   border-radius:2px;background:var(--surface);padding:12px 16px;max-width:46em}
@@ -409,6 +419,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li><a href="#s7"><span class="n">07</span><span>誤差の合成</span></a></li>
     <li><a href="#s8"><span class="n">08</span><span>現場の品質</span></a></li>
     <li class="dom"><span>付録</span></li>
+    <li><a href="#scheck"><span class="n">—</span><span>理解の確認</span></a></li>
     <li><a href="#s9"><span class="n">—</span><span>用語表</span></a></li>
     <li><a href="#sref"><span class="n">—</span><span>出典</span></a></li>
   </ol>
@@ -429,6 +440,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li><a href="#s7"><span class="n">07</span><span>誤差の合成</span></a></li>
     <li><a href="#s8"><span class="n">08</span><span>現場の品質</span></a></li>
     <li class="dom"><span>付録</span></li>
+    <li><a href="#scheck"><span class="n">—</span><span>理解の確認</span></a></li>
     <li><a href="#s9"><span class="n">—</span><span>用語表</span></a></li>
     <li><a href="#sref"><span class="n">—</span><span>出典</span></a></li>
   </ol>
@@ -486,6 +498,14 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   <div class="deep deep-note">
     <span class="tag">くわしく — 「0故障でした」に何 FIT の価値があるか</span>
     <p>信頼性試験の結果はたいてい「n台×1000時間、故障ゼロ」という形で届きます。ゼロなら故障率もゼロ…ではなく、統計的に言えるのは<span class="key">上限</span>だけ: 信頼水準 60% なら &lambda; &le; &minus;ln(0.4)/(総台·時間) = 0.92/(総台·時間)。たとえば JEDEC 流の 3ロット×77台×1000時間の高温動作試験（HTOL、125℃）を、Ea 0.7eV・使用55℃の加速率 78（→02）で使用条件に換算すると 231,000 h × 78 &asymp; 1.8×10⁷ 台·時間 ― 0故障で言えるのは<strong>「60%の信頼で 51 FIT 以下」</strong>です。報告書の FIT の脇には必ず信頼水準と仮定 Ea が付いている（付いていなければ聞く）― それがこの計算の跡です。</p>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（01 バスタブ・FIT・MTTF）</span>
+    <p><b>問1.</b> 50 FIT の部品を 200 個直列に使う装置の FIT と MTTF は？ 5 年後に動いている割合は？</p>
+    <p><b>解.</b> 50 × 200 = <b>10,000 FIT</b>（λ = 10⁻⁵ /h）、MTTF = 10⁹/10,000 = <b>10 万時間 ＝ 11.4 年</b>。5 年（43,800 h）後の生存率は e<sup>−0.438</sup> = <b>64.5%</b>、MTTF の 11.4 年では <b>36.8%</b>。<span class="key">「MTTF 11 年」の装置の 3 台に 1 台は 5 年以内に止まる</span> ― MTTF を寿命の目安と読んではいけない理由の数字版です。</p>
+    <p><b>問2.</b> 125℃ の HTOL（Ea 0.7 eV、使用 55℃ で AF = 78）で、0 故障のまま「60% の信頼で 10 FIT 以下」と言うには、1,000 時間の試験に何個要るか。</p>
+    <p><b>解.</b> λ ≤ 0.92/(総台·時間) なので、10 FIT には 0.92/10⁻⁸ = 9.2×10⁷ 台·時間（使用条件換算）。÷78 で試験炉の中では 1.18×10⁶ 台·時間 ― 1,000 時間なら <b>1,180 個</b>。JESD47 の標準の 231 個（3 ロット × 77）で言えるのは <b>51 FIT</b> まで。<span class="key">低い FIT を主張するほど、要る標本が比例して増える</span> ― 報告書の FIT を見たら、まず標本数を逆算してみる。</p>
   </div>
 
   <div class="lab-go">
@@ -552,6 +572,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p>現場でよく聞く10℃則は、アレニウスの式の影です。Ea = 0.7 eV のとき 55→65℃ の AF はちょうど 2.1 ― <span class="key">室温付近・Ea 0.7 eV なら本当に「10℃で約2倍」</span>。ただし同じ 10℃ でも 100→110℃ では 1.8倍、Ea 0.4 eV なら 1.5倍と、温度域と機構でレートは動きます。法則ではなく<strong>特定の Ea と温度域での近似</strong>だと知っていれば、「10℃則で見積もりました」という資料のどこを確かめればいいかが分かります。電解コンデンサの寿命式（105℃品・10℃半減）が同じ形をしているのも偶然ではありません。</p>
   </div>
 
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（02 加速）</span>
+    <p><b>問.</b> 使用 55℃・10 年（87,600 h）を Ea 0.7 eV で実証する。125℃ の炉なら何時間か。500 時間で済ませるには何℃にするか。湿気の 10 年（使用 40℃/60%RH）を 85℃/85%RH と HAST 130℃/85%RH で、はんだの 10 年（1 日 1 回、ΔT 30 K）を −40〜125℃（ΔT 165 K）で実証すると？</p>
+    <p><b>解.</b> AF = 78 で <b>1,130 h</b>。500 h には AF 175 が要り、試験温度 <b>142℃</b>。湿気は Peck（n = 3、Ea 0.79 eV）で 85/85 が AF <b>113</b> → <b>778 h</b>、HAST 130℃ は AF <b>1,960</b> → <b>45 h</b>。JESD47 は THB 1,000 h の代替に HAST 96 h を挙げていますが、この式の比（1,960/113 ≈ 17）で換算すると THB 1,000 h は HAST 約 57 h に相当するので、規格の 96 h はそれより長い安全側にあります。はんだは Coffin–Manson (165/30)² = <b>30</b> で、使用 3,650 回が <b>121 サイクル</b>。<span class="key">同じ「10 年」が、機構ごとに別の通貨（温度・湿度・回数）で払われる</span> ― どの試験がどの故障を早送りしているかを取り違えると、実証したことにならない。</p>
+  </div>
+
   <div class="lab-go">
     <span class="tag">手を動かす — QALab 第1章</span>
     <p>Ea・使用温度・実証したい寿命を固定したまま、試験温度だけで「500時間以内」の請求書を払う。湿気は 85/85 の槽の中で、はんだは −40〜125℃ のサイクルで、同じ早送りを別の通貨で払う。</p>
@@ -603,6 +629,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   <div class="deep deep-note">
     <span class="tag">くわしく — ワイブルプロットが直線になる理由</span>
     <p>F(t) の式を2回対数を取って整理すると <span class="key">ln[&minus;ln(1&minus;F)] = m·ln t &minus; m·ln &eta;</span> ― 縦軸に ln(&minus;ln(1&minus;F))、横軸に ln t を取れば<strong>傾き m の直線</strong>になります。ワイブル確率紙（いまはソフトの1クリック）はこの座標変換のこと。故障データを打点して直線に乗れば単一メカニズム、<strong>折れ線になったら故障モードが混ざっている</strong>合図で、折れ点の前後を別々に解析します。打点には順序統計のメディアンランク（i&minus;0.3)/(n+0.4) を使うのが定石です。</p>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（03 ワイブル）</span>
+    <p><b>問.</b> 尺度 η = 10,000 h で、形状 m = 0.5・1・2・3 のそれぞれの B10（10% が壊れる時刻）は？ m = 2 で B10 ≥ 5,000 h を満たす η は？</p>
+    <p><b>解.</b> B10 = η(−ln 0.9)<sup>1/m</sup> = η × 0.1054<sup>1/m</sup>: m = 0.5 で <b>111 h</b>、1 で <b>1,054 h</b>、2 で <b>3,246 h</b>、3 で <b>4,723 h</b>。同じ η でも、初期不良型（m = 0.5）の最初の 10% は摩耗型（m = 3）の 40 倍早く来る。m = 2 で B10 5,000 h には η ≥ 5,000/0.3246 = <b>15,400 h</b>。<span class="key">平均的な寿命（η）より、形（m）のほうが「最初の 10%」を大きく動かす</span> ― 寿命試験の一番の収穫が m である理由です。</p>
   </div>
 
   <div class="lab-go">
@@ -673,6 +705,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p>データシートには &theta;ja（ジャンクション→周囲を一発で）も載っていますが、この値は <span class="key">JEDEC 規定の標準基板（JESD51）に載せた測定値</span>で、実基板の銅箔・ビア・隣の部品で大きく変わります。&theta;ja は「パッケージ同士の比較用」、実設計は &theta;jc から積み上げるか熱シミュレーション ― と使い分けるのが安全。もうひとつ: &theta; 一定は<strong>定常状態</strong>の話で、パルス駆動なら過渡熱インピーダンス Zth(t) の曲線を見ます。短いパルスは熱容量が受け止めるので、同じピーク電力でも Tj は低く済みます。</p>
   </div>
 
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（04 熱の会計）</span>
+    <p><b>問.</b> 発熱 2 W、θjc 1.5・θcs 0.5・θsa 30 K/W、周囲 40℃。Tj は？ θsa を 15 K/W にすると Tj と寿命（Ea 0.7 eV）は何倍か。Tj ≤ 85℃ にするには θsa をいくつ以下にするか。</p>
+    <p><b>解.</b> Tj = 40 + 2 × 32 = <b>104℃</b>。θsa 15 なら 40 + 2 × 17 = <b>74℃</b>、寿命は exp[(0.7/k)(1/347.15 − 1/377.15)] = <b>6.4 倍</b>。Tj ≤ 85℃ には 2 × (2 + θsa) ≤ 45 → θsa ≤ <b>20.5 K/W</b>。<span class="key">30℃ 下げると寿命が 6 倍</span> ― 放熱器の値段と寿命の値段を同じ表で比べられるのが、この会計の強みです。</p>
+  </div>
+
   <div class="lab-go">
     <span class="tag">手を動かす — QALab 第2章</span>
     <p>発熱・周囲温度・θjc・θcs を固定し、放熱器の θsa だけで Tj ≤ 85℃ を払う。逆算は θsa ≤ 20.5 K/W ― カタログの放熱器の欄でどの行から買えるかが決まる数字。</p>
@@ -731,6 +769,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     </div>
     <figcaption>QALab の右の盤面と同じ直線。<span class="key">「何度」と「何ワット」は直線の上でしか両立しない</span> ― そして払った熱は倍付けで高温側に現れ、04 の会計に戻ってきます。</figcaption>
   </figure>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（05 TEC）</span>
+    <p><b>問.</b> Q<sub>max</sub> 5 W・ΔT<sub>max</sub> 70 K の TEC で、ΔT 60 K と 50 K のとき吸える熱は？ 熱負荷 1.2 W を吸い切れる最大の ΔT は？</p>
+    <p><b>解.</b> Q<sub>c</sub> = 5 × (1 − ΔT/70): ΔT 60 K で <b>0.71 W</b>（1.2 W の負荷は吸えない）、50 K で <b>1.43 W</b>。1.2 W を吸える上限は 70 × (1 − 1.2/5) = <b>53 K</b>。「50 K 以上冷やしたい」なら窓は <b>50〜53 K</b> しかない。<span class="key">あと 10 K 深く冷やしたいなら、TEC を2段にするか熱負荷を半分にするしかない</span> ― そして熱い側にはこの 1.2 W と TEC 自身の電力が出てくるので、04 の θ の会計がもう一度始まります。</p>
+  </div>
 
   <div class="lab-go">
     <span class="tag">手を動かす — QALab 第2章</span>
@@ -796,6 +840,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p>正規分布で ±6&sigma; の外は両側 0.002 ppm のはず ― なのにシックスシグマ運動の掲げる数字は 3.4 ppm。差の正体は<span class="key">「工程の中心は長期的に ±1.5&sigma; 漂う」という運動側の約束事</span>で、6&sigma; &minus; 1.5&sigma; = 4.5&sigma; の片側裾 = 3.4 ppm がこの数字の出どころです。統計の定理ではなく経験的な取り決めなので、「6σ品質＝3.4ppm」と聞いたら 1.5σ シフト込みの流儀の話だと翻訳してください。この部の Cpk→ppm はシフトなし（測った時点の分布そのまま）で計算しています。</p>
   </div>
 
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（06 Cpk と ppm）</span>
+    <p><b>問.</b> 規格 ±0.3、中心ずれ 0.05 の工程。σ = 0.1 の Cpk と不良率は？ Cpk 1.33 に届く σ は？ 同じ Cpk 1.33 を、ずれ 0・σ 0.075 で達成した工程と不良率を比べよ。</p>
+    <p><b>解.</b> σ = 0.1: Cpk = (0.3 − 0.05)/0.3 = <b>0.83</b>、不良 <b>6,440 ppm</b>。Cpk 1.33 には σ ≤ 0.25/(3 × 1.33) = <b>0.0627</b>、そのとき不良は <b>34 ppm</b>。中心が合った σ 0.075 の工程も Cpk は 1.33 だが、不良は <b>63 ppm</b>。<span class="key">同じ Cpk でも ppm は倍近く違う</span> ― Cpk は近い側の壁しか見ないので、ずれた工程は片側の裾だけ、中心の合った工程は両側の裾で不良を出すからです。Cpk→ppm の換算表（63 ppm）は「中心が合っている」前提の数字だと覚えておく。</p>
+  </div>
+
   <div class="lab-go">
     <span class="tag">手を動かす — QALab 第3章</span>
     <p>規格幅と中心ずれを固定し、σ だけで Cpk ≥ 1.33 を払う。ずれ 0.05 のぶん σ の許しは 0.0627 まで縮む ― 「中心を合わせれば σ は 0.075 でよかった」が数字で見える。</p>
@@ -855,6 +905,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     </div>
     <figcaption>二乗和の平方根は<span class="key">大きい項の一人勝ち</span>。予算表を書いたら最大の項に全資源 ― どの部でも繰り返し現れた原則の、これが本籍地です。</figcaption>
   </figure>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（07 誤差の合成と GR&amp;R）</span>
+    <p><b>問.</b> 規格 ±0.3 の寸法を測る測定系で、同じ人が測り直したばらつき（繰り返し）が σ 0.02、人・日による差（再現性）が σ 0.006。%GR&amp;R（6σ<sub>測定</sub> を公差 0.6 で割ったもの）は？ 合格・条件付き・不合格のどれか。</p>
+    <p><b>解.</b> σ<sub>測定</sub> = √(0.02² + 0.006²) = 0.0209、%GR&amp;R = 6 × 0.0209/0.6 = <b>20.9%</b> ― 10〜30% の<b>条件付き</b>（用途と費用で判断）。再現性を 0 にしても √(0.02²) = 0.02 → 20% で、ほとんど下がらない。<span class="key">支配しているのは繰り返し（器具そのもの）で、人の教育をいくらしても合格にはならない</span> ― 誤差予算の「最大の積み木から」がここでもそのまま効きます。</p>
+  </div>
 
   <div class="lab-go">
     <span class="tag">手を動かす — QALab 第3章</span>
@@ -928,10 +984,35 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p>人体は歩くだけで数 kV に帯電し、指先からの放電は 100 pF・1.5 k&Omega; の RC 放電でモデル化されます（HBM: 人体モデル。搬送中に帯電した<strong>デバイス自身</strong>が金属に触れた瞬間に放つ、もっと速い放電が CDM: 帯電デバイスモデル）。多くの半導体は<span class="key">HBM 数百 V〜2 kV で壊れる</span>ので、人が「何も感じない」放電（〜3 kV 未満）で十分に壊れる ― 発見できない不良の一大産地です。リストバンドと導電マットは接地への放電経路をゆっくりにする<strong>回路設計</strong>であって、儀式ではありません。壊れ切らずに弱った個体（潜在損傷）が市場で初期不良になる ― バスタブの左壁の供給源のひとつです。</p>
   </div>
 
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（08 現場の品質）</span>
+    <p><b>問.</b> HBM（人体モデル）の 2 kV 放電は、100 pF を 1.5 kΩ で放電する回路で表される。放電の時定数、ピーク電流、放出されるエネルギーは？</p>
+    <p><b>解.</b> τ = RC = 1.5 kΩ × 100 pF = <b>150 ns</b>、ピーク電流 2 kV / 1.5 kΩ = <b>1.3 A</b>、エネルギー ½CV² = ½ × 100 pF × (2 kV)² = <b>0.2 mJ</b>。<span class="key">1.3 A が 100 ns 級で数 µm の配線やゲート酸化膜を通る</span> ― 人が「感じない」放電でも、チップの中の局所の電流密度と電界は破壊に十分です。JS-001（HBM）・JS-002（CDM）の試験はこの回路定数を規格化したもので、パッケージの定格「HBM 2 kV」はこの放電に耐えたという意味です。</p>
+  </div>
+
   <div class="caveat">
     <span class="tag">この部が単純化していること</span>
     <p><strong>加速は温度（アレニウス）・湿度（Peck）・温度サイクル（Coffin-Manson）の3本です。</strong>電圧・電流密度の加速、加速どうしの組み合わせ（サイクル＋湿度など）、Coffin-Manson の周波数・保持時間補正（Norris-Landzberg）はモデル外。実際の認定計画は規格原文で。</p>
     <p><strong>Cpk→ppm は正規分布、θ は一次元定常、TEC は一次近似です。</strong>裾の厚い分布・過渡熱・TEC の電流依存は、それぞれ実測とシミュレーションの領分。この部の式は「桁と方向を最初に当てる」ための一次見積もりとして使ってください。</p>
+  </div>
+</section>
+
+<!-- ================= 理解の確認 ================= -->
+<section class="stage" id="scheck">
+  <div class="stage-head"><span class="stage-num">—</span>
+    <h2>理解の確認 ― 10問で報告書を読めるようにする</h2></div>
+  <p class="lede">営業・設計・品質、どの席でも使う問いだけを並べました。答えを開く前に、どの章の式かを先に言ってみてください。</p>
+  <div class="chk">
+    <details><summary><span class="qn">Q1 · 01</span>「MTTF 100 万時間」の部品は、1 年でどれくらい壊れるか。</summary><p>λ = 10⁻⁶ /h で、1 年（8,760 h）に約 <b>0.88%</b>。MTTF は寿命ではなく故障率の逆数で、MTTF の時点まで生き残るのは 37%。</p></details>
+    <details><summary><span class="qn">Q2 · 01</span>「231 個 × 1,000 時間で 0 故障」から言える FIT は？ 何を仮定しているか。</summary><p>60% 信頼で λ ≤ 0.92/(231,000 × AF)。Ea 0.7 eV・使用 55℃・試験 125℃ の AF 78 を仮定すると <b>51 FIT 以下</b>。仮定（Ea・使用温度）と信頼水準を変えると数字は大きく動く。</p></details>
+    <details><summary><span class="qn">Q3 · 02</span>報告書の Ea が 0.7 eV から 1.0 eV に変わっていたら、何が起きているか。</summary><p>同じ試験データで、主張できる寿命が 3 倍以上に膨らむ。加速したのではなく仮定を変えただけ ― JEP122 の機構別の Ea と突き合わせる。</p></details>
+    <details><summary><span class="qn">Q4 · 02</span>85℃/85%RH・1,000 時間が「湿気の 10 年」と言えるのはどんな仮定のもとか。</summary><p>Peck の式（n ≈ 3、Ea ≈ 0.79 eV）で、使用条件を 40℃/60%RH と置くと AF ≈ 113、10 年 ≈ 778 h。使用条件の仮定が変われば年数も変わる。</p></details>
+    <details><summary><span class="qn">Q5 · 03</span>ワイブルの m が 0.6 と出た。バーンインは効くか。m が 3 なら？</summary><p>m &lt; 1 は初期不良型なので、弱い個体を工場で使い切るバーンインが効く。m &gt; 1 の摩耗型にかけると全数の寿命を削るだけで逆効果 ― 設計・材料の変更が要る。</p></details>
+    <details><summary><span class="qn">Q6 · 04</span>カタログの θja で実基板の Tj を計算してよいか。</summary><p>比較用には使えるが、θja は JESD51 の標準基板での値なので実基板では変わる。実設計は θjc から積み上げるか熱シミュレーション。パルス駆動なら過渡熱インピーダンス。</p></details>
+    <details><summary><span class="qn">Q7 · 05</span>TEC で「もっと冷やす」と「もっと熱を吸う」を同時に要求されたら？</summary><p>Qc = Qmax(1 − ΔT/ΔTmax) の直線の上でしか両立しない。直線を上げる（大きな TEC・2 段）か、熱負荷を減らすしかない。熱い側には吸った熱＋TEC の電力が出る。</p></details>
+    <details><summary><span class="qn">Q8 · 06</span>Cpk 1.33 なら不良は必ず 63 ppm か。</summary><p>いいえ。63 ppm は正規分布・中心一致の前提での値。中心がずれていれば同じ Cpk でも片側だけで不良が出て数値は変わる（例: 34 ppm）。裾が正規より厚い工程では、表の値を保証できない。</p></details>
+    <details><summary><span class="qn">Q9 · 07</span>誤差 0.3% と 0.6% の合成は？ どちらを磨くべきか。</summary><p>√(0.3² + 0.6²) = 0.67%。0.3% を半分にしても 0.62% にしかならない。大きい 0.6% を 0.4% にすれば 0.5% ― 支配項に資源を集中する。</p></details>
+    <details><summary><span class="qn">Q10 · 08</span>試験の名前（HTOL・温度サイクル・THB/HAST・バーンイン）を、バスタブのどこを攻めるかに翻訳せよ。</summary><p>バーンイン＝左の壁（初期不良の選別）、HTOL＝底（偶発故障の λ を温度加速で実証）、温度サイクル＝右の壁（はんだ疲労、Coffin–Manson）、THB/HAST＝湿気の故障（Peck）。</p></details>
   </div>
 </section>
 
@@ -984,7 +1065,19 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
             <td>08 の認定試験の骨格。HTOL（3ロット×77個・1000h）、温度サイクル、THB 85℃/85%RH 1000h と、その代替の HAST 130℃/85%RH 96h（110℃なら 264h）がここに並んでいます。個々の試験方法は JESD22 シリーズ（A101 THB・A110 HAST・A104 温度サイクル・A108 HTOL）。</td></tr>
           <tr><td>Measurement Systems<br>Analysis（MSA）</td><td>AIAG<br>（第4版, 2010）</td>
             <td>07 の GR&amp;R の手順書。繰り返し・再現性の分離、%GR&amp;R の 10%/30% の判定目安、ndc（有効区分数）はここが出典です。</td></tr>
-          <tr><td>Introduction to<br>Statistical Quality Control</td><td>D. C. Montgomery<br>Wiley</td>
+          <tr><td>アレニウスの式</td><td>S. Arrhenius<br>Z. Phys. Chem. 4, 226 (1889)</td>
+            <td>02。反応速度の温度依存 exp(−Ea/kT) の原典。信頼性の加速式はこの形を故障機構に借りたもの。</td></tr>
+          <tr><td>ワイブル分布</td><td>W. Weibull<br>J. Appl. Mech. 18, 293 (1951)</td>
+            <td>03。形状 m と尺度 η で壊れ方を1本に書く分布の原典。</td></tr>
+          <tr><td>低サイクル疲労則</td><td>L. F. Coffin, Trans. ASME 76, 931 (1954)<br>S. S. Manson, NACA TN 2933 (1953)</td>
+            <td>02・08。塑性ひずみ（温度振幅）のべき乗で寿命サイクル数が決まる、Coffin–Manson 則の2つの原典。</td></tr>
+          <tr><td>JESD51 シリーズ</td><td>JEDEC</td>
+            <td>04。θja・θjc の測定条件（標準基板・風速）を決めた熱測定の規格。カタログの熱抵抗はこの条件での値。</td></tr>
+          <tr><td>ANSI/ESDA/JEDEC<br>JS-001 / JS-002</td><td>ESDA・JEDEC</td>
+            <td>08。HBM（100 pF・1.5 kΩ）と CDM の ESD 試験方法。</td></tr>
+          <tr><td>AEC-Q100</td><td>Automotive Electronics Council</td>
+            <td>08。車載 IC の認定試験。JESD47 を土台に、温度グレードと標本数・条件を厳しくしたもの。</td></tr>
+          <tr><td>Introduction to<br>Statistical Quality Control</td><td>D. C. Montgomery<br>Wiley, 8th ed. (2019)</td>
             <td>06・07 の教科書。管理図・工程能力指数・GR&amp;R（MSA）・抜取検査まで、品質統計の標準的な一冊です。Cpk の限界と正しい使い方の議論もここにあります。</td></tr>
           <tr><td>信頼性工学の教科書<br>（ワイブル解析を含むもの）</td><td>各社<br>（日科技連ほか）</td>
             <td>01・03 の背景。ワイブル確率紙・メディアンランク・0故障の信頼限界など、この部が1段で通り過ぎた統計の手続きが演習付きで学べます。版が多いので手元の目次で該当章を。</td></tr>
