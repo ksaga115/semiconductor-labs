@@ -382,6 +382,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
 @keyframes p6adc { 0%{opacity:0} 4%{opacity:.26} 22%{opacity:.26} 26%{opacity:0} 100%{opacity:0} }
 .adcfam{opacity:0;animation:p6adc 8s linear infinite}
 @media (prefers-reduced-motion:reduce){.adcfam{animation:none!important}}
+/* 12 のデータの流れ: 粒が矢印の上を進み、FPGA の 4 段が 1 秒ずつ灯る */
+@keyframes p6pkt { 0%{transform:translateX(0);opacity:0} 12%{opacity:1} 88%{opacity:1} 100%{transform:translateX(var(--d,50px));opacity:0} }
+.pkt{animation:p6pkt 1.4s linear infinite}
+@keyframes p6step { 0%{opacity:.15} 6%{opacity:1} 22%{opacity:1} 30%{opacity:.15} 100%{opacity:.15} }
+.step4{opacity:.15;animation:p6step 4s linear infinite;animation-delay:calc(var(--k,0) * 1s)}
+@media (prefers-reduced-motion:reduce){.pkt,.step4{animation:none!important}.step4{opacity:1}}
 </style>
 
 <header class="wrap hero">
@@ -581,6 +587,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     </div>
   </div>
 
+  <div class="caveat">
+    <span class="tag">落とし穴と、持ち帰る一言（01）</span>
+    <p>① <b>g<sub>m</sub> = 2I<sub>d</sub>/V<sub>ov</sub> は強反転・飽和の式</b>。弱反転では g<sub>m</sub>/I<sub>d</sub> が 1/(nV<sub>t</sub>)（n = 1.3〜1.5 で約 26〜30 /V）で頭打ちになり、V<sub>ov</sub> を下げてもそれ以上は増えない。② <b>λ はチャネルの長さでほぼ反比例して変わる</b> ― ある L で測った λ を別の L に使い回さない。</p>
+    <p><b>営業・企画</b>　「利得」は g<sub>m</sub>·r<sub>o</sub> = 2/(λV<sub>ov</sub>) で、電流を増やしても増えない。電流は速さに、長い L は利得に効く。<br><b>設計・開発</b>　V<sub>ov</sub> と L を先に決め、W は要る電流から出す。<br><b>研究・製造</b>　λ と V<sub>th</sub> のばらつきは工程で決まり、03 の面積則で回路の精度に効く。</p>
+  </div>
+
   <div class="ex">
     <span class="tag">例題 ― 手で一度解く（01 gm と ro）</span>
     <p><b>問.</b> µC<sub>ox</sub> = 200 µA/V²（AnalogLab の仮想プロセス）、W/L = 20、I<sub>D</sub> = 100 µA、λ = 0.1 V⁻¹。V<sub>ov</sub>・g<sub>m</sub>・g<sub>m</sub>/I<sub>D</sub>・r<sub>o</sub>・素の利得は？ V<sub>ov</sub> をちょうど 0.20 V に置くには W/L をいくつにするか。</p>
@@ -683,6 +695,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p>現代のアナログ設計は「W/L を決める」より先に「<strong>g<sub>m</sub>/I<sub>D</sub> をどこに置くか</strong>」を決めます。二乗則では g<sub>m</sub>/I<sub>D</sub> = 2/V<sub>ov</sub> ― V<sub>ov</sub>=0.2V で 10 S/A、0.1V で 20 S/A。<span class="key">高効率側（V<sub>ov</sub> 小）は低電力・高利得・低雑音に有利で、素子が太り遅くなる。低効率側（V<sub>ov</sub> 大）は速くて小さいが電流を食う</span>。この1軸の上のどこに座るかが、回路の性格をほぼ決めます。実プロセスでは弱反転（g<sub>m</sub>/I<sub>D</sub> が nV<sub>T</sub> 分の1、25〜30 S/A で飽和する領域 ― <a href="第2部_デバイスの基礎.html#s5">第2部の S 値</a>の裏面）まで使うので、シミュレータの g<sub>m</sub>/I<sub>D</sub> カーブが設計表になります。<a href="AnalogLab/index.html?quest=eff">AnalogLab「電力で gm を買う」</a>で一度この算数を踏んでください。</p>
   </div>
 
+  <div class="caveat">
+    <span class="tag">落とし穴と、持ち帰る一言（02）</span>
+    <p>① <b>スイングを忘れた利得設計</b>: 利得のために縦に積む（カスコード）と、段ごとに V<sub>ov</sub>（01 の例で 0.224 V）と余裕が要り、出力の振れ幅が削られる。1.8 V の電源で 4 段積むと、振れ幅は 1.8 − 4 × 0.224 = 0.90 V より小さい。② 利得は<b>小信号の値</b> ― 大きく振ると g<sub>m</sub> と r<sub>o</sub> が動いて歪む。</p>
+    <p><b>営業・企画</b>　利得・帯域・振れ幅は、同じ電源電圧を取り合う。<br><b>設計・開発</b>　出力の振れ幅の予算を最初に書き、積める段数を決める。<br><b>研究・製造</b>　電源電圧の低い微細なプロセスほど、縦に積める段が減る。</p>
+  </div>
+
   <div class="ex">
     <span class="tag">例題 ― 手で一度解く（02 一段で増やす）</span>
     <p><b>問.</b> 01 の石（g<sub>m</sub> = 0.894 mS、r<sub>o</sub> = 100 kΩ）に R<sub>D</sub> = 12 kΩ を載せ、電源 1.8 V・負荷 1 pF。利得・出力の直流電位・下の余裕・出力の極・GBW は？</p>
@@ -762,6 +780,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <span class="tag">くわしく — カスコードの直感：蛇口の上に衝立を立てる</span>
     <p>CS の上に CG を積むのがカスコードです。出力側から見ると、下の MOS のドレイン電圧を上の MOS が<span class="key">ほぼ一定に守ってくれる</span>ので、&lambda; の漏れ道が見えなくなる ― 出力抵抗はおよそ <strong>g<sub>m</sub>r<sub>o</sub> 倍</strong>に跳ね上がります（r<sub>out</sub> ≒ g<sub>m2</sub>r<sub>o2</sub>&middot;r<sub>o1</sub>）。素の利得が数十しかない微細プロセスで利得を稼ぐ第一手で、ミラーに使えば電流源の品質も同じ倍率で上がります。<strong>請求書はヘッドルーム</strong>: 積んだぶん V<sub>ov</sub> が縦に並び、低電圧の電源では居場所がなくなる ― 電源電圧が下がり続けた20年で、カスコードから多段（06）へ潮流が動いた理由です。</p>
   </div>
+  <div class="caveat">
+    <span class="tag">落とし穴と、持ち帰る一言（03）</span>
+    <p>① <b>出力の電圧が入力側と違うと写しがずれる</b>: 誤差 ≈ λΔV（λ 0.1 /V・ΔV 0.5 V で 5%）。② カスコードで誤差は下がるが、<b>出力に要る最小の電圧が 1 段ぶん増える</b>（AnalogLab mirror の条件）。③ 小さく作った 1:10 のミラーは、<b>面積のばらつき</b>で写し比がずれる。</p>
+    <p><b>営業・企画</b>　写しの精度は「比」で決まり、絶対値のばらつきに強い。<br><b>設計・開発</b>　λΔV の誤差と、面積のばらつきの誤差を別々に見積もる。<br><b>研究・製造</b>　比の精度（ペルグロムの係数）は工程の実力そのもの。</p>
+  </div>
+
   <div class="ex">
     <span class="tag">例題 ― 手で一度解く（03 カレントミラー）</span>
     <p><b>問.</b> 基準 50 µA を W/L 比 1:2 のミラーで写す。出力側のドレインが基準側より 0.5 V 高いと、λ = 0.1 V⁻¹ でコピーは何%狂うか。出力側をカスコードにするとどうなるか（g<sub>m</sub>r<sub>o</sub> ≈ 89）。</p>
@@ -835,6 +859,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <p>「同相を捨てる力」を数字にしたのが <strong>CMRR</strong>（同相除去比: 差動利得 ÷ 同相利得）。理想では∞ですが、現実には2つの理由で有限です: ①テール電流源の出力抵抗が有限（同相の揺れがテールを揺らす）、②<strong>左右の石のミスマッチ</strong>（同相の揺れが偽の「差」に化ける）。だから差動対のレイアウトも03のミラーと同じ作法 ― 面積を張り、共通重心 ― で描かれ、<span class="key">オフセット電圧（入力換算のずれ、mV級）</span>としてカタログに現れます。オフセットを消したい計測の現場が07のチョッパに繋がります。</p>
     </div>
   </div>
+  <div class="caveat">
+    <span class="tag">落とし穴と、持ち帰る一言（04）</span>
+    <p>① 電流が全部片側に寄るのは ±√2·V<sub>ov</sub>（例で ±0.316 V）だが、<b>直線とみなせるのはそのごく一部</b> ― 小信号の g<sub>m</sub> で扱えるのは V<sub>ov</sub> より十分小さい差だけ。② 同相の電圧が動くと、テールの電流源の r<sub>o</sub> を通って出力に漏れる（CMRR は有限）。</p>
+    <p><b>営業・企画</b>　差動は同相の雑音に強い（11 の差動伝送と同じ理由）。<br><b>設計・開発</b>　入力の振れの線形の範囲を V<sub>ov</sub> で決める。<br><b>研究・製造</b>　対の 2 個のばらつき（オフセット）が精度の床になる。</p>
+  </div>
+
   <div class="ex">
     <span class="tag">例題 ― 手で一度解く（04 差動対）</span>
     <p><b>問.</b> 電源 1.8 V、負荷抵抗に落とせる電圧を 1.2 V までとする。差動対の差動利得 g<sub>m</sub>R<sub>D</sub> を 20 にしたい。V<sub>ov</sub> をいくつに置く必要があるか。そのとき全量が片側へ寄る入力差はいくらか。</p>
@@ -974,6 +1004,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <figcaption>ループ L(s) = ω<sub>u</sub>/(s(1 + s/ω<sub>p2</sub>)) を閉じると 2 次系になり、ζ = ½√(ω<sub>p2</sub>/ω<sub>u</sub>)、行き過ぎ exp(−πζ/√(1−ζ²))。<span class="key">位相余裕 45° では 23% 跳ねて揺れ、60° で 8.8%、70° で 1.4%</span> ― 実務の「60° 前後」は、行き過ぎを 1 割弱に抑えつつ遅くしすぎない折り合いです。ADC の駆動や TIA（16）で波形が「鳴る」のは、この曲線の上側です。</figcaption>
   </figure>
 
+  <div class="caveat">
+    <span class="tag">落とし穴と、持ち帰る一言（05）</span>
+    <p>① <b>閉ループの利得を下げる（強く帰還する）ほど、安定の余裕は減る</b>: 帰還の量が増えて交差周波数が上がり、位相余裕が削られる（PM 45° で行き過ぎ 23%）。いちばん厳しいのは利得 1 のバッファ。② 位相余裕は<b>負荷の容量で変わる</b> ― 実際につなぐ負荷で確かめる。</p>
+    <p><b>営業・企画</b>　帰還で精度を買う代わりに、安定の余裕を払っている。<br><b>設計・開発</b>　位相余裕は、実際の負荷の容量と、いちばん強い帰還の条件で確かめる。<br><b>研究・製造</b>　開ループの利得が十分大きいかぎり、素子のばらつきは閉ループの利得から追い出せる。</p>
+  </div>
+
   <div class="ex">
     <span class="tag">例題 ― 手で一度解く（05 帰還）</span>
     <p><b>問1.</b> 開ループ利得 A = 1,000、帰還率 β = 0.1。閉ループ利得は？ 温度で A が半分の 500 に落ちたら？</p>
@@ -1102,6 +1138,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p>2段の間に小さな容量 C<sub>c</sub> を渡すだけで、初段から見るとそれは<span class="key">利得倍（ミラー効果）に膨らんだ大容量</span>に見えます。初段の極が大きく下がって支配的になり、同じ C<sub>c</sub> が二段目では負荷を「軽く」見せて第2極を押し上げる ― 1個の容量で2つの極が左右に割れる（<strong>極分離</strong>）。オンチップでは大きな容量が作れないので、ミラー効果で「増幅して」使うわけです。おまけに右半面ゼロという厄介者も付いてきて、直列抵抗で殺すのが定番 ― この辺りからがラザビー後半の本番です。</p>
   </div>
 
+  <div class="caveat">
+    <span class="tag">落とし穴と、持ち帰る一言（06）</span>
+    <p>① <b>C<sub>c</sub> を大きくすれば位相余裕が上がり続けると思いがち</b>だが、右半面ゼロが削る角 atan(g<sub>m1</sub>/g<sub>m2</sub>) = 18.4° は C<sub>c</sub> によらず、PM は 71.6° で頭打ち。② C<sub>c</sub> と直列に R<sub>z</sub> = 1/g<sub>m2</sub> を入れると、右半面ゼロを無限遠へ追い出せる（ゼロ打ち消し抵抗）。</p>
+    <p><b>営業・企画</b>　2 段の OTA は、利得と振れ幅を両立する定番。<br><b>設計・開発</b>　C<sub>c</sub> と R<sub>z</sub> で位相余裕を作り、右半面ゼロを消す。<br><b>研究・製造</b>　g<sub>m2</sub>/g<sub>m1</sub> の比が、右半面ゼロの削る角を決める。</p>
+  </div>
+
   <div class="ex">
     <span class="tag">例題 ― 手で一度解く（06 OTA）</span>
     <p><b>問.</b> 初段 g<sub>m1</sub> = 0.894 mS、二段目 g<sub>m2</sub> = 2.68 mS（g<sub>m1</sub> の3倍）、負荷 C<sub>L</sub> = 1 pF。C<sub>c</sub> = 0.5・1・2・3 pF のそれぞれで GBW と位相余裕は？（PM = 90° − atan(GBW/f<sub>p2</sub>) − atan(GBW/f<sub>z</sub>)、f<sub>p2</sub> = g<sub>m2</sub>/2πC<sub>L</sub>、右半面ゼロ f<sub>z</sub> = g<sub>m2</sub>/2πC<sub>c</sub>）</p>
@@ -1172,6 +1214,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p>SC のもうひとつの顔が<strong>「抵抗を時間で作る」</strong>: 1クロックで q=CV を運ぶと平均電流は fCV ― つまり<span class="key">等価抵抗 1/(fC)</span>。シリコンで作りにくい M&Omega; 級の高抵抗が、小さな C と遅いクロックで作れて、しかも比精度は容量比で決まる。CMOS のフィルタと ADC がスイッチだらけなのはこのためです（<a href="AnalogLab/index.html?quest=sc">AnalogLab「抵抗を時間で作る」</a>で kT/C との両側窓ごと踏めます）。</p>
   </div>
 
+  <div class="caveat">
+    <span class="tag">落とし穴と、持ち帰る一言（07）</span>
+    <p>① <b>1/f のコーナーより下の帯域では、電流を増やして g<sub>m</sub> を上げても雑音はほとんど減らない</b> ― MOS の 1/f の入力換算の雑音は 1/(W·L·C<sub>ox</sub>·f) に比例し、効くのは面積を増やすか、CDS・チョッパで帯域の外へ運ぶこと。② <b>雑音の密度と、帯域で積分した値を取り違えない</b>: 2 nV/√Hz × √(1 MHz) = 2 µV rms。</p>
+    <p><b>営業・企画</b>　「低雑音」は帯域と一緒に言わないと意味がない。<br><b>設計・開発</b>　1/f のコーナーを先に確かめ、その下なら面積、上なら g<sub>m</sub> で下げる。<br><b>研究・製造</b>　1/f の係数は酸化膜の界面の質で決まり、工程で動く。</p>
+  </div>
+
   <div class="ex">
     <span class="tag">例題 ― 手で一度解く（07 雑音）</span>
     <p><b>問.</b> 01 の石（g<sub>m</sub> = 0.894 mS）の入力換算熱雑音は？ 2 nV/√Hz にするには g<sub>m</sub> がいくつ要るか。W/L = 20 のまま電流で買う場合と、V<sub>ov</sub> = 0.2 V を保って W/L を太らせる場合の電流と電力（1.8 V）は？</p>
@@ -1226,6 +1274,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     </div>
     <figcaption>1次の傾きは完全に消せるが、<span class="key">V<sub>BE</sub> の曲率（2次）はわずかに残り</span>、お椀を伏せた形の数mVがカタログの温度特性になる ― これを削る「曲率補正」からが職人の世界です。</figcaption>
   </figure>
+
+  <div class="caveat">
+    <span class="tag">落とし穴と、持ち帰る一言（08）</span>
+    <p>① <b>起動回路を忘れる</b>: バンドギャップの輪には電流ゼロの安定点もあり、起動回路が無いと電源を入れても立ち上がらないことがある。② 温度係数ゼロは <b>1 次の傾きだけ</b> ― 弓なりの曲がりが残り、温度範囲の端で効く。</p>
+    <p><b>営業・企画</b>　基準電圧の「温度係数」は 1 次の傾きの話で、弓なりの残りは別に書かれている。<br><b>設計・開発</b>　起動回路と、比 m の精度（AnalogLab bgr）をセットで設計する。<br><b>研究・製造</b>　V<sub>BE</sub> の温度係数（約 −2 mV/K）は工程でわずかに動き、トリミングで合わせる。</p>
+  </div>
 
   <div class="ex">
     <span class="tag">例題 ― 手で一度解く（08 バンドギャップ）</span>
@@ -1306,6 +1360,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <h3>粗く何度も ― ΔΣ 型</h3>
       <p>信号よりずっと速く、ごく粗く（1 ビットでも）何度も標本化し、量子化の誤差を帰還（05）で<b>高い周波数へ押しやって</b>（ノイズシェーピング）、あとでデジタルのフィルタで低い周波数だけを取り出す。オーバーサンプリング比 64 で、ただ平均するだけなら 18 dB（3 ビットぶん）の改善が、1 次の ΔΣ で 49 dB、2 次で 77 dB になる。<span class="key">精度を「部品の精度」ではなく「時間とデジタル処理」で買う</span>方式で、16〜24 ビットの計測・オーディオの主役です（遅い信号向き）。</p>
     </div>
+  </div>
+
+  <div class="caveat">
+    <span class="tag">落とし穴と、持ち帰る一言（09）</span>
+    <p>① <b>ENOB は入力の周波数で落ちる</b>: データシートの ENOB の多くは低い周波数の入力での値で、時計のジッタ 1 ps だけでも SN 比の天井は 10 MHz で 84.0 dB、100 MHz で 64.0 dB（14）。S/H の帯域と歪みも高い周波数で効く。② <b>分解能（ビット数）と精度（INL・オフセット・利得の誤差）は別物</b>。</p>
+    <p><b>営業・企画</b>　ADC はビット数より ENOB と、それを測った入力の周波数で比べる。<br><b>設計・開発</b>　使う入力の周波数の上限で ENOB を見積もる（ジッタ・S/H・歪み）。<br><b>研究・製造</b>　比較器と容量の比の精度が、方式の限界を決める。</p>
   </div>
 
   <div class="ex">
@@ -1397,6 +1457,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     </div>
   </div>
 
+  <div class="caveat">
+    <span class="tag">落とし穴と、持ち帰る一言（10）</span>
+    <p>① <b>コイルを平均の負荷電流で選ぶと飽和する</b> ― 電流の山は負荷の電流に ΔI/2（10 の例題なら 0.12 A）を足した値。② 負荷が ΔI/2 より軽いと電流が 0 まで下がって途切れ（不連続モード）、デューティと出力の関係が変わる。</p>
+    <p><b>営業・企画</b>　効率は負荷で変わる ― 軽い負荷での効率も確かめる。<br><b>設計・開発</b>　コイルは電流の山で、コンデンサはリップルで選ぶ。<br><b>研究・製造</b>　スイッチングの周波数と高調波は、近くのアナログ回路（センサの読み出し）に乗る。周波数の置き場所を決めておく。</p>
+  </div>
+
   <div class="ex">
     <span class="tag">例題 ― 手で一度解く（10 電源）</span>
     <p><b>問1.</b> 12 V から 3.3 V を作る降圧コンバータ（1 MHz・コイル 10 µH）のデューティと、コイル電流の三角波の振幅は？ 同じ 3.3 V から LDO で 1.8 V・100 mA を作ると、何 W が熱になるか。</p>
@@ -1442,8 +1508,8 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
         <rect x="420" y="110" width="300" height="50" fill="var(--surface-3)"/>
         <rect x="70" y="98" width="40" height="12" fill="var(--warn)"/><rect x="240" y="98" width="40" height="12" fill="var(--electron)"/>
         <rect x="450" y="98" width="40" height="12" fill="var(--warn)"/><rect x="545" y="98" width="30" height="12" fill="var(--digital)"/><rect x="600" y="98" width="40" height="12" fill="var(--electron)"/><rect x="665" y="98" width="30" height="12" fill="var(--digital)"/>
-        <path d="M110 104 H240" stroke="var(--warn)" stroke-width="1.6" stroke-dasharray="4 3"/>
-        <path d="M490 104 H545" stroke="var(--warn)" stroke-width="1.6" stroke-dasharray="4 3"/>
+        <path d="M110 104 H240" stroke="var(--warn)" stroke-width="1.6" stroke-dasharray="4 3" fill="none" class="flow"/>
+        <path d="M490 104 H545" stroke="var(--warn)" stroke-width="1.6" stroke-dasharray="4 3" fill="none" class="flow"/>
         <g font-size="10" fill="var(--ink-2)" text-anchor="middle">
           <text x="90" y="88">電源 10 V</text><text x="260" y="88">入力（0 V）</text>
           <text x="470" y="88">電源 10 V</text><text x="560" y="72">ガード</text><text x="620" y="88">入力</text><text x="680" y="72">ガード</text>
@@ -1467,6 +1533,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <h3>入出力の守り ― ESD とラッチアップ</h3>
       <p>外とつながる端子には、静電気の放電（第8部 08 の HBM・CDM）を逃がす保護素子（ダイオードなど）が付いています。CMOS の中には、隣り合う p 型と n 型の層が寄生のサイリスタ（pnpn）を作っていて、端子に電源を超える電圧が入るとそれがオンになって電源と地面を短絡し続ける<b>ラッチアップ</b>が起きる。ウェルの周りを濃い層で囲み、濃い基板に薄いエピ層を載せる（第1部 04）のは、この寄生の道の利得を下げるためです。</p>
     </div>
+  </div>
+
+  <div class="caveat">
+    <span class="tag">落とし穴と、持ち帰る一言（11）</span>
+    <p>① <b>グラウンドの一点接地を高い周波数でもやる</b>と効かない: 長いグラウンドの線はコイルになる（目安 1 nH/mm で 10 cm なら約 100 nH、100 MHz で 2π × 10⁸ × 10⁻⁷ ≈ 63 Ω）。高い周波数では面のグラウンドで、信号の真下に帰り道を作る。② <b>ガードは入力と同じ電位でなければ効かない</b> ― ずれ 1 mV で 1 pA（例題）、駆動の誤差がそのまま漏れになる。</p>
+    <p><b>営業・企画</b>　EMC は規格の試験で測って確かめる項目。<br><b>設計・開発</b>　電流の帰り道を描いてから配線する。<br><b>研究・製造</b>　基板の材料と層の構成で、線路の Z<sub>0</sub> と表面の漏れが決まる。</p>
   </div>
 
   <div class="ex">
@@ -1523,6 +1595,8 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
         <g stroke="var(--ink-3)" stroke-width="1.6" fill="none">
           <path d="M150 92 H214 M206 86 L214 92 L206 98"/><path d="M480 92 H544 M536 86 L544 92 L536 98"/><path d="M640 92 H674 M666 86 L674 92 L666 98"/>
         </g>
+        <g fill="var(--warn)"><circle cx="152" cy="92" r="3" class="pkt" style="--d:52px"/><circle cx="482" cy="92" r="3" class="pkt" style="--d:52px;animation-delay:.7s"/><circle cx="642" cy="92" r="3" class="pkt" style="--d:24px;animation-delay:1.4s"/></g>
+        <g fill="var(--photon)"><circle cx="226" cy="77" r="2.5" class="step4" style="--k:0"/><circle cx="226" cy="93" r="2.5" class="step4" style="--k:1"/><circle cx="226" cy="109" r="2.5" class="step4" style="--k:2"/><circle cx="226" cy="125" r="2.5" class="step4" style="--k:3"/></g>
         <g font-size="10.5" font-weight="700" text-anchor="middle" fill="var(--ink)">
           <text x="85" y="86">センサ</text><text x="350" y="60">FPGA（カメラの中）</text><text x="595" y="86">出口の規格</text><text x="712" y="86">計算機</text>
         </g>
@@ -1560,6 +1634,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <h3>時刻と同期</h3>
       <p>外部のトリガで露光を始め、露光の区間を信号で外に出し、画像ごとに時刻を記録する。複数のカメラや光源のパルス（第9部 09）と合わせるには、ローリングシャッタでは行ごとに露光の時刻がずれること（第4部）を計算に入れる必要があります。</p>
     </div>
+  </div>
+
+  <div class="caveat">
+    <span class="tag">落とし穴と、持ち帰る一言（12）</span>
+    <p>① <b>規格の信号の速さと、実際に運べる速さを取り違える</b>: USB3 の 5 Gb/s に対して実効は約 3.2 Gb/s（例題）。② <b>flat を 1 枚で割ると、その雑音が画像に焼き付く</b>（30,000 電子で 0.58%）。</p>
+    <p><b>営業・企画</b>　伝送の規格は実効の速さで比べる。<br><b>設計・開発</b>　ビットを隙間なく詰めるだけで、同じ線で 1.33 倍の枚数が送れる。<br><b>研究・製造</b>　補正用の画像（dark・flat）は、平均した枚数で精度が決まる。</p>
   </div>
 
   <div class="ex">
@@ -1634,10 +1714,18 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p>1 次の ΔΣ に一定の入力を入れると、ビット列は周期的な模様になり、その周期の成分が信号の帯域に落ちると「音」として聞こえる（<b>アイドルトーン</b>）。上の図の平均が 3 拍ごとに 0.333 を通る、ほぼ周期的な揺れがその種です。対策は、次数を上げる・わずかな雑音（ディザ）を足して模様を崩す、のどちらか。次数を上げると雑音整形は強くなるが、1 ビットの量子化器で 3 次以上にすると、大きな入力で積分器が振り切れて<b>発振する</b>ことがある ― 量子化器を多ビットにする、2 次までの段を縦に並べる（MASH）などで安定を保ちます（Schreier &amp; Temes）。</p>
   </div>
 
+  <div class="caveat">
+    <span class="tag">落とし穴と、持ち帰る一言（13）</span>
+    <p>① <b>SAR の入力は容量を一瞬で充電する</b> ― 駆動の回路が 1/2 LSB まで落ち着くのに τ·ln 2<sup>N+1</sup>（12 ビットで 9.0 τ）かかる。② ΔΣ の SQNR の式は<b>線形のモデルの天井</b>で、1 ビットの高次は大きな入力で不安定になる（くわしく）。</p>
+    <p><b>営業・企画</b>　SAR は低電力の中速、ΔΣ は低速で高分解能 ― 方式で得意が違う。<br><b>設計・開発</b>　SAR は駆動の落ち着きを、ΔΣ は安定に入れられる入力の大きさを最初に確かめる。<br><b>研究・製造</b>　容量の比の精度が、SAR のビット数の天井（例題の問2）。</p>
+  </div>
+
   <div class="ex">
     <span class="tag">例題 ― 手で一度解く（13 変換器の中身）</span>
     <p><b>問.</b> 2 次・1 ビットの ΔΣ を、オーバーサンプリング比 64 と 128 で使うと、理想の SQNR と ENOB はいくつか（線形のモデルで、1 ビットの量子化器の出発点を 6.02 × 1 + 1.76 dB とする）。帯域 20 kHz なら、それぞれ何 MHz で標本化するか。</p>
     <p><b>解.</b> M = 64: 7.78 + 77.4 = <b>85.2 dB</b>（ENOB 13.9）、標本化は 2 × 20 kHz × 64 = <b>2.56 MHz</b>。M = 128: 7.78 + 92.5 = <b>100.2 dB</b>（ENOB 16.4）、5.12 MHz。<span class="key">速さを 2 倍にするだけで 15 dB、2.5 ビットぶん細かくなる</span> ― ただしこれは線形のモデルの天井で、実物は安定に入れられる入力の大きさ（満量程より小さい）と、アナログ部の雑音で下がります。</p>
+    <p><b>問2.</b> SAR の容量 DAC で、単位容量の比のばらつきが σ<sub>u</sub> = 0.1% と 0.3%（どちらも仮定）のとき、中央のコード（最上位のビットが切り替わる所）の DNL を 3σ で 0.5 LSB 以内に収められる最大のビット数は？</p>
+    <p><b>解.</b> 最上位の容量（単位 2<sup>N−1</sup> 個）と残り（2<sup>N−1</sup> 個）の差のばらつきは、単位 2<sup>N</sup> 個ぶんで σ<sub>u</sub>·√(2<sup>N</sup>) 単位 ― LSB で数えて σ<sub>DNL</sub> = σ<sub>u</sub>·2<sup>N/2</sup>。3σ<sub>DNL</sub> ≤ 0.5 から 2<sup>N/2</sup> ≤ 1/(6σ<sub>u</sub>): σ<sub>u</sub> = 0.1% で N ≤ 14.8 → <b>14 ビット</b>（3σ = 0.38 LSB、15 ビットでは 0.54 LSB）、0.3% で N ≤ 11.6 → <b>11 ビット</b>。1 ビット増やすには σ<sub>u</sub> を 1/√2 にする（ペルグロムの面積則で単位容量の面積 2 倍）うえに個数も 2 倍 ― <span class="key">全容量は 1 ビットあたり 4 倍になり、ビット数の天井は比の精度で決まる</span>。高分解能の SAR が容量の較正（トリミング・デジタルの補正）を持つ理由です。</p>
   </div>
 
   <div class="lab-go">
@@ -1724,6 +1812,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p>ジッタにはいくつかの数え方がある: 理想の時刻からのずれ（TIE、ADC の標本化で効くのはこれ）、1 周期の長さの揺らぎ（周期ジッタ、デジタル回路のタイミングで効く）、隣り合う周期の差（サイクル間ジッタ）。また、原因が熱雑音のような<b>ランダム成分</b>（ガウス分布で、σ で表す）と、電源のリップルや隣の信号からの混入のような<b>決定的な成分</b>（上限がある）に分けて扱う。<span class="key">ADC の天井の式に入れるのは、信号の帯域に効く周波数範囲で積分したランダムな TIE</span>で、カタログの「周期ジッタ」をそのまま入れると間違えます。</p>
   </div>
 
+  <div class="caveat">
+    <span class="tag">落とし穴と、持ち帰る一言（14）</span>
+    <p>① <b>ジッタの値は、積分した周波数の範囲で変わる</b> ― データシートの「rms ジッタ」がどの範囲（たとえば 12 kHz〜20 MHz）の値かを必ず見る。② PLL で N 倍すると、帯域の内側の基準の位相雑音は 20 log N だけ上がる（25 MHz × 40 で +32 dB）。</p>
+    <p><b>営業・企画</b>　ジッタは、積分した帯域とセットで比べる。<br><b>設計・開発</b>　入力の周波数の上限から、許されるジッタを逆算する。<br><b>研究・製造</b>　基準の水晶と PLL の雑音が、ADC の実力を決める。</p>
+  </div>
+
   <div class="ex">
     <span class="tag">例題 ― 手で一度解く（14 ジッタ）</span>
     <p><b>問.</b> 14 ビットの ADC（理想の SQNR 86.0 dB）で 70 MHz の信号を取る。ジッタで量子化の雑音と同じ大きさまで悪化させないための σ<sub>j</sub> は？ 実際の時計が 0.5 ps なら、量子化とジッタを合わせた SN 比と ENOB は？</p>
@@ -1798,13 +1892,21 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
 
   <div class="deep deep-note">
     <span class="tag">くわしく — 1/f の項と、整形の形</span>
-    <p>1/f 雑音（07）は ENC に τ によらない項（∝ C²）を足すので、谷の底を持ち上げる ― 小さな容量の検出器ほど、初段のトランジスタの 1/f が効く。係数 e²/8 は CR-RC に固有の値で、積分を何段も重ねた準ガウス形の整形や、デジタルの台形の整形では係数が数十 % 良くなる（Spieler の表）。一方、整形時間が検出器の電荷の集まる時間より短すぎると、頂上が電荷の全部を拾えずに低く出る（<b>バリスティック欠損</b>）。整形時間の下限は、雑音だけでなく検出器の電荷の集まり方でも決まります。</p>
+    <p>1/f 雑音（07）は ENC に τ によらない項（CR-RC で (e²/2)·A<sub>f</sub>·C²、A<sub>f</sub> は 1/f の係数）を足すので、谷の底を持ち上げる ― 暗電流が小さく整形を最適にして白い雑音を削った検出器ほど、この床が見えてくる（下の例題の問2）。係数 e²/8 は CR-RC に固有の値で、積分を何段も重ねた準ガウス形の整形や、デジタルの台形の整形では係数が数十 % 良くなる（Spieler の表）。一方、整形時間が検出器の電荷の集まる時間より短すぎると、頂上が電荷の全部を拾えずに低く出る（<b>バリスティック欠損</b>）。整形時間の下限は、雑音だけでなく検出器の電荷の集まり方でも決まります。</p>
+  </div>
+
+  <div class="caveat">
+    <span class="tag">落とし穴と、持ち帰る一言（15）</span>
+    <p>① <b>整形時間を短くしすぎると頂上が低く出る</b>（バリスティック欠損、くわしく）。② <b>入力の容量 C は検出器だけではない</b> ― 配線・入力のトランジスタの容量も足した全部の和で ENC が決まる。</p>
+    <p><b>営業・企画</b>　X 線の分光の分解能は、検出器の容量で決まる（SDD が主役の理由）。<br><b>設計・開発</b>　整形時間は、雑音の谷と計数率（パイルアップ）の両方から決める。<br><b>研究・製造</b>　暗電流（温度）と容量が ENC の二大要因。</p>
   </div>
 
   <div class="ex">
     <span class="tag">例題 ― 手で一度解く（15 ENC）</span>
     <p><b>問.</b> 上の条件（C = 10 pF・I<sub>d</sub> = 1 nA）で、速さのために整形時間を 0.25 µs に縮めると ENC はいくつか。5.9 keV の X 線（1630 対・ファノ因子 0.115）のエネルギー分解能（半値全幅）を、最適の ENC と、SDD の ENC 5 e⁻ で比べよ。</p>
     <p><b>解.</b> 0.25 µs では ENC = <b>246 e⁻</b>（最適の 161 e⁻ の 1.53 倍）。半値全幅 = 2.355 × 3.62 eV × √(0.115 × 1630 + ENC²) は、ENC 161 e⁻ で <b>1373 eV</b>、ENC 5 e⁻ で <b>124 eV</b>（第5部 09 の 124 eV）。<span class="key">10 pF の検出器では増幅器の雑音が分解能を 10 倍以上悪くする</span> ― 検出器の容量を小さく作る SDD が X 線の分光で主役になった理由が、この 1 行です。</p>
+    <p><b>問2.</b> 同じ条件に、初段の 1/f 雑音（コーナー 10 kHz と仮定、A<sub>f</sub> = e<sub>n</sub>²·f<sub>c</sub> = 4×10⁻¹⁴ V²、1/f の雑音密度は A<sub>f</sub>/f）を加えると ENC はいくつになるか。暗電流 10 pA の場合と比べよ。</p>
+    <p><b>解.</b> CR-RC では 1/f の項は整形時間によらず ENC<sub>f</sub>² = (e²/2)·A<sub>f</sub>·C²（∫x/(1+x²)² dx = 1/2 から）で、ENC<sub>f</sub> = e·C·√(A<sub>f</sub>/2) = <b>24.0 e⁻</b>。二乗和で、暗電流 1 nA は √(160.5² + 24.0²) = <b>162 e⁻</b>（+1.1%）、10 pA は √(50.8² + 24.0²) = <b>56 e⁻</b>（+11%）。1/f の項は τ によらないので、最適の整形時間は動かない。<span class="key">白い雑音を削った静かな検出器ほど、1/f の床が相対的に効いてくる</span>。</p>
   </div>
 
   <div class="lab-go">
@@ -1898,6 +2000,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   <div class="deep deep-note">
     <span class="tag">くわしく — 容量を回路から隠す、R<sub>f</sub> の寄生容量</span>
     <p>PD の両端の電圧を動かさなければ、容量には電流が流れない ― PD の反対側の電極を入力と同じ波形で動かす<b>ブートストラップ</b>は、容量を実質的に小さく見せる技法です（Hobbs）。いっぽう、1 本の大きな R<sub>f</sub> には 0.1 pF 前後の寄生容量があり、それが勝手に C<sub>f</sub> の役を果たして帯域の上限になることがある。高利得・広帯域では R<sub>f</sub> を直列に分けて寄生容量を減らす、T 型の帰還網にする（ただし雑音は増える）などの工夫がされます。どれも <span class="key">「容量が帯域と雑音を握る」を逆手に取る</span>技法です。</p>
+  </div>
+
+  <div class="caveat">
+    <span class="tag">持ち帰る一言（16）</span>
+    <p><b>営業・企画</b>　TIA の帯域は R<sub>f</sub>・PD の容量・増幅器の GBW の 3 つで決まる。<br><b>設計・開発</b>　C<sub>f</sub> は ζ から決め、1/(2πR<sub>f</sub>C<sub>f</sub>) で見積もらない。<br><b>研究・製造</b>　PD の容量と暗電流はバイアスで取り合う ― 使い方で選ぶ。</p>
   </div>
 
   <div class="ex">
