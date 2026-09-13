@@ -418,6 +418,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li><a href="#s6"><span class="n">06</span><span>ばらつきの言葉</span></a></li>
     <li><a href="#s7"><span class="n">07</span><span>誤差の合成</span></a></li>
     <li><a href="#s8"><span class="n">08</span><span>現場の品質</span></a></li>
+    <li class="dom"><span>測る・調べる・守る</span></li>
+    <li><a href="#s10"><span class="n">09</span><span>管理図と SPC</span></a></li>
+    <li><a href="#s11"><span class="n">10</span><span>測定の不確かさ</span></a></li>
+    <li><a href="#s12"><span class="n">11</span><span>故障解析</span></a></li>
+    <li><a href="#s13"><span class="n">12</span><span>規格・安全・法規</span></a></li>
     <li class="dom"><span>付録</span></li>
     <li><a href="#scheck"><span class="n">—</span><span>理解の確認</span></a></li>
     <li><a href="#s9"><span class="n">—</span><span>用語表</span></a></li>
@@ -439,6 +444,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li><a href="#s6"><span class="n">06</span><span>Cpk</span></a></li>
     <li><a href="#s7"><span class="n">07</span><span>誤差の合成</span></a></li>
     <li><a href="#s8"><span class="n">08</span><span>現場の品質</span></a></li>
+    <li class="dom"><span>測る・守る</span></li>
+    <li><a href="#s10"><span class="n">09</span><span>管理図</span></a></li>
+    <li><a href="#s11"><span class="n">10</span><span>不確かさ</span></a></li>
+    <li><a href="#s12"><span class="n">11</span><span>故障解析</span></a></li>
+    <li><a href="#s13"><span class="n">12</span><span>規格・法規</span></a></li>
     <li class="dom"><span>付録</span></li>
     <li><a href="#scheck"><span class="n">—</span><span>理解の確認</span></a></li>
     <li><a href="#s9"><span class="n">—</span><span>用語表</span></a></li>
@@ -997,10 +1007,277 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   </div>
 </section>
 
+<!-- ================= 09 ================= -->
+<section class="stage" id="s10">
+  <div class="stage-head"><span class="stage-num">09</span>
+    <h2>管理図と SPC ― 工程の声を時間で聞く</h2></div>
+  <p class="lede">06 の Cpk は「規格に対して、ばらつきが足りているか」の一枚の写真でした。工程はそのあとも動き続けます。<b>管理図</b>は、測った値を時間の順に打ち、<span class="key">いつもの揺らぎ（偶然原因）と、何かが起きた変化（特殊原因）を見分ける</span>道具です。第1部の工場の現場で毎日使われている、統計的工程管理（SPC）の中心です。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>管理限界は「工程の声」、規格限界は「顧客の声」</h3>
+      <p>シューハートの管理図は、工程が安定しているときのデータから中心線（CL）と、その上下 3σ の<b>管理限界</b>（UCL・LCL）を引きます。ここで σ は打っている統計量（たとえば 5 個ずつの群の平均）のばらつきで、<span class="key">規格とは無関係に、工程自身のデータだけから決まる</span>。安定した工程でも 3σ の外に出る確率は 0.27%（370 点に 1 回）で、それを超える頻度で外れたら「いつもと違う何か」が起きている。規格限界は顧客の要求で、両者は別物です ― 管理状態でも Cpk が足りなければ不良は出るし、規格の中でも管理限界を外れたら原因を探す。</p>
+    </div>
+    <div class="body-col">
+      <h3>X̄–R 管理図 ― 群で平均して、小さなずれを見る</h3>
+      <p>1 個ずつではなく、同じ時刻に n 個（たとえば 5 個）取った群の平均 X̄ と範囲 R を打つのが定番の X̄–R 管理図です。平均のばらつきは σ/√n に縮むので、<b>平均の小さなずれが見やすくなる</b>。群の平均の平均 X̿ と範囲の平均 R̄ から、限界は X̿ ± A<sub>2</sub>R̄（n = 5 で A<sub>2</sub> = 0.577）、R 図の上限は D<sub>4</sub>R̄（n = 5 で 2.114）。工程の平均が 1σ ずれたとき、1 個ずつ打つ図では見つかるまで平均 44 点かかるのに、n = 5 の X̄ 図なら 4.5 群で見つかります。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">X̄ CHART — 限界の外と、片側の連続</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 232" role="img" aria-label="X̄管理図の例。中心線CLと上下の管理限界UCL・LCLの間に25群の平均が時間順に打たれている。11番目の点が上の管理限界の外に出ていて、すぐに原因を探すべき点として示されている。最後の9点はすべて中心線の上側にそろっていて、平均がずれた兆しとして囲まれている。" style="min-width:700px;width:100%;display:block">
+        <text x="70" y="30" font-size="10.5" font-weight="700" fill="var(--ink)">X̄ 管理図（群の平均を時間の順に打つ）</text>
+        <path d="M70 60 H700 M70 180 H700" stroke="var(--warn)" stroke-width="1.4" stroke-dasharray="6 4"/>
+        <path d="M70 120 H700" stroke="var(--ink-2)" stroke-width="1.4"/>
+        <rect x="474" y="84" width="204" height="40" rx="6" fill="var(--volt)" opacity="0.10" stroke="var(--volt)" stroke-dasharray="4 3"/>
+        <polyline points="90,118 114,132 138,104 162,140 186,112 210,126 234,96 258,150 282,122 306,108 330,52 354,134 378,116 402,128 426,100 450,144 474,104 498,98 522,112 546,92 570,108 594,100 618,114 642,96 666,106" fill="none" stroke="var(--ink-3)" stroke-width="1"/>
+        <g fill="var(--electron)">
+          <circle cx="90" cy="118" r="3.5"/><circle cx="114" cy="132" r="3.5"/><circle cx="138" cy="104" r="3.5"/><circle cx="162" cy="140" r="3.5"/><circle cx="186" cy="112" r="3.5"/><circle cx="210" cy="126" r="3.5"/><circle cx="234" cy="96" r="3.5"/><circle cx="258" cy="150" r="3.5"/><circle cx="282" cy="122" r="3.5"/><circle cx="306" cy="108" r="3.5"/><circle cx="354" cy="134" r="3.5"/><circle cx="378" cy="116" r="3.5"/><circle cx="402" cy="128" r="3.5"/><circle cx="426" cy="100" r="3.5"/><circle cx="450" cy="144" r="3.5"/>
+        </g>
+        <g fill="var(--volt)">
+          <circle cx="474" cy="104" r="3.5"/><circle cx="498" cy="98" r="3.5"/><circle cx="522" cy="112" r="3.5"/><circle cx="546" cy="92" r="3.5"/><circle cx="570" cy="108" r="3.5"/><circle cx="594" cy="100" r="3.5"/><circle cx="618" cy="114" r="3.5"/><circle cx="642" cy="96" r="3.5"/><circle cx="666" cy="106" r="3.5"/>
+        </g>
+        <circle cx="330" cy="52" r="5" fill="var(--warn)"/>
+        <g font-size="10">
+          <text x="344" y="46" fill="var(--warn)">管理限界の外 ― すぐに原因を探す</text>
+          <text x="706" y="64" fill="var(--warn)">UCL</text><text x="706" y="124" fill="var(--ink-2)">CL</text><text x="706" y="184" fill="var(--warn)">LCL</text>
+          <text x="576" y="204" fill="var(--volt)" text-anchor="middle">中心線の片側に 9 点連続 ― 平均がずれた兆し</text>
+        </g>
+        <text x="385" y="224" font-size="9.5" fill="var(--ink-3)" text-anchor="middle">群の番号（時間の順）→　　UCL・LCL ＝ X̿ ± A₂R̄（n = 5 で A₂ = 0.577）</text>
+      </svg>
+    </div>
+    <figcaption>判定のルールは 1 本の線だけではありません。限界の外の 1 点のほかに、<span class="key">片側に 9 点続く（安定なら 0.39% しか起きない）</span>、6 点続けて上がる（下がる）などの「並び方」も特殊原因のしるしとして使います（JIS Z 9020-2 / ISO 7870-2 の判定ルール）。ルールを増やすほど見逃しは減るが、空振りも増える ― 検査と同じ取り合いです。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>何を打つか ― 半導体の工場の管理図</h3>
+      <p>第1部の工場では、酸化膜の厚さ・線幅（CD）・シート抵抗・重ね合わせのずれ・パーティクルの数などを、ロットごと・装置ごとに打っています。数えるデータ（欠陥の個数）には、ポアソン分布（第0部 02）に基づく c 図・u 図を使う。管理図が外れたら、そのロットを止めて装置を調べる ― <span class="key">不良が規格の外に出る前に、工程の変化を捕まえる</span>のが目的です。検出器のメーカーでは、暗電流・感度・利得のような特性の出荷検査の値が、同じ作法で見張られています。</p>
+    </div>
+    <div class="body-col">
+      <h3>「管理状態」を作ってから Cpk を語る</h3>
+      <p>06 の Cpk は、工程が管理状態（特殊原因が取り除かれて、揺らぎが偶然原因だけ）にあることを前提にしています。<b>管理状態でない工程の Cpk は、測った日によって変わるので意味を持たない</b>。順番は、①管理図で特殊原因を見つけて取り除く、②管理状態になったら σ を求めて Cpk を出す、③Cpk が足りなければ工程そのもの（装置・材料・条件）を変える、です。</p>
+    </div>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（09 管理図）</span>
+    <p><b>問1.</b> 安定な工程で、1 点が 3σ の管理限界を外れる確率は？ 1 日に 50 点打つと、何日に 1 回くらい空振りの警報が出るか。</p>
+    <p><b>解.</b> 両側で 0.27%、平均 370 点に 1 回。50 点/日なら <b>約 7 日に 1 回</b>。警報のたびに調べる手間がかかるので、限界を 3σ に置くのは「空振り」と「見逃し」の釣り合いの慣習です。</p>
+    <p><b>問2.</b> 5 個ずつの群で、X̿ = 100.0 nm、R̄ = 2.0 nm だった。X̄ 図の管理限界は？ 1σ の平均のずれは、1 個ずつ打つ図と n = 5 の X̄ 図で、それぞれ平均何点で見つかるか。</p>
+    <p><b>解.</b> 100.0 ± 0.577 × 2.0 = <b>98.85〜101.15 nm</b>。1 個ずつでは平均 <b>44 点</b>、n = 5 では平均の σ が 1/√5 になり、ずれが √5 = 2.24 倍大きく見えるので <b>4.5 群</b>。<span class="key">平均を取ると、小さなずれが速く見える</span> ― 第5部の「√t で買う」と同じ算術です。</p>
+  </div>
+</section>
+
+<!-- ================= 10 ================= -->
+<section class="stage" id="s11">
+  <div class="stage-head"><span class="stage-num">10</span>
+    <h2>測定の不確かさ ― 数字に幅をつけて渡す</h2></div>
+  <p class="lede">「感度 0.62 A/W」という測定値は、それだけでは半分しか情報を持っていません。どれだけ信じてよいか ― <b>不確かさ</b>を付けて初めて、他の人の値と比べられる。07 の二乗和を、国際的な約束ごと（GUM）の形に整えたのがこの章です。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>A と B ― 不確かさの 2 つの求め方</h3>
+      <p>GUM（測定における不確かさの表現のガイド）は、不確かさの成分を求め方で 2 つに分けます。<b>タイプ A</b> は繰り返し測ったばらつきから統計で求めるもので、n 回の平均の標準不確かさは s/√n。<b>タイプ B</b> はそれ以外 ― 校正証明書の値、表示の分解能、温度係数、データシートの仕様 ― から求めるもの。たとえば「±a の範囲のどこかにあることしか分からない」ときは、一様（矩形）分布とみなして a/√3 を標準不確かさにする。<span class="key">どちらの成分も同じ「標準不確かさ（1σ 相当）」にそろえてから、07 と同じ二乗和で合成する</span>のが要点です。</p>
+    </div>
+    <div class="body-col">
+      <h3>合成と拡張 ― u<sub>c</sub> と U = k·u<sub>c</sub></h3>
+      <p>測りたい量が他の量の式 y = f(x<sub>1</sub>, x<sub>2</sub>, …) で決まるときは、それぞれの不確かさに感度（∂f/∂x<sub>i</sub>）を掛けてから二乗和を取ります（相関がなければ）。これが<b>合成標準不確かさ</b> u<sub>c</sub>。報告にはふつう、それを包含係数 k 倍した<b>拡張不確かさ</b> U = k·u<sub>c</sub> を書き、k = 2 なら正規分布でおよそ 95% の範囲を表します。「0.620 A/W ± 0.013 A/W（k = 2）」のように、<b>k を必ず添える</b>のが約束です。「誤差」は真の値との差（知りようがない）、「不確かさ」は測定値の信頼の幅（見積もれる）、と言葉を分けます。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">BUDGET — 光パワーメータの読みの不確かさ</span><span class="fig-title">1 mW の読み、相対値（%）</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 222" role="img" aria-label="不確かさの予算の棒グラフ。校正証明書の成分1.00%、表示の分解能0.29%、繰り返し0.16%、温度係数0.12%。二乗和で合成すると1.06%で、包含係数2の拡張不確かさは2.1%。校正の成分がほぼ全部を決めている。" style="min-width:700px;width:100%;display:block">
+        <g font-size="10" fill="var(--ink-2)" text-anchor="end">
+          <text x="250" y="38">校正証明書（U = 2%、k = 2）B</text>
+          <text x="250" y="64">表示の分解能（±0.5%、矩形）B</text>
+          <text x="250" y="90">繰り返し（10 回、s = 0.5%）A</text>
+          <text x="250" y="116">温度係数（±0.2%、矩形）B</text>
+          <text x="250" y="152" fill="var(--ink)" font-weight="700">合成標準不確かさ u<tspan font-size="7.5" dy="2">c</tspan></text>
+          <text x="250" y="178" fill="var(--warn)" font-weight="700">拡張不確かさ U（k = 2）</text>
+        </g>
+        <g>
+          <rect x="260" y="27" width="200" height="14" fill="var(--electron)" opacity="0.85"/>
+          <rect x="260" y="53" width="57.8" height="14" fill="var(--electron)" opacity="0.55"/>
+          <rect x="260" y="79" width="31.6" height="14" fill="var(--electron)" opacity="0.55"/>
+          <rect x="260" y="105" width="23" height="14" fill="var(--electron)" opacity="0.55"/>
+          <path d="M260 131 H700" stroke="var(--line)" stroke-width="1"/>
+          <rect x="260" y="141" width="212" height="14" fill="var(--ink-2)" opacity="0.8"/>
+          <rect x="260" y="167" width="424" height="14" fill="var(--warn)" opacity="0.75"/>
+        </g>
+        <g font-family="var(--mono)" font-size="10" fill="var(--ink-2)">
+          <text x="466" y="38">1.00%</text><text x="324" y="64">0.29%</text><text x="298" y="90">0.16%</text><text x="290" y="116">0.12%</text>
+          <text x="478" y="152" fill="var(--ink)">1.06%</text><text x="690" y="178" fill="var(--warn)">2.1%</text>
+        </g>
+        <text x="380" y="208" font-size="10" fill="var(--ink-3)" text-anchor="middle">二乗和なので、校正の 1.00% がほぼ全部を決める ― 残り 3 つを 0 にしても u<tspan font-size="7.5" dy="2">c</tspan><tspan dy="-2"> は 1.00%（07 の支配項）</tspan></text>
+      </svg>
+    </div>
+    <figcaption>予算表を書くと、<span class="key">磨くべき項（ここでは校正）が一目で分かる</span>。より不確かさの小さい校正（U = 1%）を受ければ u<sub>c</sub> は 0.61% に下がるが、分解能や繰り返しをいくら磨いても 1.00% を切れない。校正の値は、校正事業者（ISO/IEC 17025 の認定を受けた機関など）を通して国家標準にさかのぼれる ― <a href="第7部_光学.html#s8">第7部 08</a> のトレーサビリティの鎖が、この 1 行の中身です。</figcaption>
+  </figure>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（10 不確かさ）</span>
+    <p><b>問.</b> 光パワーメータで 1.000 mW と読んだ。校正証明書の拡張不確かさ 2%（k = 2）、表示の最小桁 0.01 mW、10 回の繰り返しの標準偏差 0.5%、温度係数 0.1%/K で室温が ±2 K 動く。合成標準不確かさと拡張不確かさ（k = 2）は？</p>
+    <p><b>解.</b> 校正 2/2 = 1.00%。分解能は ±0.005 mW（±0.5%）の矩形で 0.5/√3 = 0.29%。繰り返しは平均の不確かさ 0.5/√10 = 0.16%（タイプ A）。温度は ±0.2% の矩形で 0.2/√3 = 0.12%。u<sub>c</sub> = √(1.00² + 0.29² + 0.16² + 0.12²) = <b>1.06%</b>、U = <b>2.1%（k = 2）</b>。報告は「1.000 mW ± 0.021 mW（k = 2）」。<span class="key">QE や感度の測定値に付く ±2% の多くは、パワーメータの校正そのもの</span>です。</p>
+  </div>
+</section>
+
+<!-- ================= 11 ================= -->
+<section class="stage" id="s12">
+  <div class="stage-head"><span class="stage-num">11</span>
+    <h2>故障解析 ― 壊れた 1 個から原因を読む</h2></div>
+  <p class="lede">01〜03 は壊れ方を<b>集団の統計</b>で扱いました。市場や試験で実際に壊れた 1 個が手元に来たら、次は<b>その個体の中で何が起きたか</b>を突き止める番です。<span class="key">壊さずに見られるものから先に見て、戻れない手順（開ける・削る）はあとに回す</span> ― これが故障解析の順序の原則です。</p>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">FA FLOW — 壊さない順に、場所を狭めていく</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 250" role="img" aria-label="故障解析の流れ図。電気特性の確認、非破壊での観察、開封と故障箇所の特定、断面の物理解析、原因と対策の5段が左から右へ並ぶ。各段の下にI-Vカーブ、X線透視とCT、超音波顕微鏡、EMMIとOBIRCHとロックイン発熱解析、FIBとSEMとTEMとEDXなどの道具が書かれている。下の矢印は、左ほど壊さず、右ほど壊して戻れないことを示す。" style="min-width:700px;width:100%;display:block">
+        <g stroke-width="1.4">
+          <rect x="20" y="36" width="124" height="54" rx="6" fill="var(--surface-2)" stroke="var(--si)"/>
+          <rect x="170" y="36" width="124" height="54" rx="6" fill="var(--surface-2)" stroke="var(--electron)"/>
+          <rect x="320" y="36" width="124" height="54" rx="6" fill="var(--surface-2)" stroke="var(--photon)"/>
+          <rect x="470" y="36" width="124" height="54" rx="6" fill="var(--surface-2)" stroke="var(--volt)"/>
+          <rect x="620" y="36" width="124" height="54" rx="6" fill="var(--surface-2)" stroke="var(--warn)"/>
+        </g>
+        <g stroke="var(--ink-3)" stroke-width="1.4" fill="none">
+          <path d="M144 63 H166 M160 58 L166 63 L160 68"/><path d="M294 63 H316 M310 58 L316 63 L310 68"/><path d="M444 63 H466 M460 58 L466 63 L460 68"/><path d="M594 63 H616 M610 58 L616 63 L610 68"/>
+        </g>
+        <g font-size="10.5" font-weight="700" text-anchor="middle" fill="var(--ink)">
+          <text x="82" y="60">① 電気特性</text><text x="232" y="60">② 非破壊で見る</text><text x="382" y="60">③ 開けて探す</text><text x="532" y="60">④ 断面を見る</text><text x="682" y="60">⑤ 原因と対策</text>
+        </g>
+        <g font-size="9" text-anchor="middle" fill="var(--ink-3)">
+          <text x="82" y="78">症状を再現する</text><text x="232" y="78">外から中を透かす</text><text x="382" y="78">場所を µm に絞る</text><text x="532" y="78">nm で形と元素</text><text x="682" y="78">なぜを繰り返す</text>
+        </g>
+        <g font-size="9.5" text-anchor="middle" fill="var(--ink-2)">
+          <text x="82" y="118">I-V カーブ</text><text x="82" y="134">リーク・オープン</text><text x="82" y="150">・ショートの確認</text>
+          <text x="232" y="118">X 線透視・CT</text><text x="232" y="134">（ワイヤ・ボイド）</text><text x="232" y="150">超音波顕微鏡</text><text x="232" y="166">（SAT：剥離）</text>
+          <text x="382" y="118">開封（樹脂を溶かす）</text><text x="382" y="134">EMMI（発光）</text><text x="382" y="150">OBIRCH（加熱）</text><text x="382" y="166">ロックイン発熱解析</text>
+          <text x="532" y="118">FIB で切る</text><text x="532" y="134">SEM・TEM で見る</text><text x="532" y="150">EDX で元素を見る</text>
+          <text x="682" y="118">工程・設計・材料</text><text x="682" y="134">・使われ方へ</text><text x="682" y="150">再発防止と報告</text>
+        </g>
+        <path d="M30 196 H730 M722 191 L730 196 L722 201" stroke="var(--warn)" stroke-width="1.6" fill="none"/>
+        <text x="30" y="216" font-size="10" fill="var(--si)">壊さない（何度でも見られる）</text>
+        <text x="730" y="216" font-size="10" fill="var(--warn)" text-anchor="end">壊す（戻れない）</text>
+        <text x="380" y="238" font-size="9.5" fill="var(--ink-3)" text-anchor="middle">場所を絞るほど、次の手順が使える ― TEM の試料は、狙った 1 か所を 100 nm 以下の薄さに切り出したもの</text>
+      </svg>
+    </div>
+    <figcaption>左から右へ進むほど分解能は上がるが、見られる範囲は狭まり、試料は元に戻らない。だから<span class="key">③の「光らせて場所を特定する」段が、全体の成否を決める要</span>です。ここに<a href="第5部_光検出デバイス.html#s7">第5部 07</a> の高感度カメラ（EMMI）と、<a href="第7部_光学.html#s8">第7部 08</a> のロックインの考え方が入っています。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>非破壊 ― X 線と超音波</h3>
+      <p><b>X 線透視・CT</b> は、パッケージの中の金属（ワイヤ・バンプ・リードフレーム・はんだ）を透かして、断線・ボイド（はんだの中の空洞）・位置のずれを見ます。<b>超音波顕微鏡（SAT）</b>は、数十〜数百 MHz の超音波を当てて反射を画像にする装置で、<span class="key">音は空気の隙間でほぼ全部はね返る</span>ので、樹脂とチップ・リードフレームの間の<b>剥離</b>がくっきり見える。02 の湿気の故障や、リフローで吸湿した樹脂が破裂する「ポップコーン」現象の調査の定番です。</p>
+    </div>
+    <div class="body-col">
+      <h3>場所を特定する ― 光・熱・電流</h3>
+      <p><b>EMMI</b> は、不良箇所から出るごく弱い光（リーク・ホットキャリア）を冷却カメラで撮る（第5部 07）。光らない不良には、1.3 µm 級のレーザーで配線を少しずつ温め、抵抗の変化を電流で読む <b>OBIRCH</b>。電流を周期的に流し、赤外カメラの画像をその周期で同期検波する<b>ロックイン発熱解析</b>は、短絡の場所をわずかな温度上昇から探します ― 1 枚では雑音に埋もれる温度変化も、多数の周期を積めば √N で浮かぶ（第7部 08 のロックインと同じ）。裏面から見るときは、シリコンが 1.1 µm より長い波長に透明なことを使います。</p>
+    </div>
+  </div>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>物理解析 ― 切って、見て、元素を当てる</h3>
+      <p><b>FIB</b>（集束イオンビーム）は、細く絞ったイオン（多くは Ga⁺）で狙った場所を削る道具で、特定した不良箇所の断面を正確に切り出せます。その断面を <b>SEM</b>（走査電子顕微鏡、nm 級）で見て、さらに細かく見たければ 100 nm 以下の薄片にして <b>TEM</b>（透過電子顕微鏡、原子の並びまで）で見る。<b>EDX</b>（エネルギー分散型 X 線分析）は、電子線で出る特性 X 線のエネルギーから元素を当てる ― 異物が何か、配線の金属が移動していないか（エレクトロマイグレーション）が分かります。</p>
+    </div>
+    <div class="body-col">
+      <h3>原因まで行って、初めて終わる</h3>
+      <p>「酸化膜が破壊されていた」は現象で、原因ではありません。ESD（08）か、製造時の欠陥か、使い方の過電圧か ― <span class="key">「なぜ」を工程・設計・材料・使われ方まで遡って、再発を防ぐ手を打つ</span>ところまでが故障解析です。原因がロット全体に及ぶなら、03 のワイブルの m と 01 の FIT の見直しにつながり、工程に原因があれば 09 の管理図の見張りの項目が増える。この部の各章は、故障解析の結果で互いに書き換えられていきます。</p>
+    </div>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（11 故障解析）</span>
+    <p><b>問1.</b> 市場から戻った CMOS センサで、電源と地面の間に 3.3 V で 1 mA のリークがある。どの順で調べるか。</p>
+    <p><b>解.</b> ①I-V カーブでリークを再現し、温度や電圧への依存を記録（抵抗性か、接合性か）。②X 線・SAT で外から異常（ワイヤの接触・剥離）を確認。③開封（または裏面研磨）して、EMMI・OBIRCH・ロックイン発熱解析でリークの場所を µm まで絞る。④その場所を FIB で切り SEM/TEM・EDX で見る。⑤原因（ESD の痕跡か、異物か、ラッチアップの跡か）を工程・使われ方と照合する。<span class="key">③より前に削ると、場所の手がかりが永久に消える</span>。</p>
+    <p><b>問2.</b> 赤外カメラの 1 枚の温度の雑音が 20 mK のとき、ロックイン発熱解析で 1 秒 100 枚を 100 秒積むと、雑音はおよそどこまで下がるか。</p>
+    <p><b>解.</b> 枚数 N = 10⁴、雑音はおよそ 1/√N で下がるので 20 mK / 100 ≈ <b>0.2 mK</b>（係数は同期検波の方式で変わる目安）。<span class="key">mW 以下の発熱でも場所が見える</span>理由です。</p>
+  </div>
+</section>
+
+<!-- ================= 12 ================= -->
+<section class="stage" id="s13">
+  <div class="stage-head"><span class="stage-num">12</span>
+    <h2>規格・安全・法規 ― 製品が社会に出るための約束</h2></div>
+  <p class="lede">性能と信頼性が足りていても、それだけでは製品は出荷できません。<b>光の安全</b>、<b>含有物質の規制</b>、<b>輸出の管理</b>、<b>品質の仕組み</b> ― どれも国際的な規格や法令に書かれた約束で、光の製品を扱う人は必ずどこかで出会います。<span class="key">規格と法令は改定されるので、ここでは骨格と考え方だけを示し、判断は最新の原文と社内の担当部署で行う</span>、という前提で読んでください。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>レーザーの安全 ― IEC 60825-1 のクラス</h3>
+      <p>レーザー製品は、目や皮膚への危険の度合いでクラス 1・1M・2・2M・3R・3B・4 に分けられます（IEC 60825-1、日本では JIS C 6802 が対応）。基準は<b>最大許容露光量（MPE）</b>で、可視光の連続光ならクラス 2 の上限は 1 mW ― 瞳孔（直径 7 mm、0.385 cm²）に全部入っても 2.6 mW/cm² で、とっさに目をそらすまでの 0.25 秒の MPE（約 2.5 mW/cm²）とほぼ同じ、というのが 1 mW の由来です。3R は可視で 5 mW まで、3B は 500 mW まで、それを超えるとクラス 4。1M・2M は、そのままなら安全だがルーペや双眼鏡で集めると危険なもの。</p>
+      <p>1.4 µm より長い波長の光は、目の前のほう（角膜や水晶体）で吸収されて網膜まで届かないので、MPE が大きくとれる ― 1.55 µm の LiDAR や通信が「アイセーフ」と呼ばれる理由です（危険がないという意味ではない）。</p>
+    </div>
+    <div class="body-col">
+      <h3>LED とランプの安全、X 線の安全</h3>
+      <p>レーザーでない光源（LED・ランプ）には、光生物学的安全性の規格 IEC 62471 があり、青い光による網膜の障害（ブルーライトハザード）・紫外・赤外の危険を、リスクグループ 0（免除）〜3 で分類します。高輝度の青色 LED や UV-LED は、レーザーでなくても目を守る必要がある、ということです（第9部）。</p>
+      <p>X 線の検査装置（11 の X 線透視、第5部 05 の X 線検出器の試験）では、放射線の被ばくの管理が法令で決められていて、管理区域・遮へい・線量の測定が必要になります。<span class="key">光と放射線の安全は、装置の設計と作業の手順の両方で守る</span>もので、クラスやグループはその出発点です。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">CLASS — 可視の連続光レーザーのクラスの上限（IEC 60825-1）</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 210" role="img" aria-label="可視の連続光レーザーのクラスを光出力の対数軸に並べた図。クラス2は1ミリワットまで、3Rは5ミリワットまで、3Bは500ミリワットまで、それを超えるとクラス4。クラス1は波長・時間・ビームの条件で決まる。" style="min-width:700px;width:100%;display:block">
+        <rect x="100" y="54" width="120" height="36" fill="var(--si)" opacity="0.35"/>
+        <rect x="220" y="54" width="84" height="36" fill="var(--photon)" opacity="0.45"/>
+        <rect x="304" y="54" width="240" height="36" fill="var(--warn)" opacity="0.45"/>
+        <rect x="544" y="54" width="156" height="36" fill="var(--warn)" opacity="0.85"/>
+        <g font-size="12" font-weight="700" text-anchor="middle" fill="var(--ink)">
+          <text x="160" y="77">クラス 2</text><text x="262" y="77">3R</text><text x="424" y="77">3B</text><text x="622" y="77" fill="#fff">4</text>
+        </g>
+        <g font-size="9.5" text-anchor="middle" fill="var(--ink-2)">
+          <text x="160" y="110">とっさに目をそらす</text><text x="160" y="124">反応で守られる</text>
+          <text x="262" y="110">直視は危険が</text><text x="262" y="124">わずかにある</text>
+          <text x="424" y="110">直接のビームは目に危険</text><text x="424" y="124">拡散反射はふつう安全</text>
+          <text x="622" y="110">拡散反射も危険</text><text x="622" y="124">皮膚・火災にも注意</text>
+        </g>
+        <path d="M100 150 H700" stroke="var(--line)" stroke-width="1"/>
+        <path d="M100 146 V154 M220 146 V154 M340 146 V154 M460 146 V154 M580 146 V154 M700 146 V154 M304 144 V156 M544 144 V156" stroke="var(--ink-3)" stroke-width="1"/>
+        <g font-family="var(--mono)" font-size="9.5" fill="var(--ink-3)" text-anchor="middle">
+          <text x="100" y="170">0.1 mW</text><text x="220" y="170">1 mW</text><text x="340" y="170">10 mW</text><text x="460" y="170">100 mW</text><text x="580" y="170">1 W</text><text x="700" y="170">10 W</text>
+          <text x="304" y="186">5 mW</text><text x="544" y="186">500 mW</text>
+        </g>
+        <text x="100" y="36" font-size="10" fill="var(--ink-3)">クラス 1 の上限は波長・露光時間・ビームの条件で決まる（ふつうに使えば安全な水準）。この図は可視 400〜700 nm の連続光の場合</text>
+        <text x="400" y="204" font-size="9.5" fill="var(--ink-3)" text-anchor="middle">光出力（対数）→</text>
+      </svg>
+    </div>
+    <figcaption>クラスの境目は波長とパルスの条件で大きく変わるので、図の値は可視の連続光に限った目安です。製品のクラスは、規格の手順で被ばく放出限界（AEL）と比べて決め、ラベルと取扱説明に書かれます。<span class="key">保護めがねは「その波長で、どれだけ弱めるか」（光学濃度 OD）で選ぶ</span> ― OD 3 は 1/1,000 です。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>含有物質 ― RoHS と REACH</h3>
+      <p>EU の <b>RoHS 指令</b>は、電気電子機器に鉛・水銀・カドミウム・六価クロム・PBB・PBDE と 4 種のフタル酸エステル、計 10 物質の使用を制限します。上限は<b>均質な材料ごと</b>に重量で 0.1%（カドミウムは 0.01%）で、部品全体の平均ではない。技術的に代わりがない用途には期限付きの適用除外があり（光学用のガラスに含まれる鉛など）、更新や失効を追う必要があります。<b>REACH 規則</b>は化学物質全般の規則で、成形品に高懸念物質（SVHC、候補リストは随時追加）が 0.1% を超えて含まれれば、受け取る側への情報の伝達が求められます。</p>
+    </div>
+    <div class="body-col">
+      <h3>輸出の管理と、品質の仕組み</h3>
+      <p>日本では外為法（外国為替及び外国貿易法）とその政令で、国際的な取り決め（ワッセナー・アレンジメントなど）に基づく品目の輸出や技術の提供が管理されます。光・センサの分野では、<span class="key">性能によっては、赤外の撮像素子やイメージインテンシファイア、ある性能以上のレーザー、高速・高分解能の ADC などが規制の対象になり得る</span>ので、出荷の前に「該当するか（該非判定）」を確かめる。技術の資料や説明を外国に（あるいは外国の人に）渡すことも対象になり得ます。</p>
+      <p>品質の仕組みの規格としては、品質マネジメントの ISO 9001、自動車向けの IATF 16949、医療機器向けの ISO 13485、校正・試験所の能力の ISO/IEC 17025 などがあり、この部の管理図・不確かさ・故障解析は、これらの仕組みの中で使う道具です。</p>
+    </div>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（12 規格・安全・法規）</span>
+    <p><b>問1.</b> 100 mW の可視のレーザーのビームを、クラス 2 の上限（1 mW）以下に弱める保護めがねの光学濃度 OD は、少なくともいくつ要るか。</p>
+    <p><b>解.</b> 必要な減衰は 100/1 = 100 倍なので OD = log₁₀100 = <b>2 以上</b>。実務では、波長・パルス条件・想定する露光時間から MPE に対して計算し、保護めがねの規格（EN 207 など）の表示で選ぶ。</p>
+    <p><b>問2.</b> 1 g の部品のうち、1 mg のめっき層に 2% の鉛が含まれていた。部品全体では何% か。RoHS の判定はどうなるか。</p>
+    <p><b>解.</b> 鉛は 0.02 mg で、部品全体では <b>0.002%</b>。しかし判定は<b>均質な材料（ここではめっき層）ごと</b>なので、2% ＞ 0.1% で上限を超える（適用除外に当たらなければ不適合）。<span class="key">「全体で薄まっているから大丈夫」は通らない</span>、というのが均質材料の考え方です。</p>
+  </div>
+
+  <div class="caveat">
+    <span class="tag">09〜12 が単純化していること</span>
+    <p><strong>管理図は正規分布・独立なデータの前提です。</strong>自己相関のある工程や、ごく小さなずれを見る EWMA・CUSUM 管理図は扱っていません。<strong>不確かさは相関のない成分の一次の合成です。</strong>相関や非線形、自由度の補正（ウェルチ・サタースウェイト）は GUM の原文で。<strong>規格・法令の数値と区分は執筆時点の骨格の要約で、改定されます。</strong>実際の判断は最新の原文と、社内の法務・品質・安全の担当部署に確認してください。</p>
+  </div>
+</section>
+
 <!-- ================= 理解の確認 ================= -->
 <section class="stage" id="scheck">
   <div class="stage-head"><span class="stage-num">—</span>
-    <h2>理解の確認 ― 10問で報告書を読めるようにする</h2></div>
+    <h2>理解の確認 ― 14問で報告書を読めるようにする</h2></div>
   <p class="lede">営業・設計・品質、どの席でも使う問いだけを並べました。答えを開く前に、どの章の式かを先に言ってみてください。</p>
   <div class="chk">
     <details><summary><span class="qn">Q1 · 01</span>「MTTF 100 万時間」の部品は、1 年でどれくらい壊れるか。</summary><p>λ = 10⁻⁶ /h で、1 年（8,760 h）に約 <b>0.88%</b>。MTTF は寿命ではなく故障率の逆数で、MTTF の時点まで生き残るのは 37%。</p></details>
@@ -1013,6 +1290,10 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <details><summary><span class="qn">Q8 · 06</span>Cpk 1.33 なら不良は必ず 63 ppm か。</summary><p>いいえ。63 ppm は正規分布・中心一致の前提での値。中心がずれていれば同じ Cpk でも片側だけで不良が出て数値は変わる（例: 34 ppm）。裾が正規より厚い工程では、表の値を保証できない。</p></details>
     <details><summary><span class="qn">Q9 · 07</span>誤差 0.3% と 0.6% の合成は？ どちらを磨くべきか。</summary><p>√(0.3² + 0.6²) = 0.67%。0.3% を半分にしても 0.62% にしかならない。大きい 0.6% を 0.4% にすれば 0.5% ― 支配項に資源を集中する。</p></details>
     <details><summary><span class="qn">Q10 · 08</span>試験の名前（HTOL・温度サイクル・THB/HAST・バーンイン）を、バスタブのどこを攻めるかに翻訳せよ。</summary><p>バーンイン＝左の壁（初期不良の選別）、HTOL＝底（偶発故障の λ を温度加速で実証）、温度サイクル＝右の壁（はんだ疲労、Coffin–Manson）、THB/HAST＝湿気の故障（Peck）。</p></details>
+    <details><summary><span class="qn">Q11 · 09</span>管理限界と規格限界はどう違うか。規格の中なのに管理限界を外れたら、どうするか。</summary><p>管理限界は工程自身のデータの ±3σ（工程の声）、規格限界は顧客の要求（顧客の声）。規格の中でも、管理限界の外は「いつもと違う原因」が起きたしるしなので、ロットを止めて原因を探す。不良が出る前に変化を捕まえるのが管理図の目的。</p></details>
+    <details><summary><span class="qn">Q12 · 10</span>「0.620 A/W ± 0.013 A/W（k = 2）」は何を言っているか。不確かさを小さくしたいとき、どこから手をつけるか。</summary><p>合成標準不確かさの 2 倍の幅に、真の値がおよそ 95% の確からしさで入る、という表明。予算表を作り、最大の成分（多くは基準器の校正）から減らす。小さい成分を磨いても二乗和はほとんど動かない。</p></details>
+    <details><summary><span class="qn">Q13 · 11</span>故障解析で、開封や断面加工より先に X 線・SAT・EMMI を使うのはなぜか。</summary><p>開ける・削るは戻れない手順で、場所の手がかりや剥離・異物などの証拠を壊してしまうから。壊さずに見られる手段で場所を µm まで絞ってから、狙った 1 か所を FIB で切って SEM・TEM で見る。</p></details>
+    <details><summary><span class="qn">Q14 · 12</span>1.55 µm の LiDAR が「アイセーフ」と呼ばれる理由と、それでも注意が要る理由は？ RoHS の 0.1% はどこで判定するか。</summary><p>1.4 µm より長い光は角膜・水晶体で吸収されて網膜に届かないので MPE が大きい。ただし出力が大きければ角膜や皮膚の障害は起き得るので、クラスは規格の手順で決まる。RoHS は部品全体ではなく均質な材料ごとに判定する。</p></details>
   </div>
 </section>
 
@@ -1041,6 +1322,21 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>誤差伝播</td><td>独立誤差は √(Σσ²)。支配項以外を磨いても合成はほぼ動かない ― 誤差予算の根拠</td><td class="num">3-4-5</td></tr>
           <tr><td>バーンイン</td><td>初期不良個体の残り寿命を出荷前に使い切る選別。m&gt;1 の集団には逆効果</td><td class="num">m&lt;1 にだけ効く</td></tr>
           <tr><td>ESD / HBM・CDM</td><td>静電破壊。人体は 100pF·1.5kΩ の放電源。感じない電圧（〜3kV）で十分壊れる</td><td class="num">HBM 数百V〜2kV</td></tr>
+          <tr><td>管理図 / SPC</td><td>測定値を時間順に打ち、偶然原因と特殊原因を見分ける図と、それを使った統計的工程管理</td><td class="num">3σ 外は 370 点に 1 回</td></tr>
+          <tr><td>管理限界 / 規格限界</td><td>工程自身のデータの ±3σ（工程の声）と、顧客の要求（顧客の声）。別物</td><td class="num">UCL・LCL / USL・LSL</td></tr>
+          <tr><td>X̄–R 管理図</td><td>n 個の群の平均と範囲を打つ定番。限界は X̿ ± A₂R̄。平均を取ると小さなずれが速く見える</td><td class="num">n=5: A₂=0.577</td></tr>
+          <tr><td>判定ルール</td><td>限界外の 1 点のほか、片側に 9 点連続・6 点連続の増減など、並び方で特殊原因を見る</td><td class="num">JIS Z 9020-2</td></tr>
+          <tr><td>不確かさ（GUM）</td><td>測定値の信頼の幅。成分を標準不確かさにそろえて二乗和で合成する国際的な約束</td><td class="num">u<sub>c</sub>、U = k·u<sub>c</sub></td></tr>
+          <tr><td>タイプ A / タイプ B</td><td>繰り返しの統計から求める成分（s/√n）と、校正値・仕様・分解能などから求める成分（矩形なら a/√3）</td><td class="num">a/√3</td></tr>
+          <tr><td>拡張不確かさ / 包含係数</td><td>合成標準不確かさの k 倍。k = 2 で正規分布のおよそ 95%。報告には k を必ず添える</td><td class="num">k = 2</td></tr>
+          <tr><td>トレーサビリティ</td><td>校正の連鎖で国家標準にさかのぼれること。ISO/IEC 17025 の認定校正などで担保する</td><td class="num">第7部 08</td></tr>
+          <tr><td>X 線 CT / SAT</td><td>パッケージ内の金属を透かす観察と、超音波の反射で剥離・ボイドを見る観察。どちらも非破壊</td><td class="num">剥離は SAT</td></tr>
+          <tr><td>ロックイン発熱解析</td><td>電流を周期的に流し、赤外画像を同期検波して短絡の場所をわずかな発熱から探す</td><td class="num">雑音 ∝ 1/√N</td></tr>
+          <tr><td>FIB / SEM / TEM / EDX</td><td>イオンビームで狙って切る／表面を nm で見る／薄片を原子の並びまで見る／特性 X 線で元素を当てる</td><td class="num">TEM 試料 &lt;100 nm</td></tr>
+          <tr><td>レーザーのクラス</td><td>IEC 60825-1 の 1・1M・2・2M・3R・3B・4。可視の連続光ならクラス 2 は 1 mW まで</td><td class="num">3R 5mW / 3B 0.5W</td></tr>
+          <tr><td>IEC 62471</td><td>LED・ランプの光生物学的安全性。ブルーライトハザード等でリスクグループ 0〜3</td><td class="num">RG0〜3</td></tr>
+          <tr><td>RoHS / REACH</td><td>電気電子機器の 10 物質の制限（均質材料ごと 0.1%、Cd 0.01%）と、化学物質全般の規則（SVHC 0.1% 超で情報伝達）</td><td class="num">均質材料ごと</td></tr>
+          <tr><td>該非判定</td><td>輸出する品目や技術が、外為法の規制リストに当たるかを確かめる手続き</td><td class="num">出荷前に</td></tr>
         </tbody>
       </table>
     </div>
@@ -1081,6 +1377,26 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
             <td>06・07 の教科書。管理図・工程能力指数・GR&amp;R（MSA）・抜取検査まで、品質統計の標準的な一冊です。Cpk の限界と正しい使い方の議論もここにあります。</td></tr>
           <tr><td>信頼性工学の教科書<br>（ワイブル解析を含むもの）</td><td>各社<br>（日科技連ほか）</td>
             <td>01・03 の背景。ワイブル確率紙・メディアンランク・0故障の信頼限界など、この部が1段で通り過ぎた統計の手続きが演習付きで学べます。版が多いので手元の目次で該当章を。</td></tr>
+          <tr><td>管理図の原典</td><td>W. A. Shewhart<br>『Economic Control of Quality of Manufactured Product』Van Nostrand (1931)</td>
+            <td>09。偶然原因と特殊原因を分け、3σ の管理限界で工程を見張る考え方の原典。</td></tr>
+          <tr><td>ISO 7870-2 / JIS Z 9020-2</td><td>ISO・日本規格協会</td>
+            <td>09。シューハート管理図の作り方（係数 A₂・D₄ など）と判定ルール。</td></tr>
+          <tr><td>GUM（JCGM 100:2008）<br>VIM（JCGM 200:2012）</td><td>JCGM（BIPM ほか）<br>（無償公開）</td>
+            <td>10。測定の不確かさの評価と表現の国際的な指針（タイプ A/B・合成・拡張）と、計量の用語集。</td></tr>
+          <tr><td>ISO/IEC 17025</td><td>ISO・IEC</td>
+            <td>10・12。校正・試験所の能力の要求事項。認定校正の証明書が不確かさとトレーサビリティを担保する。</td></tr>
+          <tr><td>Microelectronics Failure<br>Analysis Desk Reference</td><td>EDFAS（編）<br>ASM International, 7th ed. (2019)</td>
+            <td>11。電気特性・非破壊観察・故障箇所の特定・物理解析まで、半導体の故障解析の手法を網羅した実務書。</td></tr>
+          <tr><td>Lock-in Thermography</td><td>O. Breitenstein, W. Warta &amp; M. C. Schubert<br>Springer, 3rd ed. (2018)</td>
+            <td>11。ロックイン発熱解析の原理と、電子デバイス・太陽電池の不良箇所の特定への応用。</td></tr>
+          <tr><td>IEC 60825-1 / IEC 62471</td><td>IEC（日本は JIS C 6802 / JIS C 7550）</td>
+            <td>12。レーザー製品の安全（クラス分類・AEL・MPE）と、ランプ・LED の光生物学的安全性（リスクグループ）。</td></tr>
+          <tr><td>RoHS / REACH</td><td>EU 指令 2011/65/EU と委任指令 (EU) 2015/863<br>EU 規則 (EC) No 1907/2006</td>
+            <td>12。電気電子機器の 10 物質の制限と適用除外、化学物質の登録・評価・認可と SVHC の情報伝達。</td></tr>
+          <tr><td>安全保障貿易管理</td><td>外国為替及び外国貿易法・輸出貿易管理令ほか<br>（経済産業省が解説を公開）</td>
+            <td>12。品目と技術の輸出管理の枠組み。該非判定は最新の政省令の原文で。</td></tr>
+          <tr><td>品質マネジメント</td><td>ISO 9001 / IATF 16949 / ISO 13485</td>
+            <td>09〜12。管理図・不確かさ・故障解析を組み込む品質の仕組みの規格（一般・自動車・医療機器）。</td></tr>
         </tbody>
       </table>
     </div>
