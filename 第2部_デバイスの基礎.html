@@ -190,7 +190,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
       <h1>一片のシリコンから、<br><span class="lit">スイッチ</span>ができるまで</h1>
       <p class="sub">使える操作は「シリコンの一片に不純物を塗る」ことだけ。それを2枚並べると接合が立ち、電圧をかけるとダイオードになり、光を当てるとフォトダイオードになり、酸化膜を挟むと MOSFET になる。第1部の工程が作った不純物の分布が、第3部の NAND と第4部の画素に変わる場所です。</p>
       <div class="guide">
-        <div class="guide-h"><span>読み方</span><span>5章 ＝ SemiLab の5章。章を読んだら末尾の課題を解く</span></div>
+        <div class="guide-h"><span>読み方</span><span>5章 ＝ SemiLab の5章。番号のない節（—）は章の間の応用・発展</span></div>
         <div class="guide-b">
           <div><b>接合まで</b><span>1・2章。キャリアの数の決まり方と、空乏層が「出てくる」こと。第4部「蓄積」の井戸の正体はここ。</span></div>
           <div><b>ダイオードと光</b><span>3・4章。指数関数の整流、暗電流、量子効率の両端。第4部と PixelLab に直結する。</span></div>
@@ -221,10 +221,14 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
     <li><a href="#s0"><span class="n">00</span><span>一枚の地図</span></a></li>
     <li class="dom">平衡</li>
     <li><a href="#s1"><span class="n">01</span><span>一片のシリコン</span></a></li>
+    <li><a href="#shall"><span class="n">—</span><span>ホール効果</span></a></li>
     <li><a href="#s2"><span class="n">02</span><span>接合が立つ</span></a></li>
+    <li><a href="#shetero"><span class="n">—</span><span>ヘテロ接合</span></a></li>
     <li class="dom">流れる</li>
     <li><a href="#s3"><span class="n">03</span><span>ダイオード</span></a></li>
+    <li><a href="#sbjt"><span class="n">—</span><span>バイポーラ</span></a></li>
     <li><a href="#s4"><span class="n">04</span><span>光を電気にする</span></a></li>
+    <li><a href="#ssolar"><span class="n">—</span><span>太陽電池</span></a></li>
     <li class="dom">切り替える</li>
     <li><a href="#s5"><span class="n">05</span><span>MOS、そして MOSFET</span></a></li>
     <li><a href="#spow"><span class="n">—</span><span>パワーデバイス</span></a></li>
@@ -585,6 +589,63 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
   </div>
 </section>
 
+<!-- ================= ホール効果 ================= -->
+<section class="stage" id="shall">
+  <div class="stage-head"><span class="stage-num">—</span><h2>ホール効果 ― キャリアの種類と数を、磁場で数える</h2></div>
+  <p class="lede">第1章の抵抗率 ρ = 1/(qnµ) は、n と µ の積しか教えてくれません。どちらがいくつなのかを分けて測る道具が<span class="key">ホール効果</span>です。磁場の中を流れるキャリアは横に曲げられ、その曲がり具合から「電子か正孔か」と「何個いるか」が同時に分かります。同じ現象は、そのまま磁気センサにもなります。</p>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">HALL BAR — 流れを横に曲げると、横に電圧が立つ</span><span class="fig-title">n 型の場合</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 230" role="img" aria-label="ホール素子の模式図。n型の棒に左から右へ電流を流し、紙面の手前向きに磁場をかける。電子は左へ動き、ローレンツ力で下の縁へ曲げられ、下の縁が負、上の縁が正に帯電して、上下の間にホール電圧が立つ。" style="min-width:700px">
+        <defs><marker id="hlar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink-2)"/></marker></defs>
+        <rect x="160" y="80" width="360" height="70" fill="var(--electron-soft)" stroke="var(--electron)"/>
+        <rect x="150" y="80" width="10" height="70" fill="var(--metal)"/><rect x="520" y="80" width="10" height="70" fill="var(--metal)"/>
+        <path d="M290 62 H390" stroke="var(--ink-2)" stroke-width="1.8" marker-end="url(#hlar)"/>
+        <text x="400" y="66" font-family="var(--mono)" font-size="11" fill="var(--ink-2)">電流 I</text>
+        <g font-family="var(--mono)" font-size="12" fill="var(--hole)" text-anchor="middle"><text x="340" y="96">＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋</text></g>
+        <g font-family="var(--mono)" font-size="12" fill="var(--electron-2)" text-anchor="middle"><text x="340" y="146">− − − − − − − −</text></g>
+        <path d="M500 112 C 440 112, 380 118, 332 130" stroke="var(--electron)" stroke-width="1.8" stroke-dasharray="5 4" fill="none" marker-end="url(#hlar)"/>
+        <circle cx="504" cy="112" r="5" fill="var(--electron)"/>
+        <g stroke="var(--volt)" stroke-width="1.4" fill="none"><path d="M220 80 V40 H100 V101"/><path d="M100 129 V190 H220 V150"/></g>
+        <circle cx="100" cy="115" r="14" fill="var(--surface)" stroke="var(--volt)" stroke-width="1.6"/>
+        <text x="100" y="120" font-family="var(--mono)" font-size="12" fill="var(--volt)" text-anchor="middle">V</text>
+        <text x="80" y="119" font-family="var(--mono)" font-size="11" fill="var(--volt)" text-anchor="end">V<tspan font-size="8" dy="2">H</tspan></text>
+        <circle cx="610" cy="112" r="12" fill="none" stroke="var(--ink-2)" stroke-width="1.6"/>
+        <circle cx="610" cy="112" r="3" fill="var(--ink-2)"/>
+        <text x="630" y="116" font-size="11" fill="var(--ink-2)">B（紙面の手前向き）</text>
+        <text x="340" y="176" font-size="11" fill="var(--electron-2)" text-anchor="middle">電子は左へ動き、下の縁へ曲げられる</text>
+        <g font-size="11" fill="var(--ink)">
+          <text x="560" y="168" font-family="var(--mono)">V<tspan font-size="8" dy="2">H</tspan><tspan dy="-2"> = I·B / (q·n·t)</tspan></text>
+          <text x="560" y="188" fill="var(--ink-2)">符号 → 型、大きさ → 濃度</text>
+          <text x="560" y="208" fill="var(--ink-3)" font-size="10">t ＝ 素子の厚み</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>磁場 B の中を速さ v で動く電荷は、進行方向と磁場の両方に直角な力 qv×B（ローレンツ力）を受ける。電子も正孔も同じ側の縁へ寄せられるが、<b>電荷の符号が逆なので、縁に溜まる電荷の符号 ― ホール電圧の向き ― が逆になる</b>。溜まった電荷の作る横向きの電界が磁場の力と釣り合ったところで、横の電圧 V<sub>H</sub> が一定になる。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>n と µ を分ける</h3>
+      <div class="eq">V<sub>H</sub> = <b>R<sub>H</sub></b>·I·B / t　　<b>R<sub>H</sub></b> = −1/(qn)（電子）, +1/(qp)（正孔）　　µ<sub>H</sub> = |R<sub>H</sub>| / ρ</div>
+      <p>ホール係数 R<sub>H</sub> の符号でキャリアの型が、大きさで濃度が決まる。同じ試料の抵抗率 ρ を四探針（第1章「くわしく」）で測れば、その比から移動度が出る（<b>ホール移動度</b>）。<span class="key">n と µ を別々に測れる、ほとんど唯一の簡単な方法</span>で、ウェーハやエピ層の受け入れ検査の定番です。任意の形の薄い試料の周囲に 4 つの接点を付けて測る<b>ファン・デル・パウ法</b>を使えば、試料の形を整える必要もありません。</p>
+      <p style="font-size:13.5px;color:var(--ink-3)">厳密には、散乱の仕方で決まる係数（ホール因子、Si で 1.1〜1.2 程度）が R<sub>H</sub> に掛かるので、ホール移動度はドリフト移動度より少し大きく出ます。</p>
+    </div>
+    <div class="body-col">
+      <h3>ホール素子 ― 同じ現象を磁気センサに</h3>
+      <p>電流を一定にすると V<sub>H</sub> は B に比例するので、そのまま<b>磁場の強さを測るセンサ</b>になります。上の式から、<span class="key">薄く（t が小さく）、濃度が低い（n が小さい）ほど大きな電圧</span>が出る。電圧を一定にして駆動する場合は V<sub>H</sub> ≈ µ<sub>H</sub>·B·V·(W/L) となって<b>移動度に比例</b>するので、移動度の非常に高い InSb（室温で約 7.8 万 cm²/V·s）や GaAs の薄膜が感度の高いホール素子に使われます。</p>
+      <p>用途は身近で、ブラシレスモーターの回転位置の検出、電流センサ（電線のまわりの磁場を測る）、スマートフォンの電子コンパス、開閉の検出。Si の集積回路に作り込んだホール IC は、増幅と温度補償を 1 チップにまとめています。</p>
+    </div>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（ホール効果）</span>
+    <p><b>問.</b> n 型 10¹⁶ /cm³ の Si に電流 1 mA を流し、0.1 T の磁場をかける。厚さ 500 µm のウェーハのままと、厚さ 1 µm のエピ層とで、ホール電圧はいくつか。</p>
+    <p><b>解.</b> V<sub>H</sub> = IB/(qnt)。単位を SI にそろえて（n = 10²² /m³）、500 µm では 10⁻³ × 0.1 / (1.602×10⁻¹⁹ × 10²² × 5×10⁻⁴) = <b>0.125 mV</b>、1 µm では <b>62 mV</b>。<span class="key">薄い層ほど大きく出る</span>ので、ホール素子は薄膜で作ります。逆に、厚いウェーハで小さな V<sub>H</sub> を正確に読むには、接点の位置のずれによる電圧（オフセット）を、磁場を反転させた 2 回の測定の差で消すのが定石です（第0部 02 と同じ「引き算で消す」）。</p>
+  </div>
+</section>
+
 <!-- ================= 02 ================= -->
 <section class="stage" id="s2">
   <div class="stage-head"><span class="stage-num">02</span><h2>接合が立つ ― 2枚並べると、勝手に空乏する</h2></div>
@@ -683,6 +744,73 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
     <span class="tag">手を動かす — SemiLab 第2章</span>
     <p>「シリコン」を2回押して、片方の N<sub>a</sub>、もう片方の N<sub>d</sub> を上げる。その瞬間、断面図に空乏層が現れ、バンド図が曲がり、下のバーに V<sub>bi</sub> が出る。上の「左」の電圧を −5 V にすると伸びる。この参考書の図は空乏近似だが、SemiLab は本当に解いている ― 両者の差（数%）を自分の目で確かめられる。</p>
     <div class="qs"><span class="lab">SemiLab</span><a href="SemiLab/index.html?quest=junction">はじめての接合</a><a href="SemiLab/index.html?quest=vbi">ビルトイン電位を合わせる</a><a href="SemiLab/index.html?quest=onesided">片側だけ空乏させる</a><a href="SemiLab/index.html?quest=reverse">逆バイアスで伸ばす</a><a href="SemiLab/index.html?quest=pin">真性層を挟む（pin）</a></div>
+  </div>
+</section>
+
+<!-- ================= ヘテロ接合 ================= -->
+<section class="stage" id="shetero">
+  <div class="stage-head"><span class="stage-num">—</span><h2>ヘテロ接合 ― 違う材料をつなぐと、段差が生まれる</h2></div>
+  <p class="lede">第2章の接合は、同じシリコンの濃度違いをつないだもの（ホモ接合）でした。バンドギャップの違う材料をつなぐと、境目のバンドに<span class="key">濃度では作れない「段差」</span>が生まれます。この段差が電子と光を閉じ込め、レーザー（第9部）、高速トランジスタ（HEMT・HBT）、光通信の APD（第5部 03）を可能にしました。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>段差の大きさ ― 電子親和力の差</h3>
+      <p>材料ごとに、真空から見た伝導帯の底の深さ（<b>電子親和力 χ</b>）が決まっています。2 つの材料をつなぐと、平衡では第2章と同じく E<sub>F</sub> が 1 本にそろい、そのうえで境目に</p>
+      <div class="eq">ΔE<sub>c</sub> ≈ χ₁ − χ₂　　ΔE<sub>v</sub> = ΔE<sub>g</sub> − ΔE<sub>c</sub></div>
+      <p>の段差が残ります（アンダーソンの規則）。実際の段差は界面の原子の並びで変わるので、多くは実測で決めます。GaAs と Al<sub>0.3</sub>Ga<sub>0.7</sub>As なら E<sub>g</sub> の差は 1.80 − 1.42 = 0.37 eV で、そのうち伝導帯側が約 6.5 割（<b>ΔE<sub>c</sub> ≈ 0.24 eV</b>、ΔE<sub>v</sub> ≈ 0.13 eV）。この 2 つは格子定数がほぼ同じなので、欠陥を作らずに積めます（<a href="第1部_製造プロセス.html#mat">第1部 04 の図</a>）。</p>
+    </div>
+    <div class="body-col">
+      <h3>段差の並び方は 3 種類</h3>
+      <p><b>タイプ I</b>（入れ子）: 狭いギャップの材料の伝導帯も価電子帯も、広い材料の内側に収まる。電子も正孔も同じ層に閉じ込められるので、<b>そこで再結合させて光らせる</b>のに向く ― 半導体レーザーの活性層（GaAs/AlGaAs、InGaAsP/InP）。<b>タイプ II</b>（ずれ）: 電子と正孔が別の層に分かれる。赤外の検出に使う InAs/GaSb 超格子などがこれ。<b>タイプ III</b>（割れ目）: 一方の伝導帯が他方の価電子帯より下にある、特殊な組み合わせ。<span class="key">どの並びかで、その接合が「光る」ためのものか「分ける」ためのものかが決まります</span>。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">SPIKE &amp; NOTCH — n-AlGaAs / GaAs の境目にできる電子の溜まり場</span><span class="fig-title">模式図（縦軸は比例していない）</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 300" role="img" aria-label="n型AlGaAsとドナーを入れないGaAsのヘテロ接合のバンド図。境目で伝導帯がΔEcだけ下がり、GaAs側に三角形のくぼみができて、フェルミ準位より下に電子が溜まる（二次元電子ガス）。価電子帯にもΔEvの段差がある。" style="min-width:700px">
+        <text x="200" y="30" font-size="12" fill="var(--ink)" text-anchor="middle" font-weight="700">n-AlGaAs（ドナーを入れる）</text>
+        <text x="540" y="30" font-size="12" fill="var(--ink)" text-anchor="middle" font-weight="700">GaAs（ドナーを入れない）</text>
+        <path d="M360 40 V292" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="4 3"/>
+        <path d="M60 110 H700" stroke="var(--ink)" stroke-width="1.4" stroke-dasharray="7 4"/>
+        <path d="M60 100 H220 C 290 100, 340 80, 360 60" stroke="var(--electron)" stroke-width="2.4" fill="none"/>
+        <path d="M360 124 C 400 100, 480 88, 700 84" stroke="var(--electron)" stroke-width="2.4" fill="none"/>
+        <path d="M360 60 V124" stroke="var(--electron)" stroke-width="2.4"/>
+        <path d="M60 278 H220 C 290 278, 340 258, 360 238" stroke="var(--hole)" stroke-width="2.4" fill="none"/>
+        <path d="M360 204 C 400 180, 480 168, 700 164" stroke="var(--hole)" stroke-width="2.4" fill="none"/>
+        <path d="M360 204 V238" stroke="var(--hole)" stroke-width="2.4"/>
+        <g fill="var(--electron)"><circle cx="368" cy="119" r="3.2"/><circle cx="377" cy="117" r="3.2"/><circle cx="386" cy="115" r="3.2"/><circle cx="395" cy="113.5" r="3.2"/></g>
+        <g font-family="var(--mono)" font-size="11">
+          <text x="70" y="92" fill="var(--electron-2)">E<tspan font-size="8" dy="2">c</tspan></text>
+          <text x="690" y="76" fill="var(--electron-2)" text-anchor="end">E<tspan font-size="8" dy="2">c</tspan></text>
+          <text x="706" y="114" fill="var(--ink)">E<tspan font-size="8" dy="2">F</tspan></text>
+          <text x="70" y="270" fill="var(--hole)">E<tspan font-size="8" dy="2">v</tspan></text>
+          <text x="690" y="156" fill="var(--hole)" text-anchor="end">E<tspan font-size="8" dy="2">v</tspan></text>
+          <text x="370" y="92" fill="var(--electron-2)">ΔE<tspan font-size="8" dy="2">c</tspan></text>
+          <text x="372" y="228" fill="var(--hole)">ΔE<tspan font-size="8" dy="2">v</tspan></text>
+        </g>
+        <text x="420" y="142" font-size="11" fill="var(--electron-2)">← 2DEG（二次元電子ガス）</text>
+        <text x="200" y="186" font-size="10.5" fill="var(--ink-3)" text-anchor="middle">ドナーは AlGaAs 側に置き去り</text>
+        <text x="540" y="226" font-size="10.5" fill="var(--ink-3)" text-anchor="middle">電子は不純物のない GaAs 側を走る</text>
+      </svg>
+    </div>
+    <figcaption>AlGaAs のドナーが出した電子は、段差を下って GaAs 側の三角形のくぼみ（E<sub>F</sub> より下）に溜まる。厚さ数 nm の板状の電子の層で、<b>二次元電子ガス（2DEG）</b>と呼ぶ（第0部 04 の閉じ込め）。電子は自分を出したドナーから空間的に離れて走るので、イオン化不純物散乱（第1章「くわしく」）をほとんど受けない ― これが<span class="key">変調ドーピング</span>の発想で、低温では移動度が桁違いに上がる。この溜まり場をゲートで開け閉めするのが HEMT です。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>閉じ込め ― レーザーを室温で動かした発明</h3>
+      <p>狭いギャップの薄い層を広いギャップの層で挟む（ダブルヘテロ構造）と、注入した電子と正孔は段差に阻まれて真ん中の層から出られない。しかも広いギャップの層は屈折率が低いので、<b>光も同じ層に閉じ込められる</b>（第7部 06 の導波路と同じ原理）。電子・正孔・光の 3 つが同じ場所に集まるので、少ない電流でレーザー発振が起きる ― 室温で連続動作する半導体レーザーはこの構造で実現しました（アルフョーロフとクレーマー、2000 年ノーベル物理学賞）。今の LD・LED の活性層はさらに薄い量子井戸（第0部 04）です（<a href="第9部_光源とレーザー.html">第9部</a>）。</p>
+    </div>
+    <div class="body-col">
+      <h3>分ける ― HEMT・HBT・APD</h3>
+      <p><b>HEMT</b>（高電子移動度トランジスタ）: 上の 2DEG をチャネルにしたトランジスタ（三村ら、1980 年）。衛星放送の受信機やレーダーの低雑音増幅器に使われてきました。GaN/AlGaN では、結晶の分極だけで<b>ドナーなしに</b> 10¹³ /cm² 級の 2DEG ができ、高耐圧・高周波のパワー素子になります（下のパワーデバイス）。<b>HBT</b>: エミッタに広いギャップの材料を使ったバイポーラ（次の節）。<b>SAM 型 APD</b>: 吸収は狭いギャップの InGaAs、なだれ増倍は広いギャップの InP と、役割ごとに材料を分ける（第5部 03）。<span class="key">ヘテロ接合は「材料で役割を分担させる」ための道具</span>です。</p>
+    </div>
+  </div>
+
+  <div class="caveat">
+    <span class="tag">断定していないこと</span>
+    <p><strong>ΔE<sub>c</sub> と ΔE<sub>v</sub> の配分は実測値の代表値です。</strong>AlGaAs/GaAs の伝導帯側の割合は文献で 6 割〜6.5 割程度の幅があり、アンダーソンの規則（電子親和力の差）は目安にしかなりません。SemiLab はホモ接合（Si だけ）を解くソルバで、ヘテロ接合は扱いません。</p>
   </div>
 </section>
 
@@ -810,6 +938,73 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
   </div>
 </section>
 
+<!-- ================= バイポーラ ================= -->
+<section class="stage" id="sbjt">
+  <div class="stage-head"><span class="stage-num">—</span><h2>バイポーラトランジスタ ― 接合を 2 つ背中合わせに</h2></div>
+  <p class="lede">第3章の「くわしく」で骨格だけ書いたバイポーラトランジスタ（BJT）を、ここで一通り組み立てます。MOSFET が電界で表面の型を切り替える素子なら、BJT は<span class="key">少数キャリアの注入を、もう一つの接合で拾う</span>素子です。アナログ回路・高周波・光検出（フォトトランジスタ）で今も主役を張っています。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>動かし方 ― 順方向で注入し、逆方向で拾う</h3>
+      <p>npn 型では、<b>エミッタ（濃い n）／ベース（薄い p）／コレクタ（n）</b>の 3 層を重ねます。ベース・エミッタ接合を順方向（第3章）にすると、エミッタからベースへ電子が注入される。ベースは拡散長よりずっと薄いので、電子はほとんど再結合せずにベースを横切り、逆バイアスのベース・コレクタ接合の空乏層に着いた瞬間、電界に拾われてコレクタへ流れ去ります。</p>
+      <div class="eq">I<sub>C</sub> = I<sub>S</sub>·e<sup>V<sub>BE</sub>/V<sub>t</sub></sup>　　I<sub>B</sub> = I<sub>C</sub> / <b>β</b>　　g<sub>m</sub> = I<sub>C</sub> / V<sub>t</sub></div>
+      <p>コレクタ電流は<b>ベース・エミッタ電圧の指数</b>で決まり（59.5 mV で 10 倍、第3章と同じ数）、ベースに流れるのはその 1/β だけ。β（電流増幅率）は、ベースへの電子の注入に対して、エミッタへ逆向きに入る正孔とベースでの再結合がどれだけ小さいかで決まります。</p>
+    </div>
+    <div class="body-col">
+      <h3>β の見積もりと、それを削るもの</h3>
+      <div class="eq">β ≈ (D<sub>n</sub>/D<sub>p</sub>) · (<b>N<sub>E</sub></b>/<i>N<sub>B</sub></i>) · (W<sub>E</sub>/W<sub>B</sub>)　（エミッタもベースも薄いとき）</div>
+      <p>第3章「くわしく」の式の L<sub>p</sub> を、エミッタが正孔の拡散長より薄い場合の厚み W<sub>E</sub> に置き換えた形です。N<sub>E</sub> = 10¹⁹、N<sub>B</sub> = 10¹⁷、W<sub>E</sub> = 0.3 µm、W<sub>B</sub> = 0.1 µm、D<sub>n</sub>/D<sub>p</sub> = 5/2 なら <b>β ≈ 750</b>。実物の β はこれより小さく数十〜数百で、主な理由は<b>エミッタのバンドギャップ狭窄</b> ― 濃すぎるエミッタではギャップが縮んで n<sub>i</sub>² が増え、エミッタへ逆流する正孔が増える（第0部 05 の「10¹⁹ を超えると」）。もう一つの効果が<b>アーリー効果</b>: コレクタ電圧でベース側の空乏層が伸び、実効的なベース幅が縮んで I<sub>C</sub> が増える（MOSFET のチャネル長変調 λ に相当、第6部 01）。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">GUMMEL — I<sub>C</sub> と I<sub>B</sub> を対数で並べると、縦の距離が β</span><span class="fig-title">I<sub>S</sub> = 10⁻¹⁶ A・β = 100 の例（計算値）</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 252" role="img" aria-label="ガンメルプロット。横軸はベース・エミッタ電圧、縦軸は電流の対数。コレクタ電流とベース電流の2本の直線がほぼ平行に並び、縦の差が電流増幅率β。低電流ではベース電流が再結合で浮き、高電流ではコレクタ電流が大注入で寝る。" style="min-width:700px">
+        <g stroke="var(--line)" stroke-width="1"><path d="M80 30 V210 H560"/><path d="M80 150 H560 M80 90 H560" stroke-dasharray="2 4"/></g>
+        <polyline fill="none" stroke="var(--electron)" stroke-width="2.2" points="80,164.4 112,154.32 144,144.25 176,134.17 208,124.09 240,114.02 272,103.96 304,93.915 336,83.914 368,74.002 400,64.271 432,54.889 464,46.106 496,38.177 528,31.198 560,25.023"/>
+        <polyline fill="none" stroke="var(--hole)" stroke-width="2.2" points="80,167.58 112,162.42 144,157.12 176,151.55 208,145.5 240,138.69 272,130.94 304,122.3 336,113.01 368,103.33 400,93.438 432,83.449 464,73.412 496,63.352 528,53.282 560,43.206"/>
+        <path d="M352 80 V106" stroke="var(--volt)" stroke-width="1.6"/>
+        <path d="M348 84 L352 78 L356 84 M348 102 L352 108 L356 102" stroke="var(--volt)" stroke-width="1.6" fill="none"/>
+        <g font-family="var(--mono)" font-size="9.5" fill="var(--ink-3)">
+          <text x="74" y="214" text-anchor="end">10⁻¹⁴</text><text x="74" y="154" text-anchor="end">10⁻¹⁰</text><text x="74" y="94" text-anchor="end">10⁻⁶</text><text x="74" y="34" text-anchor="end">10⁻² A</text>
+          <text x="80" y="226" text-anchor="middle">0.3</text><text x="240" y="226" text-anchor="middle">0.5</text><text x="400" y="226" text-anchor="middle">0.7</text><text x="560" y="226" text-anchor="middle">0.9 V</text>
+        </g>
+        <text x="96" y="196" font-size="10" fill="var(--hole)">低電流: 再結合で I<tspan font-size="7" dy="2">B</tspan><tspan dy="-2"> が浮く（傾き 120 mV/桁）</tspan></text>
+        <text x="548" y="186" font-size="10" fill="var(--ink-2)" text-anchor="end">真ん中: どちらも 60 mV/桁で平行</text>
+        <g font-size="10">
+          <path d="M586 60 h20" stroke="var(--electron)" stroke-width="2.4"/><text x="612" y="64" fill="var(--electron-2)">I<tspan font-size="7" dy="2">C</tspan><tspan dy="-2">（コレクタ）</tspan></text>
+          <path d="M586 84 h20" stroke="var(--hole)" stroke-width="2.4"/><text x="612" y="88" fill="var(--hole)">I<tspan font-size="7" dy="2">B</tspan><tspan dy="-2">（ベース）</tspan></text>
+          <path d="M596 102 V122" stroke="var(--volt)" stroke-width="1.6"/><text x="612" y="116" fill="var(--volt)">縦の距離 ＝ β</text>
+          <text x="586" y="148" fill="var(--ink-3)" font-size="9.5">高電流では大注入で</text>
+          <text x="586" y="162" fill="var(--ink-3)" font-size="9.5">I<tspan font-size="7" dy="2">C</tspan><tspan dy="-2"> が寝て β が下がる</tspan></text>
+        </g>
+        <text x="320" y="246" font-size="9.5" fill="var(--ink-3)" text-anchor="middle">ベース・エミッタ電圧 V<tspan font-size="7" dy="2">BE</tspan></text>
+      </svg>
+    </div>
+    <figcaption>BJT の健康診断は、この 1 枚（ガンメルプロット）で行います。2 本が平行な区間の縦の距離（対数で約 2 桁）が β ≈ 100。低電流では空乏層の再結合電流（第3章の理想係数 n = 2）が I<sub>B</sub> を持ち上げ、高電流では大注入と直列抵抗で I<sub>C</sub> が寝る ― <span class="key">β は電流によって変わり、使える範囲は真ん中の平行な区間</span>です。曲線は理想式に再結合と大注入の項を足して計算した例です。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>HBT ― エミッタのギャップを広げる</h3>
+      <p>BJT を速くするにはベースを薄くしたいが、薄いベースは抵抗が高くなるので濃くしたい。ところが濃くすると N<sub>E</sub>/N<sub>B</sub> が下がって β が落ちる ― ホモ接合の BJT はこの板挟みにありました。<b>エミッタに広いギャップの材料</b>を使うと（前の節のヘテロ接合）、ベースからエミッタへ逆流しようとする正孔の前に ΔE<sub>v</sub> の壁が立ち、逆流が e<sup>−ΔE<sub>g</sub>/kT</sup> 程度まで抑えられる。ギャップの差 0.1 eV で約 50 倍、0.2 eV で約 2,300 倍の余裕が生まれ、<span class="key">β を保ったままベースをエミッタより濃くできる</span>（クレーマー、1957 年の提案）。</p>
+      <p>Si のベースに Ge を混ぜて傾斜をつけた <b>SiGe HBT</b> は、ベースの中に電子を加速する電界も作れるので、車載レーダーなど数十 GHz 帯の回路に使われます。InP 系の HBT は数百 GHz 級の最高速の領域を担っています。</p>
+    </div>
+    <div class="body-col">
+      <h3>MOSFET と比べる ― g<sub>m</sub> と、フォトトランジスタ</h3>
+      <p>BJT の g<sub>m</sub>/I<sub>C</sub> は 1/V<sub>t</sub> = <b>38.7 S/A</b>（室温）で、電流だけで決まります。MOSFET の g<sub>m</sub>/I<sub>D</sub> = 2/V<sub>ov</sub> は定位置の V<sub>ov</sub> = 0.2 V で 10 S/A、弱反転の上限でも 25〜30 S/A（第6部 01） ― <span class="key">同じ電流で、BJT のほうが大きな g<sub>m</sub> を出す</span>。低雑音アンプや精密な基準電圧（第6部 08 のバンドギャップは BJT の V<sub>BE</sub> そのもの）で BJT が好まれる理由です。代わりにベース電流が流れ続けるので、入力に電流を取らない MOSFET のほうが集積と低電力に向きます。</p>
+      <p><b>フォトトランジスタ</b>は、ベース・コレクタ接合をフォトダイオードとして使い、そこで生まれた光電流をベース電流として β 倍に増やして取り出す素子です。安価に大きな出力が得られる一方、接合容量が β 倍に効いて遅くなる（第6部 05 のミラー効果と同じ形）ので、フォトカプラや光電スイッチのような速さを要しない用途が中心です。</p>
+    </div>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（バイポーラ）</span>
+    <p><b>問.</b> I<sub>S</sub> = 10⁻¹⁶ A の npn で I<sub>C</sub> = 1 mA を流す V<sub>BE</sub> は？ そのときの g<sub>m</sub> は？ 同じ 1 mA で V<sub>ov</sub> = 0.2 V の MOSFET の g<sub>m</sub> と比べよ。</p>
+    <p><b>解.</b> V<sub>BE</sub> = V<sub>t</sub>·ln(I<sub>C</sub>/I<sub>S</sub>) = 0.02585 × ln(10¹³) = <b>0.774 V</b>。g<sub>m</sub> = 1 mA / 25.85 mV = <b>38.7 mS</b>。MOSFET は 2 × 1 mA / 0.2 V = <b>10 mS</b> ― BJT は約 3.9 倍。電流を 10 倍にすると V<sub>BE</sub> は 59.5 mV しか上がらない ― <span class="key">BJT の V<sub>BE</sub> がどんな電流でもほぼ 0.6〜0.8 V に収まる</span>のは、指数関数の対数という第0部 01 の算数そのものです。</p>
+  </div>
+</section>
+
 <!-- ================= 04 ================= -->
 <section class="stage" id="s4">
   <div class="stage-head"><span class="stage-num">04</span><h2>光を電気にする ― 生まれた場所で運命が決まる</h2></div>
@@ -908,6 +1103,63 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
     <span class="tag">手を動かす — SemiLab 第4章 / PixelLab 第3章</span>
     <p>「光」を入れて波長を動かすと、下の段に光の生成の分布が出て、「測る」で量子効率の曲線が出る。採点の内訳「空乏層 / 手前 / 奥」がこの章の3つの運命そのもの。青を上げるには手前を薄く、赤を上げるには全体を厚く、両方やれば「広く拾う」が通る。</p>
     <div class="qs"><span class="lab">SemiLab</span><a href="SemiLab/index.html?quest=photo">光が見える</a><a href="SemiLab/index.html?quest=blue">青を拾う</a><a href="SemiLab/index.html?quest=red">赤を拾う</a><a href="SemiLab/index.html?quest=ar">反射を殺す</a><a href="SemiLab/index.html?quest=broad">広く拾う</a><span class="lab">PixelLab</span><a href="PixelLab/index.html?quest=nir">850nm で量子効率 25%</a></div>
+  </div>
+</section>
+
+<!-- ================= 太陽電池 ================= -->
+<section class="stage" id="ssolar">
+  <div class="stage-head"><span class="stage-num">—</span><h2>太陽電池 ― 同じ接合から、仕事を取り出す</h2></div>
+  <p class="lede">第4章のフォトダイオードは、光で生まれた電荷を<b>数える</b>素子でした。同じ接合から電力を<b>取り出す</b>向きに使うのが太陽電池です。第4章「くわしく」の式 J = J<sub>0</sub>(e<sup>V/V<sub>t</sub></sup> − 1) − J<sub>L</sub> を出発点に、効率を決める 3 つの数と、効率の上限がどこから来るのかを見ます。</p>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">J-V — 短絡と開放の間に、最大電力点が 1 つある</span><span class="fig-title">J<sub>L</sub> = 40 mA/cm²・J<sub>0</sub> = 10⁻¹³ A/cm²（計算値）</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 240" role="img" aria-label="太陽電池の電流電圧特性と出力の曲線。電流は短絡電流40mA/cm²からほぼ平らに続き、開放電圧0.69V付近で急に落ちる。出力の曲線は0.61Vで最大となり、そのときの電圧×電流の長方形と、開放電圧×短絡電流の長方形の面積比が曲線因子0.84。" style="min-width:700px">
+        <g stroke="var(--line)" stroke-width="1"><path d="M80 40 V200 H560"/></g>
+        <rect x="80" y="57.78" width="460.4" height="142.22" fill="none" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="2 3"/>
+        <rect x="80" y="64.06" width="406.7" height="135.94" fill="var(--photon-soft)" opacity="0.55" stroke="var(--photon-2)" stroke-width="1" stroke-dasharray="5 3"/>
+        <polyline fill="none" stroke="var(--electron)" stroke-width="2.4" points="80,57.778 200,57.778 300,57.778 340,57.779 373.33,57.787 400,57.819 420,57.909 440,58.197 453.33,58.687 466.67,59.748 480,62.048 486.67,64.065 493.33,67.034 500,71.406 506.67,77.843 513.33,87.319 520,101.27 526.67,121.81 533.33,152.05 540,196.58 540.4,200"/>
+        <polyline fill="none" stroke="var(--photon)" stroke-width="2.2" points="80,200 120,184.64 160,169.28 200,153.92 240,138.56 280,123.2 320,107.84 360,92.483 400,77.156 420,69.561 440,62.168 453.33,57.556 466.67,53.577 480,51.012 486.67,50.743 493.33,51.61 500,54.174 506.67,59.275 513.33,68.163 520,82.71 526.67,105.71 533.33,141.31 540,195.75"/>
+        <circle cx="486.67" cy="64.06" r="4" fill="var(--electron)"/><circle cx="486.67" cy="50.74" r="4" fill="var(--photon)"/>
+        <g font-family="var(--mono)" font-size="9.5" fill="var(--ink-3)">
+          <text x="74" y="204" text-anchor="end">0</text><text x="74" y="132" text-anchor="end">20</text><text x="74" y="61" text-anchor="end">40</text>
+          <text x="80" y="214" text-anchor="middle">0</text><text x="213.3" y="214" text-anchor="middle">0.2</text><text x="346.7" y="214" text-anchor="middle">0.4</text><text x="480" y="214" text-anchor="middle">0.6</text>
+        </g>
+        <text x="90" y="50" font-size="10" fill="var(--electron-2)">J<tspan font-size="7" dy="2">sc</tspan><tspan dy="-2"> = 40 mA/cm²（短絡）</tspan></text>
+        <text x="548" y="228" font-size="10" fill="var(--ink-2)" text-anchor="middle">V<tspan font-size="7" dy="2">oc</tspan><tspan dy="-2"> = 0.69 V</tspan></text>
+        <text x="280" y="170" font-size="9.5" fill="var(--ink-2)">最大電力点 0.61 V・38 mA/cm²</text>
+        <text x="280" y="186" font-size="9.5" fill="var(--ink-2)">＝ 23.3 mW/cm²（効率 23.3%）</text>
+        <text x="300" y="236" font-size="9.5" fill="var(--ink-3)" text-anchor="middle">電圧 V →　（縦軸は電流密度 mA/cm²）</text>
+        <g font-size="10">
+          <path d="M586 60 h20" stroke="var(--electron)" stroke-width="2.4"/><text x="612" y="64" fill="var(--electron-2)">電流 J</text>
+          <path d="M586 84 h20" stroke="var(--photon)" stroke-width="2.4"/><text x="612" y="88" fill="var(--photon-2)">出力 P = V·J</text>
+          <text x="586" y="118" fill="var(--ink-2)">FF ＝ 塗った四角 ÷ 点線の四角</text>
+          <text x="586" y="134" fill="var(--ink-2)">　＝ 0.84</text>
+          <text x="586" y="164" fill="var(--ink-3)" font-size="9.5">出力の曲線は縦軸の上端を</text>
+          <text x="586" y="178" fill="var(--ink-3)" font-size="9.5">25 mW/cm² にとって描いた</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>端子を短絡すれば電流は最大（J<sub>sc</sub>）で電圧はゼロ、開放すれば電圧は最大（V<sub>oc</sub>）で電流はゼロ ― どちらも電力はゼロです。その間に電力 V·J が最大になる点がひとつあり、<span class="key">電圧×電流の長方形が、V<sub>oc</sub>×J<sub>sc</sub> の長方形のどれだけを埋めるか</span>が曲線因子（FF）。実際のシステムでは、この最大電力点を回路が追いかけて動作点を合わせ続けます（MPPT）。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>効率を決める 3 つの数</h3>
+      <div class="eq">η = J<sub>sc</sub> × V<sub>oc</sub> × FF ÷ 入射光の強さ（標準は 100 mW/cm²）</div>
+      <p><b>J<sub>sc</sub></b> は第4章の量子効率そのもの ― 何個の光子を拾えるか（反射防止、厚み、表面再結合）。<b>V<sub>oc</sub> = V<sub>t</sub>·ln(J<sub>L</sub>/J<sub>0</sub>)</b> は第3章の飽和電流で決まり、J<sub>0</sub> を 1/10 にするたび 60 mV 上がる。<b>FF</b> は曲線の「角の立ち方」で、V<sub>oc</sub> が高いほど良くなり（経験式 FF ≈ (v − ln(v + 0.72))/(v + 1)、v = V<sub>oc</sub>/V<sub>t</sub>）、直列抵抗と漏れ（並列抵抗）があると崩れます。標準の試験条件は、晴天の地上の太陽光を模した AM1.5G のスペクトル・100 mW/cm²（1,000 W/m²）・25 ℃ です。</p>
+    </div>
+    <div class="body-col">
+      <h3>効率の上限 ― なぜ 100% にならないのか</h3>
+      <p>1 種類の材料の太陽電池には、原理的な上限があります（ショックレー・クワイサーの限界）。<b>バンドギャップより小さいエネルギーの光子は素通り</b>し（第2部 04 の 1,107 nm）、<b>大きいエネルギーの光子も E<sub>g</sub> ぶんしか電圧に変わらず、余りは熱になる</b>（第0部 04 の「光子 1 個が電子 1 個」）。この 2 つの損失の釣り合いで、最適なギャップは約 1.3〜1.4 eV、そのときの上限は約 33% です。Si（1.12 eV）では、オージェ再結合まで入れた実用的な上限が約 29% と見積もられ、実験室の最高値は 27% 前後に達しています。</p>
+      <p>上限を超える唯一の方法は、<b>ギャップの違う材料を積む</b>こと（多接合）: 上の層が短い波長を、下の層が長い波長を受け持つ。InGaP/GaAs/Ge の 3 接合は人工衛星の電源の標準で、集光した条件では 40% を大きく超えます。ペロブスカイトとシリコンを重ねたタンデムでは、研究段階で 30% を超える報告が続いています。</p>
+    </div>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（太陽電池）</span>
+    <p><b>問.</b> J<sub>L</sub> = 40 mA/cm²、J<sub>0</sub> = 10⁻¹³ A/cm² のセル。V<sub>oc</sub>・FF・効率はいくつか。J<sub>0</sub> を 10⁻¹⁴ にすると V<sub>oc</sub> はどうなるか。</p>
+    <p><b>解.</b> V<sub>oc</sub> = 0.02585 × ln(0.040/10⁻¹³) = <b>0.691 V</b>。数値で最大電力点を探すと 0.61 V・38.2 mA/cm² で <b>23.3 mW/cm²</b>、FF = 23.3/(0.691 × 40) = <b>0.84</b>、効率 <b>23.3%</b>。J<sub>0</sub> を 1/10 にすると V<sub>oc</sub> は <b>0.750 V</b>（+59.5 mV）。<span class="key">電流（光の拾い方）と電圧（飽和電流の小ささ）は別々に磨ける</span> ― 前者は第4章、後者は第3章の話で、太陽電池の開発はこの 2 つの章の総力戦です。表面を不活性化する膜（PERC・TOPCon）や、アモルファス Si の薄層で結晶の表面を包むヘテロ接合型（HJT、前の節）は、どれも J<sub>0</sub> を下げて V<sub>oc</sub> を上げる工夫です。</p>
   </div>
 </section>
 
@@ -1131,6 +1383,39 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
     </div>
   </div>
 
+  <div class="two">
+    <div class="body-col">
+      <h3>理想のオン抵抗を材料ごとに数える</h3>
+      <p>ドリフト層だけで決まる理想のオン抵抗（単位面積）は、1 次元の片側接合から R<sub>on,sp</sub> = 4BV²/(εµE<sub>c</sub>³) と書けます。耐圧 600 V で計算すると:</p>
+      <div class="scroll-x" style="margin-top:10px"><table>
+        <thead><tr><th>材料</th><th>ε<sub>r</sub></th><th>µ<sub>n</sub></th><th>E<sub>c</sub></th><th>R<sub>on,sp</sub>（600 V）</th></tr></thead>
+        <tbody>
+          <tr><td>Si</td><td class="num">11.7</td><td class="num">1,400</td><td class="num">0.3 MV/cm</td><td class="num">37 mΩ·cm²</td></tr>
+          <tr><td>4H-SiC</td><td class="num">9.7</td><td class="num">950</td><td class="num">2.5</td><td class="num">0.11</td></tr>
+          <tr><td>GaN</td><td class="num">9.0</td><td class="num">1,000</td><td class="num">3.3</td><td class="num">0.05</td></tr>
+        </tbody>
+      </table></div>
+      <p style="font-size:12.5px;color:var(--ink-3);margin-top:8px">移動度・臨界電界は代表値で、文献によって幅があります（そのため Si に対する倍率は数百〜千倍の幅で語られます）。これは<strong>ドリフト層だけの理想の下限</strong>で、実物の SiC MOSFET ではチャネルや基板の抵抗が効いて数 mΩ·cm² 程度になります。</p>
+    </div>
+    <div class="body-col">
+      <h3>Si の限界を破る ― スーパージャンクション</h3>
+      <p>Si のままで上の限界線を破る構造が<b>スーパージャンクション（SJ）MOSFET</b>です。ドリフト層に p 型と n 型の細い柱を交互に埋め込み、オフのときは柱どうしが横から空乏し合って、濃いドリフト層でも全体が空乏して電圧を支える。オンのときは濃い n 柱が低抵抗の通り道になる。<span class="key">「濃くすると耐圧が落ちる」という 1 次元の綱引きを、2 次元の電荷の打ち消しで外した</span>構造で、600 V 級の電源用 MOSFET の主流になりました。</p>
+      <h3>損失は 2 種類 ― 導通と切り替え</h3>
+      <p>パワー素子の損失は、オンの間に流れる電流が作る<b>導通損</b>（I²·R<sub>on</sub>、IGBT なら V<sub>CE(sat)</sub>·I）と、オン・オフの切り替えのたびに電圧と電流が重なる瞬間の<b>スイッチング損</b>（1 回あたりのエネルギー × 周波数）の和です。周波数を上げると部品（コイル・コンデンサ）は小さくできるがスイッチング損が増える ― 速く切り替えられる SiC・GaN が電源を小型化できる理由です。</p>
+    </div>
+  </div>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>SiC MOSFET ― 材料の強さと、界面の弱さ</h3>
+      <p>SiC は熱酸化で SiO₂ が作れるので、Si と同じ MOS 構造がそのまま作れます（第1部 07 の熱酸化）。ただし SiC/SiO₂ の界面には準位が多く、<b>チャネルの移動度が Si よりずっと低い</b>ことが長年の課題でした。もう一つの注意点は、MOSFET に作り込まれる pn 接合（ボディダイオード）に電流を流すと、基板に残る基底面転位（第1部 04）を起点に積層欠陥が広がり、特性が劣化すること（バイポーラ劣化）。結晶の欠陥の話が、そのまま信頼性（第8部）の話になる例です。</p>
+    </div>
+    <div class="body-col">
+      <h3>GaN HEMT ― 分極がつくる通り道</h3>
+      <p>GaN/AlGaN の境目には、結晶の分極だけでドナーなしに 10¹³ /cm² 級の 2DEG ができます（前のヘテロ接合の節）。これをチャネルにした横型のトランジスタが GaN HEMT で、移動度が高く臨界電界も高いので、高周波の増幅（基地局）と高速のスイッチング（急速充電器）の両方で使われます。2DEG は何もしなくても存在するので、素の HEMT はゲート 0 V でオン（ノーマリーオン）。電源回路で安全な「0 V でオフ」にするため、ゲートの下に p 型 GaN を入れて 2DEG を押しのける構造や、Si の MOSFET と直列にする構成（カスコード）が使われます。高電圧で切り替えたあと一時的にオン抵抗が上がる<b>電流コラプス</b>が、GaN 固有の注意点です。</p>
+    </div>
+  </div>
+
   <div class="caveat">
     <span class="tag">この節が単純化していること</span>
     <p><strong>R<sub>on</sub>∝BV²/E<sub>c</sub>³ は1次元の理想（単極・均一ドリフト層）です。</strong>実物はスーパージャンクション（p/n柱の埋め込みでこの限界線自体を破る）、トレンチゲート、電界緩和構造などで大きく改善されています。E<sub>c</sub> は濃度依存もある代表値です。</p>
@@ -1206,6 +1491,14 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
         <tr><td>Q<sub>dep</sub>/C<sub>ox</sub> (13.4 nm, 10¹⁷)</td><td class="num">0.645 V</td><td>Q<sub>dep</sub> = √(2 × 1.036×10⁻¹² × 1.602×10⁻¹⁹ × 10¹⁷ × 0.833) = 1.66×10⁻⁷ C/cm²。C<sub>ox</sub> = 2.58×10⁻⁷。</td></tr>
         <tr><td>S 値 (13.4 nm, 10¹⁷)</td><td class="num">82.6 mV/桁</td><td>59.5 × (1 + C<sub>dep</sub>/C<sub>ox</sub>)、C<sub>dep</sub> = ε/W<sub>max</sub> = 1.036×10⁻¹² / 1.04×10⁻⁵ = 1.0×10⁻⁷ → 0.387。</td></tr>
         <tr><td>6 桁に 0.36 V</td><td class="num">6 × 59.5 mV</td><td>下限の S 値でオフ電流を 10⁶ 分の 1 にするのに要るゲート電圧。実物は S ≈ 70 で 0.42 V。</td></tr>
+        <tr class="grp"><td colspan="3">章の間の節（ホール効果・ヘテロ接合・バイポーラ・太陽電池・パワー）</td></tr>
+        <tr><td>V<sub>H</sub>（10¹⁶, 1 mA, 0.1 T）</td><td class="num">0.125 mV / 62 mV</td><td>IB/(qnt) を SI で。t = 500 µm と 1 µm。n = 10²² /m³。</td></tr>
+        <tr><td>Al<sub>0.3</sub>Ga<sub>0.7</sub>As の段差</td><td class="num">ΔE<sub>c</sub> ≈ 0.24 eV</td><td>E<sub>g</sub> = 1.424 + 1.247x = 1.798 eV（x &lt; 0.45 の直接遷移域の近似式）、ΔE<sub>g</sub> = 0.374 eV の約 65% を伝導帯側に配分。</td></tr>
+        <tr><td>β の見積もり</td><td class="num">750</td><td>(D<sub>n</sub>/D<sub>p</sub>)(N<sub>E</sub>/N<sub>B</sub>)(W<sub>E</sub>/W<sub>B</sub>) = (5/2)(10¹⁹/10¹⁷)(0.3/0.1)。バンドギャップ狭窄を入れない理想値。</td></tr>
+        <tr><td>HBT の余裕</td><td class="num">×48 / ×2,290</td><td>e<sup>ΔE<sub>g</sub>/kT</sup>、ΔE<sub>g</sub> = 0.1 eV と 0.2 eV。</td></tr>
+        <tr><td>g<sub>m</sub>（BJT, 1 mA）</td><td class="num">38.7 mS</td><td>I<sub>C</sub>/V<sub>t</sub>。V<sub>BE</sub> = V<sub>t</sub> ln(10⁻³/10⁻¹⁶) = 0.774 V。</td></tr>
+        <tr><td>太陽電池</td><td class="num">V<sub>oc</sub> 0.691 V・FF 0.84・23.3%</td><td>J<sub>L</sub> = 40 mA/cm²、J<sub>0</sub> = 10⁻¹³ A/cm²。最大電力点は数値で探索（0.61 V・38.2 mA/cm²）。</td></tr>
+        <tr><td>R<sub>on,sp</sub>（600 V）</td><td class="num">37 / 0.11 / 0.05 mΩ·cm²</td><td>4BV²/(εµE<sub>c</sub>³)。Si・4H-SiC・GaN を表の ε<sub>r</sub>・µ・E<sub>c</sub> で。</td></tr>
       </tbody>
     </table></div>
   </figure>
@@ -1263,6 +1556,16 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
         <tr><td>The theory of p-n junctions in<br>semiconductors and p-n junction<br>transistors</td><td>W. Shockley<br>Bell Syst. Tech. J. 28, 435 (1949)</td><td>3章。理想ダイオード式と境界条件の原典。</td></tr>
         <tr><td>Statistics of the recombinations<br>of holes and electrons /<br>Electron-hole recombination<br>in germanium</td><td>W. Shockley &amp; W. T. Read, Phys. Rev. 87, 835 (1952)<br>R. N. Hall, Phys. Rev. 87, 387 (1952)</td><td>3章。SRH 生成・再結合の原典。暗電流が n<sub>i</sub> に比例する根拠。</td></tr>
         <tr><td>Semiconductors for high-voltage,<br>vertical channel field-effect<br>transistors</td><td>B. J. Baliga<br>J. Appl. Phys. 53, 1759 (1982)</td><td>パワーデバイス。R<sub>on</sub> ∝ BV²/(εµE<sub>c</sub>³)（バリガ性能指数）の原典。</td></tr>
+        <tr><td>On a New Action of the Magnet<br>on Electric Currents</td><td>E. H. Hall<br>Am. J. Math. 2, 287 (1879)</td><td>ホール効果の原典。</td></tr>
+        <tr><td>A Method of Measuring Specific<br>Resistivity and Hall Effect of Discs<br>of Arbitrary Shape</td><td>L. J. van der Pauw<br>Philips Res. Rep. 13, 1 (1958)</td><td>ホール効果。任意形状の試料の抵抗率とホール係数の測り方。</td></tr>
+        <tr><td>Experiments on Ge-GaAs<br>Heterojunctions</td><td>R. L. Anderson<br>Solid-State Electron. 5, 341 (1962)</td><td>ヘテロ接合。電子親和力の差で段差を見積もる規則。</td></tr>
+        <tr><td>Electron Mobilities in Modulation-<br>Doped Semiconductor Heterojunction<br>Superlattices</td><td>R. Dingle, H. L. Störmer, A. C. Gossard, W. Wiegmann<br>Appl. Phys. Lett. 33, 665 (1978)</td><td>ヘテロ接合。変調ドーピングの原典。</td></tr>
+        <tr><td>A New Field-Effect Transistor with<br>Selectively Doped GaAs/n-AlₓGa₁₋ₓAs<br>Heterojunctions</td><td>T. Mimura, S. Hiyamizu, T. Fujii, K. Nanbu<br>Jpn. J. Appl. Phys. 19, L225 (1980)</td><td>ヘテロ接合。HEMT の原典。</td></tr>
+        <tr><td>Two-Dimensional Electron Gases<br>Induced by Spontaneous and<br>Piezoelectric Polarization</td><td>O. Ambacher ほか<br>J. Appl. Phys. 85, 3222 (1999)</td><td>パワーデバイス。GaN/AlGaN の分極による 2DEG。</td></tr>
+        <tr><td>Theory of a Wide-Gap Emitter<br>for Transistors</td><td>H. Kroemer<br>Proc. IRE 45, 1535 (1957)</td><td>バイポーラ。HBT の提案。</td></tr>
+        <tr><td>Effects of Space-Charge Layer<br>Widening in Junction Transistors</td><td>J. M. Early<br>Proc. IRE 40, 1401 (1952)</td><td>バイポーラ。アーリー効果。</td></tr>
+        <tr><td>Detailed Balance Limit of Efficiency<br>of p-n Junction Solar Cells</td><td>W. Shockley &amp; H. J. Queisser<br>J. Appl. Phys. 32, 510 (1961)</td><td>太陽電池。単接合の効率の上限。</td></tr>
+        <tr><td>Reassessment of the Limiting<br>Efficiency for Crystalline Silicon<br>Solar Cells</td><td>A. Richter, M. Hermle, S. W. Glunz<br>IEEE J. Photovolt. 3, 1184 (2013)</td><td>太陽電池。オージェ再結合を含む Si の上限（約 29%）。</td></tr>
       </tbody>
     </table></div>
   </figure>

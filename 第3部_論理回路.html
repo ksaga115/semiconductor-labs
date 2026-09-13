@@ -238,6 +238,7 @@ table.tt td.x{color:var(--ink-3)}
     <li class="dom">順序</li>
     <li><a href="#s4"><span class="n">04</span><span>記憶する</span></a></li>
     <li><a href="#s5"><span class="n">05</span><span>組み上げる</span></a></li>
+    <li><a href="#scpu"><span class="n">—</span><span>CPU とメモリ階層</span></a></li>
     <li><a href="#smem"><span class="n">—</span><span>メモリの物理</span></a></li>
     <li class="dom">付録</li>
     <li><a href="#scheck"><span class="n">—</span><span>理解の確認</span></a></li>
@@ -886,6 +887,100 @@ table.tt td.x{color:var(--ink-3)}
   </div>
 </section>
 
+<!-- ================= CPU とメモリ階層 ================= -->
+<section class="stage" id="scpu">
+  <div class="stage-head"><span class="stage-num">—</span><h2>CPU の一周とメモリ階層 ― 部品が計算機になるまで</h2></div>
+  <p class="lede">第5章で「CPU に足りないのはメモリと制御だけ」と書きました。ここではその 2 つを足した計算機の骨格 ― 命令とは何か、なぜ流れ作業（パイプライン）にするのか、なぜメモリが何段にも分かれているのか ― を、この部の部品の言葉のまま最後まで通します。最後に、回路を後から書き換えられる FPGA に触れます。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>命令は、ただのビット列</h3>
+      <p>CPU が読む「命令」は、メモリに置かれた 0 と 1 の並び（たとえば 32 ビット）です。その並びのどのビットが何を意味するかの約束が<b>命令セット（ISA）</b>で、x86・Arm・RISC-V などがあります。RISC-V の足し算命令なら、32 ビットの中に「種類（オペコード）」「書き込み先のレジスタ番号」「読み出す 2 つのレジスタ番号」の欄が決まった位置に並んでいる。<span class="key">その欄を開いて制御線に変えるのが第2章のデコーダ</span>、欄が指すレジスタを選ぶのが第2章のセレクタ、足すのが第5章の ALU です。</p>
+      <p>次の命令の番地を持つのがプログラムカウンタ（第5章のカウンタ）。命令 1 個が 4 バイトの ISA なら「+4」、分岐命令なら比較器（第2章）の結果でセレクタが「+4 か、飛び先か」を選ぶ ― if 文もループも、この選択にすぎません。第5章「くわしく」の一巡を、実在の命令セットの言葉で言い直すとこうなります。</p>
+    </div>
+    <div class="body-col">
+      <h3>パイプライン ― 1 拍の予算を切り分ける</h3>
+      <p>命令 1 個の処理は、<b>取り出す（IF）・解読する（ID）・計算する（EX）・メモリを読み書きする（MEM）・書き戻す（WB）</b>の 5 段に分けられます。全部を 1 拍でやると、1 拍の長さはこの 5 段の合計になる（第4章 1 拍の予算）。段の間にフリップフロップを挟むと、1 拍は一番遅い段 1 つぶんで済み、<span class="key">5 つの命令が別々の段に同時にいる流れ作業</span>になる ― 1 個の命令にかかる時間は縮まないが、1 拍に 1 命令ずつ仕上がる。</p>
+      <p>流れ作業には詰まりがあります。前の命令の答えを次の命令が使う（データハザード ― 計算結果を段を飛ばして回す「フォワーディング」で解く）、分岐の行き先が決まるまで次に何を取り出すか分からない（制御ハザード ― 行き先を予測して先に進め、外れたら捨てる「分岐予測」で解く）。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">PIPELINE — 5 段の流れ作業（理想の場合）</span><span class="fig-title">縦 ＝ 命令、横 ＝ 拍</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 230" role="img" aria-label="5段パイプラインの時間図。命令1から5が、1拍ずつずれてIF、ID、EX、MEM、WBの5段を進む。5拍目以降は毎拍1つの命令が完了する。" style="min-width:700px">
+        <g font-family="var(--mono)" font-size="10" fill="var(--ink-3)" text-anchor="middle">
+          <text x="180" y="30">1</text><text x="240" y="30">2</text><text x="300" y="30">3</text><text x="360" y="30">4</text><text x="420" y="30">5</text><text x="480" y="30">6</text><text x="540" y="30">7</text><text x="600" y="30">8</text><text x="660" y="30">9</text>
+        </g>
+        <text x="720" y="30" font-size="10" fill="var(--ink-3)" text-anchor="end">拍 →</text>
+        <g font-size="10.5" fill="var(--ink-2)">
+          <text x="20" y="58">命令 1</text><text x="20" y="92">命令 2</text><text x="20" y="126">命令 3</text><text x="20" y="160">命令 4</text><text x="20" y="194">命令 5</text>
+        </g>
+        <g stroke="var(--line)" fill="var(--surface)">
+          <rect x="152" y="40" width="56" height="26" fill="var(--electron-soft)"/><rect x="212" y="40" width="56" height="26" fill="var(--volt-soft)"/><rect x="272" y="40" width="56" height="26" fill="var(--one-soft)"/><rect x="332" y="40" width="56" height="26" fill="var(--photon-soft)"/><rect x="392" y="40" width="56" height="26" fill="var(--unk-soft)"/>
+          <rect x="212" y="74" width="56" height="26" fill="var(--electron-soft)"/><rect x="272" y="74" width="56" height="26" fill="var(--volt-soft)"/><rect x="332" y="74" width="56" height="26" fill="var(--one-soft)"/><rect x="392" y="74" width="56" height="26" fill="var(--photon-soft)"/><rect x="452" y="74" width="56" height="26" fill="var(--unk-soft)"/>
+          <rect x="272" y="108" width="56" height="26" fill="var(--electron-soft)"/><rect x="332" y="108" width="56" height="26" fill="var(--volt-soft)"/><rect x="392" y="108" width="56" height="26" fill="var(--one-soft)"/><rect x="452" y="108" width="56" height="26" fill="var(--photon-soft)"/><rect x="512" y="108" width="56" height="26" fill="var(--unk-soft)"/>
+          <rect x="332" y="142" width="56" height="26" fill="var(--electron-soft)"/><rect x="392" y="142" width="56" height="26" fill="var(--volt-soft)"/><rect x="452" y="142" width="56" height="26" fill="var(--one-soft)"/><rect x="512" y="142" width="56" height="26" fill="var(--photon-soft)"/><rect x="572" y="142" width="56" height="26" fill="var(--unk-soft)"/>
+          <rect x="392" y="176" width="56" height="26" fill="var(--electron-soft)"/><rect x="452" y="176" width="56" height="26" fill="var(--volt-soft)"/><rect x="512" y="176" width="56" height="26" fill="var(--one-soft)"/><rect x="572" y="176" width="56" height="26" fill="var(--photon-soft)"/><rect x="632" y="176" width="56" height="26" fill="var(--unk-soft)"/>
+        </g>
+        <g font-family="var(--mono)" font-size="10" fill="var(--ink)" text-anchor="middle">
+          <text x="180" y="57">IF</text><text x="240" y="57">ID</text><text x="300" y="57">EX</text><text x="360" y="57">MEM</text><text x="420" y="57">WB</text>
+          <text x="240" y="91">IF</text><text x="300" y="91">ID</text><text x="360" y="91">EX</text><text x="420" y="91">MEM</text><text x="480" y="91">WB</text>
+          <text x="300" y="125">IF</text><text x="360" y="125">ID</text><text x="420" y="125">EX</text><text x="480" y="125">MEM</text><text x="540" y="125">WB</text>
+          <text x="360" y="159">IF</text><text x="420" y="159">ID</text><text x="480" y="159">EX</text><text x="540" y="159">MEM</text><text x="600" y="159">WB</text>
+          <text x="420" y="193">IF</text><text x="480" y="193">ID</text><text x="540" y="193">EX</text><text x="600" y="193">MEM</text><text x="660" y="193">WB</text>
+        </g>
+        <text x="420" y="222" font-size="10" fill="var(--warn)" text-anchor="middle">5 拍目からは、毎拍 1 つの命令が仕上がる（同じ拍に 5 つの段が同時に働く）</text>
+      </svg>
+    </div>
+    <figcaption>縦に見ると、5 拍目には 5 つの命令がそれぞれ別の段にいる。段の間のフリップフロップが「1 拍の予算」を段ごとに切り分けているので、クロックを上げられる。実際の CPU は段数をもっと増やし（深いパイプライン）、1 拍に複数の命令を並べて流す（スーパースカラ）ことで、さらに多くの命令を仕上げます。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>メモリ階層 ― 速い・小さい・高い から、遅い・大きい・安い まで</h3>
+      <p>理想のメモリは「大きくて速い」ものですが、そんな部品はありません。SRAM（第5章「くわしく」の 6 石）は速いが 1 ビットが大きく、DRAM は小さいが遅く、フラッシュ（次の節）はさらに大きく遅い。そこで<b>速くて小さいものを CPU の近くに、大きくて遅いものを遠くに</b>何段も並べます。</p>
+      <div class="scroll-x" style="margin-top:12px"><table>
+        <thead><tr><th>段</th><th>作り</th><th>容量（桁）</th><th>待ち時間（桁）</th></tr></thead>
+        <tbody>
+          <tr><td>レジスタ</td><td>フリップフロップ</td><td class="num">数百 B</td><td class="num">1 拍（〜0.3 ns）</td></tr>
+          <tr><td>L1 キャッシュ</td><td>SRAM</td><td class="num">数十 KB</td><td class="num">〜1 ns</td></tr>
+          <tr><td>L2 キャッシュ</td><td>SRAM</td><td class="num">〜1 MB</td><td class="num">数 ns</td></tr>
+          <tr><td>L3 キャッシュ</td><td>SRAM</td><td class="num">数十 MB</td><td class="num">〜10 ns 級</td></tr>
+          <tr><td>主記憶</td><td>DRAM</td><td class="num">数 GB〜数百 GB</td><td class="num">〜100 ns 級</td></tr>
+          <tr><td>ストレージ</td><td>NAND フラッシュ（SSD）</td><td class="num">TB</td><td class="num">数十〜数百 µs</td></tr>
+        </tbody>
+      </table></div>
+      <p style="font-size:12.5px;color:var(--ink-3);margin-top:8px">数字は桁の目安で、世代・製品・測り方で動きます。L1 と DRAM の間だけで約 100 倍、DRAM と SSD の間でさらに約 1,000 倍の差があります。</p>
+    </div>
+    <div class="body-col">
+      <h3>なぜ効くのか ― 局所性</h3>
+      <p>階層が役に立つのは、プログラムの読み書きに<b>局所性</b>があるからです。一度使ったデータはすぐまた使われやすく（時間的局所性）、使ったデータの隣もすぐ使われやすい（空間的局所性）。だから、よく使うものを近くの小さな段に置いておけば、ほとんどの読み出しは速い段で済む。平均の待ち時間は次の式で見積もれます:</p>
+      <div class="eq">平均アクセス時間 = ヒット時間 + ミス率 × ミスしたときの追加時間</div>
+      <p>L1 のヒット 1 ns、ミス率 5%、ミスしたら DRAM で 100 ns なら 1 + 0.05 × 100 = <b>6 ns</b>。ミス率が 1% に下がれば 2 ns。<span class="key">キャッシュの設計はミス率の 1% を争う</span>勝負で、プログラムの書き方（データを並べる順序）でも速さが何倍も変わります。</p>
+      <h3>データを運ぶほうが、計算より高くつく</h3>
+      <p>45 nm 世代の見積もり（Horowitz 2014）では、32 ビットの整数の足し算 1 回が約 0.1 pJ、小さな SRAM から 32 ビット読むのが約 5 pJ、<b>DRAM から 32 ビット読むのが約 640 pJ</b>。計算そのものより、データを遠くから運ぶエネルギーのほうが桁違いに大きい。HBM をプロセッサの隣に積む先端パッケージ（第1部 12）や、メモリの中で計算する研究は、この会計から来ています。</p>
+    </div>
+  </div>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>FPGA ― 回路を後から書き換える</h3>
+      <p>FPGA は、中身を工場で決めずに<b>使う人があとから回路を書き込める</b>チップです。心臓部は <b>LUT（ルックアップテーブル）</b>: 4〜6 入力の真理値表を小さな SRAM に覚えておき、入力をアドレスにして出力を読み出す部品です。第2章で「どんな真理値表も回路にできる」と言いましたが、LUT は<span class="key">真理値表をそのまま記憶しておく</span>ことで、配線を変えずにどんな論理でも実現します。LUT とフリップフロップの組を何十万個も並べ、その間の配線もスイッチで書き換えられるようにしたのが FPGA です。</p>
+    </div>
+    <div class="body-col">
+      <h3>CPU・GPU・FPGA・ASIC ― 同じ部品の 4 つの使い方</h3>
+      <p><b>CPU</b> は命令を 1 つずつ（高速に）こなす汎用の計算機。<b>GPU</b> は同じ計算を大量のデータに同時に当てる計算機を何千個も並べたもの。<b>FPGA</b> は回路そのものを書き換えられる。<b>ASIC</b>（専用チップ）は 1 つの仕事のために回路を固定して最適化したもの。柔軟さの順（CPU → FPGA → ASIC）と、同じ仕事あたりの速さと電力効率の順は逆向きで、ASIC は最も効率がよい代わりに、マスク（第1部 05）からやり直さないと変えられない。試作や少量の装置、仕様が変わり続ける計測機器の信号処理で FPGA が選ばれるのは、この中間の位置のためです。</p>
+    </div>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（CPU とメモリ階層）</span>
+    <p><b>問.</b> L1 だけのとき: ヒット 1 ns、ミス率 5%、ミスすると DRAM で 100 ns。間に L2（ヒット 4 ns、L1 ミスのうち L2 でも外れる割合 20%）を入れると、平均アクセス時間はどうなるか。</p>
+    <p><b>解.</b> L1 だけ: 1 + 0.05 × 100 = <b>6 ns</b>。L2 あり: L1 のミス（5%）は L2 で 4 ns、そのうち 20% は DRAM で 100 ns なので 1 + 0.05 × (4 + 0.2 × 100) = 1 + 0.05 × 24 = <b>2.2 ns</b>。<span class="key">1 段足すだけで 2.7 倍速くなる</span> ― CPU のチップ面積の大半がキャッシュの SRAM で占められている理由です。</p>
+  </div>
+</section>
+
 <!-- ================= メモリの物理 ================= -->
 <section class="stage" id="smem">
   <div class="stage-head"><span class="stage-num">—</span><h2>メモリの物理 — 輪で覚える、電荷で覚える、閉じ込めて覚える</h2></div>
@@ -1082,6 +1177,10 @@ table.tt td.x{color:var(--ink-3)}
         <tr><td>Digital Integrated Circuits</td><td>Jan M. Rabaey ほか<br>Prentice Hall</td><td>1章の物理層。CMOS インバータの伝達特性・雑音余裕・遅延・消費電力を、この部より本気で導出している。第2部第5章との橋。</td></tr>
         <tr><td>CODE</td><td>Charles Petzold<br>Microsoft Press</td><td>リレーから CPU まで、数式なしで積み上げる読み物。この部の「なぜ」を別の語り口で。</td></tr>
         <tr><td>Introduction to<br>the Theory of Computation</td><td>Michael Sipser<br>Cengage</td><td>第1章の「万能性」と「単調性」の先。何が計算できて何ができないか。</td></tr>
+        <tr><td>Computer Architecture:<br>A Quantitative Approach</td><td>J. L. Hennessy &amp; D. A. Patterson<br>Morgan Kaufmann, 6th ed. (2017)</td><td>「CPU とメモリ階層」。パイプライン・ハザード・キャッシュと平均アクセス時間の標準的な教科書。</td></tr>
+        <tr><td>Computer Organization and Design<br>RISC-V Edition</td><td>D. A. Patterson &amp; J. L. Hennessy<br>Morgan Kaufmann, 2nd ed. (2020)</td><td>「CPU とメモリ階層」。命令セットから 5 段パイプラインまでを RISC-V で組み立てる入門。</td></tr>
+        <tr><td>Computing's Energy Problem<br>(and what we can do about it)</td><td>M. Horowitz<br>ISSCC Dig. Tech. Papers, pp. 10–14 (2014)</td><td>「CPU とメモリ階層」。演算とメモリアクセス 1 回あたりのエネルギーの見積もり（45 nm）。</td></tr>
+        <tr><td>FPGA Architecture:<br>Survey and Challenges</td><td>I. Kuon, R. Tessier, J. Rose<br>Found. Trends Electron. Des. Autom. 2, 135 (2008)</td><td>「CPU とメモリ階層」。LUT とプログラマブル配線の構造。</td></tr>
         <tr><td>A floating gate and its<br>application to memory devices</td><td>D. Kahng &amp; S. M. Sze<br>Bell Syst. Tech. J. 46, 1288 (1967)</td><td>「メモリの物理」。絶縁体に電荷を閉じ込めて覚える、というアイデアの初出です。</td></tr>
         <tr><td>New ultra high density EPROM<br>and flash EEPROM with<br>NAND structure cell</td><td>F. Masuoka（舛岡富士雄）ほか<br>IEDM Tech. Dig., pp. 552–555 (1987)</td><td>「メモリの物理」。セルを直列に繋いで面積を割る NAND アレイの提案。ストレージの現在につながる分岐点です。</td></tr>
         <tr><td>A Symbolic Analysis of Relay<br>and Switching Circuits</td><td>C. E. Shannon<br>Trans. AIEE 57, 713 (1938)</td><td>1章。スイッチの直列・並列がブール代数の AND・OR になる、という対応の原典。</td></tr>

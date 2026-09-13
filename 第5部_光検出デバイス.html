@@ -536,7 +536,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
         </tbody>
       </table>
     </div>
-    <figcaption>下に行くほど「暗い・速い・1個ずつ」に強く、上に行くほど「明るい・素直・安い」。<span class="key">選ぶ軸は2つ ― 信号の床（回路ノイズ）より先に信号を増やせるか、そして幾つ来たか数える必要があるか</span>。数値はいずれも桁の代表値です。SPAD 単体の物理は<a href="第4部_イメージセンサ.html#sspad">第4部「降伏の先 ― SPAD」</a>が本籍地で、この部では家族の一員として扱います。</figcaption>
+    <figcaption>下に行くほど「暗い・速い・1個ずつ」に強く、上に行くほど「明るい・素直・安い」。<span class="key">選ぶ軸は2つ ― 信号の床（回路ノイズ）より先に信号を増やせるか、そして幾つ来たか数える必要があるか</span>。数値はいずれも桁の代表値です。SPAD 単体の物理は<a href="第4部_イメージセンサ.html#sspad">第4部「降伏の先 ― SPAD」</a>が本籍地で、この部では家族の一員として扱います。表の外にもう一つ、極低温で使う超伝導の家系（SNSPD）があり、06 で扱います。</figcaption>
   </figure>
 
   <figure class="full">
@@ -1309,6 +1309,51 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     </div>
   </div>
 
+  <h3 style="margin-top:40px">SNSPD ― 超伝導で数える、もうひとつの家系</h3>
+  <p class="body-col" style="margin-top:8px">01 の表の 5 家系は、どれも「光子で電子を作り、増やす」ものでした。まったく別の原理で光子を 1 個ずつ数えるのが<b>超伝導ナノワイヤ単一光子検出器（SNSPD）</b>です。極低温が要る代わりに、赤外（1550 nm 帯）での検出効率・暗計数・時間分解能のすべてで、半導体の検出器を大きく上回ります。</p>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">SNSPD — 超伝導の細線が、光子 1 個で一瞬だけ抵抗を持つ</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 200" role="img" aria-label="SNSPDの動作の3段階。1: 臨界電流より少し小さい電流を流して超伝導状態で待つ。2: 光子が当たると幅100nm程度の細線の一部が常伝導になり（ホットスポット）、電流が外の負荷へ逃げて電圧パルスが出る。3: 熱が逃げて超伝導に戻り、電流が戻る。" style="min-width:700px;width:100%;display:block">
+        <g fill="var(--surface-2)" stroke="var(--line)">
+          <rect x="20" y="40" width="220" height="110" rx="6"/><rect x="270" y="40" width="220" height="110" rx="6"/><rect x="520" y="40" width="220" height="110" rx="6"/>
+        </g>
+        <g font-size="11" font-weight="700" fill="var(--ink)" text-anchor="middle">
+          <text x="130" y="30">① 超伝導で待つ</text><text x="380" y="30">② 光子が当たる</text><text x="630" y="30">③ 冷えて戻る</text>
+        </g>
+        <path d="M40 95 H220" stroke="var(--electron)" stroke-width="6"/>
+        <path d="M290 95 H370 M390 95 H470" stroke="var(--electron)" stroke-width="6"/>
+        <rect x="370" y="89" width="20" height="12" fill="var(--warn)"/>
+        <path d="M540 95 H720" stroke="var(--electron)" stroke-width="6"/>
+        <path d="M380 58 V84" stroke="var(--photon)" stroke-width="2" class="flow"/>
+        <path d="M375 78 L380 86 L385 78 Z" fill="var(--photon)"/>
+        <g font-size="10" fill="var(--ink-2)" text-anchor="middle">
+          <text x="130" y="124">電流を臨界電流の少し手前で流す</text>
+          <text x="130" y="140">抵抗ゼロ ― 電圧は出ない</text>
+          <text x="380" y="124">幅 100 nm の線の一部が常伝導に</text>
+          <text x="380" y="140">電流が負荷へ逃げて電圧パルス</text>
+          <text x="630" y="124">熱が逃げて超伝導に戻る</text>
+          <text x="630" y="140">回復は L/R で数〜数十 ns</text>
+        </g>
+        <text x="306" y="70" font-size="10" fill="var(--photon-2)">光子</text>
+        <text x="380" y="186" font-size="10" fill="var(--ink-3)" text-anchor="middle">実物は、この細線を受光面いっぱいに蛇行させて敷き詰める（0.8〜3 K 程度に冷やして使う）</text>
+      </svg>
+    </div>
+    <figcaption>超伝導の細線は、流せる電流に上限（臨界電流）があります。その少し手前で待っていると、光子 1 個のエネルギーでも細線の一部が一瞬だけ超伝導でなくなり（ホットスポット）、抵抗が生まれて電圧のパルスが出る。<span class="key">増倍の過程が無いので、ばらつきの少ない一発勝負の「来た・来ない」</span> ― SPAD と同じ 1 bit の検出器ですが、なだれの揺らぎが無いぶん時刻が正確に決まります。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>何が桁違いなのか</h3>
+      <p>1550 nm 帯の光子に対して、光を閉じ込める共振器構造と組み合わせた WSi の SNSPD で<b>検出効率 93%</b>が報告されています（Marsili ほか 2013）。同じ波長の InGaAs の SPAD（第4部・第5部 05）は検出効率が数十%で、暗計数とアフターパルスに悩まされるのと対照的です。時間分解能（ジッタ）も、専用の構造では<b>数 ps</b>まで下がり（Korzh ほか 2020）、06 の TCSPC の IRF を検出器の側から削れます。暗計数は、偏りの電流を下げれば 1 秒に 1 回を下回る条件も作れます。</p>
+    </div>
+    <div class="body-col">
+      <h3>代金は極低温</h3>
+      <p>超伝導を保つため、NbN・NbTiN・WSi などの細線を <b>0.8〜3 K</b> 程度に冷やす必要があり、冷凍機込みの装置になります（第8部 05 の TEC では到底届かない温度で、機械式の冷凍機を使う）。受光面は小さく（光ファイバのコアに合わせた数十 µm 角が典型）、1 画素か少ない画素数が中心です。だから用途は、<span class="key">1 光子の信号が本当に欲しい現場</span> ― 量子暗号通信（QKD）や量子光学の実験、深宇宙との光通信、単一光子を使う分光や LiDAR の研究 ― に集中しています。01 の選定の質問でいえば「何個来たか・いつ来たかを、赤外で、最高の精度で」という列です。</p>
+    </div>
+  </div>
+
   <div class="ex">
     <span class="tag">例題 ― 手で一度解く（06 時間を測る）</span>
     <p><b>問.</b> 繰り返し 80 MHz のレーザーで TCSPC をする。測れる寿命の上限（周期の 1/5）は？ 検出が 1.1×10⁵ cps のときのパイルアップ確率は？ 定石の 2% まで上げると何 cps で、10⁶ 個の光子を集めるのに何秒かかるか。</p>
@@ -1581,6 +1626,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>FPD（直接 / 間接）</td><td>X線を面で受けるパネル。間接は CsI(Tl)柱状結晶＋a-Si PD＋TFT、直接は a-Se に高電界をかけて電荷を縦に集める（マンモ向き）。土台は液晶のTFT技術</td><td class="num">〜43cm角</td></tr>
           <tr><td>熱型検出器</td><td>光をまず熱に変えて読む（サーモパイル＝起電力・ボロメータ＝抵抗・焦電＝分極変化）。波長を選ばず冷却不要、そのかわり遅い。非冷却サーモグラフィの心臓</td><td class="num">8〜14&micro;m 非冷却</td></tr>
           <tr><td>TCSPC / FLIM</td><td>繰り返し励起で1周期高々1光子の到着時刻をヒストグラムに積み、ns級の蛍光寿命を出す技法と、その画像化。2個来ると早い側へ歪む（パイルアップ）</td><td class="num">検出率 1〜数%に絞る</td></tr>
+          <tr><td>SNSPD</td><td>超伝導ナノワイヤ単一光子検出器。臨界電流の手前で待つ細線が、光子 1 個で一瞬だけ常伝導になって電圧パルスを出す。極低温が要るが、赤外の検出効率・暗計数・ジッタが桁違い</td><td class="num">0.8〜3 K・効率〜90%</td></tr>
           <tr><td>IRF</td><td>装置応答関数 ― 励起パルス幅⊕TTS⊕回路ジッタの二乗和的合成。再畳み込みフィットで IRF の 1/5〜1/10 の寿命まで追える</td><td class="num">主犯はたいてい TTS</td></tr>
           <tr><td>TIA</td><td>トランスインピーダンスアンプ。帰還抵抗の仮想接地で PD の電圧振幅を殺し、光電流を電圧に変える。R<sub>f</sub> 大→利得↑・雑音↓・帯域↓の綱引き</td><td class="num">&radic;(4kT/R<sub>f</sub>)</td></tr>
           <tr><td>TDI</td><td>被写体の移動と同期して電荷を隣段へ転送しながら露光を継ぎ足すラインセンサ。検査・衛星・病理スキャナ</td><td class="num">SNR &radic;N倍</td></tr>
@@ -1617,6 +1663,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
             <td>05。シンチレータの光量・減衰時定数・エネルギー分解能の統計など、この部で使った標準値の多くはこの本が基準です。</td></tr>
           <tr><td>単一光子検出の<br>APDとクエンチ回路</td><td>S. Cova ほか<br>Appl. Opt. 35, 1956 (1996)</td>
             <td>03・06。SPAD の本籍地は<a href="第4部_イメージセンサ.html#sspad">第4部</a>ですが、クエンチ・リチャージの回路とTCSPC の検出器としての性格はこの総説が入口です。</td></tr>
+          <tr><td>SNSPD の原典</td><td>G. N. Gol'tsman ほか<br>Appl. Phys. Lett. 79, 705 (2001)</td>
+            <td>06。超伝導 NbN の細線で単一光子を検出した最初の報告。</td></tr>
+          <tr><td>SNSPD の高効率化</td><td>F. Marsili ほか<br>Nat. Photonics 7, 210 (2013)</td>
+            <td>06。WSi の SNSPD で 1550 nm の検出効率 93%。</td></tr>
+          <tr><td>SNSPD の時間分解能</td><td>B. Korzh ほか<br>Nat. Photonics 14, 250 (2020)</td>
+            <td>06。ジッタ 3 ps を切る SNSPD の実証。</td></tr>
           <tr><td>TCSPC の教科書</td><td>W. Becker<br>Advanced Time-Correlated Single Photon Counting Techniques, Springer (2005)</td>
             <td>06。パイルアップの統計・IRF と再畳み込み・FLIM の実務まで、時間計測を仕事にする人の机の本です。</td></tr>
           <tr><td>フォトニクス全域の<br>体系書</td><td>B. E. A. Saleh &amp; M. C. Teich<br>Fundamentals of Photonics, Wiley</td>
