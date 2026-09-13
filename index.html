@@ -189,12 +189,12 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
     <div>
       <span class="eyebrow">Labs / 半導体 ― 参考書と実践</span>
       <h1>工程から<span class="lit">像</span>まで、<br>読んで、作って、確かめる</h1>
-      <p class="sub">半導体を、足場（第0部）から、製造工程 → 素子の物理 → 論理回路 → イメージセンサ → 光検出デバイス → アナログ回路 → 光学 → 信頼性と品質 → 光源とレーザー（第9部）までの10部と、物性値と索引の付録で通して学ぶための場所。各部は<b>参考書</b>（読んで理解する）と<b>ラボ</b>（自分の手で作って、機械に採点させる）の二層になっていて、参考書の節から対応するラボの課題へその場で飛べる。</p>
+      <p class="sub">半導体を、足場（第0部）から、製造工程 → 素子の物理 → 論理回路 → イメージセンサ → 光検出デバイス → アナログ回路 → 光学 → 信頼性と品質 → 光源とレーザー（第9部）までの10部に、全部をつなぐ総合演習（第10部）と、物性値と索引の付録を加えて通して学ぶための場所。各部は<b>参考書</b>（読んで理解する）と<b>ラボ</b>（自分の手で作って、機械に採点させる）の二層になっていて、参考書の節から対応するラボの課題へその場で飛べる。</p>
       <p class="sub">第1〜第4部は地続き。工程が不純物の分布を作り、不純物が接合を立て、接合が MOSFET とフォトダイオードになり、MOSFET は NAND に、フォトダイオードは画素になる。<b>背骨はイメージセンサ</b> ― 結晶と接合という物理層から、画素・読み出し回路をへて、現像・画像というアプリ層まで、1本の信号がどう登っていくかを全部の部で追いかけられるようにしてある。</p>
     </div>
     <div>
       <dl class="spec">
-        <div><dt>参考書</dt><dd>10<small>部＋付録</small></dd></div>
+        <div><dt>参考書</dt><dd>11<small>部＋付録</small></dd></div>
         <div><dt>ラボ</dt><dd>9<small>本</small></dd></div>
         <div><dt>採点つき課題</dt><dd>128<small>問</small></dd></div>
         <div><dt>依存</dt><dd>0<small>ブラウザのみ</small></dd></div>
@@ -753,6 +753,33 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
     </div>
   </article>
 
+  <!-- 第10部 -->
+  <article class="part" id="p10">
+    <div class="part-h">
+      <div>
+        <span class="pn">第10部</span>
+        <h3>1 台を設計する ― 総合演習</h3>
+        <p class="desc">第0〜9部の道具を 1 台の装置として最後までつなぐ。蛍光顕微鏡の微弱光カメラ（光の予算・sCMOS と EM-CCD の交差点・ADC とデータと冷却）、200 m の LiDAR（逆二乗・背景光で SPAD が埋まる失敗とその直し方・距離の精度・目の安全）、400〜1,000 nm の分光器（格子の本数・スリット・次数の重なり・波長の校正・吸光度の不確かさ）。全部の数字を計算で追う。</p>
+      </div>
+      <div class="pair">
+        <div><span class="kind read">参考書</span><a href="第10部_設計演習.html">1 台を設計する ― カメラ・LiDAR・分光器</a><small>Requirement → Budget → Dominant term → Decision → Check · 10章</small></div>
+        <div><span class="kind lab">ラボ</span><a href="PixelLab/index.html">PixelLab</a><small>専用のラボは無い。予算の各段は各部のラボで確かめられる</small></div>
+      </div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">01-04</span><div class="ct"><a href="第10部_設計演習.html#s1">設計の作法 / 微弱光カメラ</a></div><div class="cd">要求 → 予算 → 支配項 → 決定 → 確認。NA 1.4 で 30.7%、10 ms で 245 e⁻、SNR 13.9。交差点 S + B = 9σ<sub>r</sub>²。16 ビットで 0.46 e⁻/DN、6.7 Gb/s と CXP-12、TEC 4.3 W。</div></div>
+      <div class="do"><span class="lbl">関連の課題</span><a class="q" href="PixelLab/index.html">PixelLab（PTC）</a><a class="q" href="PhotonLab/index.html">PhotonLab（NEP・M）</a></div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">05-07</span><div class="ct"><a href="第10部_設計演習.html#s5">LiDAR</a></div><div class="cd">100 nJ で 4.7×10¹¹ 光子、200 m で 29.6 個。背景 2.2×10⁸ /s で r·τ<sub>d</sub> = 2.2 の失敗 → 10 nm・0.05° で 0.27。1 光子 32 cm、256 個で 2 cm。1 点 1 ms の壁。</div></div>
+      <div class="do"><span class="lbl">関連の課題</span><a class="q" href="PhotonLab/index.html?quest=pile">TCSPC の繰り返しを選ぶ</a><a class="q" href="OptoLab/index.html?quest=inv">逆二乗で照らす</a></div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">08-10</span><div class="ct"><a href="第10部_設計演習.html#s8">分光器 / 振り返り</a></div><div class="cd">400 本/mm・α 15°・f 50 mm で 12.1 mm に 400〜1,000 nm。1 画素 1.25 nm、分解能 2.5 nm。スリットと f 数で約 5%。次数の重なり、Hg・Ar の校正、δA = 1.4×10⁻⁴。</div></div>
+      <div class="do"><span class="lbl">読むだけ</span><span class="none">格子の式は第7部 11、不確かさは第8部 10</span></div>
+    </div>
+  </article>
+
   <!-- 付録 -->
   <article class="part" id="pA">
     <div class="part-h">
@@ -801,6 +828,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
         <li><b>光の入り口:</b> 第7部 → OptoLab<span class="r">12問</span><span class="why">センサに届く光を自分で出す。第4部の 0.52%・190光子/px/s の出どころ</span></li>
         <li><b>光をつくる側:</b> 第9部<span class="r">読む</span><span class="why">照明の LED、dToF の VCSEL、TCSPC のパルス ― センサの相手役の物理</span></li>
         <li><b>出荷まで:</b> 第8部 → QALab<span class="r">12問</span><span class="why">10年もつか・百万個そろうか。FIT・アレニウス・θ・Cpk・管理図・不確かさ ― 保証書の中身</span></li>
+        <li><b>総仕上げ:</b> 第10部<span class="r">演習</span><span class="why">センサを 1 台のカメラとして設計する。LiDAR と分光器も同じ作法で</span></li>
         <li><b>引く:</b> 付録<span class="r">索引</span><span class="why">物性値の表と、全部の部の用語の統一索引</span></li>
       </ol>
     </div>
@@ -821,7 +849,8 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
         <li><b>第9部</b> 参考書 01〜11<span class="r">読む</span><span class="why">光をつくる側。熱・放電・LED・レーザー・パルス・非線形</span></li>
         <li><b>第5部</b> 参考書 01〜08 → PhotonLab<span class="r">12問</span><span class="why">光を数える一族。PMT・APD・MPPC・SNSPD と、共通の物差し R・NEP・D*</span></li>
         <li><b>第4部</b> 参考書 00〜07 → PixelLab 第1〜3章<span class="r">12問</span><span class="why">ここまでの全部が 1 つの製品に集まる。光子→電子→電圧→数値→像と、付録 A〜D の床下</span></li>
-        <li><b>第8部</b> 参考書 01〜12 → QALab<span class="r">12問</span><span class="why">仕上げは信頼性と品質。作った物を 10 年・百万個の側から見直す</span></li>
+        <li><b>第8部</b> 参考書 01〜12 → QALab<span class="r">12問</span><span class="why">信頼性と品質。作った物を 10 年・百万個の側から見直す</span></li>
+        <li><b>第10部</b> 1 台を設計する<span class="r">演習</span><span class="why">総仕上げ。カメラ・LiDAR・分光器を、光子から安全と信頼性まで全部の数字でつなぐ</span></li>
         <li><b>付録</b> 物性値と索引<span class="r">引く</span><span class="why">材料の表と、全部の部の用語の統一索引</span></li>
       </ol>
     </div>

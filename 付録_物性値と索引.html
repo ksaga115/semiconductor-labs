@@ -379,7 +379,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <a class="back" href="index.html">&larr; Labs / 半導体 ― 付録 物性値と索引（引くための巻末）</a><br>
       <span class="eyebrow">Materials &rarr; Formulas &rarr; Index</span>
       <h1>引くための<span class="lit">巻末</span><br>― 物性値と索引</h1>
-      <p class="sub">第0〜9部を読み終えたあと、あるいは読んでいる途中で「あの値は何だったか」「あの式はどの部だったか」「この言葉の意味は」を<strong>引く</strong>ためのページです。6 つの道具を置きました: 主な半導体と絶縁膜の<strong>物性値の表</strong>（01）、部をまたいで使う<strong>式の索引</strong>（02）、全部の部の用語表をまとめて検索できる<strong>統一索引</strong>（03）、部によって意味の変わる<strong>記号表</strong>（04）、データシートと論文を読むための<strong>英日対訳</strong>（05）、そして何がどの順で可能になったかの<strong>年表</strong>（06）。</p>
+      <p class="sub">第0〜10部を読み終えたあと、あるいは読んでいる途中で「あの値は何だったか」「あの式はどの部だったか」「この言葉の意味は」を<strong>引く</strong>ためのページです。6 つの道具を置きました: 主な半導体と絶縁膜の<strong>物性値の表</strong>（01）、部をまたいで使う<strong>式の索引</strong>（02）、全部の部の用語表をまとめて検索できる<strong>統一索引</strong>（03）、部によって意味の変わる<strong>記号表</strong>（04）、データシートと論文を読むための<strong>英日対訳</strong>（05）、そして何がどの順で可能になったかの<strong>年表</strong>（06）。</p>
       <div class="depth-row">
         <div class="depth" role="group" aria-label="説明の深さ">
           <button id="dSimple" aria-pressed="true">かんたん</button>
@@ -393,7 +393,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
         <div><dt>材料</dt><dd>8<small>半導体</small></dd></div>
         <div><dt>絶縁膜・基板</dt><dd>4<small>種</small></dd></div>
         <div><dt>式の索引</dt><dd>43<small>本</small></dd></div>
-        <div><dt>統一索引</dt><dd>372<small>語</small></dd></div>
+        <div><dt>統一索引</dt><dd>387<small>語</small></dd></div>
         <div class="spec-cap">物性値は 300 K の教科書の代表値です。文献によって値に幅があり、結晶の質・濃度・温度で動きます。各部の本文で使った値と同じものは、そう注記しました。</div>
       </dl>
     </div>
@@ -546,11 +546,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
 <section class="stage" id="s3">
   <div class="stage-head"><span class="stage-num">03</span>
     <h2>用語の統一索引 ― 全部の部の用語表を 1 つに</h2></div>
-  <p class="lede">第0〜9部の用語表の全部の行を、1 つの表にまとめて並べ替えました。同じ言葉が複数の部に出てくるときは、それぞれの部の説明が続けて並びます ― <span class="key">同じ言葉が部によって違う側面から説明されている</span>のも、読みどころです。下の欄に文字を入れると、用語・意味・部のどれかに含む行だけが残ります。</p>
+  <p class="lede">第0〜10部の用語表の全部の行を、1 つの表にまとめて並べ替えました。同じ言葉が複数の部に出てくるときは、それぞれの部の説明が続けて並びます ― <span class="key">同じ言葉が部によって違う側面から説明されている</span>のも、読みどころです。下の欄に文字を入れると、用語・意味・部のどれかに含む行だけが残ります。</p>
   <div class="idx-search">
     <label for="idxQ">索引を絞り込む</label>
     <input id="idxQ" type="search" placeholder="例: 暗電流、Cpk、コヒーレンス、第5部" autocomplete="off">
-    <span id="idxN">372 語</span>
+    <span id="idxN">387 語</span>
   </div>
   <figure class="full">
     <div class="scroll-x">
@@ -693,6 +693,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>X 線 CT / SAT</td><td>パッケージ内の金属を透かす観察と、超音波の反射で剥離・ボイドを見る観察。どちらも非破壊</td><td class="num">剥離は SAT</td><td><a href="第8部_信頼性と品質.html#s9">第8部</a></td></tr>
           <tr><td>X̄–R 管理図</td><td>n 個の群の平均と範囲を打つ定番。限界は X̿ ± A₂R̄。平均を取ると小さなずれが速く見える</td><td class="num">n=5: A₂=0.577</td><td><a href="第8部_信頼性と品質.html#s9">第8部</a></td></tr>
           <tr><td>アーリー効果</td><td>コレクタ電圧で実効的なベース幅が縮み I<sub>C</sub> が増える現象。MOSFET の λ に相当</td><td class="num">出力抵抗を決める</td><td><a href="第2部_デバイスの基礎.html#sgl">第2部</a></td></tr>
+          <tr><td>あいまいさのない距離</td><td>次のパルスと取り違えずに測れる最大の距離 c/(2f)</td><td class="num">100 kHz で 1.5 km</td><td><a href="第10部_設計演習.html#sgl">第10部</a></td></tr>
           <tr><td>アインシュタインの関係</td><td>拡散係数と移動度の比が熱電圧になる: D = µkT/q</td><td class="num">kT/q = 25.85 mV</td><td><a href="第2部_デバイスの基礎.html#sgl">第2部</a></td></tr>
           <tr><td>アスペクト比</td><td>穴や溝の「深さ÷幅」。3D NANDでは100:1近くに達する。</td><td class="num"></td><td><a href="第1部_製造プロセス.html#glossary">第1部</a></td></tr>
           <tr><td>アニール</td><td>熱処理。イオン注入で壊れた結晶を回復させ、不純物を電気的に活性化させる。</td><td class="num"></td><td><a href="第1部_製造プロセス.html#glossary">第1部</a></td></tr>
@@ -702,6 +703,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>エアリー径 / レイリー分解能</td><td>2.44λN と 0.61λ/NA ― 同じ回折の2つの書き方。第4部「解像の限界」と同一。中心の円盤にエネルギーの84%</td><td class="num">F2.8で3.8µm</td><td><a href="第7部_光学.html#s9">第7部</a></td></tr>
           <tr><td>エスケープコーン</td><td>高屈折率の中で生まれた光が表面から出られる臨界角の円錐。平面1つあたり約 1/(4n²) ― LED の取り出し効率との闘いの出発点</td><td class="num">n=3.5 で 〜2%</td><td><a href="第5部_光検出デバイス.html#s9">第5部</a></td></tr>
           <tr><td>エテンデュ</td><td>面積×立体角。受動光学系で不減 ― 輝度が増やせない会計原則。結合上限は (コア×NA/光源×NA)²</td><td class="num">LED→SM は 0.02%</td><td><a href="第7部_光学.html#s9">第7部</a></td></tr>
+          <tr><td>エテンデュの関所</td><td>スリットの幅と分光器の f 数で、入れられる光の上限が決まること</td><td class="num">スリット×角度</td><td><a href="第10部_設計演習.html#sgl">第10部</a></td></tr>
           <tr><td>エピタキシャル層</td><td>下地の結晶方位を引き継いで成長させた高品質な単結晶薄膜。素子特性が安定する。</td><td class="num"></td><td><a href="第1部_製造プロセス.html#glossary">第1部</a></td></tr>
           <tr><td>エピタキシャル層</td><td>基板の上に結晶をそろえて成長させた層。不純物濃度を自由に決められるので、空乏層を広げるのに使う</td><td class="num">高抵抗</td><td><a href="第4部_イメージセンサ.html#s9">第4部</a></td></tr>
           <tr><td>オーバーフロー</td><td>2 の補数の計算が表せる範囲を超えること。最上位へ入る桁上がりと出る桁上がりの XOR</td><td class="num">7 + 1 = −8</td><td><a href="第3部_論理回路.html#sgl">第3部</a></td></tr>
@@ -771,6 +773,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>バンドギャップ</td><td>CTAT（V<sub>BE</sub>）と PTAT（V<sub>T</sub>ln n）を足して温度係数ゼロ。残る値は E<sub>g</sub> 由来。2次の曲率は残る</td><td class="num">≒1.2 V</td><td><a href="第6部_アナログ回路.html#s9">第6部</a></td></tr>
           <tr><td>バンドギャップ E<sub>g</sub></td><td>結合から外れて伝導帯に上がるのに要るエネルギー。温度で縮む（Varshni の式）</td><td class="num">Si 1.124 eV（300 K）</td><td><a href="第2部_デバイスの基礎.html#sgl">第2部</a></td></tr>
           <tr><td>ビニング</td><td>測定結果に応じた等級分け。同じ設計から上位・下位モデルが生まれる仕組み。</td><td class="num"></td><td><a href="第1部_製造プロセス.html#glossary">第1部</a></td></tr>
+          <tr><td>ビニング</td><td>隣の画素をまとめて 1 画素として読むこと。CCD では雑音も得、CMOS では主にデータ量の削減</td><td class="num">2×2 で 1/4</td><td><a href="第10部_設計演習.html#sgl">第10部</a></td></tr>
           <tr><td>ピニング電位</td><td>PPDが完全空乏したときに落ち着く固定電位。完全転送が成立する条件</td><td class="num">1–1.5 V</td><td><a href="第4部_イメージセンサ.html#s9">第4部</a></td></tr>
           <tr><td>ピンチオフ / 飽和</td><td>ドレイン端の反転層が消えて、電流がドレイン電圧でほとんど増えなくなる状態</td><td class="num">V<sub>D</sub> ≥ V<sub>G</sub> − V<sub>th</sub></td><td><a href="第2部_デバイスの基礎.html#sgl">第2部</a></td></tr>
           <tr><td>ファイバの NA / MFD</td><td>√(n₁²−n₂²) の受け入れ角と、シングルモードのモード径。結合は場所と角度の2重の門</td><td class="num">SM: NA〜0.14</td><td><a href="第7部_光学.html#s9">第7部</a></td></tr>
@@ -779,6 +782,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>フェルミ・ディラック分布</td><td>エネルギー E の席に電子が座る確率。E<sub>F</sub> で 1/2</td><td class="num">3kT 上でボルツマン</td><td><a href="第0部_基礎.html#s9">第0部</a></td></tr>
           <tr><td>フォトレジスト</td><td>感光性樹脂。露光部が溶けるポジ型、残るネガ型がある。先端ではポジ型が主流。</td><td class="num"></td><td><a href="第1部_製造プロセス.html#glossary">第1部</a></td></tr>
           <tr><td>フラッシュ / SAR</td><td>2<sup>N</sup>−1 個の比較器で一度に決める最速型／二分探索で 1 ビットずつ決める小型・低電力型</td><td class="num">GS/s・6〜8 bit／広い範囲</td><td><a href="第6部_アナログ回路.html#s9">第6部</a></td></tr>
+          <tr><td>フラッシュ型 LiDAR</td><td>広い範囲を一度に照らし、SPAD のアレイで多数の点を同時に測る方式</td><td class="num">走査なし</td><td><a href="第10部_設計演習.html#sgl">第10部</a></td></tr>
           <tr><td>ブリーダ</td><td>1本の高圧を抵抗直列でダイノードに配る分圧回路。信号で階段が崩れると「明るいほど利得が下がる」非線形に。後段はコンデンサで支える</td><td class="num">利得 &prop; V の7〜10乗</td><td><a href="第5部_光検出デバイス.html#s9">第5部</a></td></tr>
           <tr><td>フリップチップ</td><td>チップを裏返し、面全体の微小バンプで基板に直接接合する方式。端子数を大幅に増やせる。</td><td class="num"></td><td><a href="第1部_製造プロセス.html#glossary">第1部</a></td></tr>
           <tr><td>ブルースター角</td><td>tanθ<sub>B</sub> = n₂/n₁。p 偏光の反射がゼロになる角度。ブルースター窓・偏光サングラスの根拠</td><td class="num">ガラス 56.3°</td><td><a href="第7部_光学.html#s9">第7部</a></td></tr>
@@ -791,6 +795,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>ホール効果</td><td>磁場の中を流れるキャリアが横に曲げられて立つ電圧。符号で種類、大きさで濃度が分かる</td><td class="num">R<sub>H</sub> = 1/(qn)</td><td><a href="第2部_デバイスの基礎.html#sgl">第2部</a></td></tr>
           <tr><td>ボッシュ法（DRIE）</td><td>エッチングと側壁保護を交互に繰り返し、垂直で深い溝を彫るドライエッチング。</td><td class="num"></td><td><a href="第1部_製造プロセス.html#glossary">第1部</a></td></tr>
           <tr><td>マイケルソン干渉計</td><td>光を 2 本に分けて戻して重ねる干渉計。鏡を λ/2 動かすと縞 1 本。変位計・FTIR・OCT の骨格</td><td class="num">HeNe で 316nm/縞</td><td><a href="第7部_光学.html#s9">第7部</a></td></tr>
+          <tr><td>マクロ画素 / 同時計数</td><td>複数の SPAD を束ねた 1 つの画素と、数 ns の中に複数が鳴ったときだけ数えて背景を減らす方法</td><td class="num">昼の対策</td><td><a href="第10部_設計演習.html#sgl">第10部</a></td></tr>
           <tr><td>マスクブランクス</td><td>フォトマスクの素材となる、遮光膜付きの高純度合成石英基板。無欠陥・超平坦であることが要求される。</td><td class="num"></td><td><a href="第1部_製造プロセス.html#glossary">第1部</a></td></tr>
           <tr><td>マルチパターニング</td><td>1層のパターンを2〜4回に分けて露光し重ねる手法。EUVが無い世代で微細化を続けるために使われた。</td><td class="num"></td><td><a href="第1部_製造プロセス.html#glossary">第1部</a></td></tr>
           <tr><td>ミラー指数 / 劈開</td><td>結晶面の向きの呼び方と、特定の面で割れる性質</td><td class="num">MOS は (100)</td><td><a href="第0部_基礎.html#s9">第0部</a></td></tr>
@@ -801,6 +806,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>モード同期 / 繰り返し</td><td>縦モードの位相を揃えて 1 個のパルスを往復させる。f<sub>rep</sub> = c/(2L)</td><td class="num">1.875 m で 80 MHz</td><td><a href="第9部_光源とレーザー.html#sgl">第9部</a></td></tr>
           <tr><td>モード分散 / 波長分散</td><td>道のりの違う光線の到着差（マルチモード）／屈折率の波長依存による差 Δτ=D·L·Δλ（シングルモード）</td><td class="num">D≈17 ps/(nm·km)@1550</td><td><a href="第7部_光学.html#s9">第7部</a></td></tr>
           <tr><td>ラッチアップ</td><td>CMOS の寄生サイリスタがオンになり電源を短絡し続ける現象。ウェルの囲いとエピ層で防ぐ</td><td class="num">入出力の過電圧が引き金</td><td><a href="第6部_アナログ回路.html#s9">第6部</a></td></tr>
+          <tr><td>ランバート面</td><td>どの方向から見ても同じ明るさに見える、光を一様に散らす面。戻る割合は ρ/π·A/R²</td><td class="num">反射率 ρ</td><td><a href="第10部_設計演習.html#sgl">第10部</a></td></tr>
           <tr><td>リーチスルー / SAM</td><td>吸収の部屋（厚い低電界）と増倍の部屋（薄い高電界）を分ける APD の構造。InGaAs 系は材料ごと分ける（SAM）</td><td class="num">分業が F と QE を両立</td><td><a href="第5部_光検出デバイス.html#s9">第5部</a></td></tr>
           <tr><td>リップルキャリー / 桁上げ先読み</td><td>桁上がりを数珠つなぎに待つ加算器と、G・P から全桁の桁上がりを並列に作る加算器（CLA）</td><td class="num">桁数に比例 / 対数</td><td><a href="第3部_論理回路.html#sgl">第3部</a></td></tr>
           <tr><td>リフトオフ</td><td>レジストの型の上に金属をつけ、レジストごと不要部を剥がして電極を作る方法。化合物プロセスで多用。</td><td class="num"></td><td><a href="第1部_製造プロセス.html#glossary">第1部</a></td></tr>
@@ -828,6 +834,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>格子方程式 / 次数</td><td>mλ = d(sinα+sinβ)。mλ が同じなら同じ向き ― 2 次の 400 nm は 1 次の 800 nm に重なる</td><td class="num">次数カットフィルタ</td><td><a href="第7部_光学.html#s9">第7部</a></td></tr>
           <tr><td>活性化エネルギー</td><td>暗電流の温度依存の傾き。起源によって値が違うので、測れば原因が絞れる</td><td class="num">0.3–1.1 eV</td><td><a href="第4部_イメージセンサ.html#s9">第4部</a></td></tr>
           <tr><td>感度 R / NEP / D*</td><td>R=&eta;&lambda;/1240 [A/W]。NEP はノイズ電流÷R（S/N=1 の光パワー）、D*=&radic;A/NEP は面積で正規化した比較用の物差し</td><td class="num">W/&radic;Hz・ジョーンズ</td><td><a href="第5部_光検出デバイス.html#s9">第5部</a></td></tr>
+          <tr><td>感度分析</td><td>仮定を 1 つずつ変えて、結論が保つかを確かめること</td><td class="num">交差点・飽和を探す</td><td><a href="第10部_設計演習.html#sgl">第10部</a></td></tr>
           <tr><td>管理限界 / 規格限界</td><td>工程自身のデータの ±3σ（工程の声）と、顧客の要求（顧客の声）。別物</td><td class="num">UCL・LCL / USL・LSL</td><td><a href="第8部_信頼性と品質.html#s9">第8部</a></td></tr>
           <tr><td>管理図 / SPC</td><td>測定値を時間順に打ち、偶然原因と特殊原因を見分ける図と、それを使った統計的工程管理</td><td class="num">3σ 外は 370 点に 1 回</td><td><a href="第8部_信頼性と品質.html#s9">第8部</a></td></tr>
           <tr><td>緩和振動 / 直接変調</td><td>N と S の追いかけ合いの振動。電流で変調できる速さの上限を決める</td><td class="num">GHz 級</td><td><a href="第9部_光源とレーザー.html#sgl">第9部</a></td></tr>
@@ -836,13 +843,16 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>輝度（放射輝度）</td><td>単位面積・単位立体角あたりのパワー。受動の光学系で上げられない</td><td class="num">W/(m²·sr)</td><td><a href="第9部_光源とレーザー.html#sgl">第9部</a></td></tr>
           <tr><td>犠牲層 / スティクション</td><td>溶かして構造を浮かせるための層と、乾燥時に構造が基板へ貼りつく不具合。</td><td class="num"></td><td><a href="第1部_製造プロセス.html#glossary">第1部</a></td></tr>
           <tr><td>逆二乗則</td><td>点光源の照度 E = I/r²。距離が光源径の5倍を超えたあたりから成立。斜め受けは ×cosθ</td><td class="num">2倍で1/4</td><td><a href="第7部_光学.html#s9">第7部</a></td></tr>
+          <tr><td>吸光度の上限（迷光）</td><td>迷光の割合 s があると、吸光度は −log₁₀s 付近で頭打ちになる</td><td class="num">10⁻³ で約 3</td><td><a href="第10部_設計演習.html#sgl">第10部</a></td></tr>
           <tr><td>吸収係数 / 量子効率</td><td>光が 1/e に弱まる深さの逆数と、入った光子のうち電流になった割合。青は浅く、赤は深く吸われる</td><td class="num">Si は 1107 nm まで</td><td><a href="第2部_デバイスの基礎.html#sgl">第2部</a></td></tr>
           <tr><td>空間周波数</td><td>像の細かさ。1 mm あたり何本の縞が入るかで数える</td><td class="num">本/mm</td><td><a href="第4部_イメージセンサ.html#s9">第4部</a></td></tr>
           <tr><td>空乏層</td><td>PN接合の周りで動ける電荷がいなくなった領域。電界があり、生まれた電子・正孔対を引き離す</td><td class="num">2–10 μm</td><td><a href="第4部_イメージセンサ.html#s9">第4部</a></td></tr>
           <tr><td>空乏層容量 / 1/C² プロット</td><td>C<sub>j</sub> = ε/W。1/C² を電圧に対して描くと、傾きから薄い側の濃度、切片から V<sub>bi</sub></td><td class="num">C-V 測定</td><td><a href="第2部_デバイスの基礎.html#sgl">第2部</a></td></tr>
           <tr><td>後工程  <small>Back-end</small></td><td>ウェーハを切り分け、パッケージに組み立てて検査する工程群。ダイシング以降。</td><td class="num"></td><td><a href="第1部_製造プロセス.html#glossary">第1部</a></td></tr>
           <tr><td>誤差伝播</td><td>独立誤差は √(Σσ²)。支配項以外を磨いても合成はほぼ動かない ― 誤差予算の根拠</td><td class="num">3-4-5</td><td><a href="第8部_信頼性と品質.html#s9">第8部</a></td></tr>
+          <tr><td>交差点（sCMOS と EM-CCD）</td><td>2 つの検出器の SN 比が等しくなる信号の大きさ。S + B = nσ<sub>r</sub>²</td><td class="num">背景なしで ≈23 e⁻</td><td><a href="第10部_設計演習.html#sgl">第10部</a></td></tr>
           <tr><td>光アイソレータ</td><td>ファラデー回転子（45°）を偏光子で挟み、戻り光だけを止める素子。LD の戻り光対策</td><td class="num">往復で 90°</td><td><a href="第7部_光学.html#s9">第7部</a></td></tr>
+          <tr><td>光の予算</td><td>光源の光子から検出器の電子までを、各段の割合の掛け算で並べた表</td><td class="num">対数で足し算</td><td><a href="第10部_設計演習.html#sgl">第10部</a></td></tr>
           <tr><td>光学ローパス<br>フィルタ</td><td>複屈折板で像をわざとずらし、ナイキストより細かい成分を消して折り返しを防ぐ部品</td><td class="num">OLPF</td><td><a href="第4部_イメージセンサ.html#s9">第4部</a></td></tr>
           <tr><td>光子 / ド・ブロイ波長</td><td>光のエネルギーの粒 hν と、粒子の波長 h/p</td><td class="num">1239.84/λ eV</td><td><a href="第0部_基礎.html#s9">第0部</a></td></tr>
           <tr><td>光周波数コム</td><td>モード同期レーザーの櫛の歯の周波数を正確に決めて物差しにしたもの</td><td class="num">f<sub>n</sub> = n·f<sub>rep</sub> + f<sub>CEO</sub></td><td><a href="第9部_光源とレーザー.html#sgl">第9部</a></td></tr>
@@ -852,16 +862,19 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>黒体放射 / プランクの式</td><td>温度だけで決まる熱放射の上限のスペクトル。実物は放射率 ε を掛けたもの</td><td class="num">B(λ,T)</td><td><a href="第9部_光源とレーザー.html#sgl">第9部</a></td></tr>
           <tr><td>差動対 / CMRR</td><td>差だけ増やし（g<sub>m</sub>R<sub>D</sub>）、同相をテールで捨てる。捨てる力の数字が CMRR、破れの原因はテールの r<sub>o</sub> とミスマッチ</td><td class="num">全切替は √2·V<sub>ov</sub></td><td><a href="第6部_アナログ回路.html#s9">第6部</a></td></tr>
           <tr><td>差動伝送</td><td>逆向きの信号を 2 本で送り差を受ける。同相の雑音が消え、放射も減る</td><td class="num">MIPI D-PHY・LVDS・USB</td><td><a href="第6部_アナログ回路.html#s9">第6部</a></td></tr>
+          <tr><td>雑音の予算</td><td>独立な雑音の成分を二乗和で並べた表。最大の項（支配項）が全体を決める</td><td class="num">√Σσ²</td><td><a href="第10部_設計演習.html#sgl">第10部</a></td></tr>
           <tr><td>雑音余裕</td><td>伝達特性の坂の利得が 1 を超える外側で、入力の揺れが押し戻される幅</td><td class="num">1.28 / 1.04 V（NandLab）</td><td><a href="第3部_論理回路.html#sgl">第3部</a></td></tr>
           <tr><td>指数分布</td><td>ポアソン過程の待ち時間の分布。無記憶性を持つ</td><td class="num">平均 1/r</td><td><a href="第0部_基礎.html#s9">第0部</a></td></tr>
           <tr><td>視感度 V(λ)</td><td>目の感度カーブ。555nm で1、両端で急落（700nm で 0.004）。lm/W はこのカーブ越しの効率</td><td class="num">ピーク 555nm</td><td><a href="第7部_光学.html#s9">第7部</a></td></tr>
           <tr><td>時間帯域積</td><td>パルス幅とスペクトル幅の積の下限。ガウス形で 0.441</td><td class="num">100 fs で 4.4 THz</td><td><a href="第9部_光源とレーザー.html#sgl">第9部</a></td></tr>
           <tr><td>時定数 / 遮断周波数</td><td>RC 一次系の τ = RC と f<sub>c</sub> = 1/(2πRC)。立ち上がり 2.2τ</td><td class="num">0.35/f<sub>c</sub></td><td><a href="第0部_基礎.html#s9">第0部</a></td></tr>
+          <tr><td>次数カットフィルタ</td><td>2 次の回折光が重なる場所にだけ置く、短い波長を切るフィルタ</td><td class="num">800〜1,000 nm の場所</td><td><a href="第10部_設計演習.html#sgl">第10部</a></td></tr>
           <tr><td>質量作用の法則</td><td>熱平衡では n·p = n<sub>i</sub>²。多数キャリアを増やすと少数キャリアは同じ割合で減る</td><td class="num">10¹⁶ で p = 10⁴</td><td><a href="第2部_デバイスの基礎.html#sgl">第2部</a></td></tr>
           <tr><td>遮断周波数</td><td>回折がまったく通さなくなる空間周波数 1/(&lambda;N)。ここから上は情報がゼロ</td><td class="num">649 本/mm<br>(F2.8)</td><td><a href="第4部_イメージセンサ.html#s9">第4部</a></td></tr>
           <tr><td>縦モード / FSR</td><td>共振器が許す等間隔の波長。Δλ = λ²/(2n<sub>g</sub>L)</td><td class="num">1550 nm・300 µm で 1.1 nm</td><td><a href="第9部_光源とレーザー.html#sgl">第9部</a></td></tr>
           <tr><td>重水素 / キセノンランプ</td><td>紫外の連続光（約 190〜400 nm）と、紫外〜近赤外の太陽に近い連続光</td><td class="num">分光光度計</td><td><a href="第9部_光源とレーザー.html#sgl">第9部</a></td></tr>
           <tr><td>縮退</td><td>E<sub>F</sub> がバンド端に近づき・入り込んで、ボルツマン近似が使えなくなる状態</td><td class="num">n ≳ 10¹⁸〜10¹⁹</td><td><a href="第0部_基礎.html#s9">第0部</a></td></tr>
+          <tr><td>瞬時視野（IFOV）</td><td>1 画素が見る角度の範囲。背景光はその立体角に比例する</td><td class="num">0.05° 四方で 7.6×10⁻⁷ sr</td><td><a href="第10部_設計演習.html#sgl">第10部</a></td></tr>
           <tr><td>準安定 / 2 段同期化</td><td>setup を破った FF が 0 と 1 の間で迷う状態と、2 段目までの 1 拍で落ち着かせる対策</td><td class="num">失敗 ∝ e<sup>−t<sub>r</sub>/τ</sup></td><td><a href="第3部_論理回路.html#sgl">第3部</a></td></tr>
           <tr><td>小信号 / 動作点</td><td>バイアスで坂の1点に「置き」、そのまわりの接線で「揺らす」2幕構成。接線から外れた分が歪み</td><td class="num">置いてから、揺らす</td><td><a href="第6部_アナログ回路.html#s9">第6部</a></td></tr>
           <tr><td>昇華法（改良レーリー法）</td><td>SiC の原料を 2,000 ℃超で昇華させ、種結晶の上に再結晶させる方法。</td><td class="num"></td><td><a href="第1部_製造プロセス.html#glossary">第1部</a></td></tr>
@@ -901,6 +914,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>熱型検出器</td><td>光をまず熱に変えて読む（サーモパイル＝起電力・ボロメータ＝抵抗・焦電＝分極変化）。波長を選ばず冷却不要、そのかわり遅い。非冷却サーモグラフィの心臓</td><td class="num">8〜14&micro;m 非冷却</td><td><a href="第5部_光検出デバイス.html#s9">第5部</a></td></tr>
           <tr><td>熱抵抗 θ / Tj</td><td>熱のオームの法則。Tj=Tamb+PΣθ。カタログ θja は標準基板の値で実基板では変わる</td><td class="num">K/W の直列和</td><td><a href="第8部_信頼性と品質.html#s9">第8部</a></td></tr>
           <tr><td>波数 / ラマン散乱</td><td>10⁷/λ[nm] cm⁻¹。分子の振動のぶん波数がずれる散乱で、ずれは励起波長によらず物質に固有</td><td class="num">1eV = 8,066cm⁻¹</td><td><a href="第7部_光学.html#s9">第7部</a></td></tr>
+          <tr><td>波長の校正</td><td>既知の輝線で画素と波長の対応を多項式で当てはめること</td><td class="num">Hg・Ar の線</td><td><a href="第10部_設計演習.html#sgl">第10部</a></td></tr>
           <tr><td>配置配線（P&amp;R）</td><td>何億個ものセルをチップ上に並べ、配線でつなぐ工程。</td><td class="num"></td><td><a href="第1部_製造プロセス.html#glossary">第1部</a></td></tr>
           <tr><td>白キズ</td><td>深い準位を持つ欠陥がたまたま入った画素。暗時に突出して明るく写る。位置を記録して補正する</td><td class="num">数〜数百 ppm</td><td><a href="第4部_イメージセンサ.html#s9">第4部</a></td></tr>
           <tr><td>判定ルール</td><td>限界外の 1 点のほか、片側に 9 点連続・6 点連続の増減など、並び方で特殊原因を見る</td><td class="num">JIS Z 9020-2</td><td><a href="第8部_信頼性と品質.html#s9">第8部</a></td></tr>
@@ -910,6 +924,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>反転分布 / ベルナール・デュラフール条件</td><td>上の準位が下より多い状態。半導体では F<sub>n</sub> − F<sub>p</sub> ＞ hν ＞ E<sub>g</sub></td><td class="num">強い注入</td><td><a href="第9部_光源とレーザー.html#sgl">第9部</a></td></tr>
           <tr><td>標本化定理 / ナイキスト周波数</td><td>間隔 T で標本化すると 1/(2T) より高い成分は折り返す</td><td class="num">1/(2p)</td><td><a href="第0部_基礎.html#s9">第0部</a></td></tr>
           <tr><td>不確かさ（GUM）</td><td>測定値の信頼の幅。成分を標準不確かさにそろえて二乗和で合成する国際的な約束</td><td class="num">u<sub>c</sub>、U = k·u<sub>c</sub></td><td><a href="第8部_信頼性と品質.html#s9">第8部</a></td></tr>
+          <tr><td>不感時間</td><td>SPAD が 1 回鳴ったあと、次の光子に応えない時間。数える率は約 r/(1 + rτ<sub>d</sub>)</td><td class="num">数 ns〜数十 ns</td><td><a href="第10部_設計演習.html#sgl">第10部</a></td></tr>
           <tr><td>封止材（EMC）</td><td>エポキシに大量のシリカを混ぜ、シリコンに近い熱膨張率と低吸湿性を持たせた材料。</td><td class="num"></td><td><a href="第1部_製造プロセス.html#glossary">第1部</a></td></tr>
           <tr><td>複屈折 / 波長板</td><td>振動の向きで屈折率が違う結晶。位相差 π/2 の λ/4 板は直線↔円偏光、π の λ/2 板は偏光の向きを回す</td><td class="num">水晶 Δn≈0.009</td><td><a href="第7部_光学.html#s9">第7部</a></td></tr>
           <tr><td>分解能 / 逆線分散</td><td>格子の上限 λ/Δλ = mN と、センサ面の nm/mm = d·cosβ/(mf)。実際はスリットと画素で決まることが多い</td><td class="num">600本/mm・f100: 16nm/mm</td><td><a href="第7部_光学.html#s9">第7部</a></td></tr>

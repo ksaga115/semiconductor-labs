@@ -1,0 +1,1045 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>html{color-scheme:light dark}body{margin:0;font:14px system-ui;background:#fafaf9}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>第10部 1台を設計する ― カメラ・LiDAR・分光器</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ground:#EDEEF2; --surface:#FFFFFF; --surface-2:#F5F6F9; --surface-3:#E2E5ED;
+  --ink:#14161E; --ink-2:#4A5061; --ink-3:#787F92;
+  --line:#D3D7E1; --line-2:#E5E7EF;
+  --photon:#D98803; --photon-2:#A96504; --photon-soft:#FAEBCD;
+  --electron:#1D74B8; --electron-2:#155A91; --electron-soft:#D6E7F5;
+  --si:#8A8FA3; --si-soft:#DEE0E8;
+  --cfr:#CF4437; --cfg:#33955A; --cfb:#2E6DC4;
+  --volt:#7047B5; --volt-soft:#E7DEF7;
+  --digital:#0F766E; --digital-soft:#D3EAE6;
+  --warn:#B4400C; --ok:#2C7A55;
+  --shadow:0 1px 2px rgba(20,22,30,.06), 0 8px 24px -12px rgba(20,22,30,.18);
+  --mono:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;
+  --sans:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic UI","Yu Gothic",Meiryo,sans-serif;
+  --disp:"Zen Old Mincho","Hiragino Mincho ProN","Yu Mincho",serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#0F1117; --surface:#171A22; --surface-2:#1D212B; --surface-3:#2B3140;
+    --ink:#E8EAF1; --ink-2:#AAB1C3; --ink-3:#7C8397;
+    --line:#2D323F; --line-2:#232833;
+    --photon:#F0B444; --photon-2:#F7C766; --photon-soft:#3A2C10;
+    --electron:#5FB0E8; --electron-2:#8ACAF3; --electron-soft:#12293C;
+    --si:#767C92; --si-soft:#242938;
+    --cfr:#E56E60; --cfg:#57BE80; --cfb:#5F97E2;
+    --volt:#A98AE0; --volt-soft:#2A2140;
+    --digital:#4FBFAE; --digital-soft:#0F2E2B;
+    --warn:#E8875A; --ok:#5CBF8E;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0F1117; --surface:#171A22; --surface-2:#1D212B; --surface-3:#2B3140;
+  --ink:#E8EAF1; --ink-2:#AAB1C3; --ink-3:#7C8397;
+  --line:#2D323F; --line-2:#232833;
+  --photon:#F0B444; --photon-2:#F7C766; --photon-soft:#3A2C10;
+  --electron:#5FB0E8; --electron-2:#8ACAF3; --electron-soft:#12293C;
+  --si:#767C92; --si-soft:#242938;
+  --cfr:#E56E60; --cfg:#57BE80; --cfb:#5F97E2;
+  --volt:#A98AE0; --volt-soft:#2A2140;
+  --digital:#4FBFAE; --digital-soft:#0F2E2B;
+  --warn:#E8875A; --ok:#5CBF8E;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.7);
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font-family:var(--sans);
+  font-size:16px;line-height:1.8;-webkit-font-smoothing:antialiased;
+  font-feature-settings:"palt" 1;}
+h1,h2,h3,h4{margin:0;text-wrap:balance;line-height:1.35}
+p{margin:0}
+a{color:var(--electron)}
+
+.wrap{max-width:1180px;margin:0 auto;padding:0 22px 90px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-3);font-weight:500}
+
+/* hero */
+.hero{padding:52px 0 34px;border-bottom:1px solid var(--line)}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:28px}
+@media(min-width:900px){.hero-grid{grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);gap:48px;align-items:end}}
+.hero h1{font-family:var(--disp);font-weight:700;font-size:clamp(33px,5.2vw,56px);
+  letter-spacing:.02em;line-height:1.2;margin:12px 0 0}
+.hero h1 .lit{color:var(--photon)}
+.hero .sub{margin-top:18px;color:var(--ink-2);font-size:17px;max-width:36em}
+.spec{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--line);
+  border-radius:3px;background:var(--surface);overflow:hidden}
+.spec div{flex:1 1 30%;padding:11px 13px;border-right:1px solid var(--line-2);
+  border-bottom:1px solid var(--line-2)}
+.spec dt{font-size:10px;font-family:var(--mono);letter-spacing:.07em;color:var(--ink-3);margin:0}
+.spec dd{margin:2px 0 0;font-family:var(--mono);font-size:14.5px;font-weight:600;
+  color:var(--ink);font-variant-numeric:tabular-nums}
+.spec dd small{font-size:10.5px;color:var(--ink-3);font-weight:400;margin-left:2px}
+.spec-cap{padding:9px 13px;font-size:11.5px;color:var(--ink-3);flex:1 1 100%;
+  border-right:0;border-bottom:0;background:var(--surface-2)}
+
+.depth{display:inline-flex;border:1px solid var(--line);border-radius:2px;
+  background:var(--surface);overflow:hidden;font-family:var(--mono);font-size:12px}
+.depth button{appearance:none;border:0;background:transparent;color:var(--ink-2);
+  padding:7px 15px;cursor:pointer;font:inherit;letter-spacing:.05em;transition:.15s}
+.depth button[aria-pressed="true"]{background:var(--ink);color:var(--ground)}
+.depth button:focus-visible{outline:2px solid var(--electron);outline-offset:-2px}
+.depth-row{display:flex;align-items:center;gap:13px;flex-wrap:wrap;margin-top:26px}
+.depth-row span{font-size:12.5px;color:var(--ink-3)}
+
+/* condition bar */
+.bar{position:sticky;top:0;z-index:40;background:var(--surface);
+  border-bottom:1px solid var(--line);box-shadow:var(--shadow)}
+.bar-in{max-width:1180px;margin:0 auto;padding:11px 22px;
+  display:grid;grid-template-columns:minmax(0,1fr);gap:13px}
+@media(min-width:940px){.bar-in{grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:28px;align-items:center}}
+.ctrls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.ctrl label{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.07em;
+  color:var(--ink-3);margin-bottom:1px}
+.ctrl .val{font-family:var(--mono);font-size:13.5px;font-weight:600;color:var(--ink);
+  font-variant-numeric:tabular-nums;display:block;margin-bottom:2px;white-space:nowrap}
+.ctrl .val em{font-style:normal;font-size:10.5px;color:var(--ink-3);font-weight:400;margin-left:3px}
+input[type=range]{width:100%;appearance:none;background:transparent;margin:0;height:15px;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:3px;background:var(--surface-3);border-radius:2px}
+input[type=range]::-moz-range-track{height:3px;background:var(--surface-3);border-radius:2px}
+input[type=range]::-webkit-slider-thumb{appearance:none;width:14px;height:14px;border-radius:50%;
+  background:var(--ink);margin-top:-5.5px;border:2px solid var(--surface)}
+input[type=range]::-moz-range-thumb{width:11px;height:11px;border-radius:50%;background:var(--ink);border:2px solid var(--surface)}
+input[type=range]:focus-visible{outline:2px solid var(--electron);outline-offset:3px;border-radius:2px}
+
+.chain{display:flex;align-items:stretch;border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.chain div{flex:1 1 0;padding:6px 9px;border-right:1px solid var(--line-2);min-width:0}
+.chain div:last-child{border-right:0}
+.chain dt{margin:0;font-family:var(--mono);font-size:9px;letter-spacing:.05em;color:var(--ink-3);white-space:nowrap}
+.chain dd{margin:1px 0 0;font-family:var(--mono);font-size:13.5px;font-weight:600;
+  font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chain .c-ph dd{color:var(--photon-2)} .chain .c-e dd{color:var(--electron)}
+.chain .c-v dd{color:var(--volt)} .chain .c-d dd{color:var(--digital)}
+.chain dd small{font-size:9.5px;font-weight:400;color:var(--ink-3);margin-left:2px}
+.flag{font-family:var(--mono);font-size:9px;letter-spacing:.03em;color:var(--warn);
+  display:block;height:12px;line-height:12px}
+
+/* layout */
+.main{display:grid;grid-template-columns:minmax(0,1fr)}
+@media(min-width:1080px){.main{grid-template-columns:180px minmax(0,1fr);gap:46px}}
+.rail{display:none}
+@media(min-width:1080px){.rail{display:block;position:sticky;top:104px;align-self:start;
+  padding-top:58px;
+  /* 節が増えて画面より高くなったので、はみ出したぶんはレールの中でスクロールさせる */
+  max-height:calc(100vh - 118px);overflow-y:auto;overscroll-behavior:contain;
+  scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.rail::-webkit-scrollbar{width:6px}
+.rail::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+.rail::-webkit-scrollbar-track{background:transparent}}
+.rail ol{list-style:none;margin:0;padding:0;border-left:1px solid var(--line)}
+.rail a{display:grid;grid-template-columns:24px 1fr;gap:5px;padding:6px 0 6px 13px;
+  text-decoration:none;color:var(--ink-3);font-size:12.5px;line-height:1.45;
+  border-left:2px solid transparent;margin-left:-1px;transition:.15s}
+.rail a .n{font-family:var(--mono);font-size:10.5px;padding-top:2px}
+.rail a:hover{color:var(--ink-2)}
+.rail a.on{color:var(--ink);border-left-color:var(--photon);font-weight:500}
+.rail a.on .n{color:var(--photon)}
+.rail .dom{font-family:var(--mono);font-size:9px;letter-spacing:.11em;color:var(--ink-3);
+  padding:15px 0 4px 15px;text-transform:uppercase}
+.rail .dom.first{padding-top:2px}
+
+/* stage */
+.stage{padding:58px 0 6px;scroll-margin-top:112px}
+.stage + .stage{border-top:1px solid var(--line)}
+.stage-head{display:flex;gap:15px;align-items:baseline}
+.stage-num{font-family:var(--mono);font-size:11.5px;font-weight:600;color:var(--photon);
+  letter-spacing:.06em;flex:0 0 auto;padding-top:5px}
+.stage h2{font-family:var(--disp);font-weight:700;font-size:clamp(23px,3.1vw,32px);letter-spacing:.02em}
+.lede{color:var(--ink-2);font-size:16.5px;max-width:40em;margin-top:12px}
+.stage h3{font-size:15px;font-weight:700;margin-top:28px;letter-spacing:.02em}
+.stage h3 + p{margin-top:8px}
+.stage p + p{margin-top:14px}
+/* 日本語は1em＝1文字。35字は狭すぎて右に空白が残るので、42字を上限にする */
+.body-col{max-width:42em}
+.two .body-col{max-width:none}
+.two{display:grid;grid-template-columns:minmax(0,1fr);gap:26px;margin-top:26px}
+@media(min-width:880px){.two{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:34px;align-items:start}}
+.two.wide-l{grid-template-columns:minmax(0,1fr)}
+@media(min-width:980px){.two.wide-l{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}}
+.full{margin-top:26px}
+
+/* figure */
+figure{margin:0;background:var(--surface);border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.fig-head{display:flex;justify-content:space-between;align-items:center;gap:12px;
+  padding:8px 13px;border-bottom:1px solid var(--line-2);background:var(--surface-2);flex-wrap:wrap}
+.fig-title{font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;color:var(--ink-2);font-weight:500}
+.fig-body{padding:14px 13px}
+figcaption{padding:10px 13px 12px;border-top:1px solid var(--line-2);
+  font-size:12.5px;line-height:1.65;color:var(--ink-3)}
+canvas{display:block;width:100%;height:auto}
+svg{display:block;max-width:100%;height:auto}
+.scroll-x{overflow-x:auto}
+
+.btns{display:flex;gap:5px;flex-wrap:wrap}
+.btn{appearance:none;font-family:var(--mono);font-size:11px;letter-spacing:.03em;
+  padding:5px 11px;border:1px solid var(--line);background:var(--surface);color:var(--ink-2);
+  border-radius:2px;cursor:pointer;transition:.15s;white-space:nowrap;line-height:1.5}
+.btn:hover{border-color:var(--ink-3);color:var(--ink)}
+.btn[aria-pressed="true"]{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+.btn:focus-visible{outline:2px solid var(--electron);outline-offset:2px}
+.slider-row{display:grid;gap:3px;margin-top:12px}
+.slider-row .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.slider-row .lab{font-family:var(--mono);font-size:10px;letter-spacing:.07em;color:var(--ink-3)}
+.slider-row .num{font-family:var(--mono);font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
+.readouts{display:flex;flex-wrap:wrap;border-top:1px solid var(--line-2)}
+.readouts div{flex:1 1 auto;min-width:92px;padding:8px 12px;border-right:1px solid var(--line-2)}
+.readouts div:last-child{border-right:0}
+.readouts dt{margin:0;font-family:var(--mono);font-size:9px;letter-spacing:.05em;color:var(--ink-3);white-space:nowrap}
+.readouts dd{margin:1px 0 0;font-family:var(--mono);font-size:13.5px;font-weight:600;font-variant-numeric:tabular-nums}
+
+/* deep layer */
+.deep{display:none}
+[data-depth="deep"] .deep{display:block}
+.deep-note{margin-top:20px;border-left:2px solid var(--electron);padding:1px 0 1px 16px;
+  max-width:46em}
+/* 「くわしい」を閉じると片側が空になる2列組みは、1列に戻して
+   本文が理由もなく半分の幅で折り返さないようにする */
+[data-depth="simple"] .two:has(> .deep:nth-child(2):last-child){
+  grid-template-columns:minmax(0,1fr)
+}
+/* 片方だけ deep にした2列組みは、かんたん時に1列へ畳む。
+   deep が左右どちらにあっても、残った側が半分幅で折り返さないようにする */
+[data-depth="simple"] .two:has(> .deep:first-child:not(:last-child)),
+[data-depth="simple"] .two:has(> .deep:last-child:not(:first-child)){
+  grid-template-columns:minmax(0,1fr)
+}
+[data-depth="deep"] .body-col.deep{display:block}
+.deep-note .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;color:var(--electron);
+  display:block;margin-bottom:5px}
+.deep-note p + p{margin-top:12px}
+.eq{font-family:var(--mono);font-size:13px;background:var(--surface-2);border:1px solid var(--line-2);
+  border-radius:2px;padding:10px 13px;margin-top:12px;overflow-x:auto;white-space:nowrap;color:var(--ink)}
+.eq b{color:var(--photon-2);font-weight:600}
+.eq i{font-style:normal;color:var(--electron);font-weight:600}
+.eq u{text-decoration:none;color:var(--volt);font-weight:600}
+
+.tag-inline{font-family:var(--mono);font-size:11px;padding:0 5px;border-radius:2px;
+  border:1px solid currentColor;white-space:nowrap}
+.t-ph{color:var(--photon-2)} .t-e{color:var(--electron)} .t-v{color:var(--volt)} .t-d{color:var(--digital)}
+.key{font-weight:700;background:linear-gradient(transparent 62%, var(--photon-soft) 62%);padding:0 1px}
+code{font-family:var(--mono);font-size:.9em;background:var(--surface-2);padding:1px 5px;
+  border-radius:2px;border:1px solid var(--line-2)}
+.qa{margin-top:26px;border:1px solid var(--line);border-radius:3px;background:var(--surface);overflow:hidden}
+.qa > div{padding:13px 16px;border-bottom:1px solid var(--line-2)}
+.qa > div:last-child{border-bottom:0}
+#imgNote em{font-style:normal;color:var(--ink-3)}
+#imgNote strong{color:var(--ink)}
+.qa h4{font-size:14px;margin-bottom:4px;color:var(--ink)}
+.qa p{font-size:14px;color:var(--ink-2)}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line-2);vertical-align:top}
+th{font-family:var(--mono);font-size:10px;letter-spacing:.07em;color:var(--ink-3);font-weight:500;
+  border-bottom:1px solid var(--line)}
+td:first-child{font-family:var(--mono);font-weight:600;white-space:nowrap;color:var(--ink)}
+td.num{font-variant-numeric:tabular-nums;font-family:var(--mono);text-align:right;white-space:nowrap}
+tbody tr:last-child td{border-bottom:0}
+/* 長い表を主題ごとに区切る見出し行 */
+tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
+  letter-spacing:.09em;color:var(--ink-3);font-weight:500;white-space:normal;
+  padding:9px 12px;border-bottom:1px solid var(--line)}
+.foot{margin-top:54px;padding-top:22px;border-top:1px solid var(--line);
+  font-size:12.5px;color:var(--ink-3);display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+/* 冒頭の読み方の案内 */
+.guide{margin-top:26px;border:1px solid var(--line);border-radius:3px;background:var(--surface);
+  overflow:hidden}
+.guide-h{padding:9px 15px;border-bottom:1px solid var(--line-2);background:var(--surface-2);
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;color:var(--ink-2);
+  display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.guide-b{display:grid;grid-template-columns:minmax(0,1fr);gap:0}
+@media(min-width:760px){.guide-b{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.guide-b > div{padding:12px 15px;border-bottom:1px solid var(--line-2)}
+@media(min-width:760px){.guide-b > div{border-bottom:0;border-right:1px solid var(--line-2)}
+  .guide-b > div:last-child{border-right:0}}
+.guide-b b{display:block;font-size:13px;color:var(--ink);margin-bottom:3px}
+.guide-b span{font-size:12.5px;color:var(--ink-2);line-height:1.65}
+.guide-b em{font-style:normal;font-family:var(--mono);font-size:10.5px;color:var(--ink-3);
+  display:block;margin-top:5px}
+
+/* 狭い画面用の目次。レールが出ない幅で、右下に浮かせる。
+   ページのどこからでも開けて、リストは中でスクロールする */
+.toc{display:none}
+@media(max-width:1079px){.toc{display:block;position:fixed;right:14px;bottom:14px;z-index:60}}
+.toc details{position:relative}
+.toc summary{list-style:none;cursor:pointer;display:flex;align-items:baseline;gap:8px;
+  max-width:min(76vw,300px);padding:9px 15px;border:1px solid var(--line);border-radius:999px;
+  background:var(--surface);box-shadow:var(--shadow);color:var(--ink)}
+.toc summary::-webkit-details-marker{display:none}
+.toc summary .tl{font-family:var(--mono);font-size:10px;letter-spacing:.09em;color:var(--ink-3);flex:0 0 auto}
+.toc summary .tc{font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.toc details[open] summary{border-color:var(--ink-3)}
+.toc .panel{position:absolute;right:0;bottom:calc(100% + 8px);width:min(80vw,320px);
+  max-height:min(64vh,520px);overflow-y:auto;overscroll-behavior:contain;
+  background:var(--surface);border:1px solid var(--line);border-radius:4px;
+  box-shadow:var(--shadow);padding:6px 0 10px;
+  scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.toc .panel::-webkit-scrollbar{width:6px}
+.toc .panel::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+.toc ol{list-style:none;margin:0;padding:0}
+.toc li.dom{font-family:var(--mono);font-size:9px;letter-spacing:.11em;color:var(--ink-3);
+  padding:11px 16px 3px;text-transform:uppercase}
+.toc a{display:grid;grid-template-columns:26px 1fr;gap:6px;padding:7px 16px;
+  text-decoration:none;color:var(--ink-2);font-size:13.5px;line-height:1.4}
+.toc a .n{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);padding-top:2px}
+.toc a:hover,.toc a:focus-visible{background:var(--surface-2);color:var(--ink)}
+.toc a.on{background:var(--surface-2);color:var(--ink);font-weight:500}
+.toc a.on .n{color:var(--photon)}
+
+/* 断定していないことを明示する箱 */
+.caveat{margin-top:18px;border:1px solid var(--line);border-left:2px solid var(--warn);
+  border-radius:2px;background:var(--surface);padding:12px 16px;max-width:46em}
+.caveat .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;color:var(--warn);
+  display:block;margin-bottom:6px}
+.caveat p{font-size:13.5px;color:var(--ink-2);line-height:1.72}
+.caveat p + p{margin-top:10px}
+.ex{margin-top:20px;border:1px solid var(--line);border-left:2px solid var(--photon);border-radius:2px;background:var(--surface);padding:12px 16px;max-width:46em}
+.ex .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;color:var(--photon-2);display:block;margin-bottom:6px}
+.ex p{font-size:14px;line-height:1.8}
+.ex p + p{margin-top:8px}
+.chk{margin-top:18px;max-width:52em}
+.chk details{border-top:1px solid var(--line-2);padding:11px 0}
+.chk details:last-child{border-bottom:1px solid var(--line-2)}
+.chk summary{cursor:pointer;font-weight:700;font-size:14.5px}
+.chk summary .qn{font-family:var(--mono);font-size:10.5px;color:var(--photon-2);margin-right:8px;font-weight:600}
+.chk details p{margin-top:8px;color:var(--ink-2);font-size:14px;line-height:1.75}
+/* 参考書からラボへ渡す箱。読んだことを、隣のラボ（SemiLab / PixelLab）で自分の手で確かめる */
+.lab-go{margin-top:22px;border:1px solid var(--line);border-left:2px solid var(--digital);
+  border-radius:2px;background:var(--surface);padding:12px 16px;max-width:46em}
+.lab-go .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;color:var(--digital);
+  display:block;margin-bottom:6px}
+.lab-go p{font-size:13.5px;color:var(--ink-2);line-height:1.72}
+.lab-go .qs{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px;align-items:center}
+.lab-go .qs a{font-family:var(--mono);font-size:11.5px;padding:4px 10px;border:1px solid var(--line);
+  border-radius:2px;background:var(--surface-2);color:var(--ink);text-decoration:none;white-space:nowrap}
+.lab-go .qs a:hover{border-color:var(--digital);color:var(--digital)}
+.lab-go .qs .lab{font-family:var(--mono);font-size:10px;color:var(--ink-3);letter-spacing:.07em;margin-left:4px}
+.lab-go .qs .lab:first-child{margin-left:0}
+.back{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--ink-3);text-decoration:none;
+  display:inline-block;margin-bottom:14px}
+.back:hover{color:var(--ink)}
+/* 3本スライダの図 */
+.sl3{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;margin-top:14px}
+@media(min-width:760px){.sl3{grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}}
+.sl3 .slider-row{margin-top:0}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+
+/* 印刷。画面用の仕掛け（固定バー・レール・目次）を外し、
+   図が改ページで割れないようにして、「くわしい」の中身も出す */
+@media print{
+  .bar,.rail,.toc,.depth-row,.guide,.lab-go,.back{display:none!important}
+  .main{display:block!important}
+  .wrap{max-width:none;padding:0}
+  body{background:#fff;font-size:10.5pt;line-height:1.65}
+  /* 画面では隠している式や補足も、紙では出す */
+  .deep{display:revert!important}
+  figure,.qa,.qa>div,.caveat,.deep-note,.eq,.foot{break-inside:avoid;page-break-inside:avoid}
+  tr,thead{break-inside:avoid;page-break-inside:avoid}
+  .stage{padding:16pt 0 0;break-before:auto}
+  .stage h2,.stage h3,.stage-head{break-after:avoid;page-break-after:avoid}
+  /* 画面では横スクロールさせている広い図を、紙幅に収める */
+  .scroll-x{overflow:visible!important}
+  canvas{min-width:0!important;max-width:100%!important}
+  svg{max-width:100%!important}
+  a{color:inherit;text-decoration:none}
+  .hero{padding-top:0}
+}
+</style>
+<style>
+/* ===== 共通: 図解アニメーションの共通部品（reduced-motion では自動停止） ===== */
+@keyframes p5flow { to { stroke-dashoffset: -60; } }
+.flow{stroke-dasharray:7 5;animation:p5flow 1.6s linear infinite}
+.flow.slow{animation-duration:3s}
+@keyframes p5blink { 0%,100%{opacity:.15} 50%{opacity:1} }
+.blink{animation:p5blink 1.8s ease-in-out infinite}
+@keyframes p5draw { 0%{stroke-dashoffset:var(--len,600)} 55%{stroke-dashoffset:0} 100%{stroke-dashoffset:0} }
+.draw{stroke-dasharray:var(--len,600);animation:p5draw 4s linear infinite}
+@keyframes p5rise { from{transform:scaleY(.02)} to{transform:scaleY(1)} }
+.rise{transform-origin:bottom;transform-box:fill-box;animation:p5rise .7s ease-out both}
+@keyframes p5step { 0%,19%{transform:translateX(0)} 25%,44%{transform:translateX(52px)} 50%,69%{transform:translateX(104px)} 75%,94%{transform:translateX(156px)} 100%{transform:translateX(156px)} }
+.step{animation:p5step 4s linear infinite}
+@keyframes p5orbit { from{transform:translateX(0)} to{transform:translateX(640px)} }
+.fly{animation:p5orbit 2.6s linear infinite}
+.fig-note{font-size:12px;color:var(--ink-3);margin-top:6px}
+</style>
+<header class="wrap hero">
+  <div class="hero-grid">
+    <div>
+      <a class="back" href="index.html">&larr; Labs / 半導体 ― 第10部 1台を設計する（総合演習）</a><br>
+      <span class="eyebrow">Requirement &rarr; Budget &rarr; Dominant term &rarr; Decision &rarr; Check</span>
+      <h1>1 台を<span class="lit">設計</span>する<br>― カメラ・LiDAR・分光器</h1>
+      <p class="sub">第0〜9部で道具は全部そろいました。この部では、それを<strong>1 台の装置として最後までつなぐ</strong>練習をします。題材は 3 つ ― 蛍光顕微鏡の<strong>微弱光カメラ</strong>、距離を測る <strong>LiDAR</strong>、小型の<strong>分光器</strong>。どれも、光子の数から出発して、雑音・部品の選定・読み出し・冷却・安全・信頼性まで、全部の数字を手で追います。数字はすべてこの部の中で計算した値で、仮定は仮定と明記しました。</p>
+      <div class="depth-row">
+        <div class="depth" role="group" aria-label="説明の深さ">
+          <button id="dSimple" aria-pressed="true">かんたん</button>
+          <button id="dDeep" aria-pressed="false">くわしい</button>
+        </div>
+        <span>「くわしい」で、式の導出と、仮定を変えたときに結論がどう動くかが開きます</span>
+      </div>
+      <div class="guide">
+        <div class="guide-h"><span>読み方（役割別）</span><span>全部で 60〜120 分</span></div>
+        <div class="guide-b">
+          <div><b>営業・企画なら</b><span>01 の作法 → 各題材の最初の図と「設計の決め手」の表だけ。お客様の要求（何を・どれだけ・どの速さで）から、どの部品が効くかを話せるようになります。</span><em>20 〜 30 分</em></div>
+          <div><b>設計・開発なら</b><span>全章を式ごと。予算表を自分で書き直し、仮定を変えて結論が動く場所（交差点・飽和・次数の重なり）を確かめてください。</span><em>60 〜 90 分</em></div>
+          <div><b>研究・製造なら</b><span>全章＋「くわしく」。仮定のどれが一番危ないか、どこを実測で確かめるべきか ― 検証の計画まで。</span><em>90 〜 120 分</em></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <dl class="spec">
+        <div><dt>カメラ: 1 輝点の信号</dt><dd>245<small>e⁻/10 ms</small></dd></div>
+        <div><dt>sCMOS と EM-CCD の交差点</dt><dd>≈23<small>e⁻</small></dd></div>
+        <div><dt>LiDAR: 200 m で戻る光子</dt><dd>29.6<small>個/パルス</small></dd></div>
+        <div><dt>SPAD の飽和の目安</dt><dd>r·τ<sub>d</sub> ≈ 1</dd></div>
+        <div><dt>分光器: 1 画素</dt><dd>1.25<small>nm</small></dd></div>
+        <div><dt>吸光度の雑音（100 回平均）</dt><dd>1.4×10⁻⁴</dd></div>
+        <div class="spec-cap">仮定の値（分子の明るさ・太陽光の強さ・部品の性能など）は、代表的な桁を選んだものです。実際の設計では、その値をデータシートと実測で置き換えて、同じ計算をやり直してください。</div>
+      </dl>
+    </div>
+  </div>
+</header>
+
+<div class="toc"><details>
+<summary><span class="tl">目次</span><span class="tc" id="tocNow">読みはじめ</span></summary>
+<div class="panel">
+<ol>
+    <li><a href="#s0"><span class="n">00</span><span>この部の地図</span></a></li>
+    <li><a href="#s1"><span class="n">01</span><span>設計の作法</span></a></li>
+    <li class="dom"><span>題材 A: 微弱光カメラ</span></li>
+    <li><a href="#s2"><span class="n">02</span><span>光の予算</span></a></li>
+    <li><a href="#s3"><span class="n">03</span><span>雑音と選定</span></a></li>
+    <li><a href="#s4"><span class="n">04</span><span>読み出し・冷却・データ</span></a></li>
+    <li class="dom"><span>題材 B: LiDAR</span></li>
+    <li><a href="#s5"><span class="n">05</span><span>戻ってくる光子</span></a></li>
+    <li><a href="#s6"><span class="n">06</span><span>背景光と SPAD の飽和</span></a></li>
+    <li><a href="#s7"><span class="n">07</span><span>距離の精度・速さ・安全</span></a></li>
+    <li class="dom"><span>題材 C: 分光器</span></li>
+    <li><a href="#s8"><span class="n">08</span><span>光学の設計</span></a></li>
+    <li><a href="#s9"><span class="n">09</span><span>検出・校正・不確かさ</span></a></li>
+    <li class="dom"><span>まとめ</span></li>
+    <li><a href="#s10"><span class="n">10</span><span>振り返り</span></a></li>
+    <li class="dom"><span>付録</span></li>
+    <li><a href="#scheck"><span class="n">—</span><span>理解の確認</span></a></li>
+    <li><a href="#sgl"><span class="n">—</span><span>用語表</span></a></li>
+    <li><a href="#sref"><span class="n">—</span><span>出典</span></a></li>
+  </ol>
+</div>
+</details></div>
+
+<div class="wrap">
+<div class="main">
+
+<nav class="rail" aria-label="ステージ">
+  <ol>
+    <li><a href="#s0"><span class="n">00</span><span>地図</span></a></li>
+    <li><a href="#s1"><span class="n">01</span><span>設計の作法</span></a></li>
+    <li class="dom"><span>A カメラ</span></li>
+    <li><a href="#s2"><span class="n">02</span><span>光の予算</span></a></li>
+    <li><a href="#s3"><span class="n">03</span><span>雑音と選定</span></a></li>
+    <li><a href="#s4"><span class="n">04</span><span>読み出し・冷却</span></a></li>
+    <li class="dom"><span>B LiDAR</span></li>
+    <li><a href="#s5"><span class="n">05</span><span>戻る光子</span></a></li>
+    <li><a href="#s6"><span class="n">06</span><span>背景光と飽和</span></a></li>
+    <li><a href="#s7"><span class="n">07</span><span>精度・速さ・安全</span></a></li>
+    <li class="dom"><span>C 分光器</span></li>
+    <li><a href="#s8"><span class="n">08</span><span>光学の設計</span></a></li>
+    <li><a href="#s9"><span class="n">09</span><span>検出と校正</span></a></li>
+    <li class="dom"><span>まとめ</span></li>
+    <li><a href="#s10"><span class="n">10</span><span>振り返り</span></a></li>
+    <li class="dom"><span>付録</span></li>
+    <li><a href="#scheck"><span class="n">—</span><span>理解の確認</span></a></li>
+    <li><a href="#sgl"><span class="n">—</span><span>用語表</span></a></li>
+    <li><a href="#sref"><span class="n">—</span><span>出典</span></a></li>
+  </ol>
+</nav>
+
+<main>
+
+<!-- ================= 00 ================= -->
+<section class="stage" id="s0">
+  <div class="stage-head"><span class="stage-num">00</span>
+    <h2>この部の地図 ― 3 つの装置が、どの部の道具を使うか</h2></div>
+  <p class="lede">3 つの題材は、わざと性格の違うものを選びました。カメラは<b>光が少ないうえに、画素がたくさんある</b>。LiDAR は<b>時間を測り、背景光と戦い、目の安全の制約がある</b>。分光器は<b>光を波長に分けるので、1 画素あたりの光がさらに減り、校正が命</b>。同じ「光子を数える」でも、効いてくる部が違います。</p>
+  <figure class="full">
+    <div class="scroll-x">
+      <table>
+        <thead><tr><th>設計の段階</th><th>A 微弱光カメラ</th><th>B LiDAR</th><th>C 分光器</th></tr></thead>
+        <tbody>
+          <tr><td>光源</td><td>蛍光分子（第9部 03 の発光）</td><td>パルスの VCSEL（第9部 07・09）</td><td>ハロゲン・重水素、校正用の輝線ランプ（第9部 01・02）</td></tr>
+          <tr><td>光を集める</td><td>対物レンズの NA（第7部 04）</td><td>逆二乗とランバート反射（第7部 02・03）</td><td>スリット・ファイバの NA とエテンデュ（第7部 06）</td></tr>
+          <tr><td>光を分ける・選ぶ</td><td>蛍光フィルタ（第7部 07・10）</td><td>狭帯域フィルタ（第7部 10）</td><td>回折格子（第7部 11）</td></tr>
+          <tr><td>検出器</td><td>sCMOS か EM-CCD（第4部・第5部 04）</td><td>SPAD（第4部 SPAD・第5部 03）</td><td>シリコンのラインセンサ（第5部 07）</td></tr>
+          <tr><td>読み出し</td><td>ADC とデータ量（第6部 09・11）</td><td>TDC とヒストグラム（第5部 06）</td><td>ADC と平均（第6部 09）</td></tr>
+          <tr><td>雑音の会計</td><td>読み出し・ショット・増倍の F²（第0部 02・第5部 03）</td><td>背景光・不感時間（第0部 02）</td><td>ショット・迷光（第7部 11）</td></tr>
+          <tr><td>熱・信頼性・安全</td><td>TEC と放熱（第8部 04・05）</td><td>目の安全のクラス（第8部 12）</td><td>校正と不確かさ（第8部 10）</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </figure>
+</section>
+
+<!-- ================= 01 ================= -->
+<section class="stage" id="s1">
+  <div class="stage-head"><span class="stage-num">01</span>
+    <h2>設計の作法 ― 要求 → 予算 → 支配項 → 決定 → 確認</h2></div>
+  <p class="lede">どの装置の設計も、同じ 5 つの段を踏みます。<span class="key">要求を数字にする → 光子と雑音の予算表を書く → いちばん大きい項（支配項）を見つける → そこに効く部品を選ぶ → 仮定を変えても結論が保つか確かめる</span>。この部の 3 つの題材は、全部この順で書いてあります。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>① 要求を数字にする</h3>
+      <p>「よく見えるカメラ」は要求ではありません。「1 分子の輝点を、10 ms の露光で、SN 比 10 以上で」なら計算できる。<b>何を（信号）・どれだけ（SN 比・精度）・どの速さで（時間・枚数）・どんな条件で（背景・温度）</b>の 4 つを数字にするのが最初の仕事です。要求が決まらないと、予算表の最後の行（合格の線）が引けません。</p>
+      <h3>② 予算表を書く</h3>
+      <p>光源が出す光子から出発して、集める割合・通す割合・電子になる割合を<b>掛け算</b>で並べ（光の予算）、それとは別に、雑音の成分を<b>二乗和</b>で並べる（雑音の予算、第8部 07）。掛け算は対数にすると足し算になるので、dB や桁で書くと見通しがよくなります（第0部 01）。</p>
+    </div>
+    <div class="body-col">
+      <h3>③ 支配項を見つける</h3>
+      <p>二乗和では、いちばん大きい項がほぼ全部を決めます（第8部 07 の 3-4-5）。<span class="key">支配項以外を磨いても、結果はほとんど動かない</span>。だから予算表を書いたら、まず最大の項に印を付けます。それが部品選びの答えそのものになることが多い。</p>
+      <h3>④ 決める ⑤ 確かめる</h3>
+      <p>部品を選んだら、<b>仮定を 1 つずつ変えて結論が保つか</b>を確かめる（感度分析）。この部では「交差点」（どちらの部品が有利かが入れ替わる信号の大きさ）や「飽和」（ある量を超えると急に成り立たなくなる点）を必ず計算します。結論が仮定の近くで入れ替わるなら、その仮定は実測で確かめるべき最優先の項目です（第8部 10 の不確かさ）。</p>
+    </div>
+  </div>
+
+  <div class="caveat">
+    <span class="tag">この部の数字の読み方</span>
+    <p><strong>仮定の値は「代表的な桁」で、特定の製品の値ではありません。</strong>分子の明るさ、背景光、読み出し雑音、太陽光の分光放射照度などは、条件と製品で何倍も変わります。この部で見てほしいのは値そのものより、<b>どの仮定が結論を左右するか</b>です。実際の設計では、同じ手順で数字をデータシートと実測に置き換えてください。</p>
+  </div>
+</section>
+
+<!-- ================= 02 ================= -->
+<section class="stage" id="s2">
+  <div class="stage-head"><span class="stage-num">02</span>
+    <h2>題材 A-1 微弱光カメラ ― 光の予算</h2></div>
+  <p class="lede">要求: <b>蛍光顕微鏡で 1 個の蛍光分子の輝点を、10 ms の露光で、SN 比 10 以上で写す</b>。まず、分子が出した光子のうち何個が電子になってセンサに残るかを数えます。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>分子が出す光と、レンズが拾う割合</h3>
+      <p>1 個の分子が 1 秒に出す光子を <b>2×10⁵ 個</b>と仮定します（励起の強さと色素で大きく変わる値）。光はほぼ全方向に出るので、レンズが拾えるのは受け入れの円錐の立体角の割合です。油浸の対物レンズ（NA 1.4、油の屈折率 1.518）の受け入れの半角は arcsin(1.4/1.518) = <b>67.3°</b>、全方向のうち拾える割合は (1 − cos θ)/2 = <b>30.7%</b>（第7部 02 の立体角、等方的な発光と仮定）。</p>
+      <h3>光学系の透過と量子効率</h3>
+      <p>対物レンズ・ダイクロイックミラー・蛍光フィルタ・結像レンズを通って、<b>50%</b> が残ると仮定する（それぞれの面の反射と吸収、第7部 07）。センサの量子効率は 550 nm で <b>80%</b>（裏面照射の sCMOS の代表的な値）。掛け算で 2×10⁵ × 0.307 × 0.5 × 0.8 = <b>2.45×10⁴ 電子/秒</b>、10 ms の露光で <b>245 電子</b>。</p>
+    </div>
+    <div class="body-col">
+      <h3>その 245 電子は、何画素に広がるか</h3>
+      <p>点像の広がりは回折で決まる（第7部 04）。半値全幅はおよそ 0.51λ/NA = <b>0.20 µm</b>、レイリーの分解能は 0.61λ/NA = 0.24 µm。センサの画素が 6.5 µm で、倍率 100 倍なら、試料の上で <b>65 nm</b> の画素。分解能 0.24 µm を正しく標本化するには、その半分の 0.12 µm より細かい画素が要る（第0部 03 のナイキスト）ので、65 nm は条件を満たしています。輝点は約 <b>3×3 = 9 画素</b>に広がると仮定します。</p>
+      <p><span class="key">細かく標本化するほど、同じ信号がたくさんの画素に分かれて、画素ごとの読み出し雑音が増える</span> ― 解像と SN 比の取り合いが、ここにもあります。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">BUDGET — 分子の光子から、センサの電子まで</span><span class="fig-title">棒の長さは対数（1 目盛り ＝ 10 倍）</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 214" role="img" aria-label="光の予算の棒グラフ（対数）。分子が出す光子 毎秒2×10⁵個、対物レンズに入るのは30.7%で6.1×10⁴個、光学系を抜けるのは半分で3.1×10⁴個、量子効率80%で2.45×10⁴電子、10ミリ秒の露光で245電子。" style="min-width:700px;width:100%;display:block">
+        <g font-size="10.5" fill="var(--ink-2)" text-anchor="end">
+          <text x="240" y="40">分子が出す光子（仮定）</text>
+          <text x="240" y="70">対物レンズに入る（×0.307）</text>
+          <text x="240" y="100">光学系を抜ける（×0.5）</text>
+          <text x="240" y="130">電子になる（×QE 0.8）</text>
+          <text x="240" y="160">10 ms の露光で</text>
+        </g>
+        <rect x="250" y="28" width="387.1" height="16" fill="var(--photon)" opacity="0.8"/>
+        <rect x="250" y="58" width="340.9" height="16" fill="var(--photon)" opacity="0.65"/>
+        <rect x="250" y="88" width="313.8" height="16" fill="var(--photon)" opacity="0.5"/>
+        <rect x="250" y="118" width="305" height="16" fill="var(--electron)" opacity="0.65"/>
+        <rect x="250" y="148" width="125" height="16" fill="var(--electron)" opacity="0.9"/>
+        <g font-family="var(--mono)" font-size="10" fill="var(--ink-2)">
+          <text x="643" y="40">2.0×10⁵ /s</text><text x="597" y="70">6.1×10⁴ /s</text><text x="570" y="100">3.1×10⁴ /s</text><text x="561" y="130">2.45×10⁴ e⁻/s</text><text x="381" y="160">245 e⁻</text>
+        </g>
+        <path d="M250 180 H700" stroke="var(--line)" stroke-width="1" fill="none"/>
+        <path d="M250 176 V184 M340 176 V184 M430 176 V184 M520 176 V184 M610 176 V184 M700 176 V184" stroke="var(--ink-3)" stroke-width="1" fill="none"/>
+        <g font-family="var(--mono)" font-size="9.5" fill="var(--ink-3)" text-anchor="middle">
+          <text x="250" y="198">10</text><text x="340" y="198">10²</text><text x="430" y="198">10³</text><text x="520" y="198">10⁴</text><text x="610" y="198">10⁵</text><text x="700" y="198">10⁶</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>いちばん大きく減るのは<b>集める段</b>（×0.307）と<b>露光の時間</b>（1 秒 → 10 ms で ×0.01）です。レンズの NA を上げる、明るい色素を選ぶ、露光を延ばす ― どれも効くが、露光を延ばすと速い動きが写らない。<span class="key">光の予算は掛け算なので、どの段の 2 倍も同じ 2 倍</span>で、いちばん安く 2 倍を買える段から手をつけます。</figcaption>
+  </figure>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（02 光の予算）</span>
+    <p><b>問.</b> 対物レンズを NA 1.4 の油浸から NA 0.95 の乾燥系（空気 n = 1）に替えると、集める割合はいくつになり、10 ms の信号は何電子になるか。</p>
+    <p><b>解.</b> θ = arcsin 0.95 = 71.8°、(1 − cos 71.8°)/2 = <b>34.4%</b>。数字の上では油浸（30.7%）より多いが、これは等方的に光る点を空気中に置いたときの値です。実際の試料はカバーガラスと水の中にあり、空気の対物レンズには屈折率の段差で全反射する光（臨界角の外）が入らないので、<b>拾える光はずっと少なくなる</b>。<span class="key">NA の公式だけで比べると間違える</span> ― 光がどの媒質から出るかまで含めて考えるのが、第7部 06・07 の「場所と角度」の教訓です（この部では油浸の 245 電子を使います）。</p>
+  </div>
+</section>
+
+<!-- ================= 03 ================= -->
+<section class="stage" id="s3">
+  <div class="stage-head"><span class="stage-num">03</span>
+    <h2>題材 A-2 雑音と選定 ― sCMOS か EM-CCD か</h2></div>
+  <p class="lede">245 電子の信号に、どれだけの雑音が乗るか。候補は 2 つ ― 読み出し雑音を小さくした <b>sCMOS</b> と、読み出しの前に電子を増やす <b>EM-CCD</b>（第5部 04 の「増やすか、床を下げるか」）。どちらが良いかは、<span class="key">信号の大きさで入れ替わる</span>ことを、式で確かめます。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>雑音の予算 ― 3 つの成分</h3>
+      <p>輝点の 9 画素を足した信号 S に対して、雑音の二乗は<br>① 信号自身のショット雑音: S<br>② 背景光のショット雑音: B（9 画素ぶん）<br>③ 読み出し雑音: 9 × σ<sub>r</sub>²<br>sCMOS（σ<sub>r</sub> = 1.6 e⁻/画素、背景 5 e⁻/画素と仮定）では</p>
+      <div class="eq">SNR = S / √(S + B + 9σ<sub>r</sub>²) = 245 / √(245 + 45 + 23) = <b>13.9</b></div>
+      <p>要求の 10 を満たします。支配項は信号自身のショット雑音（245）で、読み出し雑音（23）は 1 割にも満たない ― この明るさでは、センサの読み出し雑音を下げてもほとんど効かない。</p>
+    </div>
+    <div class="body-col">
+      <h3>EM-CCD ― 床は消えるが、揺らぎが 2 倍</h3>
+      <p>EM-CCD は読み出しの前に電子を数百〜千倍に増やすので、読み出し雑音は実質ゼロになります。代わりに、増倍の確率的な揺らぎでショット雑音の分散が<b>2 倍</b>になる（過剰雑音係数 F² = 2、第5部 03 の APD と同じ考え）。</p>
+      <div class="eq">SNR = S / √(2(S + B)) = 245 / √(2 × 290) = <b>10.2</b></div>
+      <p>この明るさでは sCMOS のほうが良い。2 つの式を等しいとおくと、<span class="key">S + B = 9σ<sub>r</sub>²</span> のとき入れ替わる。背景が無ければ交差点は S = 9 × 1.6² ≈ <b>23 電子</b>で、それより暗い輝点では EM-CCD、明るい輝点では sCMOS が勝つ。背景が 45 電子あるこの条件では、どんな暗さでも sCMOS が勝ちます。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">CROSSOVER — 暗いところは EM-CCD、明るいところは sCMOS</span><span class="fig-title">両対数・式から計算</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 244" role="img" aria-label="信号電子数に対するSN比の両対数グラフ。背景光が無い場合、sCMOSとEM-CCDの曲線は信号約23電子で交差し、それより暗いとEM-CCD、明るいとsCMOSが有利。背景光がある場合（破線）はsCMOSが常に有利。この設計の点（245電子、SN比13.9）が示されている。" style="min-width:700px;width:100%;display:block">
+        <g stroke="var(--line)" stroke-width="1" fill="none"><path d="M90 50 V200 H660"/><path d="M90 150 H660 M90 100 H660 M280 50 V200 M470 50 V200" stroke-dasharray="2 4"/></g>
+        <path d="M90.0 184.5 L94.8 183.3 L99.5 182.1 L104.3 180.9 L109.0 179.6 L113.8 178.4 L118.5 177.2 L123.3 176.0 L128.0 174.8 L132.8 173.6 L137.5 172.4 L142.3 171.2 L147.0 170.0 L151.8 168.8 L156.5 167.6 L161.3 166.4 L166.0 165.2 L170.8 164.0 L175.5 162.8 L180.3 161.6 L185.0 160.5 L189.8 159.3 L194.5 158.1 L199.3 157.0 L204.0 155.8 L208.8 154.6 L213.5 153.5 L218.3 152.3 L223.0 151.2 L227.8 150.1 L232.5 148.9 L237.3 147.8 L242.0 146.7 L246.8 145.6 L251.5 144.5 L256.3 143.4 L261.0 142.3 L265.8 141.2 L270.5 140.1 L275.3 139.0 L280.0 138.0 L284.8 136.9 L289.5 135.9 L294.3 134.8 L299.0 133.8 L303.8 132.8 L308.5 131.8 L313.3 130.7 L318.0 129.7 L322.8 128.8 L327.5 127.8 L332.3 126.8 L337.0 125.8 L341.8 124.9 L346.5 123.9 L351.3 123.0 L356.0 122.1 L360.8 121.1 L365.5 120.2 L370.3 119.3 L375.0 118.4 L379.8 117.6 L384.5 116.7 L389.3 115.8 L394.0 115.0 L398.8 114.1 L403.5 113.3 L408.3 112.4 L413.0 111.6 L417.8 110.8 L422.5 110.0 L427.3 109.2 L432.0 108.4 L436.8 107.6 L441.5 106.8 L446.3 106.0 L451.0 105.3 L455.8 104.5 L460.5 103.7 L465.3 103.0 L470.0 102.3 L474.8 101.5 L479.5 100.8 L484.3 100.0 L489.0 99.3 L493.8 98.6 L498.5 97.9 L503.2 97.2 L508.0 96.5 L512.8 95.8 L517.5 95.1 L522.3 94.4 L527.0 93.7 L531.8 93.0 L536.5 92.3 L541.3 91.6 L546.0 91.0 L550.8 90.3 L555.5 89.6 L560.3 88.9 L565.0 88.3 L569.8 87.6 L574.5 86.9 L579.3 86.3 L584.0 85.6 L588.8 85.0 L593.5 84.3 L598.3 83.6 L603.0 83.0 L607.8 82.3 L612.5 81.7 L617.3 81.0 L622.0 80.4 L626.8 79.7 L631.5 79.1 L636.3 78.5 L641.0 77.8 L645.8 77.2 L650.5 76.5 L655.3 75.9 L660.0 75.2" stroke="var(--electron)" stroke-width="2.2" fill="none"/>
+        <path d="M90.0 157.5 L94.8 156.9 L99.5 156.3 L104.3 155.7 L109.0 155.0 L113.8 154.4 L118.5 153.8 L123.3 153.2 L128.0 152.5 L132.8 151.9 L137.5 151.3 L142.3 150.7 L147.0 150.0 L151.8 149.4 L156.5 148.8 L161.3 148.2 L166.0 147.5 L170.8 146.9 L175.5 146.3 L180.3 145.7 L185.0 145.0 L189.8 144.4 L194.5 143.8 L199.3 143.2 L204.0 142.5 L208.8 141.9 L213.5 141.3 L218.3 140.7 L223.0 140.0 L227.8 139.4 L232.5 138.8 L237.3 138.2 L242.0 137.5 L246.8 136.9 L251.5 136.3 L256.3 135.7 L261.0 135.0 L265.8 134.4 L270.5 133.8 L275.3 133.2 L280.0 132.5 L284.8 131.9 L289.5 131.3 L294.3 130.7 L299.0 130.0 L303.8 129.4 L308.5 128.8 L313.3 128.2 L318.0 127.5 L322.8 126.9 L327.5 126.3 L332.3 125.7 L337.0 125.0 L341.8 124.4 L346.5 123.8 L351.3 123.2 L356.0 122.5 L360.8 121.9 L365.5 121.3 L370.3 120.7 L375.0 120.0 L379.8 119.4 L384.5 118.8 L389.3 118.2 L394.0 117.5 L398.8 116.9 L403.5 116.3 L408.3 115.7 L413.0 115.0 L417.8 114.4 L422.5 113.8 L427.3 113.2 L432.0 112.5 L436.8 111.9 L441.5 111.3 L446.3 110.7 L451.0 110.0 L455.8 109.4 L460.5 108.8 L465.3 108.2 L470.0 107.5 L474.8 106.9 L479.5 106.3 L484.3 105.7 L489.0 105.0 L493.8 104.4 L498.5 103.8 L503.2 103.2 L508.0 102.5 L512.8 101.9 L517.5 101.3 L522.3 100.7 L527.0 100.0 L531.8 99.4 L536.5 98.8 L541.3 98.2 L546.0 97.5 L550.8 96.9 L555.5 96.3 L560.3 95.7 L565.0 95.0 L569.8 94.4 L574.5 93.8 L579.3 93.2 L584.0 92.5 L588.8 91.9 L593.5 91.3 L598.3 90.7 L603.0 90.0 L607.8 89.4 L612.5 88.8 L617.3 88.2 L622.0 87.5 L626.8 86.9 L631.5 86.3 L636.3 85.7 L641.0 85.0 L645.8 84.4 L650.5 83.8 L655.3 83.2 L660.0 82.5" stroke="var(--warn)" stroke-width="2.2" fill="none"/>
+        <path d="M90.0 196.0 L94.8 194.7 L99.5 193.5 L104.3 192.3 L109.0 191.0 L113.8 189.8 L118.5 188.5 L123.3 187.3 L128.0 186.1 L132.8 184.8 L137.5 183.6 L142.3 182.4 L147.0 181.1 L151.8 179.9 L156.5 178.7 L161.3 177.4 L166.0 176.2 L170.8 175.0 L175.5 173.8 L180.3 172.5 L185.0 171.3 L189.8 170.1 L194.5 168.9 L199.3 167.7 L204.0 166.4 L208.8 165.2 L213.5 164.0 L218.3 162.8 L223.0 161.6 L227.8 160.4 L232.5 159.2 L237.3 158.0 L242.0 156.8 L246.8 155.6 L251.5 154.4 L256.3 153.2 L261.0 152.0 L265.8 150.8 L270.5 149.7 L275.3 148.5 L280.0 147.3 L284.8 146.1 L289.5 145.0 L294.3 143.8 L299.0 142.7 L303.8 141.5 L308.5 140.4 L313.3 139.2 L318.0 138.1 L322.8 137.0 L327.5 135.8 L332.3 134.7 L337.0 133.6 L341.8 132.5 L346.5 131.4 L351.3 130.3 L356.0 129.2 L360.8 128.2 L365.5 127.1 L370.3 126.0 L375.0 125.0 L379.8 123.9 L384.5 122.9 L389.3 121.8 L394.0 120.8 L398.8 119.8 L403.5 118.8 L408.3 117.8 L413.0 116.8 L417.8 115.8 L422.5 114.9 L427.3 113.9 L432.0 112.9 L436.8 112.0 L441.5 111.1 L446.3 110.1 L451.0 109.2 L455.8 108.3 L460.5 107.4 L465.3 106.5 L470.0 105.6 L474.8 104.8 L479.5 103.9 L484.3 103.0 L489.0 102.2 L493.8 101.4 L498.5 100.5 L503.2 99.7 L508.0 98.9 L512.8 98.1 L517.5 97.3 L522.3 96.5 L527.0 95.7 L531.8 94.9 L536.5 94.1 L541.3 93.4 L546.0 92.6 L550.8 91.8 L555.5 91.1 L560.3 90.4 L565.0 89.6 L569.8 88.9 L574.5 88.2 L579.3 87.4 L584.0 86.7 L588.8 86.0 L593.5 85.3 L598.3 84.6 L603.0 83.9 L607.8 83.2 L612.5 82.5 L617.3 81.8 L622.0 81.1 L626.8 80.4 L631.5 79.7 L636.3 79.1 L641.0 78.4 L645.8 77.7 L650.5 77.0 L655.3 76.4 L660.0 75.7" stroke="var(--electron)" stroke-width="1.6" stroke-dasharray="5 4" fill="none"/>
+        <path d="M90.0 199.1 L94.8 197.9 L99.5 196.6 L104.3 195.4 L109.0 194.2 L113.8 192.9 L118.5 191.7 L123.3 190.5 L128.0 189.2 L132.8 188.0 L137.5 186.8 L142.3 185.6 L147.0 184.3 L151.8 183.1 L156.5 181.9 L161.3 180.7 L166.0 179.4 L170.8 178.2 L175.5 177.0 L180.3 175.8 L185.0 174.6 L189.8 173.4 L194.5 172.2 L199.3 171.0 L204.0 169.8 L208.8 168.6 L213.5 167.4 L218.3 166.2 L223.0 165.0 L227.8 163.8 L232.5 162.6 L237.3 161.5 L242.0 160.3 L246.8 159.1 L251.5 157.9 L256.3 156.8 L261.0 155.6 L265.8 154.5 L270.5 153.3 L275.3 152.2 L280.0 151.0 L284.8 149.9 L289.5 148.8 L294.3 147.7 L299.0 146.5 L303.8 145.4 L308.5 144.3 L313.3 143.2 L318.0 142.1 L322.8 141.0 L327.5 140.0 L332.3 138.9 L337.0 137.8 L341.8 136.8 L346.5 135.7 L351.3 134.7 L356.0 133.7 L360.8 132.6 L365.5 131.6 L370.3 130.6 L375.0 129.6 L379.8 128.6 L384.5 127.7 L389.3 126.7 L394.0 125.7 L398.8 124.8 L403.5 123.8 L408.3 122.9 L413.0 122.0 L417.8 121.1 L422.5 120.2 L427.3 119.3 L432.0 118.4 L436.8 117.5 L441.5 116.6 L446.3 115.8 L451.0 114.9 L455.8 114.1 L460.5 113.2 L465.3 112.4 L470.0 111.6 L474.8 110.7 L479.5 109.9 L484.3 109.1 L489.0 108.3 L493.8 107.6 L498.5 106.8 L503.2 106.0 L508.0 105.2 L512.8 104.5 L517.5 103.7 L522.3 103.0 L527.0 102.2 L531.8 101.5 L536.5 100.8 L541.3 100.0 L546.0 99.3 L550.8 98.6 L555.5 97.9 L560.3 97.2 L565.0 96.5 L569.8 95.8 L574.5 95.1 L579.3 94.4 L584.0 93.7 L588.8 93.0 L593.5 92.3 L598.3 91.6 L603.0 91.0 L607.8 90.3 L612.5 89.6 L617.3 88.9 L622.0 88.3 L626.8 87.6 L631.5 86.9 L636.3 86.3 L641.0 85.6 L645.8 85.0 L650.5 84.3 L655.3 83.7 L660.0 83.0" stroke="var(--warn)" stroke-width="1.6" stroke-dasharray="5 4" fill="none"/>
+        <path d="M348.7 200 V124" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+        <circle cx="543.9" cy="92.8" r="4.5" fill="var(--electron)"/>
+        <g font-size="10">
+          <path d="M100 40 H120" stroke="var(--electron)" stroke-width="2.2" fill="none"/><text x="126" y="44" fill="var(--electron-2)">sCMOS（読み出し雑音 1.6 e⁻/画素 × 9 画素）</text>
+          <path d="M100 58 H120" stroke="var(--warn)" stroke-width="2.2" fill="none"/><text x="126" y="62" fill="var(--warn)">EM-CCD（読み出し雑音は消えるが F² = 2）</text>
+          <path d="M100 76 H120" stroke="var(--ink-3)" stroke-width="1.6" stroke-dasharray="5 4" fill="none"/><text x="126" y="80" fill="var(--ink-3)">破線: 背景光 5 e⁻/画素 がある場合</text>
+          <text x="354" y="190" fill="var(--ink-2)">交差点 S = 9σ²ᵣ ≈ 23 e⁻（背景なし）</text>
+          <text x="550" y="118" fill="var(--electron-2)">この設計: 245 e⁻・SNR 13.9</text>
+        </g>
+        <g font-family="var(--mono)" font-size="9.5" fill="var(--ink-3)">
+          <text x="84" y="204" text-anchor="end">0.1</text><text x="84" y="154" text-anchor="end">1</text><text x="84" y="104" text-anchor="end">10</text><text x="84" y="54" text-anchor="end">100</text>
+          <text x="90" y="216" text-anchor="middle">1</text><text x="280" y="216" text-anchor="middle">10</text><text x="470" y="216" text-anchor="middle">100</text><text x="660" y="216" text-anchor="middle">1000</text>
+        </g>
+        <text x="375" y="236" font-size="10" fill="var(--ink-3)" text-anchor="middle">1 つの輝点の信号 S（e⁻、10 ms あたり）→　　縦軸: SN 比</text>
+      </svg>
+    </div>
+    <figcaption>曲線は本文の 2 つの式そのものです。<span class="key">交差点の位置は読み出し雑音と画素数で決まり、背景光があると EM-CCD の出番は消える</span>。第5部 04 で「sCMOS が主流、EM-CCD は極限の暗さ専用」と書いた住み分けの、数字の中身です。</figcaption>
+  </figure>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — 仮定を変えると、結論はどう動くか</span>
+    <p>① <b>読み出し雑音</b>を 1.6 → 1.0 e⁻ にすると、交差点は 23 → <b>9 電子</b>に下がり、sCMOS の守備範囲が広がる。② <b>輝点の画素数</b>を 9 → 25（細かく標本化）にすると、交差点は 64 電子に上がる ― 細かい標本化は暗いところで損をする。③ <b>背景</b>は EM-CCD に不利に効く（F² が背景のショット雑音も 2 倍にする）。④ 光子計数モード（増倍した出力をしきい値で 0/1 に切る使い方）にすると F² の不利は消えるが、1 画素 1 フレームで 1 個までしか数えられないので、ごく暗いときだけ使える。結論を左右する順は、背景 ＞ 読み出し雑音 ＞ 画素数。<b>背景を実測してから選ぶ</b>のが正しい順番です。</p>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（03 雑音と選定）</span>
+    <p><b>問.</b> 背景が無く、輝点の信号が 2.45 電子（10 倍暗い色素で、さらに 10 倍短い 1 ms の露光）のとき、sCMOS と EM-CCD の SN 比は？ どちらを選ぶか。</p>
+    <p><b>解.</b> sCMOS: 2.45/√(2.45 + 23) = <b>0.49</b>。EM-CCD: 2.45/√(2 × 2.45) = <b>1.11</b>。EM-CCD が 2 倍以上良い ― 交差点（23 電子）より暗いから。ただし SN 比 1 では輝点はほとんど見えないので、要求（SN 比 10）を満たすには、どちらを選んでも露光か明るさを約 80 倍にする必要がある。<span class="key">部品の選定は、要求を満たせる範囲の中でしか意味がない</span>。</p>
+  </div>
+</section>
+
+<!-- ================= 04 ================= -->
+<section class="stage" id="s4">
+  <div class="stage-head"><span class="stage-num">04</span>
+    <h2>題材 A-3 読み出し・データ・冷却 ― カメラの残りの半分</h2></div>
+  <p class="lede">センサを選んだら、残りは「その性能を殺さずに外へ出す」仕事です。AD 変換のビット数、データの量と伝送、暗電流と冷却、そして長く使えるか。どれも別の部で導いた式で決まります。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>AD 変換 ― ビット数は雑音の床で決める</h3>
+      <p>飽和電荷 30,000 e⁻、読み出し雑音 1.6 e⁻ なら、ダイナミックレンジは 20 log(30,000/1.6) = <b>85.5 dB</b>。16 ビットの ADC なら 1 LSB = 30,000/65,536 = <b>0.46 e⁻</b>で、量子化の雑音 LSB/√12 = 0.13 e⁻ は読み出し雑音 1.6 e⁻ に比べて小さい（第4部 06・第6部 09）。<span class="key">1 LSB を読み出し雑音より小さくする</span>のが、ビット数を決める目安です。PTC（第4部）で、この 0.46 e⁻/DN を実測で確かめます。</p>
+      <h3>暗電流 ― 露光の長さで効き方が変わる</h3>
+      <p>冷却した sCMOS の暗電流を 0.5 e⁻/画素/秒と仮定すると、10 ms の露光では 0.005 e⁻ で無視できる。1 秒の露光でも 0.5 e⁻。10 秒になると 5 e⁻ で読み出し雑音（1.6 e⁻）の二乗 2.6 を超えて支配項になる ― <b>長い露光のときだけ冷却の効きが見える</b>。暗電流は温度でおよそ指数関数的に増える（第2部 03、生成電流で約 9 ℃ ごとに 2 倍）ので、冷却の目標温度は露光の長さから決まります。</p>
+    </div>
+    <div class="body-col">
+      <h3>データの量と伝送</h3>
+      <p>2048 × 2048 画素 × 16 ビット × 100 枚/秒 = <b>6.7 Gb/s</b>。USB 3（Gen 1、5 Gb/s）では足りず、1 本 12.5 Gb/s の CoaXPress（CXP-12）なら 1 本で収まる。高速の差動の配線（第6部 11）と、パソコン側の取り込みの帯域・記録の容量まで含めて設計する（1 分で 50 GB）。<span class="key">速いカメラの限界は、しばしばセンサではなく伝送と記録</span>です。</p>
+      <h3>冷却と放熱</h3>
+      <p>センサを室温から 40 K 冷やす。Q<sub>max</sub> 10 W・ΔT<sub>max</sub> 70 K の TEC なら、吸える熱は 10 × (1 − 40/70) = <b>4.3 W</b>（第8部 05 の直線）で、センサの発熱と周りからの熱の流れ込み（合わせて 1〜2 W と仮定）に余裕がある。TEC の熱い側には吸った熱と TEC の電力が出るので、放熱器の熱抵抗（第8部 04）が冷却の性能を最後に決めます。ファンと TEC は摩耗する部品で、寿命の見積もりは第8部 02・03 の加速とワイブルで行います。</p>
+    </div>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（04 読み出し・データ・冷却）</span>
+    <p><b>問.</b> 同じカメラで、画素を 2×2 まとめて読む（ビニング）と、1 輝点の SN 比とデータ量はどうなるか。読み出し雑音は 4 画素を足した後に 1 回だけ乗る（CCD の電荷の足し合わせ）場合と、4 画素をそれぞれ読んでから足す（CMOS のデジタルの足し合わせ）場合で比べよ。</p>
+    <p><b>解.</b> 輝点の 9 画素は約 2.25 個（端数は切り上げて 3 個）のまとめた画素になる。電荷の足し合わせなら読み出し雑音は 3 × 1.6² = 7.7 で、SNR = 245/√(245 + 45 + 7.7) = <b>14.2</b>（わずかに良くなる）。デジタルの足し合わせでは読み出し雑音は元の 9 画素ぶん（23）と変わらず SNR 13.9 のまま。データ量はどちらも <b>1/4</b>（1.7 Gb/s）。<span class="key">CMOS のビニングは主にデータを減らす手段で、雑音の得は CCD ほど大きくない</span>。この明るさでは支配項がショット雑音なので、どちらでも SN 比はほとんど変わりません。</p>
+  </div>
+</section>
+
+
+<!-- ================= 05 ================= -->
+<section class="stage" id="s5">
+  <div class="stage-head"><span class="stage-num">05</span>
+    <h2>題材 B-1 LiDAR ― 戻ってくる光子を数える</h2></div>
+  <p class="lede">要求: <b>反射率 10% の暗い物体を、200 m 先まで、距離の精度 数 cm で測る</b>。光源は 940 nm のパルスの VCSEL、受光は SPAD（第4部・第9部）。最初の問いは、1 回のパルスで何個の光子が戻ってくるかです。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>出す光子と、戻る割合</h3>
+      <p>尖頭値 20 W・幅 5 ns のパルス 1 回のエネルギーは 100 nJ。940 nm の光子 1 個は 1.32 eV なので、<b>4.73×10¹¹ 個</b>。光が全部物体に当たり、物体が光を全方向に一様な明るさで散らす（ランバート面、第7部 03）とすると、距離 R の受光口（直径 25 mm、面積 4.91 cm²）に戻る割合は</p>
+      <div class="eq">ρ/π × A / R²　（200 m で 3.9×10⁻¹⁰）</div>
+      <p>受光の光学系の透過 0.8 と SPAD の検出効率 0.2 を掛けると、<b>200 m で 29.6 個</b>、100 m で 118 個、50 m で 473 個が検出される（1 パルスあたり）。<span class="key">距離が 2 倍で 1/4</span> ― 第7部 02 の逆二乗が、往きではなく帰りに効いています（往きは細いビームなので広がらないと仮定）。</p>
+    </div>
+    <div class="body-col">
+      <h3>時間の目盛り</h3>
+      <p>200 m を往復する時間は 2R/c = <b>1.33 µs</b>。時間の目盛り（TDC のビン）1 ns は距離で c × 1 ns / 2 = <b>15 cm</b>。パルスの繰り返しが 100 kHz なら、次のパルスまでに光が往復できる距離は c/(2f) = <b>1.5 km</b> なので、200 m の物体の反射を次のパルスと取り違えることはない（あいまいさのない距離）。</p>
+      <p>SPAD は 1 個の光子で鳴るが、鳴ったあと約 10 ns は次の光子に応えない（<b>不感時間</b>）。1 パルスで 29.6 個の光子が 5 ns の中に来ても、1 個の SPAD は 1 回しか数えられないので、<b>複数の SPAD を束ねたマクロ画素</b>で数えるのがふつうです（第4部 SPAD）。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">RANGE BUDGET — 信号は 1/R²、背景光は距離によらない</span><span class="fig-title">両対数・1 パルスあたりの検出数</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 244" role="img" aria-label="距離に対する検出光子数の両対数グラフ。反射の信号は距離の2乗に反比例して減り、200メートルで1パルスあたり29.6個。背景光は5ナノ秒の窓あたりの数で、最初の設計では1.08個、改善後は0.135個の水平線で、距離によらない。" style="min-width:700px;width:100%;display:block">
+        <g stroke="var(--line)" stroke-width="1" fill="none"><path d="M90 50 V200 H650"/><path d="M90 157.1 H650 M90 114.3 H650 M90 71.4 H650 M270.9 50 V200 M469.2 50 V200" stroke-dasharray="2 4"/></g>
+        <path d="M90.0 69.9 L99.3 70.9 L108.7 72.0 L118.0 73.0 L127.3 74.1 L136.7 75.1 L146.0 76.2 L155.3 77.3 L164.7 78.3 L174.0 79.4 L183.3 80.4 L192.7 81.5 L202.0 82.5 L211.3 83.6 L220.7 84.6 L230.0 85.7 L239.3 86.7 L248.7 87.8 L258.0 88.9 L267.3 89.9 L276.7 91.0 L286.0 92.0 L295.3 93.1 L304.7 94.1 L314.0 95.2 L323.3 96.2 L332.7 97.3 L342.0 98.4 L351.3 99.4 L360.7 100.5 L370.0 101.5 L379.3 102.6 L388.7 103.6 L398.0 104.7 L407.3 105.7 L416.7 106.8 L426.0 107.9 L435.3 108.9 L444.7 110.0 L454.0 111.0 L463.3 112.1 L472.7 113.1 L482.0 114.2 L491.3 115.2 L500.7 116.3 L510.0 117.3 L519.3 118.4 L528.7 119.5 L538.0 120.5 L547.3 121.6 L556.7 122.6 L566.0 123.7 L575.3 124.7 L584.7 125.8 L594.0 126.8 L603.3 127.9 L612.7 129.0 L622.0 130.0 L631.3 131.1 L640.7 132.1 L650.0 133.2" stroke="var(--photon)" stroke-width="2.4" fill="none"/>
+        <path d="M90 156.4 H650" stroke="var(--warn)" stroke-width="1.6" stroke-dasharray="6 4" fill="none"/>
+        <path d="M90 175.8 H650" stroke="var(--digital)" stroke-width="1.6" stroke-dasharray="6 4" fill="none"/>
+        <circle cx="583.3" cy="125.6" r="4.5" fill="var(--photon)"/>
+        <g font-size="10">
+          <text x="100" y="60" fill="var(--photon-2)">反射の信号（検出、1 パルスあたり）∝ 1/R²</text>
+          <text x="590" y="118" fill="var(--photon-2)">200 m で 29.6 個</text>
+          <text x="650" y="150" fill="var(--warn)" text-anchor="end">背景光・最初の設計（20 nm・0.1°）: 1.08 個</text>
+          <text x="650" y="170" fill="var(--digital)" text-anchor="end">背景光・改善後（10 nm・0.05°）: 0.135 個</text>
+        </g>
+        <g font-family="var(--mono)" font-size="9.5" fill="var(--ink-3)">
+          <text x="84" y="204" text-anchor="end">0.01</text><text x="84" y="161" text-anchor="end">1</text><text x="84" y="118" text-anchor="end">100</text><text x="84" y="75" text-anchor="end">10⁴</text>
+          <text x="90" y="216" text-anchor="middle">10</text><text x="270.9" y="216" text-anchor="middle">30</text><text x="469.2" y="216" text-anchor="middle">100</text><text x="650" y="216" text-anchor="middle">300</text>
+        </g>
+        <text x="370" y="236" font-size="10" fill="var(--ink-3)" text-anchor="middle">距離 R（m）→　　背景光は反射の山と同じ 5 ns の窓の中の数</text>
+      </svg>
+    </div>
+    <figcaption>信号の線と背景光の線の間の距離が、1 パルスでの見分けやすさです。遠くへ行くほど信号は下がるが、背景光は下がらない ― <span class="key">最大の測定距離を決めるのは、たいてい背景光</span>です。次の章で、最初の設計がこの背景光でつまずくことを確かめます。</figcaption>
+  </figure>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（05 戻ってくる光子）</span>
+    <p><b>問.</b> 同じ装置で、反射率 80% の白い物体なら 200 m で何個戻るか。反射率 10% の物体を 29.6 個のまま 300 m で測るには、パルスのエネルギーを何倍にする必要があるか。</p>
+    <p><b>解.</b> 反射率に比例するので 29.6 × 8 = <b>237 個</b>。300 m では (300/200)² = 2.25 倍遠い損なので、エネルギーは <b>2.25 倍</b>（225 nJ）。ただしパルスのエネルギーと平均の出力は目の安全のクラスで上限が決まる（07）ので、<span class="key">距離を延ばす方法は「強く出す」より「大きく受ける・背景を減らす」</span>が先になります。</p>
+  </div>
+</section>
+
+<!-- ================= 06 ================= -->
+<section class="stage" id="s6">
+  <div class="stage-head"><span class="stage-num">06</span>
+    <h2>題材 B-2 背景光と SPAD の飽和 ― 最初の設計はここでつまずく</h2></div>
+  <p class="lede">昼の屋外では、物体を照らす太陽光も同じ波長で戻ってきます。狭帯域のフィルタ（第7部 10）と、1 画素が見る狭い視野で減らしますが、それでも SPAD を埋めてしまうことがある。数字で確かめます。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>背景光の数え方</h3>
+      <p>物体を照らす太陽光の 940 nm 付近の分光放射照度を <b>0.3 W/(m²·nm)</b> と仮定します（実際の値は天気・時刻・大気の水蒸気で大きく変わる。940 nm は水蒸気の吸収帯にあり、905 nm より太陽光が弱い。標準の太陽光スペクトルは ASTM G173 などの表で引く）。フィルタの幅 Δλ、1 画素の視野の立体角 Ω（瞬時視野 0.1° 四方なら 3.05×10⁻⁶ sr）で、受光口に入る背景光の電力は</p>
+      <div class="eq">P<sub>bg</sub> = E<sub>sun</sub>·Δλ · ρ/π · A · Ω</div>
+      <p>最初の設計（Δλ = 20 nm・0.1°）で P<sub>bg</sub> = 2.9×10⁻¹⁰ W、光学系と検出効率を掛けて<b>毎秒 2.16×10⁸ カウント</b>。1 ns のビンあたり 0.22 個、200 m の往復の 1.33 µs の中に 288 個。</p>
+    </div>
+    <div class="body-col">
+      <h3>SPAD の飽和 ― r·τ<sub>d</sub> が 1 を超えると</h3>
+      <p>不感時間 τ<sub>d</sub> = 10 ns の SPAD に毎秒 r 個の光子が来ると、数えられるのはおよそ r/(1 + r·τ<sub>d</sub>)（不感時間の間に来た光子を無視する型）。最初の設計では r·τ<sub>d</sub> = <b>2.16</b> で、SPAD は時間の 2/3 以上を不感時間として過ごし、実際に数えるのは 6.8×10⁷ /s。しかも早く来た背景光で鳴ってしまうと、遅れて来る遠くの反射に応えられない（<b>パイルアップ</b>、第5部 06）。<span class="key">遠い物体ほど見えなくなる</span> ― 最初の設計は昼の屋外では失格です。</p>
+      <p>改善: フィルタを 10 nm に（÷2）、瞬時視野を 0.05° 四方に（÷4）すると、背景光は 1/8 の <b>2.7×10⁷ /s</b>、r·τ<sub>d</sub> = 0.27。信号は受光口の面積だけで決まるので変わらない。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">HISTOGRAM — 100 回のパルスを積むと、反射の山が床から立つ</span><span class="fig-title">改善後の設計・200 m・縦軸は対数</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 220" role="img" aria-label="到着時刻のヒストグラム。横軸は1ナノ秒のビン、縦軸はカウントの対数。背景光による床は1ビンあたり約2.7カウントで平らに散らばり、200メートルの反射の位置に約2960カウントの山が立っている。" style="min-width:700px;width:100%;display:block">
+        <g stroke="var(--line)" stroke-width="1" fill="none"><path d="M80 40 V190 H700"/></g>
+        <rect x="81" y="158.5" width="8" height="31.5" fill="var(--ink-3)" opacity="0.8"/><rect x="91" y="162.9" width="8" height="27.1" fill="var(--ink-3)" opacity="0.8"/><rect x="101" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect x="111" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect x="121" y="168.5" width="8" height="21.5" fill="var(--ink-3)" opacity="0.8"/><rect x="131" y="168.5" width="8" height="21.5" fill="var(--ink-3)" opacity="0.8"/><rect x="141" y="162.9" width="8" height="27.1" fill="var(--ink-3)" opacity="0.8"/><rect x="151" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect x="161" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect x="171" y="162.9" width="8" height="27.1" fill="var(--ink-3)" opacity="0.8"/><rect x="181" y="155.0" width="8" height="35.0" fill="var(--ink-3)" opacity="0.8"/><rect x="191" y="190.0" width="8" height="0.0" fill="var(--ink-3)" opacity="0.8"/><rect x="201" y="168.5" width="8" height="21.5" fill="var(--ink-3)" opacity="0.8"/><rect x="211" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect x="221" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect x="231" y="190.0" width="8" height="0.0" fill="var(--ink-3)" opacity="0.8"/><rect x="241" y="190.0" width="8" height="0.0" fill="var(--ink-3)" opacity="0.8"/><rect x="251" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect x="261" y="168.5" width="8" height="21.5" fill="var(--ink-3)" opacity="0.8"/><rect x="271" y="168.5" width="8" height="21.5" fill="var(--ink-3)" opacity="0.8"/><rect x="281" y="162.9" width="8" height="27.1" fill="var(--ink-3)" opacity="0.8"/><rect x="291" y="168.5" width="8" height="21.5" fill="var(--ink-3)" opacity="0.8"/><rect x="301" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect x="311" y="158.5" width="8" height="31.5" fill="var(--ink-3)" opacity="0.8"/><rect x="321" y="162.9" width="8" height="27.1" fill="var(--ink-3)" opacity="0.8"/><rect x="331" y="162.9" width="8" height="27.1" fill="var(--ink-3)" opacity="0.8"/><rect x="341" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect x="351" y="162.9" width="8" height="27.1" fill="var(--ink-3)" opacity="0.8"/><rect x="361" y="168.5" width="8" height="21.5" fill="var(--ink-3)" opacity="0.8"/><rect x="371" y="152.0" width="8" height="38.0" fill="var(--ink-3)" opacity="0.8"/><rect x="391" y="168.5" width="8" height="21.5" fill="var(--ink-3)" opacity="0.8"/><rect x="401" y="158.5" width="8" height="31.5" fill="var(--ink-3)" opacity="0.8"/><rect x="411" y="168.5" width="8" height="21.5" fill="var(--ink-3)" opacity="0.8"/><rect x="421" y="139.9" width="8" height="50.1" fill="var(--photon)" opacity="0.8"/><rect x="431" y="118.9" width="8" height="71.1" fill="var(--photon)" opacity="0.8"/><rect x="441" y="100.4" width="8" height="89.6" fill="var(--photon)" opacity="0.8"/><rect x="451" y="85.7" width="8" height="104.3" fill="var(--photon)" opacity="0.8"/><rect x="461" y="75.0" width="8" height="115.0" fill="var(--photon)" opacity="0.8"/><rect x="471" y="68.6" width="8" height="121.4" fill="var(--photon)" opacity="0.8"/><rect x="481" y="66.4" width="8" height="123.6" fill="var(--photon)" opacity="0.8"/><rect x="491" y="68.6" width="8" height="121.4" fill="var(--photon)" opacity="0.8"/><rect x="501" y="75.0" width="8" height="115.0" fill="var(--photon)" opacity="0.8"/><rect x="511" y="85.7" width="8" height="104.3" fill="var(--photon)" opacity="0.8"/><rect x="521" y="100.4" width="8" height="89.6" fill="var(--photon)" opacity="0.8"/><rect x="531" y="118.9" width="8" height="71.1" fill="var(--photon)" opacity="0.8"/><rect x="541" y="139.9" width="8" height="50.1" fill="var(--photon)" opacity="0.8"/><rect x="551" y="168.5" width="8" height="21.5" fill="var(--ink-3)" opacity="0.8"/><rect x="561" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect x="571" y="155.0" width="8" height="35.0" fill="var(--ink-3)" opacity="0.8"/><rect x="581" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect x="591" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect x="601" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect x="611" y="190.0" width="8" height="0.0" fill="var(--ink-3)" opacity="0.8"/><rect x="621" y="168.5" width="8" height="21.5" fill="var(--ink-3)" opacity="0.8"/><rect x="631" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect x="641" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect x="651" y="162.9" width="8" height="27.1" fill="var(--ink-3)" opacity="0.8"/><rect x="661" y="162.9" width="8" height="27.1" fill="var(--ink-3)" opacity="0.8"/><rect x="671" y="162.9" width="8" height="27.1" fill="var(--ink-3)" opacity="0.8"/><rect x="681" y="168.5" width="8" height="21.5" fill="var(--ink-3)" opacity="0.8"/><rect x="691" y="190.0" width="8" height="0.0" fill="var(--ink-3)" opacity="0.8"/>
+        <g font-size="10">
+          <text x="90" y="140" fill="var(--ink-2)">背景の床（1 ns あたり約 2.7 カウント）</text>
+          <text x="420" y="54" fill="var(--photon-2)">反射の山（合計 2,960 カウント、σ ≈ 2.1 ns）</text>
+        </g>
+        <g font-family="var(--mono)" font-size="9.5" fill="var(--ink-3)">
+          <text x="74" y="194" text-anchor="end">1</text><text x="74" y="149" text-anchor="end">10</text><text x="74" y="104" text-anchor="end">100</text><text x="74" y="59" text-anchor="end">1000</text>
+        </g>
+        <text x="390" y="210" font-size="10" fill="var(--ink-3)" text-anchor="middle">到着時刻（1 目盛り ＝ 1 ns ＝ 15 cm）→　　山の位置 1.33 µs ＝ 200 m</text>
+      </svg>
+    </div>
+    <figcaption>1 回のパルスでは山は 29.6 個・床は 5 ビンで 0.135 個で、SN 比は 29.6/√(29.6 + 0.14) = <b>5.4</b>。100 回積むと信号も床も 100 倍になり、SN 比は √100 = 10 倍の <b>54</b>。第5部 06 の TCSPC と同じ「くじ引きを積むと形が浮かぶ」です。図の床のばらつきは、平均 2.7 のポアソン分布から作った一例です。</figcaption>
+  </figure>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — 背景光への、ほかの対策</span>
+    <p>① <b>同時計数</b>: マクロ画素の中の複数の SPAD が、数 ns の中に同時に鳴ったときだけ数える。反射の光子はパルスの中に集まって来るが、背景光はばらばらに来るので、偶然の一致の割合は背景の率の 2 乗で小さくなる。② <b>時間のゲート</b>: 測りたい距離の範囲の時間だけ SPAD を有効にし、それ以外の時間の背景光で不感時間を使わない。③ <b>波長</b>: 1,550 nm は太陽光がさらに弱く、目の安全の上限も大きい（第8部 12）が、シリコンでは感じないので InGaAs の検出器が要る（第5部 05）。どれも「信号は時間と方向に集まっていて、背景は散らばっている」性質を使っています。</p>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（06 背景光と飽和）</span>
+    <p><b>問.</b> 改善後の設計（背景 2.7×10⁷ /s）で、不感時間を 10 ns から 40 ns に延ばした SPAD を使うと r·τ<sub>d</sub> はいくつか。夜（背景を 1/1000 と仮定）なら？</p>
+    <p><b>解.</b> 2.7×10⁷ × 40×10⁻⁹ = <b>1.08</b> ― 再び飽和の領域に入る。夜なら 2.7×10⁴ /s × 40 ns = <b>0.001</b> で問題にならない。<span class="key">同じ装置が昼に失格で夜に合格する</span> ― LiDAR の性能表に「照度 何 lx の下で」と条件が書かれる理由です。</p>
+  </div>
+</section>
+
+<!-- ================= 07 ================= -->
+<section class="stage" id="s7">
+  <div class="stage-head"><span class="stage-num">07</span>
+    <h2>題材 B-3 距離の精度・速さ・目の安全</h2></div>
+  <p class="lede">山が立ったら、次は「山の位置をどれだけ正確に読めるか」「1 枚の距離の画像を何秒で撮れるか」、そして「その光を人に向けてよいか」です。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>距離の精度 ― 光子を集めるほど細かく</h3>
+      <p>1 個の光子の到着時刻のばらつきは、パルスの幅（5 ns の半値幅 → 標準偏差 5/2.355 = 2.12 ns）と SPAD と TDC の揺らぎ（100 ps と仮定）の二乗和で <b>2.13 ns</b>、距離で c·σ/2 = <b>32 cm</b>。山の重心を N 個の光子で求めると、ばらつきは 1/√N で縮む（第0部 02）: 30 個で <b>5.8 cm</b>、300 個で 1.8 cm、3,000 個で <b>0.58 cm</b>（背景が無視できる理想の場合）。<span class="key">要求の「数 cm」は、1 パルスでは届かず、10〜100 パルスを積んで届く</span>。短いパルスの光源（第9部 09）にすれば、同じ光子数でさらに細かくなります。</p>
+    </div>
+    <div class="body-col">
+      <h3>速さ ― 1 点 1 ms の壁</h3>
+      <p>100 パルスを 100 kHz で積むと、1 点に <b>1 ms</b>、1 秒に 1,000 点。100 × 100 点の距離の画像を 1 点ずつ走査すると <b>10 秒</b>かかり、動くものは撮れない。だから実際の LiDAR は、多数の SPAD を並べたセンサで<b>多数の点を同時に</b>測る（フラッシュ型・多ビーム型）か、繰り返しを上げる。繰り返しを上げると、あいまいさのない距離（c/2f）が縮み、平均の出力が上がって目の安全の上限に近づく ― ここでも両側から閉じる窓です。</p>
+    </div>
+  </div>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>目の安全 ― 940 nm は網膜に届く</h3>
+      <p>400〜1,400 nm の光は、目のレンズで網膜に集められるので、見えない近赤外でも網膜に危険です（第8部 12）。LiDAR を人のいる場所で使うにはふつうクラス 1 が求められ、パルスのエネルギー・繰り返し・平均の出力・ビームの広がりの組み合わせを、IEC 60825-1 の手順（複数パルスの規則を含む）で被ばく放出限界（AEL）と比べて確かめます。この部では AEL の数値そのものは計算しません ― <span class="key">規格の手順で必ず計算し直す項目</span>だからです。1,550 nm は網膜に届かないので上限がずっと大きく、長距離の LiDAR が 1,550 nm を選ぶ理由のひとつになっています。</p>
+    </div>
+    <div class="body-col">
+      <h3>信頼性 ― 車に載せるなら</h3>
+      <p>VCSEL の寿命は電流と温度の加速で見積もり（第8部 02 のアレニウス、第9部 11 の APC の電流の増加が予兆）、SPAD の暗計数は温度で指数関数的に増える（第5部 03）。車載では −40〜125 ℃ の温度の範囲と温度サイクル（第8部 08 の AEC-Q100 系の考え方）が要求され、窓の汚れ・雨・霧で信号が減るぶんの余裕も予算表に入れておく必要があります。</p>
+    </div>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（07 精度と速さ）</span>
+    <p><b>問.</b> 要求を「200 m で精度 2 cm」にすると、何個の光子を集めればよいか。1 パルス 29.6 個なら何パルスで、100 kHz で何 ms かかるか。</p>
+    <p><b>解.</b> 32 cm/√N ≤ 2 cm から N ≥ (32/2)² = <b>256 個</b>。256/29.6 = 8.7 なので <b>9 パルス</b>、0.09 ms。暗い物体でも精度の要求は満たせるが、実際には背景光と、物体の傾き（パルスが時間的に広がる）で理想より悪くなるので、余裕を 2〜3 倍見込むのがふつうです。</p>
+  </div>
+</section>
+
+<!-- ================= 08 ================= -->
+<section class="stage" id="s8">
+  <div class="stage-head"><span class="stage-num">08</span>
+    <h2>題材 C-1 分光器 ― 光学の設計</h2></div>
+  <p class="lede">要求: <b>400〜1,000 nm を、分解能 2.5 nm 以下で、512 画素（1 画素 25 µm、全長 12.8 mm）のシリコンのラインセンサで一度に測る</b>。焦点距離 50 mm のツェルニー・ターナー型（第7部 11）で、格子の本数・角度・スリットの幅を決めます。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>格子の本数 ― 範囲をセンサの長さに合わせる</h3>
+      <p>600 nm の範囲を 12.8 mm に収めるには、逆線分散が 600/12.8 ≈ 47 nm/mm 以上要る。dλ/dx = d·cos β/(m·f) から d ≈ 47 × 50 = 2,350 nm、つまり約 425 本/mm。手に入りやすい <b>400 本/mm</b>（d = 2,500 nm）を選ぶと、逆線分散は約 <b>50 nm/mm</b>。</p>
+      <p>入射角 α = 15° で格子方程式 mλ = d(sin α + sin β) を解くと、回折角は 400 nm で −5.7°、700 nm で 1.2°、1,000 nm で 8.1°。センサの上の位置 x = f·tan(β − β<sub>700</sub>) は 400 nm で <b>−6.04 mm</b>、1,000 nm で <b>+6.05 mm</b>、全長 12.1 mm でセンサ（12.8 mm）に収まります。</p>
+    </div>
+    <div class="body-col">
+      <h3>スリットと分解能</h3>
+      <p>1 画素 25 µm は 50 nm/mm × 0.025 mm = <b>1.25 nm</b>。スリットの像（倍率 1 と仮定）も 25 µm にすると 1.25 nm で、2 本の線を見分けるにはおよそ 2 画素ぶん要るので、分解能は約 <b>2.5 nm</b> ― 要求ぎりぎりです。格子そのものの分解能は、幅 10 mm を照らして 4,000 本なら R = 4,000（700 nm で 0.18 nm）で、要求の R = 700/2.5 = 280 よりずっと大きい ― <span class="key">分解能を決めているのは格子ではなく、スリットと画素</span>（第7部 11 の結論と同じ）。</p>
+      <p>スリットを 50 µm に広げると光は 2 倍入るが、分解能は約 2.5〜3 nm に悪化する。明るさと分解能の取り合いを、要求で決めます。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">SENSOR MAP — どの波長が、センサのどこに来るか</span><span class="fig-title">400 本/mm・α = 15°・f = 50 mm（格子方程式から計算）</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 200" role="img" aria-label="512画素のラインセンサ（全長12.8ミリメートル）の上に、400から1000ナノメートルの波長が並ぶ位置。800から1000ナノメートルの位置には、2次の回折で400から500ナノメートルの光も重なって来るので、次数カットフィルタが必要な範囲として示されている。" style="min-width:700px;width:100%;display:block">
+        <rect x="92" y="90" width="576" height="20" fill="var(--surface-3)"/>
+        <path d="M108.3 84 V112" stroke="var(--ink-2)" stroke-width="1.4" fill="none"/><text x="108.3" y="76" font-family="var(--mono)" font-size="9.5" fill="var(--ink-2)" text-anchor="middle">400</text><path d="M199.5 84 V112" stroke="var(--ink-2)" stroke-width="1.4" fill="none"/><text x="199.5" y="76" font-family="var(--mono)" font-size="9.5" fill="var(--ink-2)" text-anchor="middle">500</text><path d="M289.9 84 V112" stroke="var(--ink-2)" stroke-width="1.4" fill="none"/><text x="289.9" y="76" font-family="var(--mono)" font-size="9.5" fill="var(--ink-2)" text-anchor="middle">600</text><path d="M380.0 84 V112" stroke="var(--ink-2)" stroke-width="1.4" fill="none"/><text x="380.0" y="76" font-family="var(--mono)" font-size="9.5" fill="var(--ink-2)" text-anchor="middle">700</text><path d="M470.1 84 V112" stroke="var(--ink-2)" stroke-width="1.4" fill="none"/><text x="470.1" y="76" font-family="var(--mono)" font-size="9.5" fill="var(--ink-2)" text-anchor="middle">800</text><path d="M560.8 84 V112" stroke="var(--ink-2)" stroke-width="1.4" fill="none"/><text x="560.8" y="76" font-family="var(--mono)" font-size="9.5" fill="var(--ink-2)" text-anchor="middle">900</text><path d="M652.4 84 V112" stroke="var(--ink-2)" stroke-width="1.4" fill="none"/><text x="652.4" y="76" font-family="var(--mono)" font-size="9.5" fill="var(--ink-2)" text-anchor="middle">1000</text>
+        <rect x="470.1" y="116" width="182.2" height="12" fill="var(--warn)" opacity="0.45"/>
+        <g font-size="10">
+          <text x="561.3" y="146" fill="var(--warn)" text-anchor="middle">ここには 2 次の 400〜500 nm も来る → 次数カットフィルタ</text>
+          <text x="92" y="176" fill="var(--ink-2)">1 画素 25 µm ＝ 1.25 nm　　全 512 画素 ＝ 12.8 mm</text>
+          <text x="92" y="36" fill="var(--ink-2)">波長（nm）</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>波長の並びは、格子方程式の sin と、センサ上の位置の tan のために、厳密には等間隔ではありません（端で数 % ずれる）。だから波長と画素の対応は、1 本の直線ではなく多項式で校正します（09）。<span class="key">800〜1,000 nm の場所には 2 次の 400〜500 nm が重なる</span>ので、センサのその部分にだけ短い波長を切る膜を付けるのが定番の対策です。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>光の入り方 ― ファイバとスリット</h3>
+      <p>コア 200 µm・NA 0.22 のファイバの光を幅 25 µm のスリットに入れると、スリットが切り出すのはコアの面積の 25 × 200 / (π/4 × 200²) = <b>16%</b>（一様に光っていると仮定）。さらに分光器の明るさが f/4（NA 0.125）なら、NA 0.22 で出てくる光のうち受けられるのは角度で (0.125/0.22)² ≈ <b>32%</b>。合わせて約 5% ― <span class="key">分光器の明るさは、エテンデュ（第7部 06）の関所で決まる</span>。明るさが足りなければ、スリットを高くする（センサの画素の高さまで）・分光器の f 数を明るくする、が先で、ファイバを太くしても幅の関所は変わりません。</p>
+    </div>
+    <div class="body-col">
+      <h3>迷光と次数の重なり</h3>
+      <p>400〜1,000 nm は 2 倍以上の範囲なので、次数の重なり（第7部 11）が必ず起きる: 2 次の 400〜500 nm が 1 次の 800〜1,000 nm と同じ場所に来る。上の図の範囲にだけ、500 nm 以下を切るフィルタを置く。迷光（格子や鏡の散乱で関係ない場所に散る光）が 10⁻³ あると、吸光度を測るとき、試料が光をほとんど通さなくなっても迷光の分は残るので、測れる吸光度の上限は約 −log₁₀(10⁻³) = <b>3</b> で頭打ちになる。濃い試料を測るなら、迷光の小さい格子（ホログラフィック格子）や 2 段の分光が要ります。</p>
+    </div>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（08 光学の設計）</span>
+    <p><b>問.</b> 同じセンサで 400〜700 nm だけを 1 nm 以下の分解能で測りたい。格子の本数とスリットの幅はどうするか（f = 50 mm のまま）。</p>
+    <p><b>解.</b> 300 nm を 12.8 mm に収めるには 300/12.8 ≈ 23 nm/mm で、d ≈ 23 × 50 ≈ 1,170 nm、約 <b>850 本/mm</b>（入手しやすい 900 本/mm なら約 22 nm/mm で、300 nm の範囲は約 13.5 mm とセンサより少し長くなるので、範囲を少し狭めるか角度で調整する）。1 画素は 22 × 0.025 ≈ 0.55 nm、スリット 25 µm で分解能は約 1.1 nm ― 1 nm 以下には、スリットを 20 µm 程度に絞るか、焦点距離を延ばす。<span class="key">範囲を半分にすると、同じセンサで分解能は約 2 倍</span>になる、という取り合いです。</p>
+  </div>
+</section>
+
+<!-- ================= 09 ================= -->
+<section class="stage" id="s9">
+  <div class="stage-head"><span class="stage-num">09</span>
+    <h2>題材 C-2 分光器 ― 検出・校正・不確かさ</h2></div>
+  <p class="lede">光学が決まったら、残りは「何を読むか」と「その読みがどれだけ正しいか」です。シリコンの感度の波長の偏り、波長の目盛りの校正、そして吸光度の雑音の予算。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>シリコンの感度 ― 両端で落ちる</h3>
+      <p>シリコンの吸収の深さ（1/α）は、400 nm で約 <b>0.1 µm</b>、1,000 nm で約 <b>156 µm</b>（第2部 04）。400 nm の光は表面のすぐ近くで吸われるので、表面の不感層（再結合で失われる層）が薄い裏面照射型でないと感度が落ちる。1,000 nm の光は厚さ 10 µm の受光層では 1 − exp(−10/156) = <b>6.2%</b> しか吸われない。<span class="key">同じ 1 本のセンサでも、両端の波長では何倍も暗く見える</span>ので、長い波長は露光を延ばすか、受光層の厚い近赤外向けのセンサを選ぶ。ハロゲンと重水素のランプ（第9部 01・02）の強さの波長の偏りも掛かるので、1 回の露光で全域をちょうどよく測るのは難しく、露光を 2 回に分けることもあります。</p>
+    </div>
+    <div class="body-col">
+      <h3>波長の校正 ― 輝線で目盛りを合わせる</h3>
+      <p>08 の図のとおり、画素と波長の関係は直線ではないので、<b>既知の輝線を複数</b>測って多項式（3 次程度）を当てはめます（第9部 02）。この範囲なら、水銀の 404.66・435.83・546.07・576.96 nm と、アルゴンの 696.54・706.72・763.51・811.53・912.30 nm などが使える。当てはめの残差（線ごとのずれ）が波長の不確かさの 1 成分になる。<b>温度で格子と光学台が伸び縮みして目盛りがずれる</b>ので、校正は使う温度で行い、温度が変わったら確かめ直します。</p>
+    </div>
+  </div>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>吸光度の雑音の予算</h3>
+      <p>吸光度 A = −log₁₀(T)（T は試料を通った光の割合）の雑音は、δA = 0.434 × δT/T。1 画素に 10⁵ 電子を貯めてショット雑音だけなら δT/T = 1/√10⁵ = 0.32%、<b>δA = 0.0014</b>。100 回平均すると 1/√100 で <b>1.4×10⁻⁴</b>。実際には、ランプの揺らぎ（参照の検出器で割る、第9部 02）、暗電流の引き算、迷光（上限 A ≈ 3）、波長のずれ（吸収の坂の上では波長が 0.1 nm ずれるだけで A が変わる）が加わります。</p>
+    </div>
+    <div class="body-col">
+      <h3>不確かさの報告</h3>
+      <p>第8部 10 の作法で、成分を並べます: ① ショット雑音（タイプ A、平均回数で減る）、② 暗電流と迷光の補正の残り（タイプ B）、③ 波長の校正の残差 × 吸収のスペクトルの傾き（感度係数）、④ 光度の目盛り（参照の標準の値）。<span class="key">吸収の山の頂上で測れば ③ はほぼ消え、坂の途中で測ると ③ が支配項になる</span> ― 測る波長の選び方そのものが、不確かさの設計です。</p>
+    </div>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（09 検出と校正）</span>
+    <p><b>問.</b> 吸収のスペクトルの傾きが 0.01 AU/nm の場所で、波長の校正のずれが 0.1 nm あった。吸光度はどれだけずれるか。100 回平均のショット雑音（1.4×10⁻⁴）と比べよ。</p>
+    <p><b>解.</b> 0.01 × 0.1 = <b>0.001 AU</b> ― ショット雑音の約 7 倍で、支配項になる。平均を 1 万回に増やしても（1.4×10⁻⁵）全体はほとんど良くならない。<span class="key">分光の精度は、光子を集めるより先に、波長の目盛りで決まることが多い</span> ― 校正の残差を 0.01 nm 級に詰めるか、吸収の山の頂上で測るのが先です。</p>
+  </div>
+</section>
+
+<!-- ================= 10 ================= -->
+<section class="stage" id="s10">
+  <div class="stage-head"><span class="stage-num">10</span>
+    <h2>振り返り ― 3 つの装置で、何が決め手だったか</h2></div>
+  <p class="lede">3 つの題材の予算表で、それぞれ何が支配項になり、何が設計を決めたかを並べます。<span class="key">決め手は装置ごとに違うが、見つけ方はいつも同じ</span> ― 予算表を書き、最大の項に印を付け、仮定を変えて確かめる。</p>
+  <figure class="full">
+    <div class="scroll-x">
+      <table>
+        <thead><tr><th></th><th>A 微弱光カメラ</th><th>B LiDAR</th><th>C 分光器</th></tr></thead>
+        <tbody>
+          <tr><td>光の予算で一番大きく減る段</td><td>集める角度（×0.31）と露光の時間</td><td>距離の 2 乗（200 m で 3.9×10⁻¹⁰）</td><td>スリットと f 数の関所（合わせて約 5%）</td></tr>
+          <tr><td>雑音の支配項</td><td>信号のショット雑音（明るいとき）／読み出し雑音（暗いとき）</td><td>背景光（昼）</td><td>波長のずれ × 吸収の傾き（坂の上）</td></tr>
+          <tr><td>設計を決めた量</td><td>交差点 S + B = 9σ<sub>r</sub>²</td><td>r·τ<sub>d</sub>（飽和）と 1/√N（精度）</td><td>逆線分散と、次数の重なり</td></tr>
+          <tr><td>最初に実測で確かめる仮定</td><td>背景光と分子の明るさ</td><td>太陽光の強さと物体の反射率</td><td>迷光と温度による目盛りのずれ</td></tr>
+          <tr><td>規格・安全</td><td>EMVA 1288 で性能を表す</td><td>IEC 60825-1 のクラス</td><td>校正のトレーサビリティ（ISO/IEC 17025）</td></tr>
+          <tr><td>主に使った部</td><td>第4部・第5部 04・第6部 09・第7部 04・第8部 05</td><td>第4部 SPAD・第5部 06・第7部 02・第8部 12・第9部</td><td>第2部 04・第7部 06・11・第8部 10・第9部 02</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </figure>
+
+  <div class="caveat">
+    <span class="tag">この部が単純化していること</span>
+    <p><strong>光の予算は、一様・等方・理想の光学系の一次の見積もりです。</strong>蛍光分子の向き（双極子の放射）と界面での屈折、LiDAR のビームと物体の大きさの関係・物体の傾き・大気の減衰、分光器の収差とスリットの像の形は扱っていません。雑音は独立なショット雑音の二乗和で、1/f 雑音やセンサの画素ごとのばらつき（FPN・PRNU、第4部）の補正は理想的に行えたとしています。目の安全は規格の手順での計算が必須で、この部の数字で判断してはいけません。</p>
+  </div>
+</section>
+
+<!-- ================= 理解の確認 ================= -->
+<section class="stage" id="scheck">
+  <div class="stage-head"><span class="stage-num">—</span>
+    <h2>理解の確認 ― 12問で設計の判断を言えるようにする</h2></div>
+  <p class="lede">どの問いも「答えの数字」より「どの項が効くか」を先に言えることを目指しています。</p>
+  <div class="chk">
+    <details><summary><span class="qn">Q1 · 01</span>予算表で、光の予算と雑音の予算は何が違うか。</summary><p>光の予算は各段の割合の<b>掛け算</b>（対数で足し算）、雑音の予算は独立な成分の<b>二乗和</b>。前者はどの段の 2 倍も同じ 2 倍、後者は最大の項がほぼ全部を決める。</p></details>
+    <details><summary><span class="qn">Q2 · 02</span>NA 1.4 の油浸の対物レンズが拾える光の割合はいくつか。何を仮定しているか。</summary><p>(1 − cos 67.3°)/2 = 30.7%。等方的に光る点で、油と同じ屈折率の中にあると仮定している。空気の対物レンズは、試料側の屈折率の段差の全反射のため、公式から期待するより拾える光が少ない。</p></details>
+    <details><summary><span class="qn">Q3 · 03</span>sCMOS と EM-CCD の SN 比が等しくなる条件は？ 背景光があるとどうなるか。</summary><p>S + B = nσ<sub>r</sub>²（n は輝点の画素数）。背景が無ければ S = 9 × 1.6² ≈ 23 e⁻ が交差点。背景 B がこれを超えると、どんな暗さでも sCMOS が有利になる。</p></details>
+    <details><summary><span class="qn">Q4 · 03</span>輝点を細かく標本化すると、暗いときの SN 比はどうなるか。</summary><p>同じ信号がより多くの画素に分かれ、読み出し雑音 nσ<sub>r</sub>² が増えるので悪くなる（交差点も上がる）。解像と SN 比の取り合い。</p></details>
+    <details><summary><span class="qn">Q5 · 04</span>ADC のビット数は何を目安に決めるか。</summary><p>1 LSB を読み出し雑音より小さくする（量子化の雑音 LSB/√12 を埋もれさせる）。飽和 30,000 e⁻・16 ビットで 0.46 e⁻ ＜ 1.6 e⁻。</p></details>
+    <details><summary><span class="qn">Q6 · 05</span>LiDAR で戻ってくる光子が距離の 2 乗に反比例するのはなぜか。4 乗ではないのはなぜか。</summary><p>往きは細いビームで広がらず物体に全部当たると仮定し、帰りは物体の散乱光が全方向に広がって受光口がその 1/R² だけ受けるから。ビームが物体より大きく広がる場合は往きでも薄まり、4 乗に近づく。</p></details>
+    <details><summary><span class="qn">Q7 · 06</span>最初の設計が昼の屋外で失格だったのはなぜか。どう直したか。</summary><p>背景光 2.16×10⁸ /s と不感時間 10 ns で r·τ<sub>d</sub> = 2.2 となり、SPAD が埋まって遠い反射に応えられなかった（パイルアップ）。フィルタを 10 nm・瞬時視野を 0.05° にして背景を 1/8 にし、r·τ<sub>d</sub> = 0.27 にした。信号は受光口で決まるので減らない。</p></details>
+    <details><summary><span class="qn">Q8 · 07</span>200 m で精度 2 cm を得るには何個の光子が要るか。</summary><p>1 光子あたり 32 cm（パルス幅 5 ns が支配）なので (32/2)² = 256 個。1 パルス 29.6 個なら 9 パルス。</p></details>
+    <details><summary><span class="qn">Q9 · 07</span>940 nm の LiDAR の目の安全が 1,550 nm より厳しいのはなぜか。</summary><p>400〜1,400 nm の光は目のレンズで網膜に集められるため。1,550 nm は角膜と水晶体で吸収され網膜に届かないので、許される露光が大きい。どちらもクラスは規格の手順で計算する。</p></details>
+    <details><summary><span class="qn">Q10 · 08</span>分光器の分解能を決めているのは格子か、スリットと画素か。</summary><p>この設計では格子の R = 4,000 に対し要求は 280 なので、スリットの像（1.25 nm）と画素（2 画素で 2.5 nm）が決めている。</p></details>
+    <details><summary><span class="qn">Q11 · 08</span>400〜1,000 nm を 1 台で測るとき、センサのどの場所にフィルタが要るか。</summary><p>800〜1,000 nm の場所。そこには 2 次の 400〜500 nm も来るので、500 nm 以下を切る膜をその部分にだけ置く。</p></details>
+    <details><summary><span class="qn">Q12 · 09</span>吸収の傾き 0.01 AU/nm の場所で波長が 0.1 nm ずれたら、吸光度はどれだけずれるか。対策は？</summary><p>0.001 AU で、100 回平均のショット雑音（1.4×10⁻⁴）の約 7 倍。校正の残差を詰めるか、吸収の山の頂上で測る。光子を集めても良くならない。</p></details>
+  </div>
+</section>
+
+<!-- ================= 用語表 ================= -->
+<section class="stage" id="sgl">
+  <div class="stage-head"><span class="stage-num">—</span>
+    <h2>用語表</h2></div>
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">TERMS — この部の言葉</span></div>
+    <div class="scroll-x">
+      <table>
+        <thead><tr><th>用語</th><th>意味</th><th>目安</th></tr></thead>
+        <tbody>
+          <tr><td>光の予算</td><td>光源の光子から検出器の電子までを、各段の割合の掛け算で並べた表</td><td class="num">対数で足し算</td></tr>
+          <tr><td>雑音の予算</td><td>独立な雑音の成分を二乗和で並べた表。最大の項（支配項）が全体を決める</td><td class="num">√Σσ²</td></tr>
+          <tr><td>感度分析</td><td>仮定を 1 つずつ変えて、結論が保つかを確かめること</td><td class="num">交差点・飽和を探す</td></tr>
+          <tr><td>交差点（sCMOS と EM-CCD）</td><td>2 つの検出器の SN 比が等しくなる信号の大きさ。S + B = nσ<sub>r</sub>²</td><td class="num">背景なしで ≈23 e⁻</td></tr>
+          <tr><td>ビニング</td><td>隣の画素をまとめて 1 画素として読むこと。CCD では雑音も得、CMOS では主にデータ量の削減</td><td class="num">2×2 で 1/4</td></tr>
+          <tr><td>ランバート面</td><td>どの方向から見ても同じ明るさに見える、光を一様に散らす面。戻る割合は ρ/π·A/R²</td><td class="num">反射率 ρ</td></tr>
+          <tr><td>不感時間</td><td>SPAD が 1 回鳴ったあと、次の光子に応えない時間。数える率は約 r/(1 + rτ<sub>d</sub>)</td><td class="num">数 ns〜数十 ns</td></tr>
+          <tr><td>瞬時視野（IFOV）</td><td>1 画素が見る角度の範囲。背景光はその立体角に比例する</td><td class="num">0.05° 四方で 7.6×10⁻⁷ sr</td></tr>
+          <tr><td>マクロ画素 / 同時計数</td><td>複数の SPAD を束ねた 1 つの画素と、数 ns の中に複数が鳴ったときだけ数えて背景を減らす方法</td><td class="num">昼の対策</td></tr>
+          <tr><td>あいまいさのない距離</td><td>次のパルスと取り違えずに測れる最大の距離 c/(2f)</td><td class="num">100 kHz で 1.5 km</td></tr>
+          <tr><td>フラッシュ型 LiDAR</td><td>広い範囲を一度に照らし、SPAD のアレイで多数の点を同時に測る方式</td><td class="num">走査なし</td></tr>
+          <tr><td>エテンデュの関所</td><td>スリットの幅と分光器の f 数で、入れられる光の上限が決まること</td><td class="num">スリット×角度</td></tr>
+          <tr><td>次数カットフィルタ</td><td>2 次の回折光が重なる場所にだけ置く、短い波長を切るフィルタ</td><td class="num">800〜1,000 nm の場所</td></tr>
+          <tr><td>波長の校正</td><td>既知の輝線で画素と波長の対応を多項式で当てはめること</td><td class="num">Hg・Ar の線</td></tr>
+          <tr><td>吸光度の上限（迷光）</td><td>迷光の割合 s があると、吸光度は −log₁₀s 付近で頭打ちになる</td><td class="num">10⁻³ で約 3</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </figure>
+</section>
+
+<!-- ================= 出典 ================= -->
+<section class="stage" id="sref">
+  <div class="stage-head"><span class="stage-num">—</span>
+    <h2>出典 — もっと先へ</h2></div>
+  <figure class="full">
+    <div class="scroll-x">
+      <table>
+        <thead><tr><th>何の話か</th><th>資料</th><th>この部のどこ</th></tr></thead>
+        <tbody>
+          <tr><td>カメラの性能の表し方</td><td>EMVA Standard 1288（European Machine Vision Association）</td><td>02〜04。量子効率・読み出し雑音・暗電流・飽和の測り方と表し方（第4部 PTC）。</td></tr>
+          <tr><td>EM-CCD の過剰雑音</td><td>M. S. Robbins &amp; B. J. Hadwen<br>IEEE Trans. Electron Devices 50, 1227 (2003)</td><td>03。増倍レジスタの過剰雑音係数（高い利得で F² → 2）。</td></tr>
+          <tr><td>蛍光顕微鏡の光学と検出</td><td>J. B. Pawley（編）『Handbook of Biological Confocal Microscopy』3rd ed., Springer (2006)</td><td>02・03。対物レンズの集光・蛍光の光の予算・検出器の比較。</td></tr>
+          <tr><td>計数の不感時間</td><td>J. W. Müller<br>Nucl. Instrum. Methods 112, 47 (1973)</td><td>06。不感時間のある計数器の数え落としの式。</td></tr>
+          <tr><td>LiDAR の系</td><td>P. F. McManamon『LiDAR Technologies and Systems』SPIE Press (2019)</td><td>05〜07。距離の方程式・背景光・検出の方式。</td></tr>
+          <tr><td>太陽光の標準スペクトル</td><td>ASTM G173（地上の標準の太陽光スペクトルの表）</td><td>06。背景光の分光放射照度を引く表（この部の 0.3 W/(m²·nm) は仮定の値）。</td></tr>
+          <tr><td>レーザーの安全</td><td>IEC 60825-1</td><td>07。クラス 1 の判定（AEL・複数パルスの規則）は規格の手順で。</td></tr>
+          <tr><td>原子の輝線の波長</td><td>NIST Atomic Spectra Database</td><td>09。水銀・アルゴンの校正用の線の波長。</td></tr>
+          <tr><td>シリコンの吸収係数</td><td>M. A. Green<br>Sol. Energy Mater. Sol. Cells 92, 1305 (2008)</td><td>09。400 nm・1,000 nm の吸収の深さ。</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </figure>
+
+  <div class="foot">
+    <span>この部の数字は、仮定を明記した一次の見積もりです。実際の設計は、同じ手順でデータシートと実測の値に置き換えてください。</span>
+    <span><a href="index.html">学びの地図へ戻る</a> · 道具は <a href="第0部_基礎.html">第0部</a>〜<a href="第9部_光源とレーザー.html">第9部</a> · 引くときは <a href="付録_物性値と索引.html">付録</a></span>
+    <span style="font-family:var(--mono)">Requirement → Budget → Dominant term → Decision → Check</span>
+  </div>
+</section>
+
+</main>
+</div>
+</div>
+
+<script>
+(function(){
+"use strict";
+var root=document.documentElement;
+var KEY="part10.depth";
+var bS=document.getElementById("dSimple"), bD=document.getElementById("dDeep");
+function setDepth(deep){
+  root.setAttribute("data-depth", deep?"deep":"simple");
+  bS.setAttribute("aria-pressed", deep?"false":"true");
+  bD.setAttribute("aria-pressed", deep?"true":"false");
+  try{ localStorage.setItem(KEY, deep?"deep":"simple"); }catch(e){}
+}
+bS.addEventListener("click", function(){ setDepth(false); });
+bD.addEventListener("click", function(){ setDepth(true); });
+var saved=null; try{ saved=localStorage.getItem(KEY); }catch(e){}
+setDepth(saved==="deep");
+
+/* 目次・レールの現在地ハイライト */
+var secs=[].slice.call(document.querySelectorAll("section.stage[id]"));
+var railLinks={}, tocLinks={};
+[].forEach.call(document.querySelectorAll('.rail a[href^="#"]'), function(a){ railLinks[a.getAttribute("href").slice(1)]=a; });
+[].forEach.call(document.querySelectorAll('.toc a[href^="#"]'), function(a){ tocLinks[a.getAttribute("href").slice(1)]=a; });
+var tocNow=document.getElementById("tocNow");
+function mark(id){
+  for(var k in railLinks) railLinks[k].classList.toggle("on", k===id);
+  if(tocNow && tocLinks[id]){
+    var sp=tocLinks[id].querySelectorAll("span");
+    tocNow.textContent=(sp[1]?sp[1].textContent:id);
+  }
+}
+if("IntersectionObserver" in window){
+  var current=null;
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ current=e.target.id; mark(current); } });
+  },{rootMargin:"-30% 0px -60% 0px"});
+  secs.forEach(function(s){ io.observe(s); });
+}
+})();
+</script>
+</body>
+</html>
