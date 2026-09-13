@@ -47,7 +47,7 @@
   PhotonLab\                     第5部 ラボ ― 原始部品 ＝ 光子とη（5章 18問。R・NEP・D*・最適なM・MPPC・背景光・計数・走行×RC・TCSPC・InGaAs APD・しきい値とクロストーク・シンチの分解能・X 線の分解能・不感時間・フォトダイオードの直線性）
   AnalogLab\                     第6部 ラボ ― 原始部品 ＝ 二乗則のMOS 1個（5章 16問。Vov・gm・利得・GBW・TIA・kTC・SC・2段OTA・ADC・DC-DC・カレントミラー・バンドギャップ・TIA の帰還容量）
   OptoLab\                       第7部 ラボ ― 原始部品 ＝ 光線とその会計（5章 18問。カメラ方程式・回折・ガウス・ファイバ・λ/4・エテンデュ・cos⁴・モード結合・ブルースター角・格子・回線・MTF と焦点深度・高反射の多層膜・被写界深度）
-  QALab\                         第8部 ラボ ― 原始部品 ＝ 故障率と分布（6章 21問。MTTF・加速3種＋HAST・B10・Tj・TEC・Cpk・誤差・GR&R・管理図・不確かさ・Norris-Landzberg・ndc・OC 曲線・LED の L70（TM-21）・修理のある並列・多数決・要因計画の検出力）
+  QALab\                         第8部 ラボ ― 原始部品 ＝ 故障率と分布（7章 24問。MTTF・加速3種＋HAST・B10・Tj・TEC・Cpk・誤差・GR&R・管理図・不確かさ・Norris-Landzberg・ndc・OC 曲線・LED の L70（TM-21）・修理のある並列・多数決・要因計画の検出力・故障率の信頼の上限・保護めがねの OD・Allan 分散）
   LaserLab\                      第9部 ラボ ― 原始部品 ＝ 共振器の会計と熱の光（5章 15問。黒体・LED・しきい値・スロープ効率・T₀・縦モード・DFB・モード同期・尖頭値・緩和振動・SHG・ファイバ結合・輝線の校正・量子欠損・LED のファイバ結合）
   DesignLab\                     第10部 ラボ ― 微弱光カメラ・LiDAR・分光器の予算表（4章 16問。光の予算・sCMOS と EM-CCD・伝送・冷却・戻る光子・背景と SPAD・精度・格子・スリット・吸光度と校正・PET の窓と TOF・蛍光寿命の繰り返しと µ）
 ```
@@ -91,7 +91,7 @@ node PixelLab\tests\all.js        433 件
 node PhotonLab\tests\all.js       396 件
 node AnalogLab\tests\all.js       334 件
 node OptoLab\tests\all.js         367 件
-node QALab\tests\all.js           442 件
+node QALab\tests\all.js           505 件
 node LaserLab\tests\all.js        341 件
 node DesignLab\tests\all.js       727 件
 ```

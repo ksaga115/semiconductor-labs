@@ -52,6 +52,11 @@
  *            2 台並列: 修理なし 1.5/λ、修理 1 か所 (3λ+μ)/(2λ²)。多数決（3 台中 2 台）: 3R²−2R³
  *   deff,dsig,drep  2² 要因計画で見つけたい効果 Δ・試行のばらつき σ・条件ごとの繰り返しの回数
  *            N = 4·回数、効果の標準誤差 2σ/√N、両側 5% の検出力 Φ(Δ/SE − 1.96) + Φ(−Δ/SE − 1.96)
+ *   nfa,hfa,rfa,cla  再試験の個数・時間 [h]・見込む故障の数・信頼水準 [%]（AF は ea・tuse・tstr から）
+ *            故障率の上限 λ = m/(n·t·AF)。m は P(N ≤ r; m) = 1 − 信頼水準 の解（r = 0 で −ln(1 − 信頼水準)、χ²(2r+2)/2 と同じ値）
+ *   lpw,plim,od  レーザーの出力 [mW]・弱めたい上限 [mW]・保護めがねの光学濃度 OD   透過 = P·10^(−OD)
+ *            pvis 調整でビームが見える下限 [mW]（仮定）。上限そのもの（AEL・MPE）は規格の手順で決める値で、ここでは与える
+ *   sgw,drf,tavg  白色雑音の大きさ σw・ドリフト D [/s]・平均の時間 τ [s]   σ(τ) = √(σw²/τ + (Dτ)²/2)、最適 τ = (σw/D)^(2/3)
  *
  * 【約束】数値はすべてこの式から導出できる。乱数は使わない。
  * 【モデルの外】ワイブルの当てはめ（プロット）・TECの電流最適化・
@@ -84,7 +89,10 @@
       aql: 1, ltpd: 5, alp: 5, bet: 10, nsmp: 50, cacc: 1,
       lmp1: 99.0, lmt1: 1000, lmp2: 97.0, lmt2: 6000, lmT: 6000, lmN: 20, lmP: 70,
       lamr: 2e-5, mttr: 168, trep: 1,
-      deff: 3, dsig: 2, drep: 2
+      deff: 3, dsig: 2, drep: 2,
+      nfa: 231, rfa: 0, cla: 60, hfa: 1000,
+      lpw: 100, plim: 1, pvis: 0.1, od: 1,
+      sgw: 1, drf: 0.001, tavg: 1000
     };
   }
 
@@ -112,6 +120,19 @@
   }
   /** 標準正規の累積分布 */
   function phi(x) { return 0.5 * (1 + erf(x / Math.SQRT2)); }
+
+  /** 0〜r 個の故障を見たとき、信頼水準 cl での期待故障数の上限 m（P(N ≤ r; m) = 1 − cl を二分法で解く）。
+   *  r = 0 なら m = −ln(1 − cl)（60% で 0.916、90% で 2.303）。χ²(cl; 2r+2)/2 と同じ値 */
+  function poisUpper(r, cl) {
+    r = Math.max(0, Math.round(r));
+    var lo = 0, hi = 50 + 10 * r, i, k;
+    for (i = 0; i < 200; i++) {
+      var m = (lo + hi) / 2, t = Math.exp(-m), s = t;
+      for (k = 1; k <= r; k++) { t *= m / k; s += t; }
+      if (s > 1 - cl) lo = m; else hi = m;
+    }
+    return (lo + hi) / 2;
+  }
 
   /**
    * 設計 → 数字。
@@ -220,11 +241,27 @@
     var dz = doeSE > 0 && isFinite(doeSE) ? (d.deff || 0) / doeSE : 0;
     var doePow = phi(dz - 1.959964) + phi(-dz - 1.959964);
 
+    /* 故障率の信頼の上限（第8部 01・11）: 期待故障数の上限 m を、使用条件に換算した総台時間で割る */
+    var mFa = poisUpper(d.rfa || 0, (d.cla || 60) / 100);
+    var devHfa = Math.round(d.nfa || 0) * (d.hfa || 0) * af;
+    var fitUp = devHfa > 0 ? mFa / devHfa * 1e9 : Infinity;
+
+    /* 保護めがねの光学濃度（第8部 12）: 透過 = P·10^(−OD) */
+    var odT = (d.lpw || 0) * Math.pow(10, -(d.od || 0));
+    var odNeed = d.plim > 0 ? Math.log10((d.lpw || 0) / d.plim) : Infinity;
+
+    /* アラン偏差（第8部 13）: 白色雑音＋直線のドリフト */
+    var sgw = d.sgw || 0, drf = d.drf || 0, tav = d.tavg > 0 ? d.tavg : 1;
+    var sigA = Math.sqrt(sgw * sgw / tav + Math.pow(drf * tav, 2) / 2);
+    var tOpt = drf > 0 ? Math.pow(sgw / drf, 2 / 3) : Infinity;
+    var sigMin = isFinite(tOpt) ? Math.sqrt(sgw * sgw / tOpt + Math.pow(drf * tOpt, 2) / 2) : 0;
+
     return {
       afnl: afnl, cycNl: cycNl, daysNl: daysNl,
       lmA: lmA, lmB: lmB, lpCalc: lpCalc, lpK: kTm, lpCap: lpCap, lpRep: lpRep,
       mttfPar: mttfPar, mttfRep: mttfRep, r1: r1, rPar: rPar, rSer: rSer, rVote: rVote, tCross: tCross,
       doeN: doeN, doeSE: doeSE, doePow: doePow,
+      mFa: mFa, devHfa: devHfa, fitUp: fitUp, odT: odT, odNeed: odNeed, sigA: sigA, tOpt: tOpt, sigMin: sigMin,
       ndcRaw: ndcRaw, ndc: ndc, pgrrTv: pgrrTv, tv: tv,
       paAql: paAql, paLtpd: paLtpd, alphaAct: 1 - paAql, betaAct: paLtpd,
       lamFit: lamFit, mttfH: mttfH, mttfY: mttfY,
@@ -280,7 +317,7 @@
 
   QA.qa = {
     KB_EV: KB_EV, HOURS_Y: HOURS_Y,
-    defaults: defaults, evaluate: evaluate, erf: erf, phi: phi, binCdf: binCdf,
+    defaults: defaults, evaluate: evaluate, erf: erf, phi: phi, binCdf: binCdf, poisUpper: poisUpper,
     afSweep: afSweep, tecSweep: tecSweep, ocSweep: ocSweep
   };
 })(typeof window !== 'undefined' ? window : globalThis);

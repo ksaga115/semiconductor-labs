@@ -163,6 +163,24 @@ T('落ちるべきもの', () => {
   ok('doe: 5 回ずつ（N = 20）は通る', w('doe', { drep: 5 }));
   ok('doe: 6 回ずつ（N = 24）は予算破り', !w('doe', { drep: 6 }));
   ok('doe: σ を小さく仮定するのは反則', !w('doe', { dsig: 1, drep: 1 }));
+  /* 第7章: 再試験の個数・めがねの OD・平均の時間の窓の両側と反則 */
+  ok('fitci: 520 個は 50 FIT に届かない', !w('fitci', { nfa: 520 }));
+  ok('fitci: 521 個は通る', w('fitci', { nfa: 521 }));
+  ok('fitci: 1,000 個は通る', w('fitci', { nfa: 1000 }));
+  ok('fitci: 1,001 個は予算破り', !w('fitci', { nfa: 1001 }));
+  ok('fitci: 故障 0 個で数えるのは反則', !w('fitci', { rfa: 0, nfa: 300 }));
+  ok('fitci: 信頼水準を 50% に下げるのは反則', !w('fitci', { cla: 50, nfa: 450 }));
+  ok('fitci: 試験温度を上げて AF を稼ぐのは反則', !w('fitci', { tstr: 150, nfa: 300 }));
+  ok('odsel: OD 1.99 は 1 mW を超える', !w('odsel', { od: 1.99 }));
+  ok('odsel: OD 2 は通る', w('odsel', { od: 2 }));
+  ok('odsel: OD 3 は通る', w('odsel', { od: 3 }));
+  ok('odsel: OD 3.01 は暗すぎる', !w('odsel', { od: 3.01 }));
+  ok('odsel: 上限を 10 mW に緩めるのは反則', !w('odsel', { plim: 10, od: 1.5 }));
+  ok('allan: 68 s は白色雑音が残る', !w('allan', { tavg: 68 }));
+  ok('allan: 70 s は通る', w('allan', { tavg: 70 }));
+  ok('allan: 139 s は通る', w('allan', { tavg: 139 }));
+  ok('allan: 141 s はドリフトが積もる', !w('allan', { tavg: 141 }));
+  ok('allan: ドリフトを小さく仮定するのは反則', !w('allan', { drf: 0.0005, tavg: 150 }));
 });
 
 report();

@@ -88,6 +88,18 @@
     doe: {
       note: '各 4 回（N = 16）。標準誤差 2 × 2/√16 = 1.0 nm、Δ/SE = 3.0 で検出力 85%。',
       design: function () { var d = M.defaults(); d.drep = 4; return d; }
+    },
+    fitci: {
+      note: '600 個・故障 1 個・60%。m = 2.022、使用換算 4.66×10⁷ 台·時間で 43.4 FIT。',
+      design: function () { var d = M.defaults(); d.nfa = 600; d.rfa = 1; return d; }
+    },
+    odsel: {
+      note: 'OD 2.5。100 × 10^(−2.5) = 0.32 mW ― 上限 1 mW の下で、ビームはまだ見える。',
+      design: function () { var d = M.defaults(); d.od = 2.5; return d; }
+    },
+    allan: {
+      note: '100 s（最適）。σ = √(1/100 + 0.1²/2) = 0.122。',
+      design: function () { var d = M.defaults(); d.tavg = 100; return d; }
     }
   };
 

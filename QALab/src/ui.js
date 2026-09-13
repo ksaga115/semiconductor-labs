@@ -81,7 +81,18 @@
     ['trep', '全部を新品にする周期', '年', 0.01, 30],
     ['deff', '見つけたい効果 Δ', 'nm', 0.01, 100],
     ['dsig', '試行のばらつき σ', 'nm', 0.01, 100],
-    ['drep', '条件ごとの繰り返し', '回（2² 計画）', 1, 100, true]
+    ['drep', '条件ごとの繰り返し', '回（2² 計画）', 1, 100, true],
+    ['nfa', '再試験の個数', '個', 1, 100000, true],
+    ['hfa', '再試験の時間', 'h', 1, 100000],
+    ['rfa', '見込む故障の数', '個', 0, 20, true],
+    ['cla', '信頼水準', '%', 10, 99.9],
+    ['lpw', 'レーザーの出力', 'mW', 0.001, 100000],
+    ['plim', '弱めたい上限（与える）', 'mW', 0.0001, 1000],
+    ['pvis', '見える下限（仮定）', 'mW', 0.00001, 100],
+    ['od', '保護めがねの OD', '', 0, 10],
+    ['sgw', '白色雑音 σw', '', 0.0001, 1000],
+    ['drf', 'ドリフト D', '/s', 0, 10],
+    ['tavg', '平均の時間 τ', 's', 0.01, 100000]
   ];
 
   function num(t) {
@@ -264,7 +275,10 @@
       ['LED の L' + S.design.lmP + '（式 / 報告できる）', ev.lpCalc.toFixed(0) + ' h / ' + ev.lpRep.toFixed(0) + ' h（試験の ' + ev.lpK + ' 倍まで）'],
       ['2 台並列の MTTF（修理なし / 修理つき）', ev.mttfPar.toFixed(0) + ' h / ' + ev.mttfRep.toExponential(2) + ' h'],
       ['周期の終わり 単体 / 並列 / 多数決', ev.r1.toFixed(3) + ' / ' + ev.rPar.toFixed(3) + ' / ' + ev.rVote.toFixed(3) + '（入れ替わり ' + ev.tCross.toFixed(2) + ' 年）'],
-      ['2² 計画 N / 標準誤差 / 検出力', ev.doeN + ' 回 / ' + ev.doeSE.toFixed(3) + ' / ' + (ev.doePow * 100).toFixed(1) + ' %', ev.doePow < 0.8]
+      ['2² 計画 N / 標準誤差 / 検出力', ev.doeN + ' 回 / ' + ev.doeSE.toFixed(3) + ' / ' + (ev.doePow * 100).toFixed(1) + ' %', ev.doePow < 0.8],
+      ['故障率の上限（再試験）', ev.fitUp.toFixed(1) + ' FIT（m ' + ev.mFa.toFixed(3) + '）', ev.fitUp > 50],
+      ['めがねの透過 / 必要な OD', ev.odT.toPrecision(3) + ' mW / ' + ev.odNeed.toFixed(2), ev.odT > S.design.plim],
+      ['アラン偏差 σ(τ) / 最適な τ', ev.sigA.toFixed(4) + ' / ' + ev.tOpt.toFixed(1) + ' s']
     ];
     document.getElementById('derived').innerHTML = '<div class="dv">' + rows.map(function (r) {
       return '<span class="k">' + esc(r[0]) + '</span><span class="v' + (r[2] ? ' warn' : '') + '">' + esc(r[1]) + '</span>';
