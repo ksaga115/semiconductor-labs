@@ -304,6 +304,16 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   display:block;margin-bottom:6px}
 .caveat p{font-size:13.5px;color:var(--ink-2);line-height:1.72}
 .caveat p + p{margin-top:10px}
+.ex{margin-top:20px;border:1px solid var(--line);border-left:2px solid var(--photon);border-radius:2px;background:var(--surface);padding:12px 16px;max-width:46em}
+.ex .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;color:var(--photon-2);display:block;margin-bottom:6px}
+.ex p{font-size:14px;line-height:1.8}
+.ex p + p{margin-top:8px}
+.chk{margin-top:18px;max-width:52em}
+.chk details{border-top:1px solid var(--line-2);padding:11px 0}
+.chk details:last-child{border-bottom:1px solid var(--line-2)}
+.chk summary{cursor:pointer;font-weight:700;font-size:14.5px}
+.chk summary .qn{font-family:var(--mono);font-size:10.5px;color:var(--photon-2);margin-right:8px;font-weight:600}
+.chk details p{margin-top:8px;color:var(--ink-2);font-size:14px;line-height:1.75}
 /* 参考書からラボへ渡す箱。読んだことを、隣のラボ（SemiLab / PixelLab）で自分の手で確かめる */
 .lab-go{margin-top:22px;border:1px solid var(--line);border-left:2px solid var(--digital);
   border-radius:2px;background:var(--surface);padding:12px 16px;max-width:46em}
@@ -416,6 +426,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li><a href="#s7"><span class="n">07</span><span>現場の道具箱</span></a></li>
     <li><a href="#s8"><span class="n">08</span><span>光る半導体</span></a></li>
     <li class="dom"><span>付録</span></li>
+    <li><a href="#scheck"><span class="n">—</span><span>理解の確認</span></a></li>
     <li><a href="#s9"><span class="n">—</span><span>用語表</span></a></li>
     <li><a href="#sref"><span class="n">—</span><span>出典</span></a></li>
   </ol>
@@ -436,6 +447,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li><a href="#s7"><span class="n">07</span><span>道具箱</span></a></li>
     <li><a href="#s8"><span class="n">08</span><span>光る半導体</span></a></li>
     <li class="dom"><span>付録</span></li>
+    <li><a href="#scheck"><span class="n">—</span><span>理解の確認</span></a></li>
     <li><a href="#s9"><span class="n">—</span><span>用語表</span></a></li>
     <li><a href="#sref"><span class="n">—</span><span>出典</span></a></li>
   </ol>
@@ -584,6 +596,14 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   <div class="deep deep-note">
     <span class="tag">くわしく — 「増やすか、床を下げるか」は同じ1つの不等式</span>
     <p>選定の質問①を式にしておきます。信号光電流を I<sub>ph</sub>、後段の入力換算ノイズ電流を i<sub>amp</sub>[A/&radic;Hz]、帯域を B とすると、増やさない場合の SNR は I<sub>ph</sub>/(i<sub>amp</sub>&radic;B)。増倍 M と過剰雑音 F を入れると、信号は M 倍、なだれ由来のショットは M&radic;F 倍、i<sub>amp</sub> はそのまま ― つまり<span class="key">M で救えるのは「i<sub>amp</sub> が支配的なとき」だけ</span>です。すでに光のショットノイズ律速なら、M は F のぶんだけ損にすらなる。この綱引きの帰結が「<strong>SNR には最適な M がある</strong>」（<a href="PhotonLab/index.html?quest=apdopt">PhotonLab「ちょうどいい M を探す」</a>）で、逆に床そのものを下げる道を突き詰めたのが sCMOS（03 の deep）です。どちらの道も向かう先は同じ ― <strong>光のショットノイズだけが残る「ショット限界」</strong> ― で、そこから先はもう検出器では改善できません。残る手段は光を増やすか、時間で買うか（06・<a href="第7部_光学.html#s8">第7部のロックイン</a>）だけです。</p>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（01 同じ問題への5つの答え）</span>
+    <p><b>問1.</b> 550 nm の光 1 pW を、QE 0.8 の PIN フォトダイオード（暗電流 10 pA）と入力換算 5 fA/√Hz の TIA で、帯域 1 MHz で受ける。SN 比は？</p>
+    <p><b>解.</b> 感度 R = 0.8 × 550/1240 = 0.355 A/W で、光電流は <b>0.355 pA</b>。雑音密度は、ショット √(2q(I<sub>ph</sub>+I<sub>d</sub>)) = 1.8 fA/√Hz と TIA の 5 fA/√Hz の二乗和で 5.3 fA/√Hz、1 MHz で ×1000 ＝ 5.3 pA。SN 比 = 0.355/5.3 = <b>0.067</b> ― 見えない。しかも床の主役は TIA で、選定の質問①の答えは「NO（床より弱い）」。この条件で SN 比 1 に届く光は約 15 pW（NEP 1.5×10⁻¹⁴ W/√Hz × √B）です。</p>
+    <p><b>問2.</b> 同じ 550 nm でさらに弱い 1 fW。光子は毎秒何個か。QE 0.8 の計数型で、背景（暗計数を含む）が 100 cps のとき、信号 1,000 cps を 1 秒・10 秒数えた SN 比は？</p>
+    <p><b>解.</b> 1 fW ÷ (2.25 eV × 1.602×10⁻¹⁹ J) = <b>2,770 光子/s</b>、検出は 2,210 cps。信号 1,000 cps・背景 100 cps なら SN 比 = s·√t / √(s+b) = 1,000/√1,100 = <b>30</b>（1 秒）、10 秒で <b>95</b>。<span class="key">計数の世界では、SN 比は時間の √ で買える</span>（PhotonLab「数えて待つ」）。</p>
   </div>
 
   <div class="lab-go">
@@ -749,6 +769,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <span class="tag">くわしく — ダイノードを管に巻き込む：MCP と像の増幅</span>
     <p>ダイノードの雪だるまを、<strong>1本の細い管の中</strong>でやる手があります。内径数µm〜十数µmの鉛ガラス毛細管を数百万本束ねて薄い板にしたのが <strong>MCP（マイクロチャネルプレート）</strong>。板の表裏に約1kVをかけると、管に飛び込んだ電子が<span class="key">内壁に当たるたびに二次電子を叩き出しながら</span>出口へ進みます ― 壁全体が連続のダイノードです。利得は1枚で10³〜10⁴、2枚を「く」の字に重ねる（シェブロン）と10⁶〜10⁷。PMTと同じ増倍を、<strong>数mm厚の板の形で、しかも場所ごとに独立に</strong>やれるのが革命でした。</p>
     <p>場所を保ったまま増幅できるので、光電面→MCP→蛍光面を密着させると<strong>像がそのまま百万倍明るくなる</strong> ― これが<strong>イメージインテンシファイア（I.I.）</strong>で、暗視装置の心臓部です（第3世代はGaAs光電面）。さらに光電面の電圧をnsで開け閉めすると<span class="key">時間の窓</span>になり、カメラの前に付けて発光現象のns級の一瞬だけを切り出せます（ICCD）。管が短いことは速さでもあり、<strong>MCP内蔵のPMT（MCP-PMT）は TTS 数十ps級</strong>と一族最速 ― TCSPC（06）や TOF-PET（05）の最高峰の目で、電子の飛行距離が短いぶん磁場にも強くなります。飛行時間型質量分析計（TOF-MS）のイオン検出器も、たいていこの板です。</p>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（02 真空で増やす）</span>
+    <p><b>問.</b> カタログに「陰極感度 80 mA/W（400 nm）」とある光電面の QE は？ δ = 4 のダイノード 10 段の利得と雑音指数は？ δ = 3 ならどうか。高圧電源が 1% ふらつくと、利得は何%動くか。</p>
+    <p><b>解.</b> QE = R × 1240/λ = 0.08 × 1240/400 = <b>24.8%</b>（バイアルカリの典型）。利得 4¹⁰ = <b>1.05×10⁶</b>、F = δ/(δ−1) = <b>1.33</b>。δ = 3 では 3¹⁰ = <b>5.9×10⁴</b>（10⁶ に届かない）、F = 1.5 ― 最初の一転がりが小さいと、利得も静かさも両方失う。δ が段間電圧のおよそ 0.7 乗なら、10 段の総利得は電圧の約 7 乗で動くので、<span class="key">電源の 1% のふらつきが利得の約 7%</span>。PMT の電源に高安定 HV が要る理由です。</p>
   </div>
 
   <div class="lab-go">
@@ -936,6 +962,14 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p><strong>道2: 床そのものを下げる（sCMOS）</strong>。増やさずに、<a href="第4部_イメージセンサ.html#s5">第4部05〜06</a>でやった正攻法 ― 小さなFD＝高い変換ゲインと列並列の低速読み出し ― を突き詰めて床を1e&minus;級にしたのが科学計測用CMOS（sCMOS）です。増倍の分散2倍が無いぶん中〜明部で有利、速く、画素数も稼げる ― いまの科学カメラの主流はこちらで、EM-CCD は極限の暗さ専用機として住み分けています。<span class="key">「増やすか、床を下げるか」という01の表の軸が、カメラの製品系譜そのもの</span>に現れている例です。</p>
   </div>
 
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（03 半導体で増やす）</span>
+    <p><b>問1.</b> 850 nm の光 1 nW を Si APD（QE 0.8、k = 0.02、暗電流 100 pA）で受け、後段の雑音が 2 pA/√Hz、帯域 100 MHz。M = 1・10・100・300 の SN 比は？</p>
+    <p><b>解.</b> 光電流 0.55 nA に対し、M = 1 では後段の床 2 pA/√Hz × 10⁴ = 20 nA が支配して SN 比 <b>0.027</b>。M を上げると信号は M 倍、床はそのままなので M = 10 で 0.27、M = 100 で <b>1.57</b>。ところが M = 300 では F(M) が 8.0 に膨らんで <b>1.33</b> に下がる ― 最適は <b>M ≈ 130</b>（SN 比 1.6）。<span class="key">M で救えるのは床が後段にあるときだけで、救いすぎると過剰雑音で返ってくる</span>。k が 0.4（InGaAs/InP 級）なら F(10) = 5.1・F(100) = 41 で、同じ手は M = 10 前後までしか使えません。</p>
+    <p><b>問2.</b> 3,600 セルの MPPC に、1 パルスで平均 1,000 個（PDE を掛けた後）の光子が来た。発火するセル数は？ 100 個なら？ 1 セルの容量 20 fF・オーバー電圧 3 V の利得は？</p>
+    <p><b>解.</b> 発火数 = N(1 − e<sup>−µ/N</sup>)。µ = 1,000 で 3,600 × (1 − e<sup>−0.278</sup>) = <b>873</b>（12.7% 少なく出る）、µ = 100 で <b>98.6</b>（1.4%）。同じセルに2個来ても1個ぶんしか出ないので、<span class="key">セル数の 1/30 程度までが「数えられる明るさ」</span>。利得は C·V<sub>ov</sub>/q = 20 fF × 3 V / q = <b>3.7×10⁵</b>。</p>
+  </div>
+
   <div class="lab-go">
     <span class="tag">手を動かす — PhotonLab 第2章</span>
     <p>F(M) の山を自分で探し、MPPC の飽和を数えられる明るさに収める。上の2枚の図の曲線は、この2つの課題の盤面と同じ式で描かれている。</p>
@@ -1009,6 +1043,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   <div class="deep deep-note">
     <span class="tag">くわしく — 床の積み木：どのノイズが NEP を決めているか</span>
     <p>NEP の分子（ノイズ電流）は1本ではなく、<strong>二乗和の積み木</strong>です: 暗電流ショット 2qI<sub>d</sub>、並列抵抗の熱雑音 4kT/R<sub>sh</sub>、後段アンプの入力換算 i<sub>amp</sub>&sup2;、増倍があれば F(M) の掛け算、背景光があれば 2qI<sub>bg</sub>。<span class="key">二乗和は最大の項がほぼ全部を決める</span>（<a href="第8部_信頼性と品質.html#s7">第8部の誤差予算</a>と同じ会計）ので、NEP を下げる仕事は「どの積み木が一番高いか」を特定する仕事です。冷やして I<sub>d</sub> を下げても、床がアンプ律速なら1ワットも得しない ― そのときの正しい手は R<sub>f</sub> を上げる（07 の TIA）か M で床を沈める（<a href="PhotonLab/index.html?quest=nepm">PhotonLab「増やして床を沈める」</a>）です。逆に全部の積み木を光のショットノイズより下に押し込めたら、それが<strong>ショット限界</strong> ― 01 の deep で見た「そこから先は検出器では改善できない」線です。</p>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（04 検出器の物差し）</span>
+    <p><b>問.</b> 01 の例題の PIN（R = 0.355 A/W、暗電流 10 pA、TIA 5 fA/√Hz、受光面 1 mm²）の NEP と D* は？ 冷やして暗電流を 1 pA にするのと、TIA の雑音を半分にするのと、どちらが効くか。</p>
+    <p><b>解.</b> ノイズ電流 √(2q·10 pA + (5 fA)²) = √(1.8² + 5²) fA/√Hz = 5.3 fA/√Hz、÷R で <b>NEP = 1.5×10⁻¹⁴ W/√Hz</b>。D* = √(0.01 cm²)/NEP = <b>6.7×10¹² cm·√Hz/W</b>。暗電流を 1/10 にしても 5.3 → 5.0 fA/√Hz（<b>−5%</b>）にしかならないが、TIA を 2.5 fA/√Hz にすると 3.1 fA/√Hz で NEP は <b>8.7×10⁻¹⁵</b>（−42%）。<span class="key">二乗和は一番高い積み木が決める</span> ― 床がアンプ律速のとき冷却は効かない、という「くわしく」の結論の数値版です。</p>
   </div>
 
   <div class="lab-go">
@@ -1174,6 +1214,13 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p>レントゲンの受け側も、フィルムから光検出器の面に置き換わりました。作り方は2系統あります。<strong>間接変換</strong>は、シンチレータ（多くは CsI(Tl)。1keV あたり約54光子）で X線を可視光にしてから、その直下の<strong>アモルファスシリコン（a-Si）フォトダイオード＋TFTスイッチ</strong>の配列で受けます。X線光子1個（診断域は20〜120keV）が千〜数千個の可視光子になるので、あとは<a href="第4部_イメージセンサ.html#s4">第4部04</a>の行選択そっくりに、TFTで1行ずつ読み出します。CsI を<span class="key">細い柱状結晶の束</span>として成長させるのが職人芸で、柱が光ファイバのように光を縦へ導き、横へのにじみ（解像度の損）を抑えます。</p>
     <p><strong>直接変換</strong>は光を経由しません。厚さ数百µmの<strong>アモルファスセレン（a-Se）</strong>に10V/µm級の電界（500µmなら5kV）をかけておき、X線が作った電荷（1対あたり50eV級、電界に依存）を<span class="key">電気力線に沿ってまっすぐ縦に</span>集めます。横に広がる過程が無いぶん解像度が高く、微細な石灰化を探すマンモグラフィで使われてきました。どちらの方式も、<strong>ガラス基板の上のTFT</strong>という液晶ディスプレイの製造技術が土台です ― ウェーハの寸法に縛られないので、43cm角（17インチ）という胸部がそのまま入る「画素の面」が作れる。PMTの「吹けば大きくなる」とは別の道での大面積化です。</p>
   </div>
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（05 波長を広げる）</span>
+    <p><b>問1.</b> InGaAs（E<sub>g</sub> = 0.74 eV）の感度の長波長端は？ 同じ構造の Si（1.12 eV）と比べて、拡散暗電流はおよそ何倍か。</p>
+    <p><b>解.</b> λ<sub>c</sub> = 1240/0.74 = <b>1,680 nm</b>（光通信の 1.55 µm 帯が入る）。拡散暗電流 ∝ n<sub>i</sub>² ∝ exp(−E<sub>g</sub>/kT) なので、比は exp((1.12 − 0.74)/0.0259) = e<sup>14.7</sup> ≈ <b>2×10⁶ 倍</b>（前指数の違いを無視した桁の見積もり）。<span class="key">壁を 0.38 eV 下げた代金が 6 桁</span> ― InGaAs が TE 冷却を背負う理由です。</p>
+    <p><b>問2.</b> PET の 511 keV を LYSO（約 30 光子/keV）で受け、集光と PDE を経て 2,000 個の光電子が残った。統計だけで決まるエネルギー分解能（FWHM）は？ 時刻差 250 ps の TOF は線上の何 cm に相当するか。</p>
+    <p><b>解.</b> 511 × 30 ≈ 1.5×10⁴ 光子。分解能 2.35/√2,000 = <b>5.3%</b>（実測 10% 級との差は結晶固有の分）。Δx = cΔt/2 = 3×10¹⁰ cm/s × 250 ps / 2 = <b>3.75 cm</b>。</p>
+  </div>
 </section>
 
 <!-- ================= 06 ================= -->
@@ -1260,6 +1307,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <h3>FLIM — 寿命で描く地図</h3>
       <p>これを画素ごとにやって寿命の地図を作るのが <strong>FLIM（蛍光寿命イメージング）</strong>です。強度画像は染料の濃度や照明むらに揺すられますが、<span class="key">寿命は濃度に依らない</span> ― だから定量イメージングの物差しになります。とくに強いのが <strong>FRET</strong>（分子同士が数nmまで近づくとエネルギー移動が起きてドナーの寿命が縮む現象）との組み合わせで、<span class="key">光学顕微鏡の分解能では見えない「分子の接触」が、寿命の短縮として画像に写ります</span>。走査型顕微鏡＋SPAD/PMT＋TCSPCが定番の構成で、ストリークカメラ（02）で減衰をまるごと1枚に写す測り方もあります。</p>
     </div>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（06 時間を測る）</span>
+    <p><b>問.</b> 繰り返し 80 MHz のレーザーで TCSPC をする。測れる寿命の上限（周期の 1/5）は？ 検出が 1.1×10⁵ cps のときのパイルアップ確率は？ 定石の 2% まで上げると何 cps で、10⁶ 個の光子を集めるのに何秒かかるか。</p>
+    <p><b>解.</b> 周期 12.5 ns、寿命の上限 <b>2.5 ns</b>（多くの蛍光色素の 1〜5 ns に合う ― 80 MHz が定番の理由）。検出確率 p = 1.1×10⁵/8×10⁷ = <b>0.14%</b>（十分安全）。2% なら 1.6×10⁶ cps で、10⁶ 個は <b>0.6 秒</b>。いまの 1.1×10⁵ cps のままなら 9 秒。<span class="key">パイルアップの上限が、そのまま測定時間の下限になる</span> ― 画素ごとに寿命を測る FLIM が遅いのはこのためです。</p>
   </div>
 
   <div class="lab-go">
@@ -1376,6 +1429,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p>面白いのは観察の向きです。表面は配線層（<a href="第1部_製造プロセス.html">第1部</a>の多層配線）に覆われて見えないので、<strong>基板を薄く研磨して裏から覗きます</strong>。ここで<a href="第4部_イメージセンサ.html#s2">第4部02</a>の吸収の物理が裏返る ― <span class="key">シリコンは1107nmより長い波長には透明</span>なので、バンドギャップの向こう側の光にとって基板は窓になる。だから裏面EMMIの目は InGaAs カメラ（05）です。光らないタイプの不良には、逆にレーザーで炙って抵抗変化を電流で読む <strong>OBIRCH</strong> という相棒がいます。第1部の歩留まりの話には続きがあって、<strong>不良を「何%」で数える工程管理の先に、不良を「1個ずつ光らせて」原因に辿り着く解析の現場</strong>がある ― そこで働いているのは、この部の高感度検出器たちです。</p>
   </div>
 
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（07 現場の道具箱）</span>
+    <p><b>問.</b> 直径 30 µm の Si PIN を 50 Ω で受ける。空乏層 w = 1・2・3 µm のそれぞれで、容量・RC 帯域・走行帯域・合成帯域は？（C = εA/w、f<sub>tr</sub> = 0.44 v<sub>sat</sub>/w、v<sub>sat</sub> = 10⁷ cm/s、合成は 1/f² の和）</p>
+    <p><b>解.</b> w = 1 µm: C = 0.073 pF、f<sub>RC</sub> = 43.5 GHz、f<sub>tr</sub> = 44 GHz → <b>31 GHz</b>。w = 2 µm: 0.037 pF、87 GHz、22 GHz → <b>21 GHz</b>。w = 3 µm: 0.024 pF、130 GHz、14.7 GHz → <b>14.6 GHz</b>。<span class="key">2 つの帯域が等しくなる w ≈ 1 µm が釣り合い</span>で、それより厚いと走行が、薄いと容量が律速する（PhotonLab「厚さの綱引き」）。ただし w = 1 µm では 850 nm の光の大半が素通りする（吸収長 19 µm）ので、QE を加えた三すくみになる ― 導波路型 PD が生まれた理由です。</p>
+  </div>
+
   <div class="lab-go">
     <span class="tag">手を動かす — PhotonLab 第3章</span>
     <p>RC の速さ、厚さの綱引き、M で床を沈める光通信の定石 ― この章の deep の数字を全部自分で出す。</p>
@@ -1461,10 +1520,35 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <figcaption>折れ目の下は「明るい LED」、上は「レーザー」。<span class="key">しきい値の温度依存が、LD に TEC（05・第8部）を背負わせる</span> ― 光源側の冷却の請求書です。</figcaption>
   </figure>
 
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（08 光る半導体）</span>
+    <p><b>問.</b> GaAs（E<sub>g</sub> = 1.42 eV）と GaN（3.4 eV）の LED はおよそ何 nm で光るか。屈折率 3.5 の平らな面から、内部の光は何%出られるか。</p>
+    <p><b>解.</b> λ ≈ 1240/E<sub>g</sub>: GaAs <b>873 nm</b>（近赤外 ― リモコンや 3D センシングの光源帯）、GaN <b>365 nm</b>（紫外。青色 LED は In を混ぜた InGaN で E<sub>g</sub> を 2.7 eV 付近まで下げて約 460 nm）。取り出しは 1/(4n²) = 1/49 = <b>2.0%</b>。<span class="key">検出器の λ<sub>c</sub> = 1240/E<sub>g</sub> と、光源の λ ≈ 1240/E<sub>g</sub> は同じ式の表と裏</span>で、光源側では残り 98% との闘いが製品開発の中心になります。</p>
+  </div>
+
   <div class="caveat">
     <span class="tag">この部が単純化していること</span>
     <p><strong>数値はすべて桁の代表値です。</strong>光電面のQE・ダイノードの &delta;・APDのk・MPPCのPDEやDCRは、素子の型式と波長・温度で大きく動きます。設計に使う数字は必ずデータシートから。</p>
     <p><strong>PMTの電子光学（収集効率・TTSの厳密な計算）、APDのトンネル暗電流、MPPCの飽和の式の導出、MCPのイオンフィードバックと寿命、EM-CCDの経時劣化、LDのレート方程式には踏み込みません。</strong>PMT・MPPC・I.I. の一次資料としては、浜松ホトニクスが無償公開している『光電子増倍管 ハンドブック』と各技術資料が事実上の教科書です。</p>
+  </div>
+</section>
+
+<!-- ================= 理解の確認 ================= -->
+<section class="stage" id="scheck">
+  <div class="stage-head"><span class="stage-num">—</span>
+    <h2>理解の確認 ― 10問で一族を並べ直す</h2></div>
+  <p class="lede">答えを開く前に、どの章の何を使うかを先に言ってみてください。後ろの問いほど、前の章を組み合わせます。</p>
+  <div class="chk">
+    <details><summary><span class="qn">Q1 · 01</span>検出器選定の最初の2問は何か。</summary><p>①光は後段の回路の床より十分強いか（弱ければ床の手前で増やす家系へ）。②「何ワット」で足りるか、「何個」まで要るか（個数なら PMT・SPAD・MPPC）。そのあとに磁場・体積・電圧（Q3）、波長、速さ、値段が続く。</p></details>
+    <details><summary><span class="qn">Q2 · 02</span>PMT の増倍がほぼ無雑音なのはなぜか。</summary><p>雑音指数が F ≈ δ/(δ−1) で、最初の段の δ（3〜5）が大きいほど 1 に近づくから（δ=4 で 1.33）。後段のゆらぎは、すでに増えた電子数で割られて効かなくなる。</p></details>
+    <details><summary><span class="qn">Q3 · 02</span>TTS と Transit Time、時間分解能を決めるのはどちらか。</summary><p><b>TTS</b>（ばらつき）。平均の遅れ（Transit Time）は一定なので差し引ける。TTS の中身は初速差と道のりの差で、電界と電極形状、MCP 化で圧縮する。</p></details>
+    <details><summary><span class="qn">Q4 · 03</span>Si APD は M = 100 で使えるのに、InGaAs APD が M = 10 前後で使われるのはなぜか。</summary><p>F(M) = kM + (1−k)(2−1/M) で、k が Si ≲ 0.1、InGaAs/InP ≈ 0.4。k = 0.4 では F(100) = 41 で、増やしたぶん以上に雑音が増える。</p></details>
+    <details><summary><span class="qn">Q5 · 03</span>MPPC のオーバー電圧を上げると、良くなるものと悪くなるものは？</summary><p>良くなる: PDE・利得（= C·V<sub>ov</sub>/q）。悪くなる: 暗計数・クロストーク・アフターパルス。同じつまみに繋がっている。温度で V<sub>BD</sub> が動くのでバイアスを追従させる。</p></details>
+    <details><summary><span class="qn">Q6 · 04</span>NEP の単位に /√Hz が付くのはなぜか。</summary><p>白色雑音はパワーが帯域 B に比例し、振幅は √B に比例するから。1 Hz あたりで書いておき、使う帯域が決まった時点で √B を掛けて実際の床にする。</p></details>
+    <details><summary><span class="qn">Q7 · 04</span>床がアンプ律速のとき、冷却はなぜ効かないのか。何が効くか。</summary><p>ノイズは二乗和で、最大の積み木がほぼ全部を決める。暗電流のショットを下げても合計はほとんど動かない。効くのは TIA の雑音を下げる（R<sub>f</sub> を上げる）か、M で信号を床の上へ持ち上げること。</p></details>
+    <details><summary><span class="qn">Q8 · 05</span>サーモグラフィが 8〜14 µm を使う理由を2つ。</summary><p>①300 K の物体の放射のピークが 2898/300 ≈ 9.7 µm（ウィーン則）。②その帯が大気の窓（吸収の谷間）に重なる。</p></details>
+    <details><summary><span class="qn">Q9 · 06</span>TCSPC で検出率を励起の 1〜数% に絞るのはなぜか。繰り返しを上げすぎると何が起きるか。</summary><p>1 周期に2個来ると先着だけが記録され、減衰が早い側へ歪む（パイルアップ）。繰り返しを上げると前のパルスの減衰の尻尾を踏むので、周期は寿命の5倍以上あける。両側から閉じる窓。</p></details>
+    <details><summary><span class="qn">Q10 · 07</span>PIN を薄くすると速くなるとは限らないのはなぜか。</summary><p>走行時間は w に比例して短くなるが、容量 C = εA/w は増えて RC が遅くなる。両者が釣り合う w がある（直径 30 µm・50 Ω で約 1 µm）。さらに薄いと吸収（QE）も減る ― 三すくみ。</p></details>
   </div>
 </section>
 
@@ -1523,22 +1607,24 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
         <tbody>
           <tr><td>光電子増倍管の<br>すべて</td><td>浜松ホトニクス<br>『光電子増倍管 ハンドブック』（同社サイトで無償公開）</td>
             <td><strong>02 の一次資料です。</strong>光電面の種類とQE、ダイノードの利得、ブリーダ設計、TTS、暗計数、シンチレーション計数まで ― PMT を実務で使うための事実上の教科書。MPPC・APD・I.I. にも同様の技術資料があります。</td></tr>
-          <tr><td>なだれ増倍の<br>過剰雑音</td><td>R. J. McIntyre<br>IEEE Trans. Electron Devices, 1966</td>
+          <tr><td>外部光電効果</td><td>A. Einstein<br>Ann. Phys. 17, 132 (1905)</td>
+            <td>02。光を粒（エネルギー hν の量子）として扱えば、光電子のエネルギーが光の強さではなく振動数で決まることが説明できる、という論文。1921 年のノーベル賞の対象。</td></tr>
+          <tr><td>なだれ増倍の<br>過剰雑音</td><td>R. J. McIntyre<br>IEEE Trans. Electron Devices 13, 164 (1966)</td>
             <td>03。F(M)=kM+(1−k)(2−1/M) の出どころ。APD の設計が「k の小さい材料を選ぶ競争」になった原点です。</td></tr>
-          <tr><td>ガイガーモードAPD<br>アレイ（SiPM）の総説</td><td>D. Renker<br>Nucl. Instrum. Methods A, 2006</td>
+          <tr><td>ガイガーモードAPD<br>アレイ（SiPM）の総説</td><td>D. Renker<br>Nucl. Instrum. Methods A 567, 48 (2006)</td>
             <td>03。SiPM の歴史・特性・クロストークやアフターパルスなどの問題点を整理した入口の定番です。</td></tr>
-          <tr><td>放射線計測の<br>教科書</td><td>Glenn F. Knoll<br>Radiation Detection and Measurement, Wiley</td>
+          <tr><td>放射線計測の<br>教科書</td><td>Glenn F. Knoll<br>Radiation Detection and Measurement, 4th ed., Wiley (2010)</td>
             <td>05。シンチレータの光量・減衰時定数・エネルギー分解能の統計など、この部で使った標準値の多くはこの本が基準です。</td></tr>
-          <tr><td>単一光子検出の<br>APDとクエンチ回路</td><td>S. Cova ほか<br>Applied Optics, 1996</td>
+          <tr><td>単一光子検出の<br>APDとクエンチ回路</td><td>S. Cova ほか<br>Appl. Opt. 35, 1956 (1996)</td>
             <td>03・06。SPAD の本籍地は<a href="第4部_イメージセンサ.html#sspad">第4部</a>ですが、クエンチ・リチャージの回路とTCSPC の検出器としての性格はこの総説が入口です。</td></tr>
-          <tr><td>TCSPC の教科書</td><td>W. Becker<br>Advanced Time-Correlated Single Photon Counting Techniques, Springer</td>
+          <tr><td>TCSPC の教科書</td><td>W. Becker<br>Advanced Time-Correlated Single Photon Counting Techniques, Springer (2005)</td>
             <td>06。パイルアップの統計・IRF と再畳み込み・FLIM の実務まで、時間計測を仕事にする人の机の本です。</td></tr>
           <tr><td>フォトニクス全域の<br>体系書</td><td>B. E. A. Saleh &amp; M. C. Teich<br>Fundamentals of Photonics, Wiley</td>
             <td>08 と第7部。半導体光源（LED・LD・VCSEL）と検出器を同じ枠組みで通す教科書。E-k と利得の物理はこの本の領分です。</td></tr>
         </tbody>
       </table>
     </div>
-    <figcaption><strong>書誌情報は、著者・掲載誌・年にとどめてあります。</strong>引用に使うなら原典で確認してください。ここでの目的は、探すときの手がかりを渡すことです。</figcaption>
+    <figcaption>論文は巻・先頭頁・年まで、書籍は版と年まで記しました。数値の出典として引用するときは、原典の該当箇所で確認してください。</figcaption>
   </figure>
 
   <div class="foot">
