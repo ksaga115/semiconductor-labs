@@ -425,6 +425,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li><a href="#s11"><span class="n">10</span><span>干渉と干渉計</span></a></li>
     <li><a href="#s12"><span class="n">11</span><span>分光器</span></a></li>
     <li><a href="#s13"><span class="n">12</span><span>ファイバの損失と分散</span></a></li>
+    <li><a href="#s14"><span class="n">13</span><span>顕微鏡とイメージング</span></a></li>
     <li class="dom"><span>付録</span></li>
     <li><a href="#scheck"><span class="n">—</span><span>理解の確認</span></a></li>
     <li><a href="#s9"><span class="n">—</span><span>用語表</span></a></li>
@@ -451,6 +452,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li><a href="#s11"><span class="n">10</span><span>干渉</span></a></li>
     <li><a href="#s12"><span class="n">11</span><span>分光器</span></a></li>
     <li><a href="#s13"><span class="n">12</span><span>損失と分散</span></a></li>
+    <li><a href="#s14"><span class="n">13</span><span>イメージング</span></a></li>
     <li class="dom"><span>付録</span></li>
     <li><a href="#scheck"><span class="n">—</span><span>理解の確認</span></a></li>
     <li><a href="#s9"><span class="n">—</span><span>用語表</span></a></li>
@@ -1424,10 +1426,103 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   </div>
 </section>
 
+<!-- ================= 13 ================= -->
+<section class="stage" id="s14">
+  <div class="stage-head"><span class="stage-num">13</span>
+    <h2>顕微鏡とイメージングの手法 ― 検出器が働く現場</h2></div>
+  <p class="lede">第4部と第5部の検出器の多くは、顕微鏡や断層撮影の装置の中で使われています。ここでは代表的な手法を、<span class="key">「どの光を捨て、どの光を集めるか」</span>という光学の言葉で読みます。どの手法も、04 の回折の限界と、第0部 02 の √N のどちらかと戦っています。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>広視野と共焦点 ― ピンホールで焦点の外を捨てる</h3>
+      <p>ふつうの蛍光顕微鏡（広視野）は、試料全体を照らしてカメラで撮るので、焦点の外で光った蛍光もぼやけて重なる。<b>共焦点顕微鏡</b>は、レーザーを 1 点に絞って照らし、戻ってきた光を焦点と共役な位置の<b>ピンホール</b>に通してから PMT などで受ける。焦点から来た光はピンホールを通り、焦点の外から来た光はほとんど通らない ― <b>光学的な切片</b>が取れる（Minsky の特許、1957 年出願）。点を走査して画像にするので、検出器は 1 画素ぶんの PMT で足り、速さと感度が要る（第5部 02・GaAsP の光電面）。</p>
+      <p>分解能は、波長 500 nm・NA 1.4 で、広視野の横方向が 0.61λ/NA = <b>0.22 µm</b>。共焦点でピンホールを十分に絞ると横方向はおよそ 0.4λ/NA = 0.14 µm まで良くなるが、光も減る。深さ方向の分解能はおよそ 1.4λn/NA² = <b>0.54 µm</b>（油の n = 1.518）。</p>
+    </div>
+    <div class="body-col">
+      <h3>深く・やさしく ― 多光子とライトシート</h3>
+      <p><b>多光子顕微鏡</b>は、2 光子吸収が強さの 2 乗に比例する性質（第9部 10）で、焦点だけを励起する。ピンホールが要らず、散乱の少ない近赤外の光で組織の奥まで見られます。<b>ライトシート顕微鏡</b>は、試料を横から薄い光の板で照らし、その面だけを直角の方向からカメラで撮る。焦点の面以外を照らさないので、蛍光の退色と光の害が少なく、生きた胚を何時間も撮れる（Huisken ら、2004）。検出器は大きな面の sCMOS（第10部 03 の選定そのもの）です。</p>
+      <h3>分光して撮る ― ハイパースペクトル</h3>
+      <p>1 画素ごとにスペクトルを持つ画像を撮るのが<b>ハイパースペクトル撮像</b>。よく使われる方式は、分光器（11）のスリットを 1 行の視野にして、2 次元のセンサの一方向を位置、もう一方向を波長に使い、物を動かしながら 1 行ずつ撮る（プッシュブルーム）。640 画素 × 224 波長 × 12 ビット × 100 行/秒で <b>172 Mb/s</b>。食品・農作物・医薬品の検査、鉱物の識別に使われます。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">CONFOCAL — 焦点から来た光だけが、ピンホールを抜ける</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 236" role="img" aria-label="共焦点顕微鏡の原理図。レーザーの光がダイクロイックミラーで反射して対物レンズで試料の焦点に絞られる。焦点で出た蛍光はレンズを戻ってピンホールの位置に集まり通過して検出器に届く。焦点より奥の面で出た蛍光はピンホールの手前で集まるので広がってピンホールに遮られる。" style="min-width:700px;width:100%;display:block">
+        <path d="M250 12 V148" stroke="var(--electron)" stroke-width="2.2" fill="none"/>
+        <text x="240" y="24" font-size="10" fill="var(--electron-2)" text-anchor="end">レーザー（上から）</text>
+        <path d="M232 78 L268 42" stroke="var(--ink)" stroke-width="3" fill="none"/>
+        <text x="140" y="96" font-size="9.5" fill="var(--ink-2)" text-anchor="middle">ダイクロイック</text>
+        <text x="140" y="110" font-size="9" fill="var(--ink-3)" text-anchor="middle">レーザーは通し、蛍光は反射</text>
+        <path d="M218 150 Q250 138 282 150 Q250 162 218 150 Z" fill="var(--surface-2)" stroke="var(--ink-2)" stroke-width="1.4"/>
+        <text x="292" y="154" font-size="10" fill="var(--ink-2)">対物レンズ</text>
+        <path d="M226 152 L250 196 L274 152" stroke="var(--photon)" stroke-width="1.8" fill="none"/>
+        <path d="M150 196 H350" stroke="var(--si)" stroke-width="1" stroke-dasharray="4 3" fill="none"/>
+        <path d="M150 214 H350" stroke="var(--si)" stroke-width="1" stroke-dasharray="4 3" fill="none"/>
+        <circle cx="250" cy="196" r="4" fill="var(--photon)"/>
+        <circle cx="250" cy="214" r="3.5" fill="var(--warn)"/>
+        <text x="356" y="199" font-size="9.5" fill="var(--photon-2)">焦点の面</text>
+        <text x="356" y="218" font-size="9.5" fill="var(--warn)">奥の面（焦点の外）</text>
+        <path d="M256 60 H470" stroke="var(--photon)" stroke-width="1.8" fill="none"/>
+        <path d="M480 48 L560 60 M480 72 L560 60" stroke="var(--photon)" stroke-width="1.2" fill="none"/>
+        <path d="M470 60 L520 48 M470 60 L520 72" stroke="var(--warn)" stroke-width="1.2" fill="none"/>
+        <path d="M560 38 V54 M560 66 V82" stroke="var(--ink)" stroke-width="3.5" fill="none"/>
+        <text x="560" y="98" font-size="10" fill="var(--ink-2)" text-anchor="middle">ピンホール</text>
+        <path d="M566 60 H640" stroke="var(--photon)" stroke-width="1.8" fill="none"/>
+        <rect x="644" y="48" width="60" height="24" rx="4" fill="var(--surface-2)" stroke="var(--electron)"/>
+        <text x="674" y="64" font-size="10" fill="var(--electron-2)" text-anchor="middle">PMT</text>
+        <g font-size="9.5" fill="var(--ink-2)">
+          <text x="420" y="128">焦点で出た光 → ピンホールの位置に集まって抜ける</text>
+          <text x="420" y="146" fill="var(--warn)">奥の面で出た光 → 手前で集まり、広がって遮られる</text>
+          <text x="420" y="168" fill="var(--ink-3)">点を走査して画像にする（検出器は 1 画素ぶん）</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>ピンホールの穴を小さくするほど焦点の外の光をよく捨てるが、焦点からの光も減る ― 切片の薄さと明るさの取り合い（第7部 11 のスリットと同じ形）。<span class="key">捨てる光を選ぶのが、共焦点の本質</span>です。多光子顕微鏡は、そもそも焦点の外を光らせないことで同じ効果を得ています。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>回折の限界を越える ― 超解像</h3>
+      <p>04 の 0.61λ/NA の壁は、1 回の照明と 1 枚の像では越えられませんが、<b>光で分子の状態を切り替える</b>ことで越える方法が見つかりました（2014 年のノーベル化学賞）。<b>STED</b>: 励起の光の周りをドーナツ形の別の光で囲み、周りの分子の蛍光を誘導放出で消す。分解能は d = λ/(2NA√(1 + I/I<sub>sat</sub>)) で、消す光を強くするほど細くなる（λ 600 nm・NA 1.4 で、I/I<sub>sat</sub> = 100 なら 214 nm → 21 nm）。<b>1 分子の位置決め（PALM・STORM）</b>: 1 度にごく少数の分子だけを光らせ、1 個ずつ輝点の中心を求めて位置を記録し、何千枚も重ねる。中心の精度は σ/√N（σ は点像の広がり、N は光子の数）で、σ = 100 nm・1,000 光子で約 <b>3 nm</b>（背景と画素の大きさを無視した理想）。<b>SIM</b> は縞の照明で分解能を約 2 倍にします。</p>
+    </div>
+    <div class="body-col">
+      <h3>X 線 CT ― 投影から断面を戻す</h3>
+      <p>X 線の CT は、物体の周りを回りながら透過の像（投影）を何百〜何千枚も撮り、計算で断面の像に戻します（1970 年代初めにハウンズフィールらが実用化）。検出器は第5部 05 の FPD や、この部の光子計数型。投影の枚数は、1 行 N 画素の検出器ならおよそ πN/2 枚が目安で、N = 1,000 なら約 <b>1,570 枚</b>。枚数を減らすと被ばくは減るが、縞状の偽像が出る。元に戻す計算の代表が<b>フィルタ補正逆投影</b>で、投影にフィルタをかけてから逆向きに塗り重ねる（第0部 03 のフーリエの考え方そのもの）。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">RESOLUTION LADDER — 手法ごとの分解能の目安（横方向）</span></div>
+    <div class="scroll-x">
+      <table>
+        <thead><tr><th>手法</th><th>横方向の分解能の目安</th><th>何で決まるか</th><th>検出器</th></tr></thead>
+        <tbody>
+          <tr><td>広視野の蛍光</td><td class="num">約 200〜250 nm</td><td>回折 0.61λ/NA</td><td>sCMOS・EM-CCD</td></tr>
+          <tr><td>共焦点</td><td class="num">約 150〜250 nm（ピンホールによる）</td><td>回折とピンホール</td><td>PMT（GaAsP など）・SPAD</td></tr>
+          <tr><td>SIM</td><td class="num">約 100〜120 nm</td><td>縞の照明で約 2 倍</td><td>sCMOS</td></tr>
+          <tr><td>STED</td><td class="num">数十 nm</td><td>消す光の強さ √(1 + I/I<sub>sat</sub>)</td><td>SPAD・PMT</td></tr>
+          <tr><td>PALM・STORM</td><td class="num">約 10〜30 nm（実用）</td><td>光子の数 σ/√N・背景・ドリフト</td><td>sCMOS・EM-CCD</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <figcaption>値は可視の光・NA 1.4 前後の代表的な目安で、試料と色素と装置で変わります。<span class="key">超解像の手法ほど、たくさんの光子（または強い光）を払って分解能を買っている</span> ― 光の予算（第10部）の厳しさは増す一方です。</figcaption>
+  </figure>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（13 イメージングの手法）</span>
+    <p><b>問1.</b> 1 分子の位置決めで、点像の広がり σ = 100 nm のとき、位置の精度 5 nm を得るには何個の光子が要るか（背景なしの理想）。10 ms の露光で 245 光子（第10部 02）なら何枚ぶんか。</p>
+    <p><b>解.</b> 100/√N ≤ 5 から N ≥ 400 個。245 個では 1 枚で約 6.4 nm なので、同じ分子を 2 枚ぶん足せば届く。<span class="key">分解能の単位が「nm」から「光子の数」に変わる</span>のが、位置決めの超解像の考え方です。実際には背景と画素の大きさで理想より悪くなります（Thompson ら 2002）。</p>
+    <p><b>問2.</b> 1 行 2,000 画素の検出器で CT を撮る。投影の枚数の目安は？ 1 枚 10 ms なら全体で何秒か。</p>
+    <p><b>解.</b> π × 2,000 / 2 ≈ <b>3,140 枚</b>、31 秒。高速の CT は、検出器の読み出しの速さ（第6部 12 の出口）と、X 線の強さ（光子の数）で決まります。</p>
+  </div>
+</section>
+
 <!-- ================= 理解の確認 ================= -->
 <section class="stage" id="scheck">
   <div class="stage-head"><span class="stage-num">—</span>
-    <h2>理解の確認 ― 14問で光の旅をたどり直す</h2></div>
+    <h2>理解の確認 ― 16問で光の旅をたどり直す</h2></div>
   <p class="lede">光源 → 空間 → レンズ → 検出器の順に並べてあります。答えを開く前に、どの章の式かを先に言ってみてください。</p>
   <div class="chk">
     <details><summary><span class="qn">Q1 · 01</span>赤外 LED の照明を lx で比べてはいけないのはなぜか。</summary><p>lm・lx は視感度 V(λ) を掛けた量で、赤外では V ≈ 0。人の目に見えない光の量は放射量（W/m²）で語るしかない。</p></details>
@@ -1444,6 +1539,8 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <details><summary><span class="qn">Q12 · 10</span>OCT に、レーザーではなく幅の広い光源を使うのはなぜか。</summary><p>干渉縞が現れるのは光路差がコヒーレンス長 λ²/Δλ 以内のときだけなので、幅の広い光源ほど「どの深さで反射したか」を細かく切り分けられる（840 nm・幅 50 nm で約 6 µm）。線幅の狭いレーザーでは、どの深さからの反射も干渉してしまい深さが決まらない。</p></details>
     <details><summary><span class="qn">Q13 · 11</span>シリコンのラインセンサで 300〜1,000 nm を 1 台の格子分光器で測るとき、何に気をつけるか。</summary><p>次数の重なり。400 nm の 2 次光が 800 nm の 1 次光と同じ場所に来るので、長い波長の側に短い波長を切る次数カットフィルタを置く。加えてスリット幅（分解能と明るさの取り合い）と迷光。</p></details>
     <details><summary><span class="qn">Q14 · 12</span>長距離の光通信が 1.55 µm を使う理由を 2 つ。</summary><p>石英ファイバの損失が最小（約 0.2 dB/km、短い側はレイリー散乱、長い側は赤外吸収）で、しかも EDFA で光のまま増幅できる帯域（C 帯）と重なるから。波長分散（約 17 ps/(nm·km)）は残るので、狭線幅の光源や分散補償で対処する。</p></details>
+      <details><summary><span class="qn">Q15 · 13</span>共焦点顕微鏡が光学的な切片を取れるのはなぜか。代償は何か。</summary><p>焦点と共役な位置のピンホールが、焦点から来た光だけを通し、焦点の外から来た光を遮るから。ピンホールを絞るほど切片は薄くなるが、光も減る。点を走査するので時間もかかる。</p></details>
+    <details><summary><span class="qn">Q16 · 13</span>1 分子の位置決めの超解像で、精度を 2 倍にするには光子を何倍集めればよいか。</summary><p>精度は σ/√N なので 4 倍。背景や画素の大きさがあると、それ以上に要る。</p></details>
   </div>
 </section>
 
@@ -1491,6 +1588,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>モード分散 / 波長分散</td><td>道のりの違う光線の到着差（マルチモード）／屈折率の波長依存による差 Δτ=D·L·Δλ（シングルモード）</td><td class="num">D≈17 ps/(nm·km)@1550</td></tr>
           <tr><td>EDFA</td><td>エルビウム添加ファイバを 980/1480 nm の LD で励起し、C 帯（1530〜1565 nm）を光のまま増幅する</td><td class="num">C 帯</td></tr>
           <tr><td>OTDR</td><td>パルスを入れ、レイリー後方散乱と反射の戻り時間から損失・接続・破断の場所を読む試験器。z = ct/(2n)</td><td class="num">100µs で 10.2km</td></tr>
+                  <tr><td>共焦点顕微鏡 / ピンホール</td><td>1 点を照らし、焦点と共役な穴で焦点の外の光を捨てて光学的な切片を取る顕微鏡</td><td class="num">深さ約 0.5 µm</td></tr>
+          <tr><td>ライトシート顕微鏡</td><td>光の薄い板で 1 面だけ照らし、直角の方向からカメラで撮る。光の害が少ない</td><td class="num">sCMOS で撮る</td></tr>
+          <tr><td>STED / PALM・STORM / SIM</td><td>誘導放出で周りを消す超解像、1 分子ずつ位置を決める超解像、縞の照明で約 2 倍にする方法</td><td class="num">数十 nm / σ/√N / 約 2 倍</td></tr>
+          <tr><td>ハイパースペクトル撮像</td><td>画素ごとにスペクトルを持つ画像。プッシュブルームは 1 行ずつ分光して撮る</td><td class="num">位置 × 波長</td></tr>
+          <tr><td>CT / フィルタ補正逆投影</td><td>多数の投影から断面を計算で戻す撮影と、その代表的な再構成の方法</td><td class="num">投影 約 πN/2 枚</td></tr>
         </tbody>
       </table>
     </div>
@@ -1545,6 +1647,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>低損失ファイバ</td><td>F. P. Kapron, D. B. Keck &amp; R. D. Maurer<br>Appl. Phys. Lett. 17, 423 (1970)<br>T. Miya ほか, Electron. Lett. 15, 106 (1979)</td><td>12。20 dB/km を切った最初の石英ファイバと、1.55 µm で 0.2 dB/km の達成。</td></tr>
           <tr><td>OTDR</td><td>M. K. Barnoski &amp; S. M. Jensen<br>Appl. Opt. 15, 2112 (1976)</td><td>12。後方散乱でファイバの損失の分布を測る方法。</td></tr>
           <tr><td>光ファイバ通信</td><td>G. P. Agrawal『Fiber-Optic Communication Systems』5th ed., Wiley (2021)<br>ITU-T 勧告 G.652（標準の単一モードファイバ）</td><td>12。損失・分散・EDFA・分散補償の標準的な教科書と、ファイバの規格。</td></tr>
+                  <tr><td>共焦点顕微鏡</td><td>M. Minsky, 米国特許 3,013,467（1957 年出願、1961 年登録）<br>J. B. Pawley（編）『Handbook of Biological Confocal Microscopy』3rd ed., Springer (2006)</td><td>13。ピンホールで焦点の外の光を捨てる顕微鏡の原典と、標準的な手引き。</td></tr>
+          <tr><td>STED</td><td>S. W. Hell &amp; J. Wichmann<br>Opt. Lett. 19, 780 (1994)</td><td>13。誘導放出で蛍光の点を細くする超解像の提案。</td></tr>
+          <tr><td>PALM / STORM</td><td>E. Betzig ほか, Science 313, 1642 (2006)<br>M. J. Rust, M. Bates &amp; X. Zhuang, Nat. Methods 3, 793 (2006)</td><td>13。1 分子ずつ光らせて位置を決める超解像。</td></tr>
+          <tr><td>位置決めの精度</td><td>R. E. Thompson, D. R. Larson &amp; W. W. Webb<br>Biophys. J. 82, 2775 (2002)</td><td>13。光子の数・背景・画素の大きさを含めた精度の式。</td></tr>
+          <tr><td>SIM / ライトシート</td><td>M. G. L. Gustafsson, J. Microsc. 198, 82 (2000)<br>J. Huisken ほか, Science 305, 1007 (2004)</td><td>13。縞の照明で分解能を約 2 倍にする方法と、光の板で照らす顕微鏡。</td></tr>
+          <tr><td>CT</td><td>G. N. Hounsfield, Br. J. Radiol. 46, 1016 (1973)<br>A. C. Kak &amp; M. Slaney『Principles of Computerized Tomographic Imaging』IEEE Press (1988)</td><td>13。X 線 CT の実用化の報告と、再構成（フィルタ補正逆投影）の標準的な教科書。</td></tr>
         </tbody>
       </table>
     </div>

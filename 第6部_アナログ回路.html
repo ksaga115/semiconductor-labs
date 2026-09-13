@@ -423,6 +423,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li><a href="#s10"><span class="n">09</span><span>AD 変換の方式</span></a></li>
     <li><a href="#s11"><span class="n">10</span><span>電源</span></a></li>
     <li><a href="#s12"><span class="n">11</span><span>実装と EMC</span></a></li>
+    <li><a href="#s13"><span class="n">12</span><span>カメラの出口</span></a></li>
     <li class="dom"><span>付録</span></li>
     <li><a href="#scheck"><span class="n">—</span><span>理解の確認</span></a></li>
     <li><a href="#s9"><span class="n">—</span><span>用語表</span></a></li>
@@ -447,6 +448,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li><a href="#s10"><span class="n">09</span><span>AD 変換</span></a></li>
     <li><a href="#s11"><span class="n">10</span><span>電源</span></a></li>
     <li><a href="#s12"><span class="n">11</span><span>実装と EMC</span></a></li>
+    <li><a href="#s13"><span class="n">12</span><span>カメラの出口</span></a></li>
     <li class="dom"><span>付録</span></li>
     <li><a href="#scheck"><span class="n">—</span><span>理解の確認</span></a></li>
     <li><a href="#s9"><span class="n">—</span><span>用語表</span></a></li>
@@ -1369,10 +1371,98 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   </div>
 </section>
 
+<!-- ================= 12 ================= -->
+<section class="stage" id="s13">
+  <div class="stage-head"><span class="stage-num">12</span>
+    <h2>カメラの出口 ― 高速のインターフェースと、画像の前処理</h2></div>
+  <p class="lede">センサの中で AD 変換された数（09）は、センサからカメラの中の FPGA へ、カメラから計算機へと運ばれ、その途中で暗さや感度のむらが補正されます。<span class="key">速いカメラの限界は、しばしばセンサではなくこの「出口」</span>で決まる ― 第10部 04 で 6.7 Gb/s が USB に入らなかったのがその例です。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>センサから FPGA へ ― 並列から直列へ</h3>
+      <p>2048 × 2048 画素・12 ビット・100 枚/秒のセンサは、毎秒 <b>5.03 Gb</b> を出します。これを何十本もの並列の配線で運ぶと、配線の遅れの差（スキュー）と雑音が問題になるので、センサは数本〜十数本の<b>高速の差動の直列の線</b>（LVDS・SLVS・MIPI D-PHY など、第6部 11 の差動伝送）にまとめて送る。受け側の FPGA は、線ごとの遅れを揃え、直列を並列に戻し、画素の順番を並べ直します。</p>
+      <h3>カメラから計算機へ ― 規格の選び方</h3>
+      <p>産業・科学用のカメラの出口には、用途ごとの規格があります。</p>
+    </div>
+    <div class="body-col">
+      <div class="scroll-x"><table>
+        <thead><tr><th>規格</th><th>速さの目安</th><th>特徴</th></tr></thead>
+        <tbody>
+          <tr><td>GigE Vision</td><td class="num">1 Gb/s（10GigE で 10 Gb/s）</td><td>ふつうの Ethernet。ケーブル 100 m、複数台の同期（PTP）</td></tr>
+          <tr><td>USB3 Vision</td><td class="num">5 Gb/s の信号（実効 400 MB/s 程度）</td><td>手軽。ケーブルは数 m</td></tr>
+          <tr><td>Camera Link</td><td class="num">構成で数 Gb/s 級</td><td>専用ケーブルと取り込みボード。古くからの標準</td></tr>
+          <tr><td>CoaXPress</td><td class="num">1 本 12.5 Gb/s（CXP-12）</td><td>同軸ケーブルで高速・長め・給電もできる。本数を束ねて増やせる</td></tr>
+        </tbody>
+      </table></div>
+      <p style="margin-top:10px">どの規格でも、露光時間などの設定の名前と操作の方法は <b>GenICam</b> という共通の約束でそろえられていて、ソフトウェアを規格ごとに書き分けずに済みます。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">PIPELINE — 画素の数が、計算機に届くまで</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 230" role="img" aria-label="カメラのデータの流れのブロック図。センサ（ADC内蔵）から高速の直列の差動線でFPGAへ、FPGAで暗さの引き算・感度のむらの補正・欠陥画素の補間・ビニングとROIをして、インターフェース（CoaXPressやUSB3など）で計算機へ送る。各段にデータの速さが書かれている。" style="min-width:700px;width:100%;display:block">
+        <g stroke-width="1.4">
+          <rect x="20" y="60" width="130" height="64" rx="6" fill="var(--surface-2)" stroke="var(--electron)"/>
+          <rect x="220" y="40" width="260" height="104" rx="6" fill="var(--surface-2)" stroke="var(--photon)"/>
+          <rect x="550" y="60" width="90" height="64" rx="6" fill="var(--surface-2)" stroke="var(--volt)"/>
+          <rect x="680" y="60" width="64" height="64" rx="6" fill="var(--surface-2)" stroke="var(--ink-3)"/>
+        </g>
+        <g stroke="var(--ink-3)" stroke-width="1.6" fill="none">
+          <path d="M150 92 H214 M206 86 L214 92 L206 98"/><path d="M480 92 H544 M536 86 L544 92 L536 98"/><path d="M640 92 H674 M666 86 L674 92 L666 98"/>
+        </g>
+        <g font-size="10.5" font-weight="700" text-anchor="middle" fill="var(--ink)">
+          <text x="85" y="86">センサ</text><text x="350" y="60">FPGA（カメラの中）</text><text x="595" y="86">出口の規格</text><text x="712" y="86">計算機</text>
+        </g>
+        <g font-size="9.5" text-anchor="middle" fill="var(--ink-2)">
+          <text x="85" y="104">画素 → ADC</text><text x="85" y="118">（第4部・第6部 09）</text>
+          <text x="595" y="104">CXP・USB3</text><text x="595" y="118">GigE など</text>
+          <text x="712" y="104">GenICam</text><text x="712" y="118">で操作</text>
+        </g>
+        <g font-size="9.5" fill="var(--ink-2)">
+          <text x="232" y="80">① 線の遅れを揃え、直列を並列に戻す</text>
+          <text x="232" y="96">② 暗さを引く（dark）</text>
+          <text x="232" y="112">③ 感度のむらを割る（flat）・欠陥画素を補う</text>
+          <text x="232" y="128">④ ビニング・ROI・ビットを詰める</text>
+        </g>
+        <g font-family="var(--mono)" font-size="9.5" fill="var(--warn)" text-anchor="middle">
+          <text x="182" y="80">5.0 Gb/s</text><text x="512" y="80">5.0 Gb/s</text>
+        </g>
+        <text x="380" y="176" font-size="10" fill="var(--ink-3)" text-anchor="middle">例: 2048 × 2048 画素 × 12 ビット × 100 枚/秒 ＝ 5.03 Gb/s（16 ビットの箱に入れると 6.71 Gb/s）</text>
+        <text x="380" y="196" font-size="10" fill="var(--ink-3)" text-anchor="middle">補正をカメラの中で済ませると、計算機の負担と遅れが減る。生のデータが要る測定では、補正を切って送る</text>
+      </svg>
+    </div>
+    <figcaption>12 ビットの数を 16 ビットの箱に入れて送ると、4 ビットぶん（<b>25%</b>）が空気を運ぶことになる。12 ビットを隙間なく詰めて送る形式（パック）にするだけで、同じ線で 1.33 倍の枚数が送れる。<span class="key">出口の設計は、ビットの数え方の設計でもあります</span>。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>前処理 ― 暗さを引き、むらを割る</h3>
+      <p>科学用のカメラの画像は、使う前に 2 つの補正を受けます。<b>暗さの引き算</b>: 光を当てずに撮った画像（dark）を引いて、暗電流と画素ごとのオフセット（DSNU、第4部）を消す。<b>感度のむらの補正</b>: 一様な光で撮った画像（flat）で割って、画素ごとの感度の違い（PRNU）とレンズの周辺の減光（第7部 03 の cos⁴）を消す:</p>
+      <div class="eq">補正後 ＝ (生 − dark) / (flat − dark) × 平均(flat − dark)</div>
+      <p>欠陥画素（暗電流の大きい画素・感度のない画素）は、登録した地図に従って周りの画素から補います。</p>
+    </div>
+    <div class="body-col">
+      <h3>補正にも雑音がある</h3>
+      <p>flat の画像そのものにもショット雑音が乗っているので、1 枚の flat で割ると、その雑音が補正後の画像に焼き付く。1 画素 30,000 電子の flat 1 枚なら 1/√30,000 = <b>0.58%</b>、16 枚を平均すれば <b>0.14%</b>。PRNU を 1% から 0.1% 以下まで消したいなら、flat を 34 枚以上平均する必要がある。<span class="key">補正の精度は、補正用の画像を撮るのにかけた光子の数で決まる</span> ― 第0部 02 の √N が、ここにも出てきます。dark も同じで、平均した枚数の √ で雑音が減ります。</p>
+      <h3>時刻と同期</h3>
+      <p>外部のトリガで露光を始め、露光の区間を信号で外に出し、画像ごとに時刻を記録する。複数のカメラや光源のパルス（第9部 09）と合わせるには、ローリングシャッタでは行ごとに露光の時刻がずれること（第4部）を計算に入れる必要があります。</p>
+    </div>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（12 カメラの出口）</span>
+    <p><b>問1.</b> 2048 × 2048・12 ビット・100 枚/秒のカメラを、USB3（実効 400 MB/s 程度）・10GigE（10 Gb/s）・CXP-12 1 本（12.5 Gb/s）のどれでつなげるか。12 ビットを詰めて送る場合と、16 ビットの箱で送る場合で考えよ。</p>
+    <p><b>解.</b> 詰めると 5.03 Gb/s、16 ビットの箱では 6.71 Gb/s。USB3 の実効 400 MB/s は 3.2 Gb/s なので<b>どちらも入らない</b>（画素の範囲を半分の高さに絞れば詰めた形で 2.5 Gb/s となり入る）。10GigE と CXP-12 1 本は<b>どちらでも入る</b>。<span class="key">規格の「信号の速さ」と「実際に運べるデータの速さ」は違う</span>ので、実効の値で比べます。</p>
+    <p><b>問2.</b> PRNU の補正の残りを 0.1% 以下にしたい。1 画素 30,000 電子の flat を何枚平均すればよいか。</p>
+    <p><b>解.</b> 1/√(N × 30,000) ≤ 0.001 から N ≥ 10⁶/30,000 = 33.3、<b>34 枚</b>。</p>
+  </div>
+</section>
+
 <!-- ================= 理解の確認 ================= -->
 <section class="stage" id="scheck">
   <div class="stage-head"><span class="stage-num">—</span>
-    <h2>理解の確認 ― 13問で4枚のカードを並べ直す</h2></div>
+    <h2>理解の確認 ― 15問で4枚のカードを並べ直す</h2></div>
   <p class="lede">答えを開く前に、どの章の式を使うかを先に言ってみてください。後ろの問いほど前の章を組み合わせます。</p>
   <div class="chk">
     <details><summary><span class="qn">Q1 · 01</span>同じ電流で g<sub>m</sub> を上げる手は？ 代償は？</summary><p>W/L を太らせて V<sub>ov</sub> を下げる（g<sub>m</sub> = 2I<sub>D</sub>/V<sub>ov</sub>）。代償は面積とゲート容量（f<sub>T</sub> が下がる）、下げすぎると弱反転に入って二乗則の外。</p></details>
@@ -1388,6 +1478,8 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <details><summary><span class="qn">Q11 · 09</span>16 ビット級の ADC に ΔΣ 型が多いのはなぜか。SAR 型で同じ分解能を狙うと何が苦しいか。</summary><p>ΔΣ は粗い量子化を速く繰り返し、雑音を帰還で高域へ押しやってデジタルで捨てるので、精度を部品の精度ではなく時間とデジタル処理で買える。SAR で 16 ビットを狙うと、kT/C を LSB/√12 以下にするための容量（1 V 満量程で 200 pF 級）と、容量比の精度（ミスマッチ）の両方が苦しくなる。</p></details>
     <details><summary><span class="qn">Q12 · 10</span>12 V から 1.8 V の雑音に敏感な電源を作る。LDO だけ・DC-DC だけ・両方のどれにするか。</summary><p>両方。LDO だけでは効率が 1.8/12 = 15% で、ほとんどが熱になる。DC-DC だけではスイッチのリップルと切り替え雑音が残る。DC-DC で効率よく 2〜3 V 程度まで落とし、最後を LDO で静かに整える。</p></details>
     <details><summary><span class="qn">Q13 · 11</span>フォトダイオードの pA 級の暗電流を測りたい。回路図には出てこない敵と、その対策は？</summary><p>敵は基板や絶縁物の表面を伝う漏れ電流（10 V / 1 GΩ で 10 nA）。入力を同じ電位のガードで囲んで漏れの道の電圧差を消し、ケーブルも三軸にする。加えて、グラウンドの帰り道を分け、ループの面積を小さくして外の雑音を拾わない。</p></details>
+      <details><summary><span class="qn">Q14 · 12</span>速いカメラで、12 ビットの画素を詰めて送るとなぜ得をするか。</summary><p>16 ビットの箱に入れると 4 ビット（25%）が空になる。詰めれば同じ線で 1.33 倍の枚数を送れる。2048²・100 枚/秒で 6.71 Gb/s が 5.03 Gb/s になる。</p></details>
+    <details><summary><span class="qn">Q15 · 12</span>flat の画像 1 枚で感度のむらを補正すると、何が起きるか。</summary><p>flat 自身のショット雑音（30,000 電子で 0.58%）が補正後の画像に焼き付く。N 枚平均すると 1/√N で減る（16 枚で 0.14%）。</p></details>
   </div>
 </section>
 
@@ -1428,6 +1520,10 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>差動伝送</td><td>逆向きの信号を 2 本で送り差を受ける。同相の雑音が消え、放射も減る</td><td class="num">MIPI D-PHY・LVDS・USB</td></tr>
           <tr><td>ガードリング</td><td>入力を同じ電位の導体で囲み、漏れの道の電圧差を消す。pA 測定の定石</td><td class="num">10 nA → 1 pA</td></tr>
           <tr><td>ラッチアップ</td><td>CMOS の寄生サイリスタがオンになり電源を短絡し続ける現象。ウェルの囲いとエピ層で防ぐ</td><td class="num">入出力の過電圧が引き金</td></tr>
+                  <tr><td>直列化 / 高速差動の線</td><td>センサの並列のデータを数本の LVDS・SLVS・MIPI などの差動の線にまとめて送ること。受け側で遅れを揃えて並列に戻す</td><td class="num">数 Gb/s</td></tr>
+          <tr><td>GigE Vision / USB3 Vision / CoaXPress</td><td>カメラと計算機をつなぐ規格。距離・速さ・給電・同期で選ぶ。操作は GenICam でそろえる</td><td class="num">CXP-12 は 1 本 12.5 Gb/s</td></tr>
+          <tr><td>dark / flat の補正</td><td>(生 − dark)/(flat − dark) で暗電流とオフセット、感度のむらと周辺の減光を消す前処理</td><td class="num">flat 16 枚で 0.14%</td></tr>
+          <tr><td>ビットの詰め（パック）</td><td>12 ビットの数を 16 ビットの箱に入れず隙間なく並べて送る形式</td><td class="num">25% の節約</td></tr>
         </tbody>
       </table>
     </div>
@@ -1473,6 +1569,8 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>高電圧の倍電圧回路</td><td>J. D. Cockcroft &amp; E. T. S. Walton<br>Proc. R. Soc. Lond. A 136, 619 (1932)</td><td>10。ダイオードとコンデンサの梯子で高電圧を作る回路の原典。</td></tr>
           <tr><td>パワーエレクトロニクス</td><td>R. W. Erickson &amp; D. Maksimović『Fundamentals of Power Electronics』3rd ed., Springer (2020)</td><td>10。降圧・昇圧コンバータの定常解析とリップル。</td></tr>
           <tr><td>EMC の設計</td><td>H. W. Ott『Electromagnetic Compatibility Engineering』Wiley (2009)</td><td>11。グラウンド・シールド・デカップリング・ガードの標準的な教科書。</td></tr>
+                  <tr><td>カメラの規格</td><td>GigE Vision・USB3 Vision・CoaXPress・GenICam（AIA・JIIA・EMVA の標準）</td><td>12。カメラと計算機のインターフェースと、設定の名前の共通の約束。</td></tr>
+          <tr><td>画像の補正</td><td>EMVA Standard 1288</td><td>12。DSNU・PRNU の定義と、dark・flat を使った測定と補正の考え方。</td></tr>
         </tbody>
       </table>
     </div>

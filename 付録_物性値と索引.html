@@ -393,7 +393,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
         <div><dt>材料</dt><dd>8<small>半導体</small></dd></div>
         <div><dt>絶縁膜・基板</dt><dd>4<small>種</small></dd></div>
         <div><dt>式の索引</dt><dd>43<small>本</small></dd></div>
-        <div><dt>統一索引</dt><dd>387<small>語</small></dd></div>
+        <div><dt>統一索引</dt><dd>410<small>語</small></dd></div>
         <div class="spec-cap">物性値は 300 K の教科書の代表値です。文献によって値に幅があり、結晶の質・濃度・温度で動きます。各部の本文で使った値と同じものは、そう注記しました。</div>
       </dl>
     </div>
@@ -550,7 +550,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   <div class="idx-search">
     <label for="idxQ">索引を絞り込む</label>
     <input id="idxQ" type="search" placeholder="例: 暗電流、Cpk、コヒーレンス、第5部" autocomplete="off">
-    <span id="idxN">387 語</span>
+    <span id="idxN">410 語</span>
   </div>
   <figure class="full">
     <div class="scroll-x">
@@ -574,6 +574,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>BSI</td><td>裏面照射。基板を薄化し裏側から受光する構造</td><td class="num">開口ほぼ100%</td><td><a href="第4部_イメージセンサ.html#s9">第4部</a></td></tr>
           <tr><td>BTBT</td><td>バンド間トンネル。強い電界で価電子帯の電子が禁制帯を横切って伝導帯へ抜ける。ツェナー降伏の正体</td><td class="num">1 MV/cm 〜</td><td><a href="第4部_イメージセンサ.html#s9">第4部</a></td></tr>
           <tr><td>CDS</td><td>相関二重サンプリング。基準と信号を2回測って引く</td><td class="num">kTC を除去</td><td><a href="第4部_イメージセンサ.html#s9">第4部</a></td></tr>
+          <tr><td>CdTe / CZT / HPGe</td><td>室温で使える重い半導体（正孔が捕まりやすい）と、77 K で使う最高の分解能のゲルマニウム</td><td class="num">662 keV で 1〜2% / 0.2%</td><td><a href="第5部_光検出デバイス.html#s9">第5部</a></td></tr>
           <tr><td>CMOS / インバータ</td><td>pMOS と nMOS を電源と地面の間に置いた論理回路の方式と、その最小形の NOT</td><td class="num">NOT 2 石・NAND 4 石</td><td><a href="第3部_論理回路.html#sgl">第3部</a></td></tr>
           <tr><td>COD</td><td>電流の行き過ぎで端面が光で溶ける損傷。サージ・ESD 対策が要る</td><td class="num">瞬時に起きる</td><td><a href="第9部_光源とレーザー.html#sgl">第9部</a></td></tr>
           <tr><td>cos⁴則</td><td>軸外の照度は cos⁴θ で減る（距離の逆二乗で cos²・瞳の傾きで cos・入射の傾きで cos）。tanθ=像高/f ― 広角ほど隅が暗い。シェーディング補正の根拠</td><td class="num">50mm の隅で 71%</td><td><a href="第7部_光学.html#s9">第7部</a></td></tr>
@@ -581,11 +582,13 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>Cp / Cpk</td><td>規格幅を 6σ で割った工程能力と、中心ずれを引いた実力値。差は中心合わせの伸びしろ</td><td class="num">1.33 が定番要求</td><td><a href="第8部_信頼性と品質.html#s9">第8部</a></td></tr>
           <tr><td>CRA</td><td>主光線角。センサ周辺で光が斜めに入る角度</td><td class="num">0–35°</td><td><a href="第4部_イメージセンサ.html#s9">第4部</a></td></tr>
           <tr><td>CS / SF / CG</td><td>増やす・運ぶ・受ける。端子の入出力の組み合わせは3通りしかない ― 回路図分解の3枚</td><td class="num">−g<sub>m</sub>R / 〜1 / 1/g<sub>m</sub>受け</td><td><a href="第6部_アナログ回路.html#s9">第6部</a></td></tr>
+          <tr><td>CT / フィルタ補正逆投影</td><td>多数の投影から断面を計算で戻す撮影と、その代表的な再構成の方法</td><td class="num">投影 約 πN/2 枚</td><td><a href="第7部_光学.html#s9">第7部</a></td></tr>
           <tr><td>Cu-Cu ハイブリッド接合</td><td>バンプを使わず、絶縁膜と銅パッドの平面同士を直接貼り合わせる接続。画素直下の縦配線を可能にした</td><td class="num">ピッチ数µm→1µm級</td><td><a href="第4部_イメージセンサ.html#s9">第4部</a></td></tr>
           <tr><td>CVD</td><td>原料ガスの化学反応で薄膜を析出させる成膜法。絶縁膜の主力。</td><td class="num"></td><td><a href="第1部_製造プロセス.html#glossary">第1部</a></td></tr>
           <tr><td>CZ法  <small>Czochralski</small></td><td>融けたシリコンに種結晶を浸して回転させながら引き上げ、巨大な単結晶インゴットを育てる方法。</td><td class="num"></td><td><a href="第1部_製造プロセス.html#glossary">第1部</a></td></tr>
           <tr><td>D フリップフロップ（主従）</td><td>2 つのラッチを交互に開けて、クロックの縁で 1 回だけ取り込む記憶素子</td><td class="num">1 拍で 1 段</td><td><a href="第3部_論理回路.html#sgl">第3部</a></td></tr>
           <tr><td>DAF</td><td>Die Attach Film。ウェーハ裏面に貼る接着フィルム。厚みが均一で積層に向く。</td><td class="num"></td><td><a href="第1部_製造プロセス.html#glossary">第1部</a></td></tr>
+          <tr><td>dark / flat の補正</td><td>(生 − dark)/(flat − dark) で暗電流とオフセット、感度のむらと周辺の減光を消す前処理</td><td class="num">flat 16 枚で 0.14%</td><td><a href="第6部_アナログ回路.html#s9">第6部</a></td></tr>
           <tr><td>dBm</td><td>1 mW を基準にしたパワーの dB。光通信・高周波で使う</td><td class="num">0 dBm = 1 mW</td><td><a href="第0部_基礎.html#s9">第0部</a></td></tr>
           <tr><td>DBR レーザー / ECDL</td><td>格子の区間で波長を動かせる LD と、外の格子で波長を選ぶ狭線幅の外部共振器型</td><td class="num">波長可変</td><td><a href="第9部_光源とレーザー.html#sgl">第9部</a></td></tr>
           <tr><td>DFB / λ/4 シフト</td><td>共振器に周期 Λ = λ/(2n<sub>eff</sub>) の格子を刻んだ単一モード LD と、その中央の位相のずらし</td><td class="num">Λ ≈ 240 nm</td><td><a href="第9部_光源とレーザー.html#sgl">第9部</a></td></tr>
@@ -617,6 +620,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>F値 / NA</td><td>f/D と 光線円錐の開き。N ≈ 1/(2NA)。カメラと顕微鏡の同じもの</td><td class="num">明るさは 1/N²</td><td><a href="第7部_光学.html#s9">第7部</a></td></tr>
           <tr><td>GBW / スルーレート</td><td>2段 OTA の速さの物差し g<sub>m1</sub>/2πC<sub>c</sub> と、大信号の追従 I<sub>SS</sub>/C<sub>c</sub></td><td class="num">補償容量が握る</td><td><a href="第6部_アナログ回路.html#s9">第6部</a></td></tr>
           <tr><td>GIDL</td><td>ゲート端でのリーク。ゲートをオフに深く振るほどドレイン端の電界が増え、BTBTで漏れる</td><td class="num">オフを深めると増</td><td><a href="第4部_イメージセンサ.html#s9">第4部</a></td></tr>
+          <tr><td>GigE Vision / USB3 Vision / CoaXPress</td><td>カメラと計算機をつなぐ規格。距離・速さ・給電・同期で選ぶ。操作は GenICam でそろえる</td><td class="num">CXP-12 は 1 本 12.5 Gb/s</td><td><a href="第6部_アナログ回路.html#s9">第6部</a></td></tr>
           <tr><td>g<sub>m</sub> / g<sub>m</sub>/I<sub>D</sub></td><td>ゲート電圧→ドレイン電流の傾きと、その電流効率（= 2/V<sub>ov</sub>。弱反転の上限は 1/nV<sub>T</sub>）</td><td class="num">上限 25〜30 S/A</td><td><a href="第6部_アナログ回路.html#s9">第6部</a></td></tr>
           <tr><td>GR&amp;R / MSA</td><td>測定系自身のばらつきの検定。工程を叩く前に物差しを疑う手順</td><td class="num">公差の10%未満で合格</td><td><a href="第8部_信頼性と品質.html#s9">第8部</a></td></tr>
           <tr><td>HBT</td><td>エミッタに広いギャップの材料を使ったバイポーラ。SiGe・InP 系</td><td class="num">数十〜数百 GHz</td><td><a href="第2部_デバイスの基礎.html#sgl">第2部</a></td></tr>
@@ -664,6 +668,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>RTS</td><td>ランダムテレグラフ信号。トラップ1個の捕獲・放出による2値の揺れ。毎回変わるので補正できない</td><td class="num">小面積で顕在化</td><td><a href="第4部_イメージセンサ.html#s9">第4部</a></td></tr>
           <tr><td>S 値（サブスレッショルド・スイング）</td><td>しきい値の下で電流を 1 桁変えるのに要るゲート電圧。室温で 59.5 mV/桁を下回れない</td><td class="num">≥ 59.5 mV/桁</td><td><a href="第2部_デバイスの基礎.html#sgl">第2部</a></td></tr>
           <tr><td>s 偏光 / p 偏光</td><td>入射面に垂直に／入射面の中で振動する成分。斜めの反射では s がよく反射する</td><td class="num">45° ガラス 9.2%/0.85%</td><td><a href="第7部_光学.html#s9">第7部</a></td></tr>
+          <tr><td>SDD</td><td>電子を中心の小さな陽極へ横に流して集めるシリコンの検出器。低雑音と高い計数率</td><td class="num">EDX・蛍光 X 線</td><td><a href="第5部_光検出デバイス.html#s9">第5部</a></td></tr>
           <tr><td>SHG / 位相整合</td><td>2ω の光を作る 2 次の非線形と、ω と 2ω の速さを揃える条件（複屈折・PPLN）</td><td class="num">1064→532 nm</td><td><a href="第9部_光源とレーザー.html#sgl">第9部</a></td></tr>
           <tr><td>SJ-MOSFET / IGBT</td><td>p と n の柱を交互に並べて耐圧とオン抵抗を両立させる構造と、MOS で駆動するバイポーラのパワー素子</td><td class="num">パワーデバイス</td><td><a href="第2部_デバイスの基礎.html#sgl">第2部</a></td></tr>
           <tr><td>SLD</td><td>共振器なしで誘導放出で少し増幅した広帯域の光を、細いビームで出す素子</td><td class="num">OCT・FOG</td><td><a href="第9部_光源とレーザー.html#sgl">第9部</a></td></tr>
@@ -677,6 +682,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>SRAM / DRAM / フラッシュ</td><td>インバータの輪で覚える記憶、容量の電荷で覚える記憶（読み書きで要リフレッシュ）、閉じ込めた電荷で電源なしに覚える記憶</td><td class="num">6T / 1T1C / 浮遊ゲート</td><td><a href="第3部_論理回路.html#sgl">第3部</a></td></tr>
           <tr><td>SRH生成</td><td>禁制帯中の準位を踏み台にした二段階の電子・正孔対生成。準位が禁制帯の中央にあるとき最大</td><td class="num">E<sub>a</sub> &asymp; E<sub>g</sub>/2</td><td><a href="第4部_イメージセンサ.html#s9">第4部</a></td></tr>
           <tr><td>STA</td><td>静的タイミング解析。全部の経路が 1 拍に収まるかを計算で確かめる。</td><td class="num"></td><td><a href="第1部_製造プロセス.html#glossary">第1部</a></td></tr>
+          <tr><td>STED / PALM・STORM / SIM</td><td>誘導放出で周りを消す超解像、1 分子ずつ位置を決める超解像、縞の照明で約 2 倍にする方法</td><td class="num">数十 nm / σ/√N / 約 2 倍</td><td><a href="第7部_光学.html#s9">第7部</a></td></tr>
           <tr><td>S値</td><td>サブスレッショルドスイング。オフ領域で電流を1桁変えるのに要るゲート電圧。小さいほどキレがよい</td><td class="num">60–120 mV/桁</td><td><a href="第4部_イメージセンサ.html#s9">第4部</a></td></tr>
           <tr><td>TAT</td><td>トラップ支援トンネル。禁制帯中のトラップを踏み台にしたトンネル。電界で暗電流が増える主因</td><td class="num">電界依存</td><td><a href="第4部_イメージセンサ.html#s9">第4部</a></td></tr>
           <tr><td>TCAD</td><td>工程とデバイスの物理を解くシミュレーション。ProcessLab・SemiLab はその教材版。</td><td class="num"></td><td><a href="第1部_製造プロセス.html#glossary">第1部</a></td></tr>
@@ -687,9 +693,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>ToF（dToF / iToF）</td><td>光の往復で距離を測る。パルスの到着時刻をヒストグラムで読むのが dToF、変調波の位相 &phi; = 4&pi;fd/c で測るのが iToF</td><td class="num">1 ns = 15 cm</td><td><a href="第4部_イメージセンサ.html#s9">第4部</a></td></tr>
           <tr><td>Transit Time / TTS</td><td>出力の平均遅れ（無害）と、そのばらつき（時間分解能の敵）。中身は初速差と道のり差 ― 電界と球面設計で圧縮する</td><td class="num">汎用ns級→MCPで数十ps</td><td><a href="第5部_光検出デバイス.html#s9">第5部</a></td></tr>
           <tr><td>TSV</td><td>シリコン貫通電極。チップを縦に積んで直結する。HBMの必須技術。</td><td class="num"></td><td><a href="第1部_製造プロセス.html#glossary">第1部</a></td></tr>
+          <tr><td>UVA / UVB / UVC / 真空紫外</td><td>315〜400 / 280〜315 / 100〜280 nm と、空気（酸素）に吸われる約 200 nm 以下</td><td class="num">波長で分ける</td><td><a href="第5部_光検出デバイス.html#s9">第5部</a></td></tr>
           <tr><td>van der Pauw 法</td><td>任意の形の薄い試料の四隅の電極で、抵抗率とホール係数を測る方法</td><td class="num">四隅に電極</td><td><a href="第2部_デバイスの基礎.html#sgl">第2部</a></td></tr>
           <tr><td>VCSEL / DBR ミラー</td><td>波長程度の短い共振器を多層膜の鏡で挟んだ面発光 LD。鏡は 20〜30 対で 99.9% 以上</td><td class="num">850・940 nm</td><td><a href="第9部_光源とレーザー.html#sgl">第9部</a></td></tr>
           <tr><td>V<sub>ov</sub></td><td>オーバードライブ電圧 V<sub>GS</sub>−V<sub>th</sub>。gm 効率・スイングの壁・素の利得、全部の通貨</td><td class="num">0.15〜0.25 V</td><td><a href="第6部_アナログ回路.html#s9">第6部</a></td></tr>
+          <tr><td>w 値</td><td>放射線が半導体の中で電子正孔対を 1 組作るのに要る平均のエネルギー。バンドギャップの 3〜4 倍</td><td class="num">Si 3.62・Ge 2.96・CdTe 4.43 eV</td><td><a href="第5部_光検出デバイス.html#s9">第5部</a></td></tr>
           <tr><td>X 線 CT / SAT</td><td>パッケージ内の金属を透かす観察と、超音波の反射で剥離・ボイドを見る観察。どちらも非破壊</td><td class="num">剥離は SAT</td><td><a href="第8部_信頼性と品質.html#s9">第8部</a></td></tr>
           <tr><td>X̄–R 管理図</td><td>n 個の群の平均と範囲を打つ定番。限界は X̿ ± A₂R̄。平均を取ると小さなずれが速く見える</td><td class="num">n=5: A₂=0.577</td><td><a href="第8部_信頼性と品質.html#s9">第8部</a></td></tr>
           <tr><td>アーリー効果</td><td>コレクタ電圧で実効的なベース幅が縮み I<sub>C</sub> が増える現象。MOSFET の λ に相当</td><td class="num">出力抵抗を決める</td><td><a href="第2部_デバイスの基礎.html#sgl">第2部</a></td></tr>
@@ -697,6 +705,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>アインシュタインの関係</td><td>拡散係数と移動度の比が熱電圧になる: D = µkT/q</td><td class="num">kT/q = 25.85 mV</td><td><a href="第2部_デバイスの基礎.html#sgl">第2部</a></td></tr>
           <tr><td>アスペクト比</td><td>穴や溝の「深さ÷幅」。3D NANDでは100:1近くに達する。</td><td class="num"></td><td><a href="第1部_製造プロセス.html#glossary">第1部</a></td></tr>
           <tr><td>アニール</td><td>熱処理。イオン注入で壊れた結晶を回復させ、不純物を電気的に活性化させる。</td><td class="num"></td><td><a href="第1部_製造プロセス.html#glossary">第1部</a></td></tr>
+          <tr><td>アラン偏差</td><td>平均の時間を変えたときのばらつき。白色雑音は下がりドリフトは上がるので、最適な平均の時間が分かる</td><td class="num">最小で最適</td><td><a href="第8部_信頼性と品質.html#s9">第8部</a></td></tr>
           <tr><td>アレニウス加速 / AF</td><td>exp[(Ea/k)(1/Tu−1/Ts)]。温度で時間を早送りする為替レート。Ea は故障機構ごとの仮定</td><td class="num">0.7eV·55→125℃で78</td><td><a href="第8部_信頼性と品質.html#s9">第8部</a></td></tr>
           <tr><td>ウィーンの変位則</td><td>黒体の山の波長は温度に反比例: λ<sub>max</sub> = 2898 µm·K / T</td><td class="num">300 K で 9.7 µm</td><td><a href="第9部_光源とレーザー.html#sgl">第9部</a></td></tr>
           <tr><td>エアリー円板</td><td>回折でにじんだ点光源の像。直径 2.44&lambda;N</td><td class="num">3.76 &micro;m<br>(F2.8)</td><td><a href="第4部_イメージセンサ.html#s9">第4部</a></td></tr>
@@ -704,6 +713,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>エスケープコーン</td><td>高屈折率の中で生まれた光が表面から出られる臨界角の円錐。平面1つあたり約 1/(4n²) ― LED の取り出し効率との闘いの出発点</td><td class="num">n=3.5 で 〜2%</td><td><a href="第5部_光検出デバイス.html#s9">第5部</a></td></tr>
           <tr><td>エテンデュ</td><td>面積×立体角。受動光学系で不減 ― 輝度が増やせない会計原則。結合上限は (コア×NA/光源×NA)²</td><td class="num">LED→SM は 0.02%</td><td><a href="第7部_光学.html#s9">第7部</a></td></tr>
           <tr><td>エテンデュの関所</td><td>スリットの幅と分光器の f 数で、入れられる光の上限が決まること</td><td class="num">スリット×角度</td><td><a href="第10部_設計演習.html#sgl">第10部</a></td></tr>
+          <tr><td>エネルギー分解能 / ENC</td><td>ピークの半値全幅 2.355w√(FN+ENC²) と、回路の雑音を電子の数で表した等価雑音電荷</td><td class="num">5.9 keV で 124 eV</td><td><a href="第5部_光検出デバイス.html#s9">第5部</a></td></tr>
           <tr><td>エピタキシャル層</td><td>下地の結晶方位を引き継いで成長させた高品質な単結晶薄膜。素子特性が安定する。</td><td class="num"></td><td><a href="第1部_製造プロセス.html#glossary">第1部</a></td></tr>
           <tr><td>エピタキシャル層</td><td>基板の上に結晶をそろえて成長させた層。不純物濃度を自由に決められるので、空乏層を広げるのに使う</td><td class="num">高抵抗</td><td><a href="第4部_イメージセンサ.html#s9">第4部</a></td></tr>
           <tr><td>オーバーフロー</td><td>2 の補数の計算が表せる範囲を超えること。最上位へ入る桁上がりと出る桁上がりの XOR</td><td class="num">7 + 1 = −8</td><td><a href="第3部_論理回路.html#sgl">第3部</a></td></tr>
@@ -736,6 +746,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>セットアップ / ホールド</td><td>クロックの縁の前後で入力を止めておくべき時間。最長経路が周波数を、最短経路がホールドを決める</td><td class="num">T ≥ t<sub>cq</sub>+t<sub>max</sub>+t<sub>su</sub></td><td><a href="第3部_論理回路.html#sgl">第3部</a></td></tr>
           <tr><td>セレクタ（MUX）/ デコーダ</td><td>選択信号でどちらかを出す回路と、番号の出力 1 本だけを 1 にする回路</td><td class="num">2:1 は NAND 4 個</td><td><a href="第3部_論理回路.html#sgl">第3部</a></td></tr>
           <tr><td>ソースフォロワ</td><td>画素内の電圧バッファ。ゲインは1弱だが、FDの電荷を減らさずに重い列線を駆動する（非破壊読み出し）。CDSの前提</td><td class="num">×0.8–0.9</td><td><a href="第4部_イメージセンサ.html#s9">第4部</a></td></tr>
+          <tr><td>ソーラーブラインド</td><td>地上の太陽光がオゾンで消える約 290 nm 以下の帯。昼でも炎や放電を検出できる</td><td class="num">Cs-Te・AlGaN</td><td><a href="第5部_光検出デバイス.html#s9">第5部</a></td></tr>
           <tr><td>ダイオードの式 / 飽和電流 J<sub>0</sub></td><td>J = J<sub>0</sub>(e<sup>V/nV<sub>t</sub></sup> − 1)。J<sub>0</sub> は n<sub>i</sub>² に比例し、濃度に反比例</td><td class="num">60 mV で 10 倍</td><td><a href="第2部_デバイスの基礎.html#sgl">第2部</a></td></tr>
           <tr><td>ダイナミックレンジ</td><td>飽和電子数 ÷ 読み出しノイズ</td><td class="num">60–80 dB</td><td><a href="第4部_イメージセンサ.html#s9">第4部</a></td></tr>
           <tr><td>ダイノード</td><td>加速した電子1個から二次電子を3〜5個叩き出す電極。8〜12段の雪だるまで PMT の利得 &delta;<sup>n</sup> を作る。増倍の雑音は F≒&delta;/(&delta;&minus;1)</td><td class="num">10⁶〜10⁷</td><td><a href="第5部_光検出デバイス.html#s9">第5部</a></td></tr>
@@ -751,6 +762,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>デッドタイム</td><td>発火後、クエンチと再充電が済んで次を数えられるようになるまでの時間。明所での数え落としの原因</td><td class="num">数十 ns</td><td><a href="第4部_イメージセンサ.html#s9">第4部</a></td></tr>
           <tr><td>デモザイク</td><td>1画素1色しかない生データから、足りない2色を周囲より推定する処理</td><td class="num">偽色が出る</td><td><a href="第4部_イメージセンサ.html#s9">第4部</a></td></tr>
           <tr><td>デュアルピクセル</td><td>全画素のPDを左右2分割。別々に読めばAF、足せば通常画素 ― 遮光式の感度損と画像欠陥を消した形</td><td class="num">読み出し2倍</td><td><a href="第4部_イメージセンサ.html#s9">第4部</a></td></tr>
+          <tr><td>テラヘルツ / THz-TDS</td><td>0.1〜10 THz の帯と、フェムト秒のレーザーで電界の波形を測る分光法</td><td class="num">1 THz ＝ 4.14 meV ＝ 300 µm</td><td><a href="第5部_光検出デバイス.html#s9">第5部</a></td></tr>
           <tr><td>ド・モルガンの法則</td><td>NOT(A かつ B) = NOT A または NOT B。AND と OR を否定で入れ替える</td><td class="num">積和形 → NAND の NAND</td><td><a href="第3部_論理回路.html#sgl">第3部</a></td></tr>
           <tr><td>ドナー / アクセプタ</td><td>電子を 1 個出す不純物（リン・ヒ素）と、正孔を 1 個出す不純物（ホウ素）。n 型・p 型を作る</td><td class="num">10¹⁴〜10²⁰ /cm³</td><td><a href="第2部_デバイスの基礎.html#sgl">第2部</a></td></tr>
           <tr><td>トライステート / 伝送ゲート</td><td>「出さない」状態を持つ出力と、nMOS と pMOS を並列にした増幅しないスイッチ</td><td class="num">バスとセレクタ</td><td><a href="第3部_論理回路.html#sgl">第3部</a></td></tr>
@@ -760,6 +772,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>ナイキスト<br>周波数</td><td>ピッチ p の格子で正しく再現できる上限 1/(2p)。ベイヤーの赤・青はその半分</td><td class="num">167 本/mm</td><td><a href="第4部_イメージセンサ.html#s9">第4部</a></td></tr>
           <tr><td>バーンイン</td><td>高温・高電圧で動作させ、初期不良を先に落とす試験。車載・産業用で実施。</td><td class="num"></td><td><a href="第1部_製造プロセス.html#glossary">第1部</a></td></tr>
           <tr><td>バーンイン</td><td>初期不良個体の残り寿命を出荷前に使い切る選別。m&gt;1 の集団には逆効果</td><td class="num">m&lt;1 にだけ効く</td><td><a href="第8部_信頼性と品質.html#s9">第8部</a></td></tr>
+          <tr><td>ハイパースペクトル撮像</td><td>画素ごとにスペクトルを持つ画像。プッシュブルームは 1 行ずつ分光して撮る</td><td class="num">位置 × 波長</td><td><a href="第7部_光学.html#s9">第7部</a></td></tr>
           <tr><td>パイプライン</td><td>命令の処理を段に分け、各段で別の命令を同時に進めて 1 拍ごとに 1 命令を終える方式</td><td class="num">取り出し→解読→実行→…</td><td><a href="第3部_論理回路.html#sgl">第3部</a></td></tr>
           <tr><td>パイプライン / ΔΣ</td><td>数ビットずつ決めて残差を次段へ渡す高速型／粗く何度も標本化し、雑音を高域へ押しやる高分解能型</td><td class="num">〜GS/s／16〜24 bit</td><td><a href="第6部_アナログ回路.html#s9">第6部</a></td></tr>
           <tr><td>ハイブリッドボンディング</td><td>はんだバンプを介さず銅同士を直接接合する技術。接続ピッチを1桁縮められる。</td><td class="num"></td><td><a href="第1部_製造プロセス.html#glossary">第1部</a></td></tr>
@@ -772,12 +785,14 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>バンド / 禁制帯</td><td>結晶中で電子の取れるエネルギーの帯と、その間の取れない隙間</td><td class="num">Si 1.12 eV</td><td><a href="第0部_基礎.html#s9">第0部</a></td></tr>
           <tr><td>バンドギャップ</td><td>CTAT（V<sub>BE</sub>）と PTAT（V<sub>T</sub>ln n）を足して温度係数ゼロ。残る値は E<sub>g</sub> 由来。2次の曲率は残る</td><td class="num">≒1.2 V</td><td><a href="第6部_アナログ回路.html#s9">第6部</a></td></tr>
           <tr><td>バンドギャップ E<sub>g</sub></td><td>結合から外れて伝導帯に上がるのに要るエネルギー。温度で縮む（Varshni の式）</td><td class="num">Si 1.124 eV（300 K）</td><td><a href="第2部_デバイスの基礎.html#sgl">第2部</a></td></tr>
+          <tr><td>ビットの詰め（パック）</td><td>12 ビットの数を 16 ビットの箱に入れず隙間なく並べて送る形式</td><td class="num">25% の節約</td><td><a href="第6部_アナログ回路.html#s9">第6部</a></td></tr>
           <tr><td>ビニング</td><td>測定結果に応じた等級分け。同じ設計から上位・下位モデルが生まれる仕組み。</td><td class="num"></td><td><a href="第1部_製造プロセス.html#glossary">第1部</a></td></tr>
           <tr><td>ビニング</td><td>隣の画素をまとめて 1 画素として読むこと。CCD では雑音も得、CMOS では主にデータ量の削減</td><td class="num">2×2 で 1/4</td><td><a href="第10部_設計演習.html#sgl">第10部</a></td></tr>
           <tr><td>ピニング電位</td><td>PPDが完全空乏したときに落ち着く固定電位。完全転送が成立する条件</td><td class="num">1–1.5 V</td><td><a href="第4部_イメージセンサ.html#s9">第4部</a></td></tr>
           <tr><td>ピンチオフ / 飽和</td><td>ドレイン端の反転層が消えて、電流がドレイン電圧でほとんど増えなくなる状態</td><td class="num">V<sub>D</sub> ≥ V<sub>G</sub> − V<sub>th</sub></td><td><a href="第2部_デバイスの基礎.html#sgl">第2部</a></td></tr>
           <tr><td>ファイバの NA / MFD</td><td>√(n₁²−n₂²) の受け入れ角と、シングルモードのモード径。結合は場所と角度の2重の門</td><td class="num">SM: NA〜0.14</td><td><a href="第7部_光学.html#s9">第7部</a></td></tr>
           <tr><td>ファイバ損失</td><td>レイリー散乱（∝1/λ⁴）・赤外吸収・OH 吸収。1.55 µm 付近で最小</td><td class="num">約 0.2 dB/km</td><td><a href="第7部_光学.html#s9">第7部</a></td></tr>
+          <tr><td>ファノ因子</td><td>対の数の分散と平均の比。エネルギーの制約でポアソンより揺らがない</td><td class="num">Si 約 0.115</td><td><a href="第5部_光検出デバイス.html#s9">第5部</a></td></tr>
           <tr><td>ファブリ・ペロー</td><td>2 枚の高反射鏡の間の多重干渉。ピーク間隔 FSR=c/(2nL)、鋭さ F=π√R/(1−R)。レーザー共振器・干渉フィルタ</td><td class="num">10mm・95%: 15GHz・F61</td><td><a href="第7部_光学.html#s9">第7部</a></td></tr>
           <tr><td>フェルミ・ディラック分布</td><td>エネルギー E の席に電子が座る確率。E<sub>F</sub> で 1/2</td><td class="num">3kT 上でボルツマン</td><td><a href="第0部_基礎.html#s9">第0部</a></td></tr>
           <tr><td>フォトレジスト</td><td>感光性樹脂。露光部が溶けるポジ型、残るネガ型がある。先端ではポジ型が主流。</td><td class="num"></td><td><a href="第1部_製造プロセス.html#glossary">第1部</a></td></tr>
@@ -805,6 +820,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>モード結合</td><td>ガウス同士の重なり η=(2w₁w₂/(w₁²+w₂²))²。w₁=w₂ でだけ100% ― 「入る」と「よく入る」は別物</td><td class="num">合わせの作業</td><td><a href="第7部_光学.html#s9">第7部</a></td></tr>
           <tr><td>モード同期 / 繰り返し</td><td>縦モードの位相を揃えて 1 個のパルスを往復させる。f<sub>rep</sub> = c/(2L)</td><td class="num">1.875 m で 80 MHz</td><td><a href="第9部_光源とレーザー.html#sgl">第9部</a></td></tr>
           <tr><td>モード分散 / 波長分散</td><td>道のりの違う光線の到着差（マルチモード）／屈折率の波長依存による差 Δτ=D·L·Δλ（シングルモード）</td><td class="num">D≈17 ps/(nm·km)@1550</td><td><a href="第7部_光学.html#s9">第7部</a></td></tr>
+          <tr><td>ライトシート顕微鏡</td><td>光の薄い板で 1 面だけ照らし、直角の方向からカメラで撮る。光の害が少ない</td><td class="num">sCMOS で撮る</td><td><a href="第7部_光学.html#s9">第7部</a></td></tr>
           <tr><td>ラッチアップ</td><td>CMOS の寄生サイリスタがオンになり電源を短絡し続ける現象。ウェルの囲いとエピ層で防ぐ</td><td class="num">入出力の過電圧が引き金</td><td><a href="第6部_アナログ回路.html#s9">第6部</a></td></tr>
           <tr><td>ランバート面</td><td>どの方向から見ても同じ明るさに見える、光を一様に散らす面。戻る割合は ρ/π·A/R²</td><td class="num">反射率 ρ</td><td><a href="第10部_設計演習.html#sgl">第10部</a></td></tr>
           <tr><td>リーチスルー / SAM</td><td>吸収の部屋（厚い低電界）と増倍の部屋（薄い高電界）を分ける APD の構造。InGaAs 系は材料ごと分ける（SAM）</td><td class="num">分業が F と QE を両立</td><td><a href="第5部_光検出デバイス.html#s9">第5部</a></td></tr>
@@ -835,6 +851,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>活性化エネルギー</td><td>暗電流の温度依存の傾き。起源によって値が違うので、測れば原因が絞れる</td><td class="num">0.3–1.1 eV</td><td><a href="第4部_イメージセンサ.html#s9">第4部</a></td></tr>
           <tr><td>感度 R / NEP / D*</td><td>R=&eta;&lambda;/1240 [A/W]。NEP はノイズ電流÷R（S/N=1 の光パワー）、D*=&radic;A/NEP は面積で正規化した比較用の物差し</td><td class="num">W/&radic;Hz・ジョーンズ</td><td><a href="第5部_光検出デバイス.html#s9">第5部</a></td></tr>
           <tr><td>感度分析</td><td>仮定を 1 つずつ変えて、結論が保つかを確かめること</td><td class="num">交差点・飽和を探す</td><td><a href="第10部_設計演習.html#sgl">第10部</a></td></tr>
+          <tr><td>換算カイ二乗</td><td>残差の二乗和（σ で割った）を自由度で割った値。1 に近ければモデルとばらつきが整合</td><td class="num">≈1 が目安</td><td><a href="第8部_信頼性と品質.html#s9">第8部</a></td></tr>
           <tr><td>管理限界 / 規格限界</td><td>工程自身のデータの ±3σ（工程の声）と、顧客の要求（顧客の声）。別物</td><td class="num">UCL・LCL / USL・LSL</td><td><a href="第8部_信頼性と品質.html#s9">第8部</a></td></tr>
           <tr><td>管理図 / SPC</td><td>測定値を時間順に打ち、偶然原因と特殊原因を見分ける図と、それを使った統計的工程管理</td><td class="num">3σ 外は 370 点に 1 回</td><td><a href="第8部_信頼性と品質.html#s9">第8部</a></td></tr>
           <tr><td>緩和振動 / 直接変調</td><td>N と S の追いかけ合いの振動。電流で変調できる速さの上限を決める</td><td class="num">GHz 級</td><td><a href="第9部_光源とレーザー.html#sgl">第9部</a></td></tr>
@@ -842,9 +859,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>輝線 / 連続スペクトル</td><td>原子の準位で決まる細い線（波長の物差し）と、途切れない広い光</td><td class="num">Hg 365・436・546 nm</td><td><a href="第9部_光源とレーザー.html#sgl">第9部</a></td></tr>
           <tr><td>輝度（放射輝度）</td><td>単位面積・単位立体角あたりのパワー。受動の光学系で上げられない</td><td class="num">W/(m²·sr)</td><td><a href="第9部_光源とレーザー.html#sgl">第9部</a></td></tr>
           <tr><td>犠牲層 / スティクション</td><td>溶かして構造を浮かせるための層と、乾燥時に構造が基板へ貼りつく不具合。</td><td class="num"></td><td><a href="第1部_製造プロセス.html#glossary">第1部</a></td></tr>
+          <tr><td>逆畳み込み / 再畳み込み</td><td>装置の応答（PSF・IRF）を取り除く計算と、IRF を畳み込んだモデルを当てはめる方法</td><td class="num">Richardson–Lucy</td><td><a href="第8部_信頼性と品質.html#s9">第8部</a></td></tr>
           <tr><td>逆二乗則</td><td>点光源の照度 E = I/r²。距離が光源径の5倍を超えたあたりから成立。斜め受けは ×cosθ</td><td class="num">2倍で1/4</td><td><a href="第7部_光学.html#s9">第7部</a></td></tr>
           <tr><td>吸光度の上限（迷光）</td><td>迷光の割合 s があると、吸光度は −log₁₀s 付近で頭打ちになる</td><td class="num">10⁻³ で約 3</td><td><a href="第10部_設計演習.html#sgl">第10部</a></td></tr>
           <tr><td>吸収係数 / 量子効率</td><td>光が 1/e に弱まる深さの逆数と、入った光子のうち電流になった割合。青は浅く、赤は深く吸われる</td><td class="num">Si は 1107 nm まで</td><td><a href="第2部_デバイスの基礎.html#sgl">第2部</a></td></tr>
+          <tr><td>共焦点顕微鏡 / ピンホール</td><td>1 点を照らし、焦点と共役な穴で焦点の外の光を捨てて光学的な切片を取る顕微鏡</td><td class="num">深さ約 0.5 µm</td><td><a href="第7部_光学.html#s9">第7部</a></td></tr>
           <tr><td>空間周波数</td><td>像の細かさ。1 mm あたり何本の縞が入るかで数える</td><td class="num">本/mm</td><td><a href="第4部_イメージセンサ.html#s9">第4部</a></td></tr>
           <tr><td>空乏層</td><td>PN接合の周りで動ける電荷がいなくなった領域。電界があり、生まれた電子・正孔対を引き離す</td><td class="num">2–10 μm</td><td><a href="第4部_イメージセンサ.html#s9">第4部</a></td></tr>
           <tr><td>空乏層容量 / 1/C² プロット</td><td>C<sub>j</sub> = ε/W。1/C² を電圧に対して描くと、傾きから薄い側の濃度、切片から V<sub>bi</sub></td><td class="num">C-V 測定</td><td><a href="第2部_デバイスの基礎.html#sgl">第2部</a></td></tr>
@@ -855,6 +874,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>光の予算</td><td>光源の光子から検出器の電子までを、各段の割合の掛け算で並べた表</td><td class="num">対数で足し算</td><td><a href="第10部_設計演習.html#sgl">第10部</a></td></tr>
           <tr><td>光学ローパス<br>フィルタ</td><td>複屈折板で像をわざとずらし、ナイキストより細かい成分を消して折り返しを防ぐ部品</td><td class="num">OLPF</td><td><a href="第4部_イメージセンサ.html#s9">第4部</a></td></tr>
           <tr><td>光子 / ド・ブロイ波長</td><td>光のエネルギーの粒 hν と、粒子の波長 h/p</td><td class="num">1239.84/λ eV</td><td><a href="第0部_基礎.html#s9">第0部</a></td></tr>
+          <tr><td>光子計数型 X 線検出</td><td>X 線の光子を 1 個ずつ数え、しきい値でエネルギーの帯に分ける撮像</td><td class="num">光子計数 CT</td><td><a href="第5部_光検出デバイス.html#s9">第5部</a></td></tr>
           <tr><td>光周波数コム</td><td>モード同期レーザーの櫛の歯の周波数を正確に決めて物差しにしたもの</td><td class="num">f<sub>n</sub> = n·f<sub>rep</sub> + f<sub>CEO</sub></td><td><a href="第9部_光源とレーザー.html#sgl">第9部</a></td></tr>
           <tr><td>光路長を稼ぐ<br>構造</td><td>裏面の反射や回折・散乱構造で光を往復させ、薄いシリコンでも近赤外を吸収させる工夫</td><td class="num">実効厚み数倍</td><td><a href="第4部_イメージセンサ.html#s9">第4部</a></td></tr>
           <tr><td>降圧 DC-DC</td><td>スイッチとコイル・コンデンサで平均電圧を取り出す。V<sub>out</sub> = D·V<sub>in</sub>、効率 90% 前後。リップルと切り替え雑音を伴う</td><td class="num">ΔI = (V<sub>in</sub>−V<sub>out</sub>)D/(Lf)</td><td><a href="第6部_アナログ回路.html#s9">第6部</a></td></tr>
@@ -862,6 +882,8 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>黒体放射 / プランクの式</td><td>温度だけで決まる熱放射の上限のスペクトル。実物は放射率 ε を掛けたもの</td><td class="num">B(λ,T)</td><td><a href="第9部_光源とレーザー.html#sgl">第9部</a></td></tr>
           <tr><td>差動対 / CMRR</td><td>差だけ増やし（g<sub>m</sub>R<sub>D</sub>）、同相をテールで捨てる。捨てる力の数字が CMRR、破れの原因はテールの r<sub>o</sub> とミスマッチ</td><td class="num">全切替は √2·V<sub>ov</sub></td><td><a href="第6部_アナログ回路.html#s9">第6部</a></td></tr>
           <tr><td>差動伝送</td><td>逆向きの信号を 2 本で送り差を受ける。同相の雑音が消え、放射も減る</td><td class="num">MIPI D-PHY・LVDS・USB</td><td><a href="第6部_アナログ回路.html#s9">第6部</a></td></tr>
+          <tr><td>最小二乗 / 重み付き</td><td>残差の二乗和を最小にする当てはめ。ばらつきの違う点は 1/σ² で重みを付ける</td><td class="num">σ<sub>b</sub> = σ/√Σ(x−x̄)²</td><td><a href="第8部_信頼性と品質.html#s9">第8部</a></td></tr>
+          <tr><td>最尤推定</td><td>観測したデータが出る確率を最大にするパラメータを選ぶ推定。少ないカウントのヒストグラムに強い</td><td class="num">寿命 1/√N</td><td><a href="第8部_信頼性と品質.html#s9">第8部</a></td></tr>
           <tr><td>雑音の予算</td><td>独立な雑音の成分を二乗和で並べた表。最大の項（支配項）が全体を決める</td><td class="num">√Σσ²</td><td><a href="第10部_設計演習.html#sgl">第10部</a></td></tr>
           <tr><td>雑音余裕</td><td>伝達特性の坂の利得が 1 を超える外側で、入力の揺れが押し戻される幅</td><td class="num">1.28 / 1.04 V（NandLab）</td><td><a href="第3部_論理回路.html#sgl">第3部</a></td></tr>
           <tr><td>指数分布</td><td>ポアソン過程の待ち時間の分布。無記憶性を持つ</td><td class="num">平均 1/r</td><td><a href="第0部_基礎.html#s9">第0部</a></td></tr>
@@ -901,6 +923,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>大気の窓</td><td>大気（主に水蒸気とCO₂）の吸収の谷間。赤外のリモートセンシングとサーモグラフィはここを使う。300K 物体のピークは9.7µm</td><td class="num">3〜5 / 8〜14µm</td><td><a href="第5部_光検出デバイス.html#s9">第5部</a></td></tr>
           <tr><td>短チャネル効果</td><td>チャネルが短くなるとゲートで電流を止めきれなくなる現象。FinFET・GAAはこの対策。</td><td class="num"></td><td><a href="第1部_製造プロセス.html#glossary">第1部</a></td></tr>
           <tr><td>直接 / 間接遷移</td><td>運動量まで揃って光れるか。Si は間接でフォノンの助けが要り、光らない再結合が先に勝つ ― LED・LD が化合物の領分である理由</td><td class="num">&lambda;≒1240/E<sub>g</sub></td><td><a href="第5部_光検出デバイス.html#s9">第5部</a></td></tr>
+          <tr><td>直列化 / 高速差動の線</td><td>センサの並列のデータを数本の LVDS・SLVS・MIPI などの差動の線にまとめて送ること。受け側で遅れを揃えて並列に戻す</td><td class="num">数 Gb/s</td><td><a href="第6部_アナログ回路.html#s9">第6部</a></td></tr>
           <tr><td>抵抗率 / シート抵抗</td><td>材料の電気の通しにくさと、薄い層の抵抗を「正方形 1 枚あたり」で数えた値。四探針で測る</td><td class="num">Ω·cm / Ω/□</td><td><a href="第2部_デバイスの基礎.html#sgl">第2部</a></td></tr>
           <tr><td>点・線・面欠陥</td><td>空孔・格子間原子・不純物／転位／積層欠陥・粒界。禁制帯に準位を作る</td><td class="num">暗電流の源</td><td><a href="第0部_基礎.html#s9">第0部</a></td></tr>
           <tr><td>伝送線路 / 反射</td><td>速い信号では配線が特性インピーダンス Z<sub>0</sub> の線路になり、終端が合わないと Γ の割合で反射する</td><td class="num">基板中 約 6.7 ps/mm</td><td><a href="第6部_アナログ回路.html#s9">第6部</a></td></tr>

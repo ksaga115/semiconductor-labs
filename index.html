@@ -615,7 +615,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
         <p class="desc">像を結ばずに「数える・測る」検出器の系統樹。真空へ叩き出すPMT、なだれを線形に使うAPD、SPADを並べて足すMPPC ― そこから共通の物差し（A/W・NEP・D*）、赤外と冷却、X線とPET、蛍光寿命、光通信、EMMIまで。第4部が「像」なら、この部は「光子そのもの」。</p>
       </div>
       <div class="pair">
-        <div><span class="kind read">参考書</span><a href="第5部_光検出デバイス.html">光検出デバイスの系統</a><small>光子 → 電子 → 増やす → 数える · 8章</small></div>
+        <div><span class="kind read">参考書</span><a href="第5部_光検出デバイス.html">光検出デバイスの系統</a><small>光子 → 電子 → 増やす → 数える → 放射線 · 10章</small></div>
         <div><span class="kind lab">ラボ</span><a href="PhotonLab/index.html">PhotonLab</a><small>原始部品 ＝ 光子とη · 3章 12問 · <a href="PhotonLab/README.md">README</a></small></div>
       </div>
     </div>
@@ -631,6 +631,10 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       <div><span class="cn">07-08</span><div class="ct"><a href="第5部_光検出デバイス.html#s7">現場の道具箱 / 光る半導体</a></div><div class="cd">光通信のPDとTIA、TDIと分光器、PSD、EMMI。相手役のLED・LD・VCSEL・QCLと「Siが光らない理由」。</div></div>
       <div class="do"><span class="lbl">PhotonLab 第3章</span><a class="q" href="PhotonLab/index.html?quest=fast">速さの敵は容量</a><a class="q" href="PhotonLab/index.html?quest=nepm">増やして床を沈める</a><a class="q" href="PhotonLab/index.html?quest=bg">背景光の中で</a><a class="q" href="PhotonLab/index.html?quest=count">数えて待つ</a><a class="q" href="PhotonLab/index.html?quest=transit">厚さの綱引き</a><a class="q" href="PhotonLab/index.html?quest=pile">TCSPCの繰り返し</a></div>
     </div>
+    <div class="chap">
+      <div><span class="cn">09-10</span><div class="ct"><a href="第5部_光検出デバイス.html#s10">放射線を半導体で数える / 紫外とテラヘルツ</a></div><div class="cd">w 値（Si 3.62 eV）とファノ因子、FWHM = 2.355w√(FN+ENC²) で 5.9 keV に 124 eV。SDD・CdTe・HPGe。ソーラーブラインドと GaN・SiC・Cs-Te、1 THz ＝ 4.14 meV ＜ kT と THz-TDS。</div></div>
+      <div class="do"><span class="lbl">読むだけ</span><span class="none">EDX は第8部 11、フェムト秒のレーザーは第9部 09</span></div>
+    </div>
   </article>
 
   <!-- 第6部 -->
@@ -642,7 +646,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
         <p class="desc">デジタルが捨てた「坂」に住む設計。第2部のMOSFETを増幅器として読み直し、gm と ro からソース接地・ミラー・差動対・帰還・OTA・雑音・バンドギャップまで、ラザビーの道順で登る。第5部の検出器の後段（TIA・チャージアンプ）がこの部の出口。</p>
       </div>
       <div class="pair">
-        <div><span class="kind read">参考書</span><a href="第6部_アナログ回路.html">アナログ回路 ― 坂に住む設計</a><small>Vov → gm → Gain → Feedback → ADC → 電源 · 11章</small></div>
+        <div><span class="kind read">参考書</span><a href="第6部_アナログ回路.html">アナログ回路 ― 坂に住む設計</a><small>Vov → gm → Gain → Feedback → ADC → 電源 → 出口 · 12章</small></div>
         <div><span class="kind lab">ラボ</span><a href="AnalogLab/index.html">AnalogLab</a><small>原始部品 ＝ 二乗則のMOS 1個 · 3章 11問 · <a href="AnalogLab/README.md">README</a></small></div>
       </div>
     </div>
@@ -662,6 +666,10 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       <div><span class="cn">09-11</span><div class="ct"><a href="第6部_アナログ回路.html#s10">AD 変換の方式 / 電源 / 実装と EMC</a></div><div class="cd">SQNR=6.02N+1.76dB と ENOB、フラッシュ・SAR・パイプライン・ΔΣ。LDO と降圧 DC-DC、コッククロフト・ウォルトン。グラウンド・デカップリング・伝送線路・ガードリング。</div></div>
       <div class="do"><span class="lbl">読むだけ</span><span class="none">ADC の刻みの物理は第4部 06、検出器の高圧電源は第5部 02・03</span></div>
     </div>
+    <div class="chap">
+      <div><span class="cn">12</span><div class="ct"><a href="第6部_アナログ回路.html#s13">カメラの出口</a></div><div class="cd">センサから FPGA への直列化、GigE Vision・USB3 Vision・CoaXPress・GenICam、12 ビットの詰めで 25%。dark・flat の補正と、flat 16 枚で 0.14%。</div></div>
+      <div class="do"><span class="lbl">読むだけ</span><span class="none">データ量の見積もりは第10部 04</span></div>
+    </div>
   </article>
 
   <!-- 第7部 -->
@@ -673,7 +681,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
         <p class="desc">lx と W と光子の換算（683）、逆二乗、カメラ方程式 ρET/4N²（第4部の0.52%の出どころ）、回折の限界、ガウスビームの集光、ファイバの2重の門、フレネル反射とλ/4コート、積分球とロックイン。営業でもカタログの光学の数字が読めるように、読み方ガイドは役割別。</p>
       </div>
       <div class="pair">
-        <div><span class="kind read">参考書</span><a href="第7部_光学.html">光学 ― 検出器の相手側</a><small>Lux → Watt → Photon → Image → Spectrum · 12章</small></div>
+        <div><span class="kind read">参考書</span><a href="第7部_光学.html">光学 ― 検出器の相手側</a><small>Lux → Watt → Photon → Image → Spectrum → Imaging · 13章</small></div>
         <div><span class="kind lab">ラボ</span><a href="OptoLab/index.html">OptoLab</a><small>原始部品 ＝ 光線とその会計 · 3章 12問 · <a href="OptoLab/README.md">README</a></small></div>
       </div>
     </div>
@@ -693,6 +701,10 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       <div><span class="cn">09-12</span><div class="ct"><a href="第7部_光学.html#s10">偏光 / 干渉と干渉計 / 分光器 / ファイバの損失と分散</a></div><div class="cd">マリュスの cos²、ブルースター角、波長板とアイソレータ。コヒーレンス長 λ²/Δλ、マイケルソン・ファブリ・ペロー・OCT。格子方程式と分解能 mN、次数の重なり、ラマン。0.2 dB/km・17 ps/(nm·km)・OTDR。</div></div>
       <div class="do"><span class="lbl">読むだけ</span><span class="none">分光器の受け側は第5部 07 のラインセンサ、光源側は第9部</span></div>
     </div>
+    <div class="chap">
+      <div><span class="cn">13</span><div class="ct"><a href="第7部_光学.html#s14">顕微鏡とイメージングの手法</a></div><div class="cd">共焦点のピンホール、多光子とライトシート、STED・PALM/STORM・SIM の超解像（σ/√N）、ハイパースペクトル、X 線 CT の πN/2 枚。</div></div>
+      <div class="do"><span class="lbl">読むだけ</span><span class="none">カメラの選定は第10部 03</span></div>
+    </div>
   </article>
 
   <!-- 第8部 -->
@@ -704,7 +716,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
         <p class="desc">FIT と MTTF（逆数にしただけ、でも生存率37%の罠）、アレニウスの為替レート（0.7eV・55→125℃で78倍）、ワイブルの m の読み方、θ の直列と Tj（放熱器ひとつで寿命6倍）、TEC の直線、Cpk と ppm、誤差の二乗和。保証書と信頼性報告書の数字が全部この式で書かれている。</p>
       </div>
       <div class="pair">
-        <div><span class="kind read">参考書</span><a href="第8部_信頼性と品質.html">信頼性と品質 ― 壊れ方を数える</a><small>FIT → Arrhenius → Weibull → Cpk → SPC → GUM · 12章</small></div>
+        <div><span class="kind read">参考書</span><a href="第8部_信頼性と品質.html">信頼性と品質 ― 壊れ方を数える</a><small>FIT → Arrhenius → Weibull → Cpk → SPC → GUM → Fit · 13章</small></div>
         <div><span class="kind lab">ラボ</span><a href="QALab/index.html">QALab</a><small>原始部品 ＝ 故障率と分布 · 3章 12問 · <a href="QALab/README.md">README</a></small></div>
       </div>
     </div>
@@ -723,6 +735,10 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
     <div class="chap">
       <div><span class="cn">09-12</span><div class="ct"><a href="第8部_信頼性と品質.html#s10">管理図と SPC / 測定の不確かさ / 故障解析 / 規格・安全・法規</a></div><div class="cd">3σ の管理限界と X̄–R 図・判定ルール。GUM のタイプ A/B と U=k·u<sub>c</sub>、校正の支配項。X 線・SAT・EMMI・OBIRCH・ロックイン発熱・FIB/TEM。IEC 60825-1 のクラス、IEC 62471、RoHS/REACH、輸出管理。</div></div>
       <div class="do"><span class="lbl">読むだけ</span><span class="none">発光解析の検出器は第5部 07、トレーサビリティは第7部 08</span></div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">13</span><div class="ct"><a href="第8部_信頼性と品質.html#s14">データ解析</a></div><div class="cd">最小二乗と σ/√Σ(x−x̄)²、換算カイ二乗、数えるデータの最尤推定（寿命 1/√N）、逆畳み込み、アラン偏差で最適な平均の時間。</div></div>
+      <div class="do"><span class="lbl">読むだけ</span><span class="none">不確かさの報告は 10、寿命の測定は第5部 06</span></div>
     </div>
   </article>
 
@@ -844,12 +860,12 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
         <li><b>第1部に戻って</b> ProcessLab 第4章<span class="r">3問</span><span class="why">工程で作った1本を SemiLab に渡して素子として測る。2本が繋がる</span></li>
         <li><b>第2部</b> 2-4〜2-5 と後半の節 → SemiLab 第4〜5章・CharLab<span class="r">18問</span><span class="why">フォトダイオードと MOSFET、ホール効果・ヘテロ接合・BJT・太陽電池・パワー。測って当てる側は CharLab</span></li>
         <li><b>第3部</b> NandLab 第1〜5章<span class="r">25問</span><span class="why">NAND だけから NOT・加算器・フリップフロップ・ALU、そして CPU とメモリ階層まで</span></li>
-        <li><b>第6部</b> 参考書 01〜11 → AnalogLab<span class="r">11問</span><span class="why">同じ MOSFET をアナログの目で。増幅・帰還・雑音・基準から AD 変換・電源・実装まで</span></li>
-        <li><b>第7部</b> 参考書 01〜12 → OptoLab<span class="r">12問</span><span class="why">光の会計。lx と W の換算、結像と回折、ファイバ、偏光・干渉・分光</span></li>
+        <li><b>第6部</b> 参考書 01〜12 → AnalogLab<span class="r">11問</span><span class="why">同じ MOSFET をアナログの目で。増幅・帰還・雑音・基準から AD 変換・電源・実装まで</span></li>
+        <li><b>第7部</b> 参考書 01〜13 → OptoLab<span class="r">12問</span><span class="why">光の会計。lx と W の換算、結像と回折、ファイバ、偏光・干渉・分光</span></li>
         <li><b>第9部</b> 参考書 01〜11<span class="r">読む</span><span class="why">光をつくる側。熱・放電・LED・レーザー・パルス・非線形</span></li>
-        <li><b>第5部</b> 参考書 01〜08 → PhotonLab<span class="r">12問</span><span class="why">光を数える一族。PMT・APD・MPPC・SNSPD と、共通の物差し R・NEP・D*</span></li>
+        <li><b>第5部</b> 参考書 01〜10 → PhotonLab<span class="r">12問</span><span class="why">光を数える一族。PMT・APD・MPPC・SNSPD と、共通の物差し R・NEP・D*</span></li>
         <li><b>第4部</b> 参考書 00〜07 → PixelLab 第1〜3章<span class="r">12問</span><span class="why">ここまでの全部が 1 つの製品に集まる。光子→電子→電圧→数値→像と、付録 A〜D の床下</span></li>
-        <li><b>第8部</b> 参考書 01〜12 → QALab<span class="r">12問</span><span class="why">信頼性と品質。作った物を 10 年・百万個の側から見直す</span></li>
+        <li><b>第8部</b> 参考書 01〜13 → QALab<span class="r">12問</span><span class="why">信頼性と品質。作った物を 10 年・百万個の側から見直す</span></li>
         <li><b>第10部</b> 1 台を設計する<span class="r">演習</span><span class="why">総仕上げ。カメラ・LiDAR・分光器を、光子から安全と信頼性まで全部の数字でつなぐ</span></li>
         <li><b>付録</b> 物性値と索引<span class="r">引く</span><span class="why">材料の表と、全部の部の用語の統一索引</span></li>
       </ol>

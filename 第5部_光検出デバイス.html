@@ -425,6 +425,8 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li><a href="#s6"><span class="n">06</span><span>時間を測る</span></a></li>
     <li><a href="#s7"><span class="n">07</span><span>現場の道具箱</span></a></li>
     <li><a href="#s8"><span class="n">08</span><span>光る半導体</span></a></li>
+    <li><a href="#s10"><span class="n">09</span><span>放射線を数える</span></a></li>
+    <li><a href="#s11"><span class="n">10</span><span>紫外とテラヘルツ</span></a></li>
     <li class="dom"><span>付録</span></li>
     <li><a href="#scheck"><span class="n">—</span><span>理解の確認</span></a></li>
     <li><a href="#s9"><span class="n">—</span><span>用語表</span></a></li>
@@ -446,6 +448,8 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li><a href="#s6"><span class="n">06</span><span>時間を測る</span></a></li>
     <li><a href="#s7"><span class="n">07</span><span>道具箱</span></a></li>
     <li><a href="#s8"><span class="n">08</span><span>光る半導体</span></a></li>
+    <li><a href="#s10"><span class="n">09</span><span>放射線を数える</span></a></li>
+    <li><a href="#s11"><span class="n">10</span><span>紫外とテラヘルツ</span></a></li>
     <li class="dom"><span>付録</span></li>
     <li><a href="#scheck"><span class="n">—</span><span>理解の確認</span></a></li>
     <li><a href="#s9"><span class="n">—</span><span>用語表</span></a></li>
@@ -1578,10 +1582,176 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   </div>
 </section>
 
+<!-- ================= 09 ================= -->
+<section class="stage" id="s10">
+  <div class="stage-head"><span class="stage-num">09</span>
+    <h2>放射線を半導体で数える ― エネルギーを測る検出器</h2></div>
+  <p class="lede">05 では X 線をシンチレータで可視光に<b>翻訳</b>し、PMT や MPPC で数えました。もうひとつの道は、X 線やガンマ線を<b>半導体の中で直接</b>電子と正孔に変え、その数で放射線の<span class="key">エネルギーそのもの</span>を測ることです。元素の分析（蛍光 X 線・SEM の EDX、第8部 11）、放射性物質の同定、エネルギーを色に分けて撮る X 線撮像が、この道の上にあります。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>電子正孔対 1 組の値段 ― w 値</h3>
+      <p>放射線が半導体の中で止まると、そのエネルギーのほとんどが電子正孔対に変わります。1 組を作るのに平均で要るエネルギーが <b>w 値</b>で、シリコンで <b>3.62 eV</b>、ゲルマニウムで 2.96 eV、CdTe で 4.43 eV ― バンドギャップの 3〜4 倍です（残りは格子の振動＝熱になる）。5.9 keV の X 線（鉄 55 から出る Mn の Kα 線）は、シリコンの中で 5,900/3.62 = <b>1,630 組</b>の対を作る。</p>
+      <p>シンチレータでは、同じ 5.9 keV が NaI(Tl) で約 38 光子/keV × 5.9 ≈ 220 個の光子になり、集光と光電面の量子効率を経て電子はさらに減る。<span class="key">1 回の吸収で作れる「数」が桁で多いほど、数の揺らぎ（√N）が相対的に小さく、エネルギーが細かく測れる</span> ― 半導体の検出器がエネルギーの分解能で勝つ理由です（第0部 02）。</p>
+    </div>
+    <div class="body-col">
+      <h3>ファノ因子 ― ポアソンより揺らがない</h3>
+      <p>対の数 N は、ポアソン分布なら分散 N で揺らぐはずですが、実際はそれより小さい。<b>エネルギーが決まっていて、使い道の合計が一定</b>という制約があるため、対の数は独立なくじ引きにならないのです。分散を F·N と書いたときの F を<b>ファノ因子</b>と呼び、シリコンで約 <b>0.115</b>（Fano 1947）。</p>
+      <div class="eq">FWHM = 2.355 · w · √(F·N + ENC²)</div>
+      <p>ENC は読み出しの回路の雑音を電子の数で表したもの（等価雑音電荷、第6部 07 のチャージアンプの床）。5.9 keV では、ファノの限界だけで <b>117 eV</b>、ENC 5 e⁻ を足すと <b>124 eV</b>、10 e⁻ なら 145 eV。<span class="key">低いエネルギーほど、分解能は回路の雑音で決まる</span>。市販の SDD（下）はこの 120〜140 eV の領域にいます。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">RESOLUTION — エネルギー分解能は、どこで何が決めるか</span><span class="fig-title">両対数・シリコンの曲線は式から計算、印は 662 keV での目安</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 250" role="img" aria-label="放射線のエネルギーに対するエネルギー分解能（半値全幅の割合）の両対数グラフ。シリコンのファノの限界の直線、回路の雑音5電子と20電子を足した曲線は低エネルギー側で持ち上がる。662キロ電子ボルトでの目安として、NaI約7%、LaBr3約3%、CZT約1.5%、HPGe約0.2%の印がある。5.9キロ電子ボルトのSDDの点も示す。" style="min-width:700px;width:100%;display:block">
+        <g stroke="var(--line)" stroke-width="1" fill="none"><path d="M90 50 V200 H660"/><path d="M90 150 H660 M90 100 H660 M280 50 V200 M470 50 V200" stroke-dasharray="2 4"/></g>
+        <path d="M90.0 115.9 L96.3 116.7 L102.7 117.6 L109.0 118.4 L115.3 119.2 L121.7 120.1 L128.0 120.9 L134.3 121.7 L140.7 122.6 L147.0 123.4 L153.3 124.2 L159.7 125.1 L166.0 125.9 L172.3 126.7 L178.7 127.6 L185.0 128.4 L191.3 129.2 L197.7 130.1 L204.0 130.9 L210.3 131.7 L216.7 132.6 L223.0 133.4 L229.3 134.2 L235.7 135.1 L242.0 135.9 L248.3 136.7 L254.7 137.6 L261.0 138.4 L267.3 139.2 L273.7 140.1 L280.0 140.9 L286.3 141.7 L292.7 142.6 L299.0 143.4 L305.3 144.2 L311.7 145.1 L318.0 145.9 L324.3 146.7 L330.7 147.6 L337.0 148.4 L343.3 149.2 L349.7 150.1 L356.0 150.9 L362.3 151.7 L368.7 152.6 L375.0 153.4 L381.3 154.2 L387.7 155.1 L394.0 155.9 L400.3 156.7 L406.7 157.6 L413.0 158.4 L419.3 159.2 L425.7 160.1 L432.0 160.9 L438.3 161.7 L444.7 162.6 L451.0 163.4 L457.3 164.2 L463.7 165.1 L470.0 165.9 L476.3 166.7 L482.7 167.6 L489.0 168.4 L495.3 169.2 L501.7 170.1 L508.0 170.9 L514.3 171.7 L520.7 172.6 L527.0 173.4 L533.3 174.2 L539.7 175.1 L546.0 175.9 L552.3 176.7 L558.7 177.6 L565.0 178.4 L571.3 179.2 L577.7 180.1 L584.0 180.9 L590.3 181.7 L596.7 182.6 L603.0 183.4 L609.3 184.2 L615.7 185.1 L622.0 185.9 L628.3 186.7 L634.7 187.6 L641.0 188.4 L647.3 189.2 L653.7 190.1 L660.0 190.9" stroke="var(--electron)" stroke-width="2" fill="none"/>
+        <path d="M90.0 109.6 L96.3 110.8 L102.7 112.0 L109.0 113.1 L115.3 114.3 L121.7 115.4 L128.0 116.5 L134.3 117.6 L140.7 118.7 L147.0 119.8 L153.3 120.9 L159.7 121.9 L166.0 123.0 L172.3 124.0 L178.7 125.0 L185.0 126.0 L191.3 127.0 L197.7 128.0 L204.0 129.0 L210.3 129.9 L216.7 130.9 L223.0 131.8 L229.3 132.8 L235.7 133.7 L242.0 134.6 L248.3 135.6 L254.7 136.5 L261.0 137.4 L267.3 138.3 L273.7 139.2 L280.0 140.1 L286.3 141.0 L292.7 141.9 L299.0 142.8 L305.3 143.6 L311.7 144.5 L318.0 145.4 L324.3 146.3 L330.7 147.1 L337.0 148.0 L343.3 148.9 L349.7 149.7 L356.0 150.6 L362.3 151.4 L368.7 152.3 L375.0 153.1 L381.3 154.0 L387.7 154.9 L394.0 155.7 L400.3 156.6 L406.7 157.4 L413.0 158.2 L419.3 159.1 L425.7 159.9 L432.0 160.8 L438.3 161.6 L444.7 162.5 L451.0 163.3 L457.3 164.1 L463.7 165.0 L470.0 165.8 L476.3 166.7 L482.7 167.5 L489.0 168.3 L495.3 169.2 L501.7 170.0 L508.0 170.9 L514.3 171.7 L520.7 172.5 L527.0 173.4 L533.3 174.2 L539.7 175.0 L546.0 175.9 L552.3 176.7 L558.7 177.6 L565.0 178.4 L571.3 179.2 L577.7 180.1 L584.0 180.9 L590.3 181.7 L596.7 182.6 L603.0 183.4 L609.3 184.2 L615.7 185.1 L622.0 185.9 L628.3 186.7 L634.7 187.6 L641.0 188.4 L647.3 189.2 L653.7 190.1 L660.0 190.9" stroke="var(--electron)" stroke-width="1.6" stroke-dasharray="6 4" fill="none"/>
+        <path d="M90.0 87.6 L96.3 89.2 L102.7 90.8 L109.0 92.4 L115.3 94.0 L121.7 95.5 L128.0 97.1 L134.3 98.7 L140.7 100.3 L147.0 101.8 L153.3 103.4 L159.7 104.9 L166.0 106.4 L172.3 108.0 L178.7 109.5 L185.0 111.0 L191.3 112.5 L197.7 114.0 L204.0 115.4 L210.3 116.9 L216.7 118.3 L223.0 119.8 L229.3 121.2 L235.7 122.6 L242.0 124.0 L248.3 125.4 L254.7 126.8 L261.0 128.1 L267.3 129.4 L273.7 130.8 L280.0 132.1 L286.3 133.4 L292.7 134.6 L299.0 135.9 L305.3 137.1 L311.7 138.4 L318.0 139.6 L324.3 140.8 L330.7 141.9 L337.0 143.1 L343.3 144.3 L349.7 145.4 L356.0 146.5 L362.3 147.6 L368.7 148.7 L375.0 149.8 L381.3 150.8 L387.7 151.9 L394.0 152.9 L400.3 154.0 L406.7 155.0 L413.0 156.0 L419.3 157.0 L425.7 158.0 L432.0 158.9 L438.3 159.9 L444.7 160.9 L451.0 161.8 L457.3 162.8 L463.7 163.7 L470.0 164.6 L476.3 165.6 L482.7 166.5 L489.0 167.4 L495.3 168.3 L501.7 169.2 L508.0 170.1 L514.3 171.0 L520.7 171.9 L527.0 172.8 L533.3 173.6 L539.7 174.5 L546.0 175.4 L552.3 176.3 L558.7 177.1 L565.0 178.0 L571.3 178.9 L577.7 179.7 L584.0 180.6 L590.3 181.4 L596.7 182.3 L603.0 183.1 L609.3 184.0 L615.7 184.9 L622.0 185.7 L628.3 186.5 L634.7 187.4 L641.0 188.2 L647.3 189.1 L653.7 189.9 L660.0 190.8" stroke="var(--warn)" stroke-width="1.6" stroke-dasharray="6 4" fill="none"/>
+        <circle cx="626" cy="107.7" r="5" fill="var(--photon)"/>
+        <circle cx="626" cy="126.1" r="5" fill="var(--volt)"/>
+        <circle cx="626" cy="141.2" r="5" fill="var(--digital)"/>
+        <circle cx="626" cy="184.9" r="5" fill="var(--ink)"/>
+        <circle cx="236.5" cy="133.9" r="5" fill="var(--electron)"/>
+        <g font-size="10">
+          <path d="M478 42 H496" stroke="var(--electron)" stroke-width="2" fill="none"/><text x="502" y="46" fill="var(--electron-2)">Si のファノの限界（F = 0.115）</text>
+          <path d="M478 58 H496" stroke="var(--electron)" stroke-width="1.6" stroke-dasharray="6 4" fill="none"/><text x="502" y="62" fill="var(--electron-2)">＋回路の雑音 ENC 5 e⁻</text>
+          <path d="M478 74 H496" stroke="var(--warn)" stroke-width="1.6" stroke-dasharray="6 4" fill="none"/><text x="502" y="78" fill="var(--warn)">＋回路の雑音 ENC 20 e⁻</text>
+          <circle cx="487" cy="90" r="4" fill="var(--photon)"/><text x="502" y="94" fill="var(--ink-2)">NaI(Tl) 約 7%</text>
+          <circle cx="600" cy="90" r="4" fill="var(--volt)"/><text x="610" y="94" fill="var(--ink-2)">LaBr₃ 約 3%</text>
+          <circle cx="487" cy="106" r="4" fill="var(--digital)"/><text x="502" y="110" fill="var(--ink-2)">CZT 約 1.5%</text>
+          <circle cx="600" cy="106" r="4" fill="var(--ink)"/><text x="610" y="110" fill="var(--ink-2)">HPGe 約 0.2%</text>
+          <text x="228" y="150" fill="var(--electron-2)" text-anchor="end">SDD: 124 eV（2.1%）</text>
+        </g>
+        <g font-family="var(--mono)" font-size="9.5" fill="var(--ink-3)">
+          <text x="84" y="204" text-anchor="end">0.1%</text><text x="84" y="154" text-anchor="end">1%</text><text x="84" y="104" text-anchor="end">10%</text><text x="84" y="54" text-anchor="end">100%</text>
+          <text x="90" y="216" text-anchor="middle">1 keV</text><text x="280" y="216" text-anchor="middle">10 keV</text><text x="470" y="216" text-anchor="middle">100 keV</text><text x="660" y="216" text-anchor="middle">1 MeV</text>
+        </g>
+        <text x="375" y="238" font-size="10" fill="var(--ink-3)" text-anchor="middle">放射線のエネルギー →　　縦軸: 半値全幅 ÷ エネルギー</text>
+      </svg>
+    </div>
+    <figcaption>シリコンの曲線は FWHM = 2.355·w·√(F·E/w + ENC²) を描いたもの。ファノの限界は E<sup>−1/2</sup> で下がる直線、回路の雑音は低いエネルギーで分解能を持ち上げる。662 keV（セシウム 137 のガンマ線）の印は、各検出器の実測の代表的な値（目安）です ― <span class="key">シンチレータ（NaI・LaBr₃）＜ 室温の半導体（CZT）＜ 冷やした Ge</span> の順に細かい。シリコンは 662 keV を止められない（下）ので、この高さでは曲線は理論上の値です。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>止める力 ― 軽いシリコン、重い CdTe</h3>
+      <p>放射線を測るには、まず検出器の中で止まってもらう必要があります。止める力は材料の原子番号と密度で強く変わる。シリコンの中で X 線の強さが 1/e になる距離は、NIST XCOM の減衰係数から 10 keV で約 <b>127 µm</b>、20 keV で約 <b>0.96 mm</b>。厚さ 450 µm のシリコンは 10 keV の 97% を止めるが、20 keV では 37% しか止めない。だから <b>数十 keV 以上は、重い元素の CdTe・CZT（室温）や、厚い Ge（77 K）</b>の出番です。</p>
+      <p>CdTe・CZT はバンドギャップが広い（1.4〜1.6 eV）ので室温で使えるが、<b>正孔が途中で捕まりやすい</b>（移動度と寿命の積 µτ が小さい）ため、深い場所で吸収された光子の信号が小さく出て、ピークの低いエネルギー側に裾を引く。電極の形を工夫して電子の信号だけを読むなどの対策が取られます。</p>
+    </div>
+    <div class="body-col">
+      <h3>SDD ― 小さな陽極で、速く静かに</h3>
+      <p><b>シリコンドリフト検出器（SDD）</b>は、厚いシリコンの面の上に同心円の電極を並べて横向きの電界を作り、吸収で生まれた電子を<b>中心の小さな陽極</b>まで流して集めます（Gatti と Rehak、1984）。陽極が小さいので容量が小さく、チャージアンプの雑音（ENC）が短い整形時間でも小さい ― <span class="key">低雑音と高い計数率を両立</span>できる。電子冷却で −20 ℃ 程度に冷やして漏れ電流を減らし、SEM に付ける EDX（第8部 11）や蛍光 X 線分析装置の標準の検出器になっています。</p>
+      <h3>1 個ずつ、エネルギーごとに撮る</h3>
+      <p>CdTe・CZT の画素検出器で、X 線の光子を 1 個ずつ数え、しきい値でエネルギーの帯に分けて数える<b>光子計数型</b>の撮像も広がっています。電荷を積分する FPD（05）と違って電子の雑音をしきい値で切り捨てられ、エネルギーの情報で物質を見分けられる。医療の CT でも、2020 年代に光子計数型の装置の臨床での使用が始まっています。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">DIRECT DETECTORS — 放射線を直接電荷にする検出器（300 K の代表値・目安）</span></div>
+    <div class="scroll-x">
+      <table>
+        <thead><tr><th>検出器</th><th>E<sub>g</sub> [eV]</th><th>w [eV]</th><th>動作温度</th><th>得意なエネルギー</th><th>分解能の目安</th></tr></thead>
+        <tbody>
+          <tr><td>Si PIN・SDD</td><td class="num">1.12</td><td class="num">3.62</td><td>室温〜電子冷却（SDD は −20 ℃ 程度）</td><td>約 1〜20 keV（元素分析）</td><td>5.9 keV で 120〜140 eV（SDD）</td></tr>
+          <tr><td>CdTe・CZT</td><td class="num">1.44・約 1.6</td><td class="num">4.43・約 4.6</td><td>室温</td><td>数十 keV〜数百 keV</td><td>662 keV で 1〜2%（CZT）</td></tr>
+          <tr><td>HPGe（高純度 Ge）</td><td class="num">0.66（300 K）</td><td class="num">2.96</td><td>液体窒素温度（77 K）付近</td><td>数十 keV〜数 MeV</td><td>662 keV で約 0.2%</td></tr>
+          <tr><td>（比較）NaI(Tl)＋PMT</td><td colspan="2">シンチレータ（約 38 光子/keV）</td><td>室温</td><td>数十 keV〜数 MeV（大きく安い）</td><td>662 keV で約 7%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <figcaption>値は材料と装置で幅があるので、比較の目安です。<span class="key">分解能を取るか（Ge・Si）、室温と重さを取るか（CdTe・CZT）、大きさと値段を取るか（シンチレータ）</span> ― 用途がこの 3 つのどれを重く見るかで決まります。放射線の被ばくの管理は第8部 12。</figcaption>
+  </figure>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（09 放射線を半導体で数える）</span>
+    <p><b>問1.</b> 5.9 keV の X 線をシリコンの SDD で測る。作られる対の数、ファノの限界の分解能、ENC 5 e⁻ の回路をつないだときの分解能（FWHM）は？</p>
+    <p><b>解.</b> N = 5,900/3.62 = <b>1,630</b>。ファノの限界 2.355 × 3.62 × √(0.115 × 1,630) = <b>117 eV</b>。ENC 5 e⁻ を二乗和で足して 2.355 × 3.62 × √(187 + 25) = <b>124 eV</b>（2.1%）。隣り合う元素の Kα 線（たとえば Mn 5.90 keV と Fe 6.40 keV）は 500 eV 離れているので、十分に分けられる。</p>
+    <p><b>問2.</b> 厚さ 450 µm のシリコンは 10 keV と 20 keV の X 線の何% を止めるか（1/e の距離 127 µm・0.96 mm）。</p>
+    <p><b>解.</b> 1 − exp(−450/127) = <b>97%</b>、1 − exp(−450/961) = <b>37%</b>。<span class="key">20 keV を超えるとシリコンは素通りされ始める</span> ― 高いエネルギーを測るには、厚くするか、重い材料に替える。</p>
+  </div>
+</section>
+
+<!-- ================= 10 ================= -->
+<section class="stage" id="s11">
+  <div class="stage-head"><span class="stage-num">10</span>
+    <h2>波長の両端 ― 紫外とテラヘルツ</h2></div>
+  <p class="lede">05 で赤外と X 線へ出ました。残る両端が、可視のすぐ外側の<b>紫外</b>と、赤外よりさらに長い<b>テラヘルツ</b>です。紫外は<span class="key">光子のエネルギーが大きすぎて、表面で吸われ、材料を傷める</span>。テラヘルツは<span class="key">光子のエネルギーが室温の熱より小さく、熱の揺らぎに埋もれる</span>。どちらも、ふつうの光検出器の常識が通じない場所です。</p>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">ENERGY LADDER — 光子のエネルギーの物差し（対数）</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 240" role="img" aria-label="光子のエネルギーを10電子ボルトから1ミリ電子ボルトまで対数で並べた物差し。紫外、可視、赤外、テラヘルツの帯と、ダイヤモンド、GaNとSiC、Si、InGaAsのバンドギャップ、室温の熱エネルギーkT、1テラヘルツの位置が番号付きで示されている。" style="min-width:700px;width:100%;display:block">
+        <rect x="80" y="40" width="76.4" height="26" fill="var(--photon)" opacity="0.18"/>
+        <rect x="156.4" y="40" width="40.9" height="26" fill="var(--photon)" opacity="0.4"/>
+        <rect x="197.3" y="40" width="240.1" height="26" fill="var(--electron)" opacity="0.14"/>
+        <rect x="437.4" y="40" width="242.6" height="26" fill="var(--warn)" opacity="0.16"/>
+        <g font-size="10.5" text-anchor="middle" fill="var(--ink)">
+          <text x="118" y="58">紫外</text><text x="176.8" y="58">可視</text><text x="317" y="58">赤外</text><text x="558" y="58">テラヘルツ</text>
+        </g>
+        <g font-size="10" fill="var(--ink-2)">
+          <text x="80" y="104">4.3 eV（290 nm）より上は、地上の太陽光がオゾンで消える</text>
+          <text x="558" y="104" text-anchor="middle">光子のエネルギー ＜ kT → 熱の背景に埋もれる</text>
+        </g>
+        <path d="M80 170 H680" stroke="var(--ink-2)" stroke-width="1.6" fill="none"/>
+        <path d="M80 164 V176 M230 164 V176 M380 164 V176 M530 164 V176 M680 164 V176" stroke="var(--ink-3)" stroke-width="1" fill="none"/>
+        <g stroke="var(--warn)" stroke-width="2" fill="none">
+          <path d="M119 156 V170"/><path d="M152 156 V170"/><path d="M222.6 156 V170"/><path d="M249.6 156 V170"/><path d="M468 156 V170"/><path d="M587.4 156 V170"/>
+        </g>
+        <g font-size="10" fill="var(--warn)" text-anchor="middle">
+          <text x="119" y="150">①</text><text x="152" y="150">②</text><text x="222.6" y="150">③</text><text x="249.6" y="150">④</text><text x="468" y="150">⑤</text><text x="587.4" y="150">⑥</text>
+        </g>
+        <g font-family="var(--mono)" font-size="9.5" fill="var(--ink-3)" text-anchor="middle">
+          <text x="80" y="190">10 eV</text><text x="230" y="190">1 eV</text><text x="380" y="190">0.1 eV</text><text x="530" y="190">10 meV</text><text x="680" y="190">1 meV</text>
+        </g>
+        <g font-size="9.5" fill="var(--ink-2)">
+          <text x="80" y="212">① ダイヤモンド 5.5 eV（225 nm）　② GaN・SiC 3.3〜3.4 eV（366〜380 nm）　③ Si 1.12 eV（1,107 nm）</text>
+          <text x="80" y="228">④ InGaAs 0.74 eV（1.7 µm）　⑤ 室温の kT 25.9 meV（6.25 THz）　⑥ 1 THz ＝ 4.14 meV ＝ 300 µm</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>左へ行くほど光子は強く、材料を選ぶ（バンドギャップの広い材料だけが「可視を感じず紫外だけ」を感じる）。右へ行くほど光子は弱く、⑤の kT より右では、1 個の光子のエネルギーが室温の熱の揺らぎより小さい。<span class="key">バンドギャップで光子を数えるやり方は、⑤の手前で使えなくなる</span> ― テラヘルツで熱型と、波をそのまま測るコヒーレント検出が主役になる理由です。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>紫外 ― 表面で吸われ、空気にも吸われる</h3>
+      <p>紫外は UVA（315〜400 nm）・UVB（280〜315 nm）・UVC（100〜280 nm）に分けられ、約 200 nm より短い<b>真空紫外</b>は空気中の酸素に吸われるので、真空か窒素の中でしか扱えない。地上の太陽光は、オゾンの吸収で約 290 nm より短い光をほとんど含まない ― この帯を<b>ソーラーブラインド</b>と呼び、昼の屋外でも太陽に邪魔されずに炎や放電（高圧線のコロナ）の紫外を見つけられます。</p>
+      <p>シリコンでは、300 nm の光の吸収の深さは約 <b>6 nm</b> しかない（第2部 04）。表面のすぐ近くで生まれた電子正孔対は表面の再結合で失われやすいので、紫外用のフォトダイオードは表面の不感層を極端に薄くし、表面を丁寧に不活性化します。紫外は表面に電荷を作って感度をじわじわ下げる（劣化）ので、長時間の紫外の計測では感度の変化の確認が欠かせません。</p>
+    </div>
+    <div class="body-col">
+      <h3>可視を感じない検出器 ― 窓と材料で選ぶ</h3>
+      <p>可視を感じず紫外だけを感じたいなら、バンドギャップの広い材料を使う: <b>GaN</b>（366 nm まで）、<b>SiC</b>（380 nm まで）、組成で 210〜365 nm を選べる <b>AlGaN</b>、<b>ダイヤモンド</b>（225 nm まで）。フィルタなしで可視を捨てられます（第2部・付録の物性値）。光電面では、<b>Cs-Te</b> が約 320 nm より長い光を感じないソーラーブラインドの光電面、<b>CsI</b> が真空紫外の光電面です（第5部 02）。</p>
+      <p>短い波長まで通す<b>窓の材料</b>の選択も同じくらい大事で、目安は、ホウケイ酸ガラスで約 300 nm、紫外透過ガラスで約 185 nm、合成石英で約 160 nm、MgF₂ で約 115 nm まで通る。<span class="key">窓の短い側の限界が、検出器の短い側の限界</span>になることが多いのです。</p>
+    </div>
+  </div>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>テラヘルツ ― 電波と光の間</h3>
+      <p>0.1〜10 THz（波長 3 mm〜30 µm）の帯がテラヘルツです。1 THz は波長 300 µm・光子のエネルギー 4.14 meV・波数 33.4 cm⁻¹ で、室温の kT（25.9 meV、周波数に直すと 6.25 THz）より小さい。だから光子を 1 個ずつ数える検出器は使えず、<b>熱型</b>（ボロメータ・焦電型・ゴーレイセル、第5部 05）か、電界の波形をそのまま測る方法を使います。テラヘルツは多くの紙・プラスチック・布を通り、水と金属には強く吸われる・跳ね返される。</p>
+    </div>
+    <div class="body-col">
+      <h3>波形をそのまま測る ― テラヘルツ時間領域分光</h3>
+      <p>フェムト秒のレーザー（第9部 09）のパルスで、光伝導アンテナ（ギャップに電圧をかけた半導体）を一瞬だけ導通させると、ps のテラヘルツのパルスが出る。受け側でも同じレーザーのパルスで別のアンテナ（または電気光学結晶）を開け閉めし、遅延をずらしながら<b>テラヘルツの電界の波形そのもの</b>を記録する ― これを<b>テラヘルツ時間領域分光（THz-TDS）</b>と呼びます。波形をフーリエ変換すれば、振幅と位相の両方のスペクトルが得られる（第0部 03）。包装の中の検査、塗装の膜厚、医薬品の結晶形の判別、次世代の通信（サブテラヘルツ）が主な出番です。</p>
+    </div>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（10 紫外とテラヘルツ）</span>
+    <p><b>問1.</b> SiC（E<sub>g</sub> = 3.26 eV）と AlN（約 6.0 eV）の感度の長波長端は？ ソーラーブラインド（約 290 nm 以下）の炎の検出に、どちらがそのまま使えるか。</p>
+    <p><b>解.</b> 1239.84/3.26 = <b>380 nm</b>、1239.84/6.0 = <b>207 nm</b>。SiC は 290〜380 nm の太陽光も感じてしまうのでフィルタが要る。AlN だけでは 207 nm より長い光を感じない（炎の 200〜280 nm の多くを逃す）ので、実際には組成を選んだ AlGaN（カットオフ 280 nm 前後）や Cs-Te の光電面が使われる ― <span class="key">カットオフを「測りたい帯の上端」に合わせる</span>のが材料選びの要点です。</p>
+    <p><b>問2.</b> 0.5 THz の光子のエネルギーと波長は？ 室温の kT の何分の 1 か。</p>
+    <p><b>解.</b> 4.14 meV × 0.5 = <b>2.07 meV</b>、波長 300 µm × 2 = <b>600 µm</b>。kT（25.9 meV）の約 <b>1/12.5</b>。1 個の光子より熱の揺らぎのほうが大きいので、光子を数えるのではなく、熱か電界として測る。</p>
+  </div>
+</section>
+
 <!-- ================= 理解の確認 ================= -->
 <section class="stage" id="scheck">
   <div class="stage-head"><span class="stage-num">—</span>
-    <h2>理解の確認 ― 10問で一族を並べ直す</h2></div>
+    <h2>理解の確認 ― 14問で一族を並べ直す</h2></div>
   <p class="lede">答えを開く前に、どの章の何を使うかを先に言ってみてください。後ろの問いほど、前の章を組み合わせます。</p>
   <div class="chk">
     <details><summary><span class="qn">Q1 · 01</span>検出器選定の最初の2問は何か。</summary><p>①光は後段の回路の床より十分強いか（弱ければ床の手前で増やす家系へ）。②「何ワット」で足りるか、「何個」まで要るか（個数なら PMT・SPAD・MPPC）。そのあとに磁場・体積・電圧（Q3）、波長、速さ、値段が続く。</p></details>
@@ -1594,6 +1764,10 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <details><summary><span class="qn">Q8 · 05</span>サーモグラフィが 8〜14 µm を使う理由を2つ。</summary><p>①300 K の物体の放射のピークが 2898/300 ≈ 9.7 µm（ウィーン則）。②その帯が大気の窓（吸収の谷間）に重なる。</p></details>
     <details><summary><span class="qn">Q9 · 06</span>TCSPC で検出率を励起の 1〜数% に絞るのはなぜか。繰り返しを上げすぎると何が起きるか。</summary><p>1 周期に2個来ると先着だけが記録され、減衰が早い側へ歪む（パイルアップ）。繰り返しを上げると前のパルスの減衰の尻尾を踏むので、周期は寿命の5倍以上あける。両側から閉じる窓。</p></details>
     <details><summary><span class="qn">Q10 · 07</span>PIN を薄くすると速くなるとは限らないのはなぜか。</summary><p>走行時間は w に比例して短くなるが、容量 C = εA/w は増えて RC が遅くなる。両者が釣り合う w がある（直径 30 µm・50 Ω で約 1 µm）。さらに薄いと吸収（QE）も減る ― 三すくみ。</p></details>
+      <details><summary><span class="qn">Q11 · 09</span>半導体の放射線検出器が、シンチレータよりエネルギー分解能で勝つのはなぜか。</summary><p>1 回の吸収で作れる数が桁で多い（Si は 3.62 eV で 1 組、5.9 keV で 1,630 組。シンチレータは光子に変えてからさらに減る）うえ、ファノ因子（Si で約 0.115）で揺らぎがポアソンより小さいから。</p></details>
+    <details><summary><span class="qn">Q12 · 09</span>低いエネルギーの X 線で分解能を決めるのは何か。SDD はそれにどう答えたか。</summary><p>回路の雑音（ENC）。FWHM = 2.355w√(FN + ENC²) で、N が小さいと ENC² が効く。SDD は電子を小さな陽極に集めて容量を小さくし、短い整形時間でも ENC を小さくした。</p></details>
+    <details><summary><span class="qn">Q13 · 10</span>紫外用のシリコンのフォトダイオードで、表面の作り方が特に重要なのはなぜか。</summary><p>300 nm の光は深さ約 6 nm で吸われるので、対が表面のすぐ近くで生まれ、表面の再結合で失われやすいから。不感層を薄くし、表面を不活性化する。</p></details>
+    <details><summary><span class="qn">Q14 · 10</span>テラヘルツで光子を 1 個ずつ数える検出器が使えないのはなぜか。</summary><p>1 THz の光子は 4.14 meV で、室温の kT（25.9 meV）より小さく、熱の揺らぎに埋もれるから。熱型の検出器か、THz-TDS のように電界の波形を測る方法を使う。</p></details>
   </div>
 </section>
 
@@ -1635,6 +1809,15 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>直接 / 間接遷移</td><td>運動量まで揃って光れるか。Si は間接でフォノンの助けが要り、光らない再結合が先に勝つ ― LED・LD が化合物の領分である理由</td><td class="num">&lambda;≒1240/E<sub>g</sub></td></tr>
           <tr><td>エスケープコーン</td><td>高屈折率の中で生まれた光が表面から出られる臨界角の円錐。平面1つあたり約 1/(4n²) ― LED の取り出し効率との闘いの出発点</td><td class="num">n=3.5 で 〜2%</td></tr>
           <tr><td>しきい値電流 / スロープ効率</td><td>L-I カーブの折れ目と、その上の傾き [W/A]。しきい値は温度で上がる ― LD が TEC を背負う理由</td><td class="num">折れ目の上がレーザー</td></tr>
+                  <tr><td>w 値</td><td>放射線が半導体の中で電子正孔対を 1 組作るのに要る平均のエネルギー。バンドギャップの 3〜4 倍</td><td class="num">Si 3.62・Ge 2.96・CdTe 4.43 eV</td></tr>
+          <tr><td>ファノ因子</td><td>対の数の分散と平均の比。エネルギーの制約でポアソンより揺らがない</td><td class="num">Si 約 0.115</td></tr>
+          <tr><td>エネルギー分解能 / ENC</td><td>ピークの半値全幅 2.355w√(FN+ENC²) と、回路の雑音を電子の数で表した等価雑音電荷</td><td class="num">5.9 keV で 124 eV</td></tr>
+          <tr><td>SDD</td><td>電子を中心の小さな陽極へ横に流して集めるシリコンの検出器。低雑音と高い計数率</td><td class="num">EDX・蛍光 X 線</td></tr>
+          <tr><td>CdTe / CZT / HPGe</td><td>室温で使える重い半導体（正孔が捕まりやすい）と、77 K で使う最高の分解能のゲルマニウム</td><td class="num">662 keV で 1〜2% / 0.2%</td></tr>
+          <tr><td>光子計数型 X 線検出</td><td>X 線の光子を 1 個ずつ数え、しきい値でエネルギーの帯に分ける撮像</td><td class="num">光子計数 CT</td></tr>
+          <tr><td>UVA / UVB / UVC / 真空紫外</td><td>315〜400 / 280〜315 / 100〜280 nm と、空気（酸素）に吸われる約 200 nm 以下</td><td class="num">波長で分ける</td></tr>
+          <tr><td>ソーラーブラインド</td><td>地上の太陽光がオゾンで消える約 290 nm 以下の帯。昼でも炎や放電を検出できる</td><td class="num">Cs-Te・AlGaN</td></tr>
+          <tr><td>テラヘルツ / THz-TDS</td><td>0.1〜10 THz の帯と、フェムト秒のレーザーで電界の波形を測る分光法</td><td class="num">1 THz ＝ 4.14 meV ＝ 300 µm</td></tr>
         </tbody>
       </table>
     </div>
@@ -1673,6 +1856,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
             <td>06。パイルアップの統計・IRF と再畳み込み・FLIM の実務まで、時間計測を仕事にする人の机の本です。</td></tr>
           <tr><td>フォトニクス全域の<br>体系書</td><td>B. E. A. Saleh &amp; M. C. Teich<br>Fundamentals of Photonics, Wiley</td>
             <td>08 と第7部。半導体光源（LED・LD・VCSEL）と検出器を同じ枠組みで通す教科書。E-k と利得の物理はこの本の領分です。</td></tr>
+                  <tr><td>ファノ因子</td><td>U. Fano<br>Phys. Rev. 72, 26 (1947)</td><td>09。電離で生じるイオン対の数の揺らぎがポアソンより小さいことの理論。</td></tr>
+          <tr><td>シリコンドリフト検出器</td><td>E. Gatti &amp; P. Rehak<br>Nucl. Instrum. Methods 225, 608 (1984)</td><td>09。横向きの電界で電荷を小さな陽極に集める検出器の提案。</td></tr>
+          <tr><td>放射線計測の教科書</td><td>G. F. Knoll『Radiation Detection and Measurement』4th ed., Wiley (2010)</td><td>09。w 値・ファノ因子・半導体とシンチレータの検出器・エネルギー分解能の標準的な教科書。</td></tr>
+          <tr><td>X 線の減衰係数</td><td>NIST XCOM: Photon Cross Sections Database</td><td>09。シリコンの 10 keV・20 keV の減衰の距離。</td></tr>
+          <tr><td>テラヘルツ</td><td>Y.-S. Lee『Principles of Terahertz Science and Technology』Springer (2009)</td><td>10。光伝導アンテナ・電気光学サンプリング・THz-TDS。</td></tr>
         </tbody>
       </table>
     </div>
