@@ -587,6 +587,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p><strong>dBm どうしは足せない。</strong>1 mW（0 dBm）の光を 2 本合わせると 2 mW = <b>+3.01 dBm</b> で、「0 + 0 = 0 dBm」ではない。足し引きしてよいのは、dBm（絶対値）に dB（利得・損失の比）を足すときだけです。</p>
   </div>
 
+  <div class="deep-note">
+    <span class="tag">役割別に持ち帰るもの</span>
+    <p><b>営業・企画</b>: 仕様の dB は「何に対して」と、パワー（10·log）か振幅（20·log）かを確かめる。<b>設計・開発</b>: 損失と利得は dB で足し引きし、dBm どうしは足さない。<b>研究・製造</b>: 桁で変わる量は対数目盛りで描き、片対数で直線になるかで指数を見分ける。</p>
+  </div>
+
   <div class="ex">
     <span class="tag">例題 ― 手で一度解く（01）</span>
     <p><b>問.</b> 受信感度 −30 dBm の光受信器に、送信 +3 dBm の光を損失 0.2 dB/km のファイバで送る。何 km まで届くか。途中にコネクタ損 1 dB が 2 か所あるとしたら？</p>
@@ -639,6 +644,25 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <figcaption>λ = 3 では 0 の側が詰まって左右非対称で、正規分布の近似はずれる。λ = 30 ではほぼ重なる。<span class="key">暗い（数が少ない）測定ほど正規分布の近似が使えなくなる</span> ― 第5部の 1 光子計数や第8部の「0 故障」の信頼限界が、正規分布ではなくポアソン分布そのもので計算される理由です。</figcaption>
   </figure>
 
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">GROW — 平均 λ が 1 から 30 へ育つと、山は右へ動き、広がり、左右対称になる</span><span class="fig-title">棒と線は式から毎回計算（動きを減らす設定では λ = 8 で止まる）</span></div>
+    <div class="fig-body scroll-x">
+      <svg id="p0grow" viewBox="0 0 760 250" role="img" aria-label="ポアソン分布の棒グラフが、平均λを1、2、3、5、8、12、18、25、30と育てながら描き直される動く図。λが大きくなると山は右へ動き、幅は√λで広がり、高さは下がって、同じ平均と分散の正規分布の曲線に重なっていく。" style="min-width:700px;width:100%;display:block">
+        <g stroke="var(--line)" stroke-width="1" fill="none"><path d="M60 40 V200 H700"/><path d="M60 160 H700 M60 120 H700 M60 80 H700 M60 40 H700" stroke-dasharray="2 4"/></g>
+        <g font-size="9.5" fill="var(--ink-3)" text-anchor="end"><text x="54" y="203">0</text><text x="54" y="163">0.1</text><text x="54" y="123">0.2</text><text x="54" y="83">0.3</text><text x="54" y="43">0.4</text></g>
+        <g font-size="9.5" fill="var(--ink-3)" text-anchor="middle"><text x="60" y="214">0</text><text x="188" y="214">10</text><text x="316" y="214">20</text><text x="444" y="214">30</text><text x="572" y="214">40</text><text x="700" y="214">50</text></g>
+        <g id="p0gbars"><rect class="p0gbar" x="55" y="199.9" width="10" height="0.1" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="67.8" y="198.9" width="10" height="1.1" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="80.6" y="195.7" width="10" height="4.3" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="93.4" y="188.5" width="10" height="11.5" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="106.2" y="177.1" width="10" height="22.9" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="119" y="163.4" width="10" height="36.6" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="131.8" y="151.1" width="10" height="48.9" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="144.6" y="144.2" width="10" height="55.8" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="157.4" y="144.2" width="10" height="55.8" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="170.2" y="150.4" width="10" height="49.6" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="183" y="160.3" width="10" height="39.7" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="195.8" y="171.1" width="10" height="28.9" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="208.6" y="180.7" width="10" height="19.3" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="221.4" y="188.2" width="10" height="11.8" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="234.2" y="193.2" width="10" height="6.8" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="247" y="196.4" width="10" height="3.6" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="259.8" y="198.2" width="10" height="1.8" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="272.6" y="199.2" width="10" height="0.8" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="285.4" y="199.6" width="10" height="0.4" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="298.2" y="199.8" width="10" height="0.2" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="311" y="199.9" width="10" height="0.1" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="323.8" y="200" width="10" height="0" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="336.6" y="200" width="10" height="0" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="349.4" y="200" width="10" height="0" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="362.2" y="200" width="10" height="0" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="375" y="200" width="10" height="0" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="387.8" y="200" width="10" height="0" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="400.6" y="200" width="10" height="0" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="413.4" y="200" width="10" height="0" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="426.2" y="200" width="10" height="0" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="439" y="200" width="10" height="0" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="451.8" y="200" width="10" height="0" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="464.6" y="200" width="10" height="0" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="477.4" y="200" width="10" height="0" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="490.2" y="200" width="10" height="0" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="503" y="200" width="10" height="0" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="515.8" y="200" width="10" height="0" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="528.6" y="200" width="10" height="0" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="541.4" y="200" width="10" height="0" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="554.2" y="200" width="10" height="0" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="567" y="200" width="10" height="0" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="579.8" y="200" width="10" height="0" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="592.6" y="200" width="10" height="0" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="605.4" y="200" width="10" height="0" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="618.2" y="200" width="10" height="0" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="631" y="200" width="10" height="0" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="643.8" y="200" width="10" height="0" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="656.6" y="200" width="10" height="0" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="669.4" y="200" width="10" height="0" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="682.2" y="200" width="10" height="0" fill="var(--electron)" opacity="0.8"/><rect class="p0gbar" x="695" y="200" width="10" height="0" fill="var(--electron)" opacity="0.8"/></g>
+        <path id="p0gn" d="M60,199 L63.2,198.7 L66.4,198.3 L69.6,197.9 L72.8,197.4 L76,196.7 L79.2,196 L82.4,195.1 L85.6,194.1 L88.8,192.9 L92,191.5 L95.2,189.9 L98.4,188.2 L101.6,186.2 L104.8,184.1 L108,181.8 L111.2,179.2 L114.4,176.6 L117.6,173.8 L120.8,170.8 L124,167.9 L127.2,164.8 L130.4,161.8 L133.6,158.9 L136.8,156.1 L140,153.4 L143.2,151 L146.4,148.8 L149.6,147 L152.8,145.5 L156,144.5 L159.2,143.8 L162.4,143.6 L165.6,143.8 L168.8,144.5 L172,145.5 L175.2,147 L178.4,148.8 L181.6,151 L184.8,153.4 L188,156.1 L191.2,158.9 L194.4,161.8 L197.6,164.8 L200.8,167.9 L204,170.8 L207.2,173.8 L210.4,176.6 L213.6,179.2 L216.8,181.8 L220,184.1 L223.2,186.2 L226.4,188.2 L229.6,189.9 L232.8,191.5 L236,192.9 L239.2,194.1 L242.4,195.1 L245.6,196 L248.8,196.7 L252,197.4 L255.2,197.9 L258.4,198.3 L261.6,198.7 L264.8,199 L268,199.2 L271.2,199.4 L274.4,199.5 L277.6,199.6 L280.8,199.7 L284,199.8 L287.2,199.9 L290.4,199.9 L293.6,199.9 L296.8,199.9 L300,200 L303.2,200 L306.4,200 L309.6,200 L312.8,200 L316,200 L319.2,200 L322.4,200 L325.6,200 L328.8,200 L332,200 L335.2,200 L338.4,200 L341.6,200 L344.8,200 L348,200 L351.2,200 L354.4,200 L357.6,200 L360.8,200 L364,200 L367.2,200 L370.4,200 L373.6,200 L376.8,200 L380,200 L383.2,200 L386.4,200 L389.6,200 L392.8,200 L396,200 L399.2,200 L402.4,200 L405.6,200 L408.8,200 L412,200 L415.2,200 L418.4,200 L421.6,200 L424.8,200 L428,200 L431.2,200 L434.4,200 L437.6,200 L440.8,200 L444,200 L447.2,200 L450.4,200 L453.6,200 L456.8,200 L460,200 L463.2,200 L466.4,200 L469.6,200 L472.8,200 L476,200 L479.2,200 L482.4,200 L485.6,200 L488.8,200 L492,200 L495.2,200 L498.4,200 L501.6,200 L504.8,200 L508,200 L511.2,200 L514.4,200 L517.6,200 L520.8,200 L524,200 L527.2,200 L530.4,200 L533.6,200 L536.8,200 L540,200 L543.2,200 L546.4,200 L549.6,200 L552.8,200 L556,200 L559.2,200 L562.4,200 L565.6,200 L568.8,200 L572,200 L575.2,200 L578.4,200 L581.6,200 L584.8,200 L588,200 L591.2,200 L594.4,200 L597.6,200 L600.8,200 L604,200 L607.2,200 L610.4,200 L613.6,200 L616.8,200 L620,200 L623.2,200 L626.4,200 L629.6,200 L632.8,200 L636,200 L639.2,200 L642.4,200 L645.6,200 L648.8,200 L652,200 L655.2,200 L658.4,200 L661.6,200 L664.8,200 L668,200 L671.2,200 L674.4,200 L677.6,200 L680.8,200 L684,200 L687.2,200 L690.4,200 L693.6,200 L696.8,200 L700,200" stroke="var(--warn)" stroke-width="2" fill="none"/>
+        <path id="p0gb" d="M126.2 136.2 H198.6 M126.2 132.2 V140.2 M198.6 132.2 V140.2" stroke="var(--volt)" stroke-width="1.5" fill="none"/>
+        <text id="p0gl" x="700" y="30" font-size="11" font-weight="600" fill="var(--ink-2)" text-anchor="end">λ = 8</text>
+        <text id="p0gs" x="700" y="46" font-size="10" fill="var(--volt)" text-anchor="end">幅 ±√λ = ±2.83（相対 35%）</text>
+        <text x="700" y="62" font-size="9.5" fill="var(--ink-3)" text-anchor="end">棒 ＝ P(k)　線 ＝ 同じ平均・分散の正規分布</text>
+        <text x="380" y="236" font-size="9.5" fill="var(--ink-3)" text-anchor="middle">起きた回数 k →　（縦は確率 P(k)。λ が 4 倍になると山の高さはおよそ 1/2 に）</text>
+      </svg>
+    </div>
+    <figcaption>λ = 1 の山は k = 0 と 1 に寄って左右非対称、λ = 30 では正規分布とほぼ重なる。<span class="key">山の高さは 1/√(2πλ)、幅は √λ ― 数えるほど山は低く広くなるが、相対の幅 1/√λ は細くなる</span>。上の静止図の λ = 3 と 30 は、この動きの 2 つのこまです。</figcaption>
+  </figure>
+
   <div class="two">
     <div class="body-col">
       <h3>指数分布 ― 「次の 1 回までの待ち時間」</h3>
@@ -653,6 +677,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   <div class="deep deep-note">
     <span class="tag">くわしく — ポアソン分布の 0 の確率は、そのまま「見逃し」と「偽の検出」</span>
     <p>P(0) = e<sup>−λ</sup> は実務でよく使います。平均 λ 個来るはずの窓で <b>1 個も来ない確率</b>。光子計数で平均 3 個の信号なら e<sup>−3</sup> = 5% の確率で「何も来なかった」になる（見逃し）。逆に暗計数が窓あたり平均 0.5 個なら、1 − e<sup>−0.5</sup> = <b>39%</b> の窓で偽のカウントが立つ。第5部の TCSPC で「検出率を 1〜数% に絞る」のも同じ式で、1 周期に 2 個以上来る確率 1 − e<sup>−λ</sup>(1+λ) を小さく保つための作法です。</p>
+  </div>
+
+  <div class="deep-note">
+    <span class="tag">役割別に持ち帰るもの</span>
+    <p><b>営業・企画</b>: 独立なばらつきは分散で足される ― 一番大きい項を減らさない限り、全体は減らない。<b>設計・開発</b>: 精度を 10 倍にするには、数（光）を 100 倍集める。<b>研究・製造</b>: 平均が 10 個前後より少ない暗い測定は、正規分布ではなくポアソン分布そのもので確率を出す。</p>
   </div>
 
   <div class="ex">
@@ -723,6 +752,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p><strong>折り返した雑音は、あとから消せない。</strong>標本化の後にデジタルでフィルタをかけても、ナイキスト周波数の上から折り返して混ざった成分は信号と区別できない ― だから AD 変換の<strong>前に</strong>アナログの帯域を絞る（第6部 09）。</p>
   </div>
 
+  <div class="deep-note">
+    <span class="tag">役割別に持ち帰るもの</span>
+    <p><b>営業・企画</b>: 「帯域」と「応答時間」は同じ情報（立ち上がり 2.2τ = 0.35/f<sub>c</sub>）。<b>設計・開発</b>: 雑音は /√Hz で持ち、等価雑音帯域で √B を掛けて実際の値にする。<b>研究・製造</b>: 標本化の前にアナログで帯域を絞る ― 折り返した雑音は後で消せない。</p>
+  </div>
+
   <div class="ex">
     <span class="tag">例題 ― 手で一度解く（03）</span>
     <p><b>問.</b> 1 kΩ と 1 nF の RC ローパス。時定数・遮断周波数・立ち上がり時間は？ 1 kΩ の熱雑音密度は？ この RC を通った後の全雑音（rms）は？</p>
@@ -791,6 +825,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p>位置の不確かさ Δx と運動量の不確かさ Δp の積は ħ/2 より小さくできません（Δx·Δp ≥ ħ/2）。電子を幅 L に閉じ込めると Δx ≈ L なので、運動量は少なくとも ħ/(2L) 程度ばらつき、運動エネルギー p²/2m* は L² に反比例して下がれなくなる ― 無限井戸の E ∝ 1/(m*L²) の形は、この関係から桁が予想できます。<span class="key">小さく閉じ込めるほど電子は「じっとしていられない」</span>。量子ドット（数 nm の粒）の発光色が粒の大きさで変わる（小さいほど青い）のも同じ理由です。</p>
   </div>
 
+  <div class="deep-note">
+    <span class="tag">役割別に持ち帰るもの</span>
+    <p><b>営業・企画</b>: 同じワットでも、波長が長いほど光子の数は多い（A/W は波長に比例）。<b>設計・開発</b>: 閉じ込めの準位は 1/(m*L²) ― 寸法と材料で準位を設計する。<b>研究・製造</b>: 1,107 nm より長い光も、吸収は「ゼロ」ではなく「桁違いに小さい」（フォノンの裾）。</p>
+  </div>
+
   <div class="ex">
     <span class="tag">例題 ― 手で一度解く（04）</span>
     <p><b>問.</b> 550 nm の光子 1 個のエネルギーは何 eV・何 J か。1 µW の 550 nm 光は毎秒何個の光子か。同じ 1 µW でも 1,550 nm なら何個か。</p>
@@ -819,6 +858,31 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   </div>
 
   <figure class="full">
+    <div class="fig-head"><span class="fig-title">CELL — ダイヤモンド構造の単位格子（回して見る）</span><span class="fig-title">原子の位置は面心立方＋(¼,¼,¼) から計算（動きを減らす設定では止まる）</span></div>
+    <div class="fig-body scroll-x">
+      <svg id="p0cell" viewBox="0 0 760 260" role="img" aria-label="シリコンのダイヤモンド構造の単位格子が縦の軸のまわりに回る図。立方体の角に8個、面の中心に6個、内部に4個の原子があり、内部の原子はそれぞれ4本の結合で角と面の原子につながる。右に単位格子の原子数、最近接の距離、結合の角度、詰まり具合の数値。" style="min-width:700px;width:100%;display:block">
+        <g id="p0cedges" stroke="var(--line)" stroke-width="1" stroke-dasharray="3 3" fill="none"><path d="M118.9 182.6 L180.5 219.9"/><path d="M118.9 182.6 L118.9 73"/><path d="M118.9 182.6 L219.5 159.7"/><path d="M180.5 219.9 L180.5 110.3"/><path d="M180.5 219.9 L281.1 197"/><path d="M118.9 73 L180.5 110.3"/><path d="M118.9 73 L219.5 50.1"/><path d="M180.5 110.3 L281.1 87.4"/><path d="M219.5 159.7 L281.1 197"/><path d="M219.5 159.7 L219.5 50.1"/><path d="M281.1 197 L281.1 87.4"/><path d="M219.5 50.1 L281.1 87.4"/></g>
+        <g id="p0cbonds" stroke="var(--photon)" stroke-width="2" opacity="0.7" fill="none"><path d="M118.9 182.6 L159.4 158.8"/><path d="M180.5 110.3 L190.3 122.7"/><path d="M281.1 197 L240.6 166"/><path d="M219.5 50.1 L209.7 92.6"/><path d="M169.2 116.3 L159.4 158.8"/><path d="M169.2 116.3 L209.7 92.6"/><path d="M230.8 153.7 L240.6 166"/><path d="M230.8 153.7 L190.3 122.7"/><path d="M200 189.8 L159.4 158.8"/><path d="M200 189.8 L240.6 166"/><path d="M200 80.2 L209.7 92.6"/><path d="M200 80.2 L190.3 122.7"/><path d="M149.7 146.4 L159.4 158.8"/><path d="M149.7 146.4 L190.3 122.7"/><path d="M250.3 123.6 L209.7 92.6"/><path d="M250.3 123.6 L240.6 166"/></g>
+        <g id="p0catoms"><circle cx="118.9" cy="182.6" r="5.3" fill="var(--ink-3)"/><circle cx="180.5" cy="219.9" r="6.9" fill="var(--ink-3)"/><circle cx="118.9" cy="73" r="6.1" fill="var(--ink-3)"/><circle cx="180.5" cy="110.3" r="7.6" fill="var(--ink-3)"/><circle cx="219.5" cy="159.7" r="4.4" fill="var(--ink-3)"/><circle cx="281.1" cy="197" r="5.9" fill="var(--ink-3)"/><circle cx="219.5" cy="50.1" r="5.1" fill="var(--ink-3)"/><circle cx="281.1" cy="87.4" r="6.7" fill="var(--ink-3)"/><circle cx="169.2" cy="116.3" r="5.2" fill="var(--electron)"/><circle cx="230.8" cy="153.7" r="6.8" fill="var(--electron)"/><circle cx="200" cy="189.8" r="5.6" fill="var(--electron)"/><circle cx="200" cy="80.2" r="6.4" fill="var(--electron)"/><circle cx="149.7" cy="146.4" r="6.5" fill="var(--electron)"/><circle cx="250.3" cy="123.6" r="5.5" fill="var(--electron)"/><circle cx="159.4" cy="158.8" r="5.7" fill="var(--photon)"/><circle cx="209.7" cy="92.6" r="5.5" fill="var(--photon)"/><circle cx="240.6" cy="166" r="6" fill="var(--photon)"/><circle cx="190.3" cy="122.7" r="6.8" fill="var(--photon)"/></g>
+        <g font-size="10.5" fill="var(--ink-2)">
+          <text x="380" y="46" font-weight="600" fill="var(--ink)">一辺 a = 0.5431 nm の立方体（Si）</text>
+          <text x="380" y="72">角 8 × ⅛ ＋ 面 6 × ½ ＋ 内部 4 ＝ <tspan font-weight="600">8 個</tspan></text>
+          <text x="380" y="96">最近接の距離 √3·a/4 ＝ 0.2352 nm</text>
+          <text x="380" y="120">結合の角度 arccos(−⅓) ＝ 109.47°（正四面体）</text>
+          <text x="380" y="144">詰まり具合 π√3/16 ＝ 34%（最密の面心立方は 74%）</text>
+          <text x="380" y="168">密度 8 × 28.0855 u ÷ a³ ＝ 2.329 g/cm³</text>
+        </g>
+        <g font-size="10">
+          <circle cx="386" cy="198" r="5" fill="var(--ink-3)"/><text x="398" y="202" fill="var(--ink-2)">角の原子</text>
+          <circle cx="480" cy="198" r="5" fill="var(--electron)"/><text x="492" y="202" fill="var(--electron-2)">面の中心の原子</text>
+          <circle cx="610" cy="198" r="5" fill="var(--photon)"/><text x="622" y="202" fill="var(--photon-2)">内部の 4 個</text>
+          <path d="M380 224 h22" stroke="var(--photon)" stroke-width="2" fill="none"/><text x="408" y="228" fill="var(--ink-2)">結合（内部の原子から 4 本ずつ）</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>面心立方の格子を 2 つ、体対角線の方向に ¼ ずらして重ねた並びで、どの原子も 4 本の手を正四面体の向きに伸ばしている。<span class="key">隙間が 66% もある、手の向きで決まる並び</span> ― 格子間原子や拡散の通り道（第1部）は、この隙間です。</figcaption>
+  </figure>
+  <figure class="full">
     <div class="scroll-x">
       <table>
         <thead><tr><th>材料</th><th>結晶構造</th><th>格子定数</th><th>原子密度 /cm³</th><th>主な用途（この本での登場）</th></tr></thead>
@@ -844,6 +908,16 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <h3>ドーパントの間隔 ― 「薄い」の感覚</h3>
       <p>濃度 N の不純物の平均間隔はおよそ N<sup>−1/3</sup>。10¹⁶ /cm³ なら (10¹⁶)<sup>−1/3</sup> = 4.6×10⁻⁶ cm = <b>46 nm</b>、原子の間隔（0.235 nm）の約 200 倍です。10¹⁹ でも 4.6 nm。ドーパントは結晶の中の「ごく薄い混ぜ物」で、だから結晶の並びはほとんど乱されず、バンドの形もそのまま使える ― <strong>ただし 10¹⁹ を超えると</strong>、ドーパントの準位どうしが重なって帯になり（不純物バンド）、バンドの端がにじみはじめる（バンドギャップ狭窄）。第2部が 10¹⁹ を超える領域を「モデルの外」としている理由です。</p>
     </div>
+  </div>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — 最近接 0.235 nm・結合の角度 109.47°・詰まり 34%</span>
+    <p>ダイヤモンド構造では、各原子の 4 本の手は立方体の体対角線の向きに伸び、最近接の距離は √3·a/4 = <b>0.2352 nm</b>（上の「原子の間隔 0.235 nm」）、手と手の角度は arccos(−1/3) = <b>109.47°</b>。原子を最近接の距離を直径とする球とみなすと、空間の <b>34%</b>（π√3/16）しか埋まらない ― 最も密な面心立方の詰め方は 74% です。密度も同じ数から出て、8 × 28.0855 u ÷ a³ = <b>2.329 g/cm³</b>。<span class="key">隙間の多い、手の向きで決まる並び</span>だから、格子間原子が入り込み、不純物が隙間を渡って拡散できる（第1部の拡散）。</p>
+  </div>
+
+  <div class="deep-note">
+    <span class="tag">役割別に持ち帰るもの</span>
+    <p><b>営業・企画</b>: 「10¹⁵ 入れる」は原子 5,000 万個に 1 個 ― ドーパントはごく薄い混ぜ物。<b>設計・開発</b>: 微細な素子では、ドーパントは濃度ではなく「数」で効く（ゆらぎ）。<b>研究・製造</b>: 欠陥は禁制帯に準位を作り、暗電流と寿命の敵になる ― 面方位と結晶の質を記録する。</p>
   </div>
 
   <div class="ex">
@@ -893,6 +967,34 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <figcaption>Si の最外殻は 3s に 2 個・3p に 2 個の計 4 個の電子（席は 3s に 2・3p に 6 の計 8）。結晶の中では s と p が混ざって（sp³ 混成）<span class="key">結合に使う下の帯（4 席/原子）と、反結合の上の帯（4 席/原子）</span>に分かれ、4 個の電子がちょうど下の帯を埋める。満ちた帯と空の帯のあいだの隙間が禁制帯です。準位の位置と幅は模式で、実際の値は計算と測定で決まります。</figcaption>
   </figure>
 
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">SPREAD — 原子を近づけると、準位が広がって帯になり、隙間が開く（模式図）</span><span class="fig-title">縦線が「今の原子の間隔」。右は、その間隔での準位（動きを減らす設定では止まる）</span></div>
+    <div class="fig-body scroll-x">
+      <svg id="p0spread" viewBox="0 0 760 250" role="img" aria-label="横軸を原子の間隔、縦軸を電子のエネルギーとした模式図。右端の孤立した原子では3sと3pの2本の細い準位だが、原子を近づけるとそれぞれが幅を持って広がり、途中で重なり合い、さらに近い結晶の間隔aでは下の帯と上の帯に分かれて、間に禁制帯が開く。縦線が間隔を行き来し、右の小さな図にその間隔での帯の幅が示される。" style="min-width:700px;width:100%;display:block">
+        <g stroke="var(--line)" stroke-width="1" fill="none"><path d="M80 30 V210 H520"/></g>
+        <polygon points="80,153.2 83.7,152.7 87.3,152.2 91,151.7 94.7,151.3 98.3,150.8 102,150.3 105.7,149.8 109.3,149.4 113,148.9 116.7,148.4 120.3,147.9 124,147.5 127.7,147 131.3,146.5 135,146 138.7,145.6 142.3,145.1 146,144.6 149.7,144.1 153.3,143.7 157,143.2 160.7,142.7 164.3,142.2 168,141.8 171.7,141.3 175.3,141.9 179,142.4 182.7,142.9 186.3,143.4 190,143.8 193.7,144.3 197.3,144.8 201,145.2 204.7,145.6 208.3,146 212,146.5 215.7,146.9 219.3,147.2 223,147.6 226.7,148 230.3,148.4 234,148.7 237.7,149.1 241.3,149.4 245,149.7 248.7,150 252.3,150.3 256,150.6 259.7,150.9 263.3,151.2 267,151.5 270.7,151.8 274.3,152.1 278,152.3 281.7,152.6 285.3,152.8 289,153.1 292.7,153.3 296.3,153.5 300,153.8 303.7,154 307.3,154.2 311,154.4 314.7,154.6 318.3,154.8 322,155 325.7,155.2 329.3,155.4 333,155.5 336.7,155.7 340.3,155.9 344,156.1 347.7,156.2 351.3,156.4 355,156.5 358.7,156.7 362.3,156.8 366,157 369.7,157.1 373.3,157.2 377,157.4 380.7,157.5 384.3,157.6 388,157.8 391.7,157.9 395.3,158 399,158.1 402.7,158.2 406.3,158.3 410,158.4 413.7,158.5 417.3,158.6 421,158.7 424.7,158.8 428.3,158.9 432,159 435.7,159.1 439.3,159.2 443,159.3 446.7,159.4 450.3,159.4 454,159.5 457.7,159.6 461.3,159.7 465,159.7 468.7,159.8 472.3,159.9 476,160 479.7,160 483.3,160.1 487,160.2 490.7,160.2 494.3,160.3 498,160.3 501.7,160.4 505.3,160.4 509,160.5 512.7,160.5 516.3,160.6 520,160.7 520,164.6 516.3,164.7 512.7,164.7 509,164.8 505.3,164.8 501.7,164.9 498,164.9 494.3,165 490.7,165.1 487,165.1 483.3,165.2 479.7,165.2 476,165.3 472.3,165.4 468.7,165.4 465,165.5 461.3,165.6 457.7,165.7 454,165.7 450.3,165.8 446.7,165.9 443,166 439.3,166.1 435.7,166.2 432,166.2 428.3,166.3 424.7,166.4 421,166.5 417.3,166.6 413.7,166.7 410,166.8 406.3,166.9 402.7,167 399,167.2 395.3,167.3 391.7,167.4 388,167.5 384.3,167.6 380.7,167.8 377,167.9 373.3,168 369.7,168.2 366,168.3 362.3,168.4 358.7,168.6 355,168.7 351.3,168.9 347.7,169 344,169.2 340.3,169.4 336.7,169.5 333,169.7 329.3,169.9 325.7,170.1 322,170.3 318.3,170.5 314.7,170.7 311,170.9 307.3,171.1 303.7,171.3 300,171.5 296.3,171.7 292.7,172 289,172.2 285.3,172.4 281.7,172.7 278,172.9 274.3,173.2 270.7,173.5 267,173.7 263.3,174 259.7,174.3 256,174.6 252.3,174.9 248.7,175.2 245,175.5 241.3,175.9 237.7,176.2 234,176.6 230.3,176.9 226.7,177.3 223,177.6 219.3,178 215.7,178.4 212,178.8 208.3,179.2 204.7,179.6 201,180.1 197.3,180.5 193.7,181 190,181.4 186.3,181.9 182.7,182.4 179,182.9 175.3,183.4 171.7,183.9 168,184.5 164.3,185 160.7,185.6 157,186.2 153.3,186.8 149.7,187.4 146,188 142.3,188.6 138.7,189.3 135,190 131.3,190.7 127.7,191.4 124,192.1 120.3,192.9 116.7,193.6 113,194.4 109.3,195.2 105.7,196 102,196.9 98.3,197.7 94.7,198.6 91,199.5 87.3,200.5 83.7,201.4 80,202.4" fill="var(--electron)" opacity="0.45"/>
+        <polygon points="80,39.5 83.7,41.1 87.3,42.7 91,44.3 94.7,45.8 98.3,47.3 102,48.7 105.7,50.1 109.3,51.5 113,52.8 116.7,54.1 120.3,55.4 124,56.7 127.7,57.9 131.3,59.1 135,60.2 138.7,61.3 142.3,62.4 146,63.5 149.7,64.5 153.3,65.6 157,66.6 160.7,67.5 164.3,68.5 168,69.4 171.7,70.3 175.3,71.2 179,72 182.7,72.9 186.3,73.7 190,74.5 193.7,75.2 197.3,76 201,76.7 204.7,77.4 208.3,78.1 212,78.8 215.7,79.5 219.3,80.1 223,80.8 226.7,81.4 230.3,82 234,82.6 237.7,83.2 241.3,83.7 245,84.3 248.7,84.8 252.3,85.3 256,85.8 259.7,86.3 263.3,86.8 267,87.3 270.7,87.7 274.3,88.2 278,88.6 281.7,89 285.3,89.4 289,89.8 292.7,90.2 296.3,90.6 300,91 303.7,91.4 307.3,91.7 311,92.1 314.7,92.4 318.3,92.7 322,93.1 325.7,93.4 329.3,93.7 333,94 336.7,94.3 340.3,94.6 344,94.8 347.7,95.1 351.3,95.4 355,95.6 358.7,95.9 362.3,96.1 366,96.4 369.7,96.6 373.3,96.8 377,97 380.7,97.3 384.3,97.5 388,97.7 391.7,97.9 395.3,98.1 399,98.3 402.7,98.4 406.3,98.6 410,98.8 413.7,99 417.3,99.1 421,99.3 424.7,99.5 428.3,99.6 432,99.8 435.7,99.9 439.3,100.1 443,100.2 446.7,100.3 450.3,100.5 454,100.6 457.7,100.7 461.3,100.9 465,101 468.7,101.1 472.3,101.2 476,101.3 479.7,101.4 483.3,101.6 487,101.7 490.7,101.8 494.3,101.9 498,102 501.7,102 505.3,102.1 509,102.2 512.7,102.3 516.3,102.4 520,102.5 520,109.1 516.3,109.2 512.7,109.3 509,109.3 505.3,109.4 501.7,109.5 498,109.6 494.3,109.7 490.7,109.8 487,109.9 483.3,110 479.7,110.1 476,110.2 472.3,110.4 468.7,110.5 465,110.6 461.3,110.7 457.7,110.8 454,111 450.3,111.1 446.7,111.2 443,111.4 439.3,111.5 435.7,111.7 432,111.8 428.3,112 424.7,112.1 421,112.3 417.3,112.4 413.7,112.6 410,112.8 406.3,113 402.7,113.1 399,113.3 395.3,113.5 391.7,113.7 388,113.9 384.3,114.1 380.7,114.3 377,114.5 373.3,114.8 369.7,115 366,115.2 362.3,115.5 358.7,115.7 355,116 351.3,116.2 347.7,116.5 344,116.8 340.3,117 336.7,117.3 333,117.6 329.3,117.9 325.7,118.2 322,118.5 318.3,118.8 314.7,119.2 311,119.5 307.3,119.9 303.7,120.2 300,120.6 296.3,121 292.7,121.3 289,121.7 285.3,122.1 281.7,122.6 278,123 274.3,123.4 270.7,123.9 267,124.3 263.3,124.8 259.7,125.3 256,125.8 252.3,126.3 248.7,126.8 245,127.3 241.3,127.9 237.7,128.4 234,129 230.3,129.6 226.7,130.2 223,130.8 219.3,131.4 215.7,132.1 212,132.8 208.3,133.4 204.7,134.1 201,134.9 197.3,135.6 193.7,136.3 190,137.1 186.3,137.9 182.7,138.7 179,139.6 175.3,140.4 171.7,141.3 168,140.9 164.3,140.4 160.7,139.9 157,139.4 153.3,139 149.7,138.5 146,138 142.3,137.5 138.7,137.1 135,136.6 131.3,136.1 127.7,135.6 124,135.2 120.3,134.7 116.7,134.2 113,133.7 109.3,133.3 105.7,132.8 102,132.3 98.3,131.8 94.7,131.4 91,130.9 87.3,130.4 83.7,129.9 80,129.5" fill="var(--photon)" opacity="0.35"/>
+        <path d="M171.5 30 V210" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="2 3" fill="none"/>
+        <path id="p0sline" d="M344 30 V210" stroke="var(--warn)" stroke-width="1.6" fill="none"/>
+        <g font-size="10" fill="var(--ink-2)">
+          <text x="526" y="109.8">3p</text>
+          <text x="526" y="166.6">3s</text>
+          <text x="74" y="145.3" text-anchor="end" fill="var(--warn)">E<tspan font-size="7" dy="2">g</tspan></text>
+        </g>
+        <g font-size="9.5" fill="var(--ink-3)">
+          <text x="80" y="224" text-anchor="middle">a（結晶）</text>
+          <text x="520" y="224" text-anchor="end">離れた原子</text>
+          <text x="300" y="240" text-anchor="middle">原子の間隔 →（模式。縦のエネルギーの値も模式）</text>
+          <text x="171.5" y="224" text-anchor="middle">重なる</text>
+        </g>
+        <g stroke="var(--line)" stroke-width="1" fill="none"><path d="M600 30 V210"/></g>
+        <rect id="p0slo" x="620" y="156.1" width="60" height="13.2" fill="var(--electron)" opacity="0.6"/>
+        <rect id="p0shi" x="620" y="94.8" width="60" height="21.9" fill="var(--photon)" opacity="0.5"/>
+        <g font-size="9.5" fill="var(--ink-3)"><text x="650" y="224" text-anchor="middle">今の間隔での準位</text></g>
+      </svg>
+    </div>
+    <figcaption>離れた原子の 3s・3p の細い準位が、原子が近づくと隣の原子の波と混ざって幅を持ち（帯）、途中で重なり、結晶の間隔まで近づくと<span class="key">結合（下・4 席/原子）と反結合（上・4 席/原子）の 2 つの帯に分かれて、その間に禁制帯が開く</span>。形はダイヤモンドについての Kimball（1935）の計算で知られる図の定性的な姿で、縦軸の値は模式です（Si の実際の E<sub>g</sub> は 1.12 eV）。</figcaption>
+  </figure>
   <div class="two">
     <div class="body-col">
       <h3>金属・半導体・絶縁体は「隙間」の大きさで決まる</h3>
@@ -938,6 +1040,16 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     </div>
     <figcaption>有効質量の値は代表値（温度・方向・定義で少し動く。Si は谷が 6 つあり方向で重さが違うため、電気伝導に効く平均を「伝導率有効質量」と呼ぶ）。<span class="key">軽い材料ほど高移動度で高周波に強い</span> ― 光通信の受光器や高速トランジスタが InGaAs・GaAs を使う理由の一つです。</figcaption>
   </figure>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — バンドの幅と有効質量は、同じ量の裏表</span>
+    <p>いちばん簡単な模型 ― 間隔 a で並んだ原子の 1 次元の鎖で、隣どうしの結びつきの強さを t とする ― では、E(k) = E₀ − 2t·cos(ka)。バンドの幅は <b>4t</b>、底の近くでは E ≈ E₀ − 2t + t·a²·k² なので ħ²/(2m*) = t·a²、つまり <b>m* = ħ²/(2t·a²)</b>。a = 0.5 nm・t = 1 eV で m* = <b>0.152 m₀</b>、t = 2 eV なら 0.076 m₀。<span class="key">結びつきが強い（帯の幅が広い）ほど、電子は軽い</span> ― 原子を近づけると準位が広がること（上の SPREAD の図）と、軽い電子が動きやすいこと（E-k の図）は、同じ t の 2 つの顔です。実際の結晶は 3 次元で帯が何本も重なるので、この模型は桁と向きをつかむためのものです。</p>
+  </div>
+
+  <div class="deep-note">
+    <span class="tag">役割別に持ち帰るもの</span>
+    <p><b>営業・企画</b>: 半導体と絶縁体の違いは「隙間」の大きさ ― 材料の選択は E<sub>g</sub> から始まる。<b>設計・開発</b>: 移動度は有効質量と散乱の掛け算 ― 軽い材料が常に速いとは限らない。<b>研究・製造</b>: 直接遷移か間接遷移かで、光るかどうかと、光を吸う深さが決まる。</p>
+  </div>
 
   <div class="ex">
     <span class="tag">例題 ― 手で一度解く（06）</span>
@@ -1042,6 +1154,16 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p><strong>N<sub>c</sub> と N<sub>v</sub> と E<sub>g</sub> は、同じ文献の組で使う。</strong>Green の N<sub>c</sub>（2.86×10¹⁹）に古い N<sub>v</sub>（1.04×10¹⁹）を組み合わせると n<sub>i</sub> = <b>6.2×10⁹</b> になり、どちらの組とも違う値が出る。E<sub>g</sub> を 1.12 と 1.124 で入れ替えるだけでも n<sub>i</sub> は <b>8%</b> 動く ― 指数の中の小さな差が外で大きくなる（09）。</p>
   </div>
 
+  <div class="deep deep-note">
+    <span class="tag">くわしく — ドーパントは本当に全部電離しているか（キャリアの凍結）</span>
+    <p>第2部は「ドナーは完全に電離する」として出発しました。確かめる式は、ドナーの準位（リンなら伝導帯の下 45 meV）が空いている割合 1/(1 + 2e<sup>(E<sub>F</sub>−E<sub>d</sub>)/kT</sup>)（2 はスピンの縮重度）と、n = N<sub>c</sub>e<sup>−(E<sub>c</sub>−E<sub>F</sub>)/kT</sup> を同時に満たす E<sub>F</sub> を探すことです。300 K では 10¹⁶ で <b>99.6%</b>、10¹⁷ で <b>96.3%</b>（ほぼ完全電離）、10¹⁸ では <b>77%</b> に下がる。77 K に冷やすと 10¹⁶ でも <b>37%</b>、10¹⁸ では 4.5% ― <span class="key">冷やして使う素子では「完全電離」の前提が崩れる（キャリアの凍結）</span>。どれも N<sub>c</sub> に Green の値（T<sup>3/2</sup> で換算）を使った単純な模型の値で、10¹⁸ 付近では不純物の準位どうしが重なって浅くなるので、実際の電離率はこれより高く出ます。</p>
+  </div>
+
+  <div class="deep-note">
+    <span class="tag">役割別に持ち帰るもの</span>
+    <p><b>営業・企画</b>: 暗電流が温度で桁違いに増えるのは、占有確率の指数の尻尾のせい。<b>設計・開発</b>: N<sub>c</sub>・N<sub>v</sub>・E<sub>g</sub> は同じ文献の組で使う。<b>研究・製造</b>: アレニウスの傾きは何で割って描いたかで変わる（0.60 と 0.64 eV）― 描き方を記録する。</p>
+  </div>
+
   <div class="ex">
     <span class="tag">例題 ― 手で一度解く（07）</span>
     <p><b>問.</b> m* = m₀ のとき N<sub>c</sub> = 2.51×10¹⁹ /cm³（300 K）。GaAs の伝導帯（m* = 0.067 m₀）の N<sub>c</sub> は？ Si の N<sub>c</sub> = 2.86×10¹⁹ から逆算すると、状態密度の有効質量はいくつか。</p>
@@ -1094,6 +1216,16 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <span class="tag">単位の罠 ― cm と m</span>
     <p><strong>半導体の分野は長さに cm を使う習慣があります</strong>（濃度 /cm³、移動度 cm²/V·s、誘電率 F/cm、電界 V/cm）。SI の m で書かれた式に cm の値を混ぜると、10² や 10⁶ の桁で間違えます。第2部と SemiLab は内部を cm で統一し、表示するときだけ µm・nm に直しています。<strong>式を使う前に、全部の量を同じ長さの単位にそろえる</strong> ― それだけで計算間違いの大半は防げます。</p>
     <p><strong>温度は必ず絶対温度（K）で指数に入れます。</strong>アレニウスやボルツマン因子に ℃ のまま入れると、答えは全く違う値になります（第8部 02 の注意と同じ）。</p>
+  </div>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — 「300 K」と「25 ℃」は 0.6% 違う</span>
+    <p>この本の kT/q = 25.85 mV は 300 K の値です。k と q はどちらも定義値なので、<b>25.8520 mV</b> は誤差なしに計算できる。室温を 25 ℃ = 298.15 K とする文献では <b>25.69 mV</b> で 0.62% 小さく、59.5 mV/桁は <b>59.2 mV/桁</b>になる。一方、改定後に測定で決まる量になった ε₀ の相対不確かさは 10⁻¹⁰ 程度で、この本の有効数字では誤差ゼロと同じ。hc/q = 1239.842 nm·V も定義値だけで決まります。<span class="key">温度の取り方の違いは、定数の不確かさより桁違いに大きい</span> ― 文献の数字を比べるときは、まず何 K で計算したかを見る。</p>
+  </div>
+
+  <div class="deep-note">
+    <span class="tag">役割別に持ち帰るもの</span>
+    <p><b>営業・企画</b>: 仕様の数字が何 K・どの単位系で書かれているかを確かめる。<b>設計・開発</b>: 式に入れる前に、長さの単位を cm か m にそろえる。<b>研究・製造</b>: 温度は必ず K で指数に入れる。</p>
   </div>
 
   <div class="ex">
@@ -1397,6 +1529,65 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       requestAnimationFrame(step);
     };
     requestAnimationFrame(step);
+  }
+
+  /* 02: ポアソンが育つ（棒と線は式から毎回計算） */
+  var gsvg = document.getElementById("p0grow");
+  if (gsvg && !reduce) {
+    var gb = gsvg.querySelectorAll(".p0gbar"), gn = document.getElementById("p0gn"), gbr = document.getElementById("p0gb");
+    var gl = document.getElementById("p0gl"), gs = document.getElementById("p0gs");
+    var lg = function(n){ var s=0; for (var i=2;i<=n;i++) s+=Math.log(i); return s; };
+    var seq = [1,2,3,5,8,12,18,25,30], gi = 0;
+    var gshow = function(L){
+      var pk = 0;
+      for (var k=0;k<gb.length;k++){ var p=Math.exp(k*Math.log(L)-L-lg(k)); if (p>pk) pk=p; gb[k].setAttribute("y", f4(200-400*p)); gb[k].setAttribute("height", f4(400*p)); }
+      var s=""; for (var i=0;i<=200;i++){ var kk=50*i/200; s+=(i?"L":"M")+f4(60+kk*12.8)+" "+f4(200-400*Math.exp(-(kk-L)*(kk-L)/(2*L))/Math.sqrt(2*Math.PI*L)); }
+      gn.setAttribute("d", s);
+      var sd=Math.sqrt(L), x1=f4(60+(L-sd)*12.8), x2=f4(60+(L+sd)*12.8), yb=f4(200-400*pk-8);
+      gbr.setAttribute("d","M"+x1+" "+yb+" H"+x2+" M"+x1+" "+(yb-4)+" V"+(yb+4)+" M"+x2+" "+(yb-4)+" V"+(yb+4));
+      gl.textContent = "λ = " + L;
+      gs.textContent = "幅 ±√λ = ±" + sd.toFixed(2) + "（相対 " + Math.round(100/sd) + "%）";
+    };
+    gshow(seq[0]);
+    setInterval(function(){ gi = (gi+1) % seq.length; gshow(seq[gi]); }, 1300);
+  }
+  /* 05: 単位格子が回る（位置は面心立方＋(¼,¼,¼)） */
+  var csvg = document.getElementById("p0cell");
+  if (csvg && !reduce) {
+    var AT = [[0,0,0],[0,0,1],[0,1,0],[0,1,1],[1,0,0],[1,0,1],[1,1,0],[1,1,1],[0.5,0.5,0],[0.5,0.5,1],[0.5,0,0.5],[0.5,1,0.5],[0,0.5,0.5],[1,0.5,0.5],[0.25,0.25,0.25],[0.75,0.75,0.25],[0.75,0.25,0.75],[0.25,0.75,0.75]], BD = [[0,14],[3,17],[5,16],[6,15],[8,14],[8,15],[9,16],[9,17],[10,14],[10,16],[11,15],[11,17],[12,14],[12,17],[13,15],[13,16]], ED = [[0,1],[0,2],[0,4],[1,3],[1,5],[2,3],[2,6],[3,7],[4,5],[4,6],[5,7],[6,7]];
+    var ca = document.getElementById("p0catoms"), circ = ca.querySelectorAll("circle"), bp = document.getElementById("p0cbonds").querySelectorAll("path"), ep = document.getElementById("p0cedges").querySelectorAll("path");
+    var pj = function(p, th){ var x=p[0]-.5,y=p[1]-.5,z=p[2]-.5, x1=x*Math.cos(th)+z*Math.sin(th), z1=-x*Math.sin(th)+z*Math.cos(th), y2=y*Math.cos(0.38)-z1*Math.sin(0.38), z2=y*Math.sin(0.38)+z1*Math.cos(0.38); return [200+118*x1, 135-118*y2, z2]; };
+    var c0 = null;
+    var cstep = function(ts){
+      if (c0 === null) c0 = ts;
+      var th = 0.55 + (ts - c0) / 1000 * (2*Math.PI/14);
+      var P = AT.map(function(p){ return pj(p, th); });
+      var seg = function(el, e){ el.setAttribute("d", "M"+f4(P[e[0]][0])+" "+f4(P[e[0]][1])+" L"+f4(P[e[1]][0])+" "+f4(P[e[1]][1])); };
+      for (var i=0;i<ED.length;i++) seg(ep[i], ED[i]);
+      for (var j=0;j<BD.length;j++) seg(bp[j], BD[j]);
+      var order = P.map(function(p,i){ return [p[2], i]; }).sort(function(u,v){ return u[0]-v[0]; });
+      for (var n=0;n<order.length;n++){ var c=circ[order[n][1]], q=P[order[n][1]]; c.setAttribute("cx", f4(q[0])); c.setAttribute("cy", f4(q[1])); c.setAttribute("r", f4(6+2*q[2])); ca.appendChild(c); }
+      requestAnimationFrame(cstep);
+    };
+    requestAnimationFrame(cstep);
+  }
+  /* 06: 準位が広がる（縦線が間隔を行き来する。帯の形は模式の式） */
+  var ssvg = document.getElementById("p0spread");
+  if (ssvg && !reduce) {
+    var BA = function(u){var w=1.4*Math.exp(-3*u),ws=0.6*w,wp=w;if(u>=0.208)return[-0.8-ws,-0.8+ws,0.4-wp,0.4+wp];var w0=1.4*Math.exp(-3*0.208),mid=(-0.8+0.6*w0+0.4-w0)/2,g=0.5*(0.208-u)/0.208;return[-0.8-ws,mid-g/2,mid+g/2,0.4+wp];};
+    var sl = document.getElementById("p0sline"), slo = document.getElementById("p0slo"), shi = document.getElementById("p0shi");
+    var EY = function(E){ return 210 - (E + 1.8) / 3.8 * 180; };
+    var s0 = null;
+    var sstep = function(ts){
+      if (s0 === null) s0 = ts;
+      var ph = ((ts - s0) / 1000 / 10) % 1, u = ph < 0.5 ? 1 - 2*ph : 2*ph - 1;   /* 10 秒で 1 往復 */
+      var v = BA(u), x = f4(80 + 440*u);
+      sl.setAttribute("d", "M" + x + " 30 V210");
+      slo.setAttribute("y", f4(EY(v[1]))); slo.setAttribute("height", f4(EY(v[0]) - EY(v[1])));
+      shi.setAttribute("y", f4(EY(v[3]))); shi.setAttribute("height", f4(EY(v[2]) - EY(v[3])));
+      requestAnimationFrame(sstep);
+    };
+    requestAnimationFrame(sstep);
   }
 })();
 </script>
