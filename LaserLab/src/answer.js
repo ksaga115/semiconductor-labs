@@ -52,6 +52,18 @@
     fiber: {
       note: '倍率 3.4（スポット半径 5.44 µm）。大きさの合い具合 99.8% × 横ずれ 92.4% = 92.2%。',
       design: function () { var d = M.defaults(); d.mag = 3.4; return d; }
+    },
+    calib: {
+      note: '365.02 と 579.07 nm（範囲の両端に近い 2 本）。700 nm で 0.0333 nm。2 本の間の 450 nm なら 0.014 nm。',
+      design: function () { var d = M.defaults(); d.calA = 365.015; d.calB = 579.066; return d; }
+    },
+    defect: {
+      note: '976 nm 励起・1,070 nm 発振。欠損 8.79%、熱 9.63 W、励起 109.6 W（第9部 08 の例題）。',
+      design: function () { var d = M.defaults(); d.pumpnm = 976; d.signm = 1070; return d; }
+    },
+    bright: {
+      note: 'コア 200 µm・NA 0.22。輝度 3.18×10⁵ W/(m²·sr) × エテンデュ 4.78×10⁻⁹ m²·sr = 1.52 mW。',
+      design: function () { var d = M.defaults(); d.fcore = 200; d.fna = 0.22; return d; }
     }
   };
 

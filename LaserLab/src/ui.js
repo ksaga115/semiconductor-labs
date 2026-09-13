@@ -49,7 +49,18 @@
     ['fibw', 'ファイバのモード半径', 'µm', 0.5, 50],
     ['ldw', 'LD のモード半径', 'µm', 0.1, 50],
     ['mag', 'レンズの倍率', '倍', 0.1, 20],
-    ['offum', '横ずれ', 'µm', 0, 20]
+    ['offum', '横ずれ', 'µm', 0, 20],
+    ['calA', '校正の輝線 1', 'nm', 200, 1100],
+    ['calB', '校正の輝線 2', 'nm', 200, 1100],
+    ['caltgt', '目盛りを見る波長', 'nm', 200, 1100],
+    ['calsig', '線の読みのばらつき σ', 'nm', 0.001, 1],
+    ['pumpnm', '励起の波長', 'nm', 700, 1100],
+    ['signm', '発振の波長', 'nm', 900, 1200],
+    ['pout', '取り出す出力', 'W', 0.1, 10000],
+    ['ledP', 'LED の出力', 'W', 0.001, 100],
+    ['ledA', 'LED の発光面積', 'mm²', 0.001, 100],
+    ['fcore', 'ファイバのコア径', 'µm', 1, 2000],
+    ['fna', 'ファイバの NA', '', 0.01, 1]
   ];
 
   function num(t) {
@@ -218,7 +229,10 @@
       ['パルス: エネルギー / 尖頭値', ev.epNj.toFixed(2) + ' nJ / ' + ev.ppeakKw.toFixed(1) + ' kW'],
       ['緩和振動 / 変調の帯域', ev.fR.toFixed(2) + ' / ' + ev.f3.toFixed(2) + ' GHz（要る ' + ev.fNeed.toFixed(2) + '）', ev.f3 < ev.fNeed],
       ['SHG: 出力 / 揺れでの低下', ev.p2wMw.toFixed(2) + ' mW / ' + (ev.shgDrop * 100).toFixed(1) + ' %（許容幅 ' + ev.shgTol.toFixed(3) + ' ℃）'],
-      ['ファイバへの結合', (ev.eta * 100).toFixed(2) + ' %（大きさ ' + (ev.etaMM * 100).toFixed(1) + ' % × 横ずれ ' + (ev.etaOff * 100).toFixed(1) + ' %）']
+      ['ファイバへの結合', (ev.eta * 100).toFixed(2) + ' %（大きさ ' + (ev.etaMM * 100).toFixed(1) + ' % × 横ずれ ' + (ev.etaOff * 100).toFixed(1) + ' %）'],
+      ['二点の校正: 目盛りの誤差', (isFinite(ev.calErr) ? ev.calErr.toFixed(4) : '—') + ' nm（' + S.design.caltgt + ' nm で）'],
+      ['量子欠損: 熱 / 励起', ev.heatW.toFixed(2) + ' W / ' + ev.pumpW.toFixed(1) + ' W（欠損 ' + (ev.qd * 100).toFixed(2) + ' %）'],
+      ['LED → ファイバ（輝度 × エテンデュ）', ev.pFibMw.toFixed(3) + ' mW']
     ];
     document.getElementById('derived').innerHTML = '<div class="dv">' + rows.map(function (r) {
       return '<span class="k">' + esc(r[0]) + '</span><span class="v' + (r[2] ? ' warn' : '') + '">' + esc(r[1]) + '</span>';

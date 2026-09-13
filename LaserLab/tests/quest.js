@@ -91,4 +91,28 @@ T('落ちるべきもの', () => {
   ok('fiber: LD のモードを変えるのは反則', !with_('fiber', { ldw: 5.2, mag: 1 }));
 });
 
+T('第5章 ― 窓の両側と反則', () => {
+  ok('calib: 365.02・576.96 nm でも通る', with_('calib', { calA: 365.015, calB: 576.960 }));
+  ok('calib: 404.66・579.07 nm は 0.037 nm で届かない', !with_('calib', { calA: 404.656, calB: 579.066 }));
+  ok('calib: 範囲の外の 253.65 nm を使うのは反則', !with_('calib', { calA: 253.652, calB: 579.066 }));
+  ok('calib: 輝線でない波長（360 nm）は使えない', !with_('calib', { calA: 360, calB: 579.066 }));
+  ok('calib: 同じ線を 2 回は使えない', !with_('calib', { calA: 579.066, calB: 579.066 }));
+  ok('calib: 読みのばらつきを小さく見積もるのは反則', !with_('calib', { calA: 404.656, calB: 579.066, calsig: 0.01 }));
+  ok('calib: 見る波長を範囲の中に変えるのは反則', !with_('calib', { calA: 435.833, calB: 546.074, caltgt: 500 }));
+  ok('defect: 976 nm・1,064 nm は通る（9.02 W）', with_('defect', { signm: 1064 }));
+  ok('defect: 976 nm・1,075 nm は熱 10.1 W で落ちる', !with_('defect', { signm: 1075 }));
+  ok('defect: 1,062 nm は用途の範囲の外', !with_('defect', { signm: 1062 }));
+  ok('defect: 915 nm 励起は熱 16.9 W で落ちる', !with_('defect', { pumpnm: 915 }));
+  ok('defect: 吸収帯でない 950 nm は落ちる', !with_('defect', { pumpnm: 950, signm: 1064 }));
+  ok('defect: 出力を下げて熱を減らすのは反則', !with_('defect', { pumpnm: 915, pout: 50 }));
+  ok('bright: コア 180 µm・NA 0.22 でも通る（1.23 mW）', with_('bright', { fcore: 180 }));
+  ok('bright: コア 160 µm は 0.97 mW で落ちる', !with_('bright', { fcore: 160 }));
+  ok('bright: NA 0.17 は 0.91 mW で落ちる', !with_('bright', { fna: 0.17 }));
+  ok('bright: NA 0.18 なら通る（1.02 mW）', with_('bright', { fna: 0.18 }));
+  ok('bright: コア 250 µm は標準品の上限破り', !with_('bright', { fcore: 250 }));
+  ok('bright: NA 0.3 は上限破り', !with_('bright', { fna: 0.3 }));
+  ok('bright: LED を 10 W にするのは反則', !with_('bright', { ledP: 10, fcore: 100 }));
+  ok('bright: 発光面積を変えるのは反則', !with_('bright', { ledA: 0.5 }));
+});
+
 report();

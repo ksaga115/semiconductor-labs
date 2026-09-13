@@ -89,7 +89,7 @@ T('画素の設計', () => {
   const noCds = PIX.evaluate(Object.assign({}, d, { cds: false }));
   near('kTC = √(kTC)/q', noCds.kTC, Math.sqrt(1.380649e-23 * 298.15 * 2e-15) / 1.602176634e-19, 0.01);
   ok('CDS を外すと kTC が読み出し雑音に入る', noCds.read > 10 * ev.read);
-  /* 暗電流は ni に比例 → 約 9℃ で倍（決め打ちではなく ni(T) から出る） */
+  /* 暗電流は ni に比例 → 約 9℃（300 K 付近で 8.6 K）で倍（決め打ちではなく ni(T) から出る） */
   const dk = PIX.doublingK(25);
   ok('暗電流が倍になる温度幅は 8〜10K', dk > 8 && dk < 10);
   /* 倍になる幅は温度とともに広がるので、25℃ の幅だけ上げるとわずかに 2 に届かない（1.97） */

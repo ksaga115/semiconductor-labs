@@ -1007,7 +1007,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <div class="body-col">
       <h3>長いほう：深すぎて、届かない</h3>
       <p>近赤外の光子は、シリコンの中を延々と潜っていきます。850 nm の吸収長は 19 &micro;m。<strong>深さ3 &micro;m のフォトダイオードで捕まえられるのは 14.6% だけ</strong>で、残りは下を素通りするか、電界の届かない深さで生まれて消えます。</p>
-      <p>940 nm ならさらに厳しく、<span class="key">3 &micro;m で捕まるのは 5.4%</span>。90% 吸収するには 126 &micro;m の厚みが要る計算で、これは画素ピッチ 3 &micro;m の40倍——<strong>横に隣の画素が何十個も並ぶ距離を、縦に確保しなければならない</strong>ということです。斜めに入った光子が隣の画素で電子になる混色が、避けようがなくなります。</p>
+      <p>940 nm ならさらに厳しく、<span class="key">3 &micro;m で捕まるのは 5.1%</span>。90% 吸収するには 131 &micro;m の厚みが要る計算で、これは画素ピッチ 3 &micro;m の約44倍——<strong>横に隣の画素が何十個も並ぶ距離を、縦に確保しなければならない</strong>ということです。斜めに入った光子が隣の画素で電子になる混色が、避けようがなくなります。</p>
       <p>そこで実際の近赤外向けセンサは、厚くするだけでなく<span class="key">光路を折り返して稼ぎます</span>。裏面に反射構造を置いて往復させ、さらに表面でも反射させれば、実効的な厚みは数倍になる。<strong>3 &micro;m の厚みでも光路が4倍あれば、850 nm での吸収は 14.6% から 46.8% に上がります。</strong></p>
       <p>細かい溝を彫って光を斜めに散らす構造（回折・散乱構造）も同じ狙いです。<span class="key">まっすぐ通せば1回で終わる光を、何度も往復させて距離を稼ぐ</span>——厚みで解けない問題を、光学で解いています。</p>
       <p>なお 850 nm と 940 nm がよく使われるのは、人の目に見えないぎりぎりで、かつシリコンにまだ感度が残る帯だからです。940 nm はさらに、<strong>太陽光にこの波長の水蒸気による吸収帯があって外乱が少ない</strong>という利点があります。そして 1107 nm を超えると、02 の冒頭で見たとおりバンドギャップに足りず、何をしても写りません。</p>
@@ -1035,12 +1035,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>550 nm 緑</td><td class="num">1.40 &micro;m</td><td class="num">88.3 %</td><td class="num">3.2 &micro;m</td></tr>
           <tr><td>700 nm 深赤</td><td class="num">5.5 &micro;m</td><td class="num">42.0 %</td><td class="num">12.7 &micro;m</td></tr>
           <tr><td>850 nm 近赤外</td><td class="num">19 &micro;m</td><td class="num">14.6 %</td><td class="num">43.7 &micro;m</td></tr>
-          <tr><td>940 nm 近赤外</td><td class="num">55 &micro;m</td><td class="num">5.4 %</td><td class="num">126 &micro;m</td></tr>
-          <tr><td>1000 nm</td><td class="num">150 &micro;m</td><td class="num">2.0 %</td><td class="num">345 &micro;m</td></tr>
+          <tr><td>940 nm 近赤外</td><td class="num">57 &micro;m</td><td class="num">5.1 %</td><td class="num">131 &micro;m</td></tr>
+          <tr><td>1000 nm</td><td class="num">156 &micro;m</td><td class="num">1.9 %</td><td class="num">359 &micro;m</td></tr>
         </tbody>
       </table>
     </div>
-    <p style="margin-top:12px"><strong>緑でちょうど釣り合っているのが見て取れます。</strong>3 &micro;m という深さは、可視光の真ん中を過不足なく飲み込む厚みとして選ばれた値です。そこから長波長側へ行くほど足りなくなり、短波長側では余る——<span class="key">余ったぶんは無駄ではなく、表面の欠陥という別の問題に変わる</span>のがこの節の要点です。</p>
+    <p style="margin-top:12px"><strong>緑でちょうど釣り合っているのが見て取れます。</strong>3 &micro;m という深さは、可視光の真ん中を過不足なく飲み込む厚みとして選ばれた値です。そこから長波長側へ行くほど足りなくなり、短波長側では余る——<span class="key">余ったぶんは無駄ではなく、表面の欠陥という別の問題に変わる</span>のがこの節の要点です。（吸収長はこの部の代表値の表で、550 nm の 1.40 µm は第2部・SemiLab の表の 1.53 µm より 1 割ほど短い。吸収係数は文献の間で 1〜2 割ばらつくので、深さの設計は測った値で確かめる。880 nm より長い側は第2部・SemiLab と同じ値にそろえてある。）</p>
   </div>
 
   <div class="deep deep-note">
@@ -2410,7 +2410,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     </dl>
     <figcaption>
       <p>横軸は 1000/T（右へ行くほど低温）、縦軸は対数です。アレニウスプロットではこの取り方をするのが慣習で、<strong>直線の傾きがそのまま活性化エネルギー</strong>になります。3本の成分が別々の傾きを持ち、その和（黒）が実測される曲線です。</p>
-      <p style="margin-top:9px"><strong>読み値「倍になる温度差」に注目してください。</strong>03と用語表に書いてある「8〜10℃で倍」は、生成が支配しているときの値です。式は &Delta;T = ln2&middot;kT&sup2;/E<sub>a</sub>。300 K で E<sub>a</sub> = 0.60 eV なら 9.0 ℃、E<sub>a</sub> = 1.12 eV なら 4.8 ℃、E<sub>a</sub> = 0.35 eV なら 15 ℃。<span class="key">つまり「何℃で倍か」は定数ではなく、支配している成分が何かを表す量です。</span></p>
+      <p style="margin-top:9px"><strong>読み値「倍になる温度差」に注目してください。</strong>03と用語表に書いてある「8〜10℃で倍」は、生成が支配しているときの値です。式は &Delta;T = ln2&middot;kT&sup2;/E<sub>a</sub>。300 K で E<sub>a</sub> = 0.60 eV なら 9.0 ℃、E<sub>a</sub> = 1.12 eV なら 4.8 ℃、E<sub>a</sub> = 0.35 eV なら 15 ℃（見かけの E<sub>a</sub> を一定とした目安。前指数と E<sub>g</sub> の温度変化まで入れて 300 K から実際に 2 倍になる幅を数えると、生成で 8.6 K・拡散で 4.3 K ― 第0部・第2部・第5部と同じ約束）。<span class="key">つまり「何℃で倍か」は定数ではなく、支配している成分が何かを表す量です。</span></p>
     </figcaption>
   </figure>
 
@@ -2420,7 +2420,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <div class="eq">n<sub>i</sub>(T) &prop; T<sup>3/2</sup> &middot; exp( &minus;<b>E<sub>g</sub></b>(T) / 2kT )</div>
     <p>アレニウスプロットの傾きは d(ln I)/d(&minus;1/kT) で定義されるので、前についている T<sup>3/2</sup> のぶんだけ余分に傾きます。その量は 1.5kT で、300 K では 0.039 eV。</p>
     <div class="eq">E<sub>a</sub>(見かけ) = <b>E<sub>g</sub></b>/2 + 1.5kT = 0.560 + 0.039 = <u>0.599 eV</u></div>
-    <p>これを &Delta;T = ln2&middot;kT&sup2;/E<sub>a</sub> に入れると <strong>9.0 ℃</strong>。03と用語表の「8〜10℃で倍」がここから出ています。さらに E<sub>g</sub> 自体も温度とともに縮む（300 K 付近で約 &minus;0.25 meV/K、Varshni の式）ため、実測の見かけ E<sub>a</sub> は 0.55〜0.65 eV に散らばります。<strong>0.56 ちょうどが出ないのは測定が悪いからではなく、そういうものです。</strong></p>
+    <p>これを &Delta;T = ln2&middot;kT&sup2;/E<sub>a</sub> に入れると <strong>9.0 ℃</strong>（目安。E<sub>g</sub> の温度変化と前指数まで入れると 8.6 K）。03と用語表の「8〜10℃で倍」がここから出ています。さらに E<sub>g</sub> 自体も温度とともに縮む（300 K 付近で約 &minus;0.25 meV/K、Varshni の式）ため、実測の見かけ E<sub>a</sub> は 0.55〜0.65 eV に散らばります。<strong>0.56 ちょうどが出ないのは測定が悪いからではなく、そういうものです。</strong></p>
   </div>
 
   <div class="caveat">
@@ -2451,7 +2451,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
 
   <div class="lab-go">
     <span class="tag">手を動かす — SemiLab 第3章 / PixelLab 第2章</span>
-    <p>SemiLab の暗電流は空乏層の生成電流で、温度を動かすと n<sub>i</sub>(T) の指数で桁で変わる。PixelLab の暗電流もその n<sub>i</sub>(T) を呼んでいるので、「約 9℃ で倍」は決め打ちではなく計算から出る。冷やして 60 秒露光を成り立たせる課題で、何℃下げれば足りるかを設計する。</p>
+    <p>SemiLab の暗電流は空乏層の生成電流で、温度を動かすと n<sub>i</sub>(T) の指数で桁で変わる。PixelLab の暗電流もその n<sub>i</sub>(T) を呼んでいるので、「約 9℃（300 K 付近で 8.6 K）で倍」は決め打ちではなく計算から出る。冷やして 60 秒露光を成り立たせる課題で、何℃下げれば足りるかを設計する。</p>
     <div class="qs"><span class="lab">SemiLab</span><a href="SemiLab/index.html?quest=dark">暗電流を減らす</a><span class="lab">PixelLab</span><a href="PixelLab/index.html?quest=cool">冷やして 60 秒</a><a href="PixelLab/index.html?quest=defect">冷やしても残る暗電流</a><span class="lab">参考書</span><a href="第2部_デバイスの基礎.html#s3">第2部 03 暗電流 ― 温度で桁が動く</a></div>
   </div>
 </section>
@@ -2935,7 +2935,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
 <section class="stage" id="sband">
   <div class="stage-head"><span class="stage-num">—</span>
     <h2>波長の外側 — 紫外・近赤外・X 線をシリコンで撮る</h2></div>
-  <p class="lede">02 では可視の光が止まる深さを見ました（400 nm で 0.1 µm、1,000 nm で 150 µm）。範囲を広げると、同じシリコンの中で光子が止まる深さは<span class="key">数 nm から 1 mm まで、6 桁</span>動きます。紫外は表面の数 nm で決まり、近赤外は厚みが足りず、X 線は突き抜ける。<strong>画素の作り方が波長で変わる理由は、この 1 本の物差しで説明できます。</strong></p>
+  <p class="lede">02 では可視の光が止まる深さを見ました（400 nm で 0.1 µm、1,000 nm で 156 µm）。範囲を広げると、同じシリコンの中で光子が止まる深さは<span class="key">数 nm から 1 mm まで、6 桁</span>動きます。紫外は表面の数 nm で決まり、近赤外は厚みが足りず、X 線は突き抜ける。<strong>画素の作り方が波長で変わる理由は、この 1 本の物差しで説明できます。</strong></p>
 
   <figure class="full">
     <div class="fig-head"><span class="fig-title">ABSORPTION DEPTH — 6 桁の物差しの上で、光子はどこで止まるか</span>
@@ -2972,7 +2972,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     </div>
     <div class="body-col">
       <h3>近赤外 ― 厚みが足りない</h3>
-      <p>近赤外では逆に、光子が深く潜ります。吸収長は 850 nm で <b>19 µm</b>、940 nm で約 <b>55 µm</b>。3 µm の受光層で止まるのは 850 nm で <b>14.6%</b>、940 nm では <b>5.4%</b> だけです。</p>
+      <p>近赤外では逆に、光子が深く潜ります。吸収長は 850 nm で <b>19 µm</b>、940 nm で約 <b>57 µm</b>。3 µm の受光層で止まるのは 850 nm で <b>14.6%</b>、940 nm では <b>5.1%</b> だけです。</p>
       <p>手は 3 つ。<strong>受光層を厚くする</strong>（10 µm なら 850 nm で 40.9%）。<strong>光を往復させる</strong>（裏面を反射させれば実効の厚みは 2 倍。3 µm で 27.1%）。<strong>表面の凹凸で光を斜めに曲げる</strong>（「光路長を稼ぐ構造」、用語表）。どれも「光が進む道を長くする」ことです。</p>
       <p>ただし深く潜るほど、生まれた電子は電界の届かない場所を拡散して、<span class="key">隣の画素に紛れ込みやすく</span>なります（クロストーク）。近赤外向けの画素が、画素の境目に深い溝を掘って酸化膜で埋める <strong>DTI（深いトレンチ分離）</strong>を使うのは、この迷子を止めるためです。LiDAR や顔認証が 850 nm・940 nm を使うたびに、この取り合いが出てきます（第10部 05）。</p>
     </div>
@@ -3179,10 +3179,10 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   <p class="lede">光 → 電荷 → 電圧 → 数値の順に並べてあります。答えを開く前に、どの段のどの式を使うかを先に言ってみてください。</p>
   <div class="chk">
     <details><summary><span class="qn">Q1 · 02</span>シリコンのセンサが 1,107 nm より長い光に反応しないのはなぜか。</summary><p>光子のエネルギー 1240/λ[nm] eV が、バンドギャップ 1.12 eV に届かないから（1240 ÷ 1.12 = 1107）。何枚レンズを良くしても写らない。</p></details>
-    <details><summary><span class="qn">Q2 · 02</span>画素の深さ 3 µm は、何を基準に選ばれた値か。</summary><p>緑（550 nm、吸収長 1.40 µm）を 90% 吸収する厚み 1.40 × ln10 = 3.2 µm。可視の真ん中を過不足なく飲み込む厚みで、赤外側は足りず、青側は余る。</p></details>
+    <details><summary><span class="qn">Q2 · 02</span>画素の深さ 3 µm は、何を基準に選ばれた値か。</summary><p>緑（550 nm、吸収長 1.40 µm）を 90% 吸収する厚み 1.40 × ln10 = 3.2 µm（この部の表の値。第2部・SemiLab の表では 1.53 µm で 3.5 µm ― 文献で 1 割ほど揺れる）。可視の真ん中を過不足なく飲み込む厚みで、赤外側は足りず、青側は余る。</p></details>
     <details><summary><span class="qn">Q3 · 02</span>紫と赤の光子で、生まれる電子の数は違うか。</summary><p>400〜1000 nm では<b>どちらも1個</b>（衝突電離は約 354 nm より短い波長から）。エネルギーの差は色の情報にならないので、色はカラーフィルタで作るしかない。</p></details>
     <details><summary><span class="qn">Q4 · 03</span>空乏層を 2 倍に広げたい。逆バイアスと基板濃度、どちらを動かすのが現実的か。</summary><p>W ∝ √((V<sub>bi</sub>+V)/N<sub>a</sub>)。電圧は画素では数 V が上限なので、<b>N<sub>a</sub> を 1/4 に</b>下げるほうが現実的（高抵抗エピ層）。</p></details>
-    <details><summary><span class="qn">Q5 · 03</span>暗電流が 9 ℃で倍になるセンサと、5 ℃で倍になるセンサ。支配しているものは何か。</summary><p>9 ℃ は空乏層の生成（∝ n<sub>i</sub>、見かけの E<sub>a</sub> ≈ 0.6 eV）、約 5 ℃ は拡散（∝ n<sub>i</sub>²、E<sub>a</sub> ≈ 1.12 eV）。ΔT = ln2·kT²/E<sub>a</sub>（付録 C）。</p></details>
+    <details><summary><span class="qn">Q5 · 03</span>暗電流が 9 ℃で倍になるセンサと、5 ℃で倍になるセンサ。支配しているものは何か。</summary><p>約 9 ℃（E<sub>g</sub> の温度変化まで入れて 8.6 K）は空乏層の生成（∝ n<sub>i</sub>、見かけの E<sub>a</sub> ≈ 0.6 eV）、約 4〜5 ℃（同じく 4.3 K）は拡散（∝ n<sub>i</sub>²、E<sub>a</sub> ≈ 1.12 eV）。ΔT = ln2·kT²/E<sub>a</sub>（付録 C）。</p></details>
     <details><summary><span class="qn">Q6 · 05</span>FD 3.5 fF のリセットノイズは何電子か。スイッチの抵抗を大きくすると減るか。</summary><p>√(kTC)/q = <b>24 e⁻</b>。<b>減らない</b> ― 抵抗を上げると雑音密度は増えるが帯域が同じだけ狭まり、エネルギー等分配 ½CV² = ½kT で容量だけが残る。</p></details>
     <details><summary><span class="qn">Q7 · 05</span>CDS で消えるノイズと、消えないノイズを1つずつ。</summary><p>消える: kTC・オフセット・1/f の低周波ぶん（2回に共通だから）。消えない: 2回のあいだに生じた SF の熱雑音、そして光そのもののショットノイズ。</p></details>
     <details><summary><span class="qn">Q8 · 06</span>このラボの 1 DN が 12,000 ÷ 4,096 = 2.93 e⁻ ではなく 3.26 e⁻ なのはなぜか。</summary><p>1 DN は ADC の満量程 0.6 V ÷ 4,095 = 146.5 µV を変換ゲインで割ったもの。飽和の 0.540 V は満量程の 90% で、飽和は 3,686 DN で頭打ちになる。</p></details>
@@ -3250,11 +3250,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>空乏層の幅 W</td><td class="num">2.2 μm<br>(V=3V時)</td>
             <td>ポアソン方程式を接合の両側で解くと W = √(2ε(V<sub>bi</sub>+V)/qN<sub>a</sub>)（n側が十分濃い片側階段接合の近似）。上の値を入れて 2.2 μm。<strong>√の中にあるので、逆バイアスを 3 V → 30 V と 10 倍にしても幅は 2.9 倍</strong>にしかなりません（内蔵電位 0.78 V も √ の中に入るため）。</td></tr>
           <tr><td>暗電流が倍になる<br>温度差</td><td class="num">約 9 ℃</td>
-            <td>空乏層の生成電流は n<sub>i</sub> ∝ T<sup>3/2</sup>·exp(−E<sub>g</sub>/2kT) に比例する（見かけの活性化エネルギー 0.60 eV、下の行）。300 K 付近で温度で微分すると 1 K あたり E<sub>a</sub>/kT² ≈ 7.7 %増、ln2 ÷ 0.077 ≈ 9 ℃で2倍。指数だけ（E<sub>g</sub>/2 = 0.56 eV）で数えると 7.2 %・9.6 ℃ になる。</td></tr>
+            <td>空乏層の生成電流は n<sub>i</sub> ∝ T<sup>3/2</sup>·exp(−E<sub>g</sub>/2kT) に比例する（見かけの活性化エネルギー 0.60 eV、下の行）。300 K 付近で温度で微分すると 1 K あたり E<sub>a</sub>/kT² ≈ 7.7 %増、ln2 ÷ 0.077 ≈ 9 ℃で2倍。指数だけ（E<sub>g</sub>/2 = 0.56 eV）で数えると 7.2 %・9.6 ℃ になる。いずれも E<sub>g</sub> を一定とした目安で、E<sub>g</sub> の温度変化（Varshni）まで入れて 300 K から実際に 2 倍になる幅を数えると <b>8.6 K</b>（第0部・第2部・第5部と同じ約束）。</td></tr>
           <tr><td>生成支配の<br>見かけの E<sub>a</sub></td><td class="num">0.599 eV</td>
             <td>空乏層生成は n<sub>i</sub> に比例し、n<sub>i</sub> &prop; T<sup>3/2</sup>exp(&minus;E<sub>g</sub>/2kT)。アレニウスの傾きには前指数の T<sup>3/2</sup> ぶんの 1.5kT = 0.039 eV が上乗せされる。E<sub>g</sub>/2 + 1.5kT = 0.560 + 0.039。<strong>実測で 0.56 ちょうどが出ないのは、これが理由。</strong><span class="key">Cで使用。</span></td></tr>
           <tr><td>暗電流が倍になる<br>温度差（一般化）</td><td class="num">&Delta;T = ln2&middot;kT&sup2;/E<sub>a</sub></td>
-            <td>上の表にある「約9℃」を一般化したもの。300 K で E<sub>a</sub> = 0.60 eV なら 9.0 ℃、E<sub>a</sub> = 1.12 eV（拡散支配）なら 4.8 ℃、E<sub>a</sub> = 0.35 eV（深い準位）なら 15.3 ℃。<strong>「何℃で倍か」は定数ではなく、いま何が支配しているかを表す量。</strong><span class="key">Cで使用。</span></td></tr>
+            <td>上の表にある「約9℃」を一般化したもの。300 K で E<sub>a</sub> = 0.60 eV なら 9.0 ℃、E<sub>a</sub> = 1.12 eV（拡散支配）なら 4.8 ℃（目安。T³ と E<sub>g</sub> の温度変化まで入れた拡散電流は 4.3 K）、E<sub>a</sub> = 0.35 eV（深い準位）なら 15.3 ℃。<strong>「何℃で倍か」は定数ではなく、いま何が支配しているかを表す量。</strong><span class="key">Cで使用。</span></td></tr>
           <tr class="grp"><td colspan="3">電圧にして、数値にする</td></tr>
           <tr><td>変換ゲイン</td><td class="num">45 μV/e−</td>
             <td>V = Q/C に、電子1個の電荷 q = 1.602×10<sup>−19</sup> C と FD容量 C = 3.5 fF を入れた。</td></tr>
@@ -4011,7 +4011,7 @@ draws.push(drawTop);
 /* ================= 02 absorption ================= */
 var WLTAB=[[400,.105],[420,.21],[450,.40],[470,.55],[500,.90],[530,1.15],[550,1.40],[580,1.90],
            [600,2.40],[620,2.90],[650,3.50],[680,4.60],[700,5.50],[730,7.0],[750,8.0],[780,10.5],
-           [800,12],[830,16],[850,19],[880,25],[900,32],[930,48],[950,62],[980,105],[1000,150]];
+           [800,12],[830,16],[850,19],[880,26],[900,33],[930,50],[940,57],[950,65],[980,110],[1000,156]];  /* 880 nm より長い側は SemiLab・第2部と同じ表の値 */
 function absLen(w){
   if(w<=WLTAB[0][0]) return WLTAB[0][1];
   for(var i=1;i<WLTAB.length;i++){

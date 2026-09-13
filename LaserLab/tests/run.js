@@ -88,4 +88,26 @@ T('第4章 ― 緩和振動・SHG・ファイバ結合', () => {
   near('2 倍ずれると 0.64', e1, 0.64, 1e-12);
 });
 
+T('第5章 ― 二点の校正・量子欠損・輝度（第9部 02・08・11 の数字）', () => {
+  const e = (a, b) => evalWith({ calA: a, calB: b, caltgt: 700, calsig: 0.02 }).ev;
+  within('435.83・546.07 nm で 700 nm の誤差 0.0555 nm', e(435.833, 546.074).calErr, 0.05547, 1.002);
+  within('365.02・579.07 nm で 0.0333 nm', e(365.015, 579.066).calErr, 0.03331, 1.002);
+  ok('2 本の間（450 nm）は外（700 nm）より小さい', evalWith({ calA: 365.015, calB: 579.066, caltgt: 450 }).ev.calErr < e(365.015, 579.066).calErr);
+  near('線の上では σ/√… ではなく σ そのもの（a で読む）', evalWith({ calA: 365.015, calB: 579.066, caltgt: 365.015 }).ev.calErr, 0.02, 1e-12);
+  ok('輝線の一覧に 546.074 nm がある', M.hgLine(546.07) === 546.074);
+  ok('輝線でない波長は線と見なさない', M.hgLine(560) === null);
+  const y = evalWith({ pumpnm: 976, signm: 1070, pout: 100 }).ev;
+  within('976→1,070 nm の欠損 8.79%', y.qd, 0.08785, 1.001);
+  within('100 W で熱 9.63 W（第9部 08 の 9.6 W）', y.heatW, 9.631, 1.001);
+  const n = evalWith({ pumpnm: 808, signm: 1064, pout: 100 }).ev;
+  within('808→1,064 nm の欠損 24%', n.qd, 0.2406, 1.001);
+  within('100 W で熱 31.7 W（第9部 08 の 32 W）', n.heatW, 31.68, 1.001);
+  const b = evalWith({ ledP: 1, ledA: 1, fcore: 200, fna: 0.22 }).ev;
+  within('1 W・1 mm² のランバート面の輝度 3.18×10⁵', b.radiance, 3.183e5, 1.001);
+  within('コア 200 µm・NA 0.22 に 1.52 mW', b.pFibMw, 1.521, 1.001);
+  within('NA 0.22 で 1 mW に要るコアは 162.2 µm', evalWith({ fcore: 162.19, fna: 0.22 }).ev.pFibMw, 1.0, 1.001);
+  near('入る光はコアの面積に比例（2 倍の径で 4 倍）', evalWith({ fcore: 200 }).ev.pFibMw / evalWith({ fcore: 100 }).ev.pFibMw, 4, 1e-12);
+  near('光源がコアより小さいと、光源の面積で頭打ち', evalWith({ ledA: 0.001, fcore: 1000 }).ev.etFib, 1e-9 * Math.PI * 0.22 * 0.22, 1e-20);
+});
+
 report();

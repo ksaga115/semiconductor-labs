@@ -27,6 +27,14 @@
  *   fibw    ファイバのモード半径 [µm]・ldw LD のモード半径 [µm]（円に近似）・mag レンズの倍率・offum 横ずれ [µm]
  *                                          η = (2w₁w₂/(w₁²+w₂²))² · exp(−2d²/(w₁²+w₂²))（ガウスのモードの重なり）
  *
+ * 第5章（光源を道具として使う）:
+ *   calA, calB  校正に使う水銀の輝線 [nm]・caltgt 目盛りを見る波長 [nm]・calsig 1 本の線の読みのばらつき σ [nm]
+ *                                          2 点で決めた直線の誤差 σ·√((λ−λb)² + (λ−λa)²)/|λb − λa|（2 本の読みが独立）
+ *   pumpnm  励起の波長 [nm]・signm 発振の波長 [nm]・pout 取り出す出力 [W]
+ *                                          量子欠損 1 − λp/λs、熱 P(λs/λp − 1)（量子欠損のぶんだけ。ほかの損失は無視）
+ *   ledP, ledA  LED の出力 [W] と発光面積 [mm²]（ランバート面）・fcore ファイバのコア径 [µm]・fna ファイバの NA
+ *                                          輝度 P/(πA)、入る光の上限 ＝ 輝度 × コアの面積 × πNA²（光源がコアより大きいとき）
+ *
  * 【約束】数値はすべてこの式から導出できる。乱数は使わない。
  * 【モデルの外】利得のスペクトルの形・キャリアの寿命・高温でのスロープ効率の低下・線幅・チャープ・
  * 空間的なホールバーニングは入れていない。スロープ効率は温度によらず一定としている。
@@ -48,9 +56,16 @@
       lcavm: 1.5, mlnm: 800, dlnm: 5, pavg: 0.5,
       dfac: 1.5, gbps: 10,
       shgL: 1, shgP: 0.5, shgK: 1.0, shgA: 1.0, shgdT: 0.1,
-      fibw: 5.2, ldw: 1.6, mag: 1, offum: 1.5
+      fibw: 5.2, ldw: 1.6, mag: 1, offum: 1.5,
+      calA: 435.833, calB: 546.074, caltgt: 700, calsig: 0.02,
+      pumpnm: 915, signm: 1070, pout: 100,
+      ledP: 1, ledA: 1, fcore: 100, fna: 0.22
     };
   }
+
+  /* 水銀の輝線（空気中の波長 [nm]、NIST Atomic Spectra Database の Hg I の値） */
+  var HG_LINES = [253.652, 365.015, 404.656, 435.833, 546.074, 576.960, 579.066];
+  function hgLine(x) { for (var i = 0; i < HG_LINES.length; i++) if (Math.abs(x - HG_LINES[i]) <= 0.05) return HG_LINES[i]; return null; }
 
   /* sinc²(u) = 0.5 になる u（半値）。位相整合の許容幅（FWHM）は Δk·L = 4u = 5.566 */
   var SINC_HALF = 1.39156;
@@ -118,7 +133,20 @@
     var etaMM = Math.pow(2 * w1 * w2 / ss, 2);
     var etaOff = Math.exp(-2 * d.offum * d.offum / ss);
 
+    /* 二点の校正: 2 本の線の読みに独立なばらつき σ が乗ったときの、直線の目盛りの誤差（間なら小さく、外で膨らむ） */
+    var calSpan = Math.abs(d.calB - d.calA);
+    var calErr = calSpan > 0 ? d.calsig * Math.sqrt(Math.pow(d.caltgt - d.calB, 2) + Math.pow(d.caltgt - d.calA, 2)) / calSpan : Infinity;
+    /* 量子欠損（励起の光子 1 個のうち熱になる割合）と、出力 P を取り出すときの熱と励起 */
+    var qd = 1 - d.pumpnm / d.signm, heatW = d.pout * (d.signm / d.pumpnm - 1), pumpW = d.pout * d.signm / d.pumpnm;
+    /* ランバート面の光源の輝度と、ファイバのエテンデュ（コアの面積 × πNA²）。光源がコアより小さいときは光源の面積で頭打ち */
+    var radiance = d.ledP / (Math.PI * d.ledA * 1e-6);
+    var aCore = Math.PI * Math.pow(d.fcore / 2 * 1e-6, 2), aEff = Math.min(aCore, d.ledA * 1e-6);
+    var etFib = aEff * Math.PI * d.fna * d.fna;
+    var pFibMw = radiance * etFib * 1000;
+
     return {
+      calErr: calErr, calLineA: hgLine(d.calA), calLineB: hgLine(d.calB),
+      qd: qd, heatW: heatW, pumpW: pumpW, radiance: radiance, etFib: etFib, pFibMw: pFibMw,
       fR: fR, f3: f3, fNeed: fNeed,
       shgU: shgU, shgS2: shgS2, p2wMw: p2wMw, shgTol: d.shgA / d.shgL, shgDrop: 1 - shgS2,
       fibW1: w1, etaMM: etaMM, etaOff: etaOff, eta: etaMM * etaOff,
@@ -157,7 +185,7 @@
   }
 
   LS.laser = {
-    H: H, C: C, KB: KB, HC_EVNM: HC_EVNM, SINC_HALF: SINC_HALF, sinc2: sinc2,
+    H: H, C: C, KB: KB, HC_EVNM: HC_EVNM, SINC_HALF: SINC_HALF, sinc2: sinc2, HG_LINES: HG_LINES, hgLine: hgLine,
     defaults: defaults, evaluate: evaluate, visFrac: visFrac, liSweep: liSweep, planckSweep: planckSweep
   };
 })(typeof window !== 'undefined' ? window : globalThis);
