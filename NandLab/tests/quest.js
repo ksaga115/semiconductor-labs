@@ -143,6 +143,31 @@ console.log('\n== わざと間違えた回路は落ちる');
   check(r.step === 2, 'C が 1 のあいだに D を変える手順で落ちている');
 }
 
+/* ---------------- 第7章 計測のロジック: 間違えた回路は落ちる ---------------- */
+
+console.log('\n== 第7章 ― わざと間違えた回路は落ちる');
+{
+  /* グレイ符号のつもりで素通し（G = B）― 変わる行で落ちる */
+  const b = new Builder(lib);
+  [0, 1, 2, 3].forEach(i => b.output('G' + i, b.input('B' + i)));
+  check(!Q.grade(Q.BY_ID.b2g, b.c, lib).ok, '素通しはグレイ符号の変換として通らない');
+}
+{
+  /* 戻すほうを「上の桁と XOR」だけで作る（鎖にしない）― B1・B0 がずれて落ちる */
+  const b = new Builder(lib);
+  const G = [0, 1, 2, 3].map(i => b.input('G' + i));
+  b.output('B3', G[3]);
+  for (let i = 0; i < 3; i++) b.output('B' + i, b.chipn('XOR', { A: G[i], B: G[i + 1] }).Y);
+  check(!Q.grade(Q.BY_ID.g2b, b.c, lib).ok, '鎖にしない XOR はグレイ符号を戻せない（それは 2進 → グレイの式）');
+}
+{
+  /* 「101」検出器のつもりで、直前の 1 回だけを覚える（Z = Q0）― 「1」を見ただけで Z が立って落ちる */
+  const b = new Builder(lib);
+  const x = b.input('X'), c = b.input('C');
+  b.output('Z', b.chipn('DFF', { D: x, C: c }).Q);
+  check(!Q.grade(Q.BY_ID.det101, b.c, lib).ok, '1 を覚えるだけの回路は「101」検出器として通らない');
+}
+
 /* ---------------- 素子を混ぜない（第6章 NOR の世界） ---------------- */
 
 console.log('\n== 素子を混ぜると落ちる');

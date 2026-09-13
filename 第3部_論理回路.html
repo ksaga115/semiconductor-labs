@@ -216,7 +216,7 @@ table.tt td.x{color:var(--ink-3)}
       <h1>スイッチ4個から、<br><span class="lit">計算機</span>ができるまで</h1>
       <p class="sub">第2部の最後で作った MOSFET は、ゲートの電圧で通り道が繋がったり切れたりするだけのスイッチです。それを4個組むと NAND になり、NAND だけで NOT も AND も OR も、足し算も、記憶も、CPU の部品も作れる。なぜ NAND ひとつで足りるのか、なぜ 0 と 1 が何千段積んでも濁らないのか、記憶とは何か ― 第3部はその筋道です。</p>
       <div class="guide">
-        <div class="guide-h"><span>読み方</span><span>1〜5章 ＝ NandLab の1〜5章、6章 ＝ NandLab 第6章（NOR）。章を読んだら末尾の課題を組む</span></div>
+        <div class="guide-h"><span>読み方</span><span>1〜5章 ＝ NandLab の1〜5章、6章 ＝ NandLab 第6章（NOR）、8・10章 ＝ NandLab 第7章（計測のロジック）。章を読んだら末尾の課題を組む</span></div>
         <div class="guide-b">
           <div><b>論理まで</b><span>1・2章。スイッチが NAND になり、NAND だけで全部の論理が作れること。選ぶ・見分ける回路まで。</span></div>
           <div><b>数と記憶</b><span>3・4章。2進数の足し算と2の補数、そして出力を入力へ戻すと「時間」が生まれること。</span></div>
@@ -310,7 +310,7 @@ table.tt td.x{color:var(--ink-3)}
         <g font-family="var(--mono)" font-size="9.5" fill="var(--ink-3)"><text x="16" y="212">→ 第2部 05 章</text><text x="912" y="212">→ NandLab「ここから先 ― CPU までの道順」</text></g>
       </svg>
     </div>
-    <figcaption>左の1段だけが物理（電圧）で、残りは記号の世界。切り替わりの場所が<b>しきい値</b>で、第2部の V<sub>th</sub> がそのまま出てきます。5段は NandLab の第1〜5章と同じ順です（NandLab 第6章の NOR の世界は、この部の第6章）。</figcaption>
+    <figcaption>左の1段だけが物理（電圧）で、残りは記号の世界。切り替わりの場所が<b>しきい値</b>で、第2部の V<sub>th</sub> がそのまま出てきます。5段は NandLab の第1〜5章と同じ順です（NandLab 第6章の NOR の世界は、この部の第6章。NandLab 第7章の計測のロジックは、この部の第8・10章）。</figcaption>
   </figure>
 
   <div class="two">
@@ -428,6 +428,11 @@ table.tt td.x{color:var(--ink-3)}
     <p><b>解.</b> 電源が払うのは <b>CV² = 10⁻¹⁵ × 0.8² = 0.64 fJ</b>。そのうち半分の 0.32 fJ は充電中に p 側のスイッチで熱になり、残り半分はコンデンサに溜まって、放電のとき n 側で熱になる ― 1往復で全部が熱です。チップ全体では P = αCV²f × 個数 = 0.1 × 10⁻¹⁵ × 0.64 × 3×10⁹ × 10⁹ = <b>192 W</b>（数字はすべて仮定の桁です）。電源を 1.0 → 0.8 V にすると V² が 0.64 倍で <b>36% 減</b>。周波数も電圧もいじらずに電力を 1/3 以上削れる手は他に無い ― だから電圧が最初に下げられてきました（Dennard ほか 1974 のスケーリング則）。そして下げ続けられなくなった理由が、第2部 05 の S 値の壁です。</p>
   </div>
 
+  <div class="caveat">
+    <span class="tag">落とし穴</span>
+    <p>① 雑音余裕を電源電圧だけで考える ― 余裕は V<sub>OH</sub> − V<sub>IH</sub>（1.04 V）と V<sub>IL</sub> − V<sub>OL</sub>（1.28 V）で、しきい値の位置で決まる。3.3 V の半分があるわけではない。② 使わない入力を浮かせておく ― CMOS の入力は中間の電位に漂い、上下のトランジスタが両方通じて電流が流れ、出力も決まらない（NandLab では X）。必ず 0 か 1 に繋ぐ。③ NAND の入力を増やせば大きな AND が 1 個で済む、と考える ― 直列の nMOS が増えるほど引き下げが弱く遅くなる。論理的努力 g<sub>NAND</sub> は入力の数とともに大きくなる（第7章）。</p>
+  </div>
+
   <div class="roles">
     <div><b>営業・企画</b><span>CMOS が「切り替わる瞬間しか電力を使わない」ことが、低消費電力をうたう根拠。</span></div>
     <div><b>設計・開発</b><span>利得が 1 を超える坂と雑音余裕が、デジタルを記号だけで考えてよい理由。</span></div>
@@ -510,9 +515,9 @@ table.tt td.x{color:var(--ink-3)}
           <text x="185" y="93" fill="var(--ink-3)">0</text><text x="255" y="93" fill="var(--ink-3)">0</text><text x="325" y="93" fill="var(--one)">1</text><text x="395" y="93" fill="var(--ink-3)">0</text>
           <text x="185" y="139" fill="var(--one)">1</text><text x="255" y="139" fill="var(--ink-3)">0</text><text x="325" y="139" fill="var(--one)">1</text><text x="395" y="139" fill="var(--one)">1</text>
         </g>
-        <rect x="296" y="68" width="58" height="84" rx="10" fill="none" stroke="var(--volt)" stroke-width="2.5"/>
-        <rect x="140" y="114" width="66" height="38" rx="10" fill="none" stroke="var(--digital)" stroke-width="2.5" stroke-dasharray="7 4"/>
-        <rect x="354" y="114" width="84" height="38" rx="10" fill="none" stroke="var(--digital)" stroke-width="2.5" stroke-dasharray="7 4"/>
+        <rect x="296" y="68" width="58" height="84" rx="10" fill="none" stroke="var(--volt)" stroke-width="2.5" class="p3blink" style="animation-duration:3s"/>
+        <rect x="140" y="114" width="66" height="38" rx="10" fill="none" stroke="var(--digital)" stroke-width="2.5" stroke-dasharray="7 4" class="p3blink" style="animation-duration:3s;animation-delay:-1.5s"/>
+        <rect x="354" y="114" width="84" height="38" rx="10" fill="none" stroke="var(--digital)" stroke-width="2.5" stroke-dasharray="7 4" class="p3blink" style="animation-duration:3s;animation-delay:-1.5s"/>
         <text x="292" y="176" text-anchor="middle" font-family="var(--sans)" font-size="11" fill="var(--digital)">破線の2つは、端を回って<tspan font-weight="700">ひとつの島</tspan></text>
         <g font-family="var(--sans)" font-size="13.5" fill="var(--ink-2)">
           <text x="490" y="84"><tspan fill="var(--volt)" font-weight="700">縦の島</tspan>: 中で A が 0 も 1 も取る → A が消えて <tspan font-family="var(--mono)" font-weight="700">B·S</tspan></text>
@@ -522,7 +527,7 @@ table.tt td.x{color:var(--ink-3)}
         </g>
       </svg>
     </div>
-    <p>4変数までは紙で実用になり、5変数を超えると人間には見えなくなる ― そこから先が論理合成ツールの仕事です。NandLab の「小さくする」で自分の回路を睨むとき、頭の中でやっているのはこの島探しと同じことです。</p>
+    <p>図では 2 つの島を交互に光らせています ― 同じ 1 のマスが両方の島に入ってよい（重なってよい）ことも見えます。4変数までは紙で実用になり、5変数を超えると人間には見えなくなる ― そこから先が論理合成ツールの仕事です。NandLab の「小さくする」で自分の回路を睨むとき、頭の中でやっているのはこの島探しと同じことです。</p>
   </div>
 
   <div class="deep-note">
@@ -558,6 +563,11 @@ table.tt td.x{color:var(--ink-3)}
     <p><b>問.</b> 3 入力の多数決（2 つ以上が 1 なら 1）を、真理値表 → 積和形 → カルノー図の順で縮め、NAND 2 段の形にせよ。</p>
     <p><b>解.</b> 出力が 1 の行は 011・101・110・111 の4行。積和形そのままなら Y = ĀBC + AB̄C + ABC̄ + ABC で、4項・反転3つ。カルノー図に置くと、111 のマスを共有する縦横の島が3つできて、それぞれ1変数が消える: 011+111 → <b>BC</b>、101+111 → <b>AC</b>、110+111 → <b>AB</b>。</p>
     <p>Y = <b>AB + BC + CA</b>。ド・モルガンで <b>Y = NAND( NAND(A,B), NAND(B,C), NAND(C,A) )</b>。4項が3項になっただけでなく、<span class="key">反転が要らなくなった</span>（どの項にも否定の変数が残らない）ので、反転用の NAND がまるごと消えます。多数決は第2章のパリティ・ハミング符号と並ぶ「冗長で間違いを打ち消す」回路の基本形で、三重化した装置の出力を多数決で決める設計（TMR）にそのまま使われています。</p>
+  </div>
+
+  <div class="caveat">
+    <span class="tag">落とし穴</span>
+    <p>① カルノー図の列を 2進の順（00・01・10・11）に並べる ― 隣が 1 ビット差にならず、島が見えない。グレイ順（00・01・11・10）に並べる。② 式が正しければ出力も正しい、と考える ― 経路の遅れの差で一瞬の偽の値（グリッチ）が出る。同期回路の中ではフリップフロップが時計の縁でしか見ないので害は無いが、クロックや非同期のリセットに使うと誤動作する。③ NAND の数が少ないほど速い、と考える ― 共有で数を減らすと段数が増えることがあり、段数がそのまま遅延になる。</p>
   </div>
 
   <div class="roles">
@@ -677,6 +687,11 @@ table.tt td.x{color:var(--ink-3)}
     <p><b>解.</b> 0111 + 0001 = <b>1000</b> ＝ −8。文字盤の図の「+7 と −8 の境目」をまたいだオーバーフローです。見分け方は、<b>最上位の桁へ入る桁上がりと、最上位から出る桁上がりが違う</b>こと: ここでは入る側が 1、出る側が 0。この2本の XOR が 1 ならオーバーフロー ― NAND 4個を1つ足すだけで検出できます（この部の課題には含めていません）。</p>
     <p><b>問3.</b> 32 ビットのリップルキャリー加算器で、桁上げは何段の NAND を通るか。</p>
     <p><b>解.</b> P<sub>i</sub> = A<sub>i</sub>⊕B<sub>i</sub> を先に作っておけば、1桁の桁上げは C<sub>i+1</sub> = NAND( NAND(A<sub>i</sub>,B<sub>i</sub>), NAND(P<sub>i</sub>,C<sub>i</sub>) ) で、C<sub>i</sub> からは <b>NAND 2 段</b>。32 桁で <b>約 64 段</b>。桁上げ先読みを木にした並列加算器（Kogge–Stone）なら、G・P を作る 1 層と前置きの log₂32 = 5 層（1 層が NAND 2 段程度）で <b>約 12 段</b>で済む ― 桁数に比例する遅れが、桁数の対数に縮みます。</p>
+  </div>
+
+  <div class="caveat">
+    <span class="tag">落とし穴</span>
+    <p>① 符号つきの桁あふれを、最上位から出る桁上がり C で判定する ― 2 の補数では、最上位の桁へ入る桁上がりと最上位から出る桁上がりが食い違ったとき（2 つの XOR が 1）があふれ。C は符号なしのあふれの印。② 減算器の C = 1 を「借りがあった」と読む ― A + B̄ + 1 の形では、C = 1 は「借りが出なかった（A ≥ B）」印。③ 桁上げの遅れを 1 桁ぶんで見積もる ― リップルでは桁数に比例する（この章の数え方で 4 桁 8 段・32 桁 64 段）。</p>
   </div>
 
   <div class="roles">
@@ -851,6 +866,11 @@ table.tt td.x{color:var(--ink-3)}
     <p><b>解.</b> 最長の経路は、最下位の P<sub>0</sub>（3 段）→ 桁上げ C<sub>1</sub>・C<sub>2</sub>・C<sub>3</sub>（2 段 × 3）→ 最上位の和 S<sub>3</sub> = P<sub>3</sub>⊕C<sub>3</sub>（XOR 3 段）で <b>12 段</b>。前後の FF を足して 3 + 12 + 3 = <b>18 段</b>。32 ビットでは 3 + 2 × 31 + 3 = 68 段、FF を足して <b>74 段</b> ― 4 ビットの約 4 倍遅いクロックしか使えない。これを 4 ビットずつの 8 区間に FF で切れば（パイプライン）、1拍は再び 20 段前後に戻り、代わりに答えが出るまでの拍数が増えます。<b>「周波数」と「1つの答えが出るまでの時間」は別物</b> ― 並列加算器（第3章）と同様、回路の段数をどう配るかの設計です。</p>
   </div>
 
+  <div class="caveat">
+    <span class="tag">落とし穴</span>
+    <p>① hold 違反を、クロックを遅くして直そうとする ― hold は「縁のあと、値が早く変わりすぎないか」の条件で、クロックの周期に関係しない。最短の経路に遅れを足して直す。② 非同期の入力を 1 段のフリップフロップで受ける ― 準安定が抜けきらずに後ろへ漏れる。この章の MTBF の例では 1 段で 0.011 秒、2 段で 2.6×10¹⁵ 秒。③ NAND の SR ラッチで S と R を同時に 0 から 1 に戻す ― 両方の出力が 1 の状態から同時に戻ると、どちらに落ちるか決まらない（発振や準安定）。</p>
+  </div>
+
   <div class="roles">
     <div><b>営業・企画</b><span>クロックの周波数は、最長の経路で決まる。</span></div>
     <div><b>設計・開発</b><span>setup / hold と 2 段の同期は必須の作法。準安定は確率（MTBF）で管理する。</span></div>
@@ -924,6 +944,11 @@ table.tt td.x{color:var(--ink-3)}
     <span class="tag">例題 ― 手で一度解く（第5章）</span>
     <p><b>問.</b> 腕時計の水晶は 32,768 Hz で振動する。これを 1 Hz（秒の刻み）にするには、カウンタの FF が何段要るか。4 ビットカウンタの最上位 Q3 は、クロックの何分の1の周波数で変わるか。</p>
     <p><b>解.</b> カウンタの各桁は、下の桁が全部 1 のときだけ反転する ― つまり<b>1段ごとに周波数が半分</b>になる（分周）。Q0 は f/2、Q1 は f/4、…、Q3 は <b>f/16</b>。32,768 = 2¹⁵ なので <b>15 段</b>で 1 Hz。時計の水晶が 32,768 Hz という半端な値なのは、<span class="key">FF を並べるだけで秒が作れる 2 のべき乗</span>だからです。同じカウンタに「好きな値を入れる口」を足したものが CPU のプログラムカウンタ、比較器で「ある値で 0 に戻す」を足したものが 10 進カウンタや分周比を変えられるタイマ ― 第2章の部品を1個足すたびに用途が1つ増えます。</p>
+  </div>
+
+  <div class="caveat">
+    <span class="tag">落とし穴</span>
+    <p>① カウンタのリセットを繋がずに動かす ― 電源を入れた直後は X で、1 を足しても X のまま（3 値）。実機でも初期値は決まらない。② ALU の引き算を「B を反転する」だけで作る ― 2 の補数は反転して 1 を足すので、桁上がりの入力に 1（S0）を入れないと答えが 1 ずれる（それは 1 の補数）。③ シフトレジスタの出力がすぐ出る、と思う ― 4 段なら、入れた値が出てくるのは 4 拍あと。段数がそのまま遅れの拍数。</p>
   </div>
 
   <div class="roles">
@@ -1032,6 +1057,18 @@ table.tt td.x{color:var(--ink-3)}
     <p><b>問.</b> L1 だけのとき: ヒット 1 ns、ミス率 5%、ミスすると DRAM で 100 ns。間に L2（ヒット 4 ns、L1 ミスのうち L2 でも外れる割合 20%）を入れると、平均アクセス時間はどうなるか。</p>
     <p><b>解.</b> L1 だけ: 1 + 0.05 × 100 = <b>6 ns</b>。L2 あり: L1 のミス（5%）は L2 で 4 ns、そのうち 20% は DRAM で 100 ns なので 1 + 0.05 × (4 + 0.2 × 100) = 1 + 0.05 × 24 = <b>2.2 ns</b>。<span class="key">1 段足すだけで 2.7 倍速くなる</span> ― CPU のチップ面積の大半がキャッシュの SRAM で占められている理由です。</p>
   </div>
+
+  <div class="caveat">
+    <span class="tag">落とし穴</span>
+    <p>① パイプラインの段を増やせば、そのぶん速くなる、と考える ― 段のあいだのフリップフロップの遅れは段ごとに足されるので 1 拍に占める割合が増え、前の命令の結果を待つ（ハザード）ぶん止まる拍も増える。② 平均アクセス時間をヒット率だけで比べる ― ヒット時間 ＋ ミス率 × ミスの罰なので、ミスの罰が大きいほど、わずかなミス率の差が効く。③ 計算を速くすれば全体が速くなる、と考える ― この節の Horowitz の見積もりでは、32 ビットの足し算 約 0.1 pJ に対して DRAM から 32 ビット読むのは 約 640 pJ。運ぶ量を減らすほうが先に効くことが多い。</p>
+  </div>
+
+  <div class="roles">
+    <div><b>営業・企画</b><span>「○ GHz」やコアの数だけでは速さは決まらない。メモリ階層とデータの運び方で、実効の性能が変わる。</span></div>
+    <div><b>設計・開発</b><span>1 拍の予算は、最長の経路 ＋ 段のあいだのフリップフロップの遅れ。段を切るときは、その遅れまで予算に入れる。</span></div>
+    <div><b>研究・製造</b><span>計測のデータ処理は、計算の量より運ぶ量で遅くなる。まずデータの流れと置き場所を見る。</span></div>
+  </div>
+
 </section>
 
 <!-- ================= メモリの物理 ================= -->
@@ -1058,7 +1095,7 @@ table.tt td.x{color:var(--ink-3)}
             <rect x="150" y="56" width="180" height="10" fill="var(--surface-3)" stroke="var(--line)"/>
             <rect x="150" y="66" width="180" height="22" fill="var(--photon-soft)" stroke="var(--photon-2)" stroke-width="1.5"/>
             <text x="240" y="82" text-anchor="middle" font-family="var(--mono)" font-size="11" fill="var(--photon-2)">浮遊ゲート（どこにも繋がらない）</text>
-            <g fill="var(--electron)"><circle cx="200" cy="76" r="4"/><circle cx="220" cy="76" r="4"/><circle cx="260" cy="76" r="4"/><circle cx="280" cy="76" r="4"/></g>
+            <g fill="var(--electron)" class="p3blink" style="animation-duration:3s"><circle cx="200" cy="76" r="4"/><circle cx="220" cy="76" r="4"/><circle cx="260" cy="76" r="4"/><circle cx="280" cy="76" r="4"/></g>
             <rect x="150" y="88" width="180" height="9" fill="var(--surface-3)" stroke="var(--line)"/>
             <text x="342" y="96" font-family="var(--mono)" font-size="9.5" fill="var(--ink-3)">トンネル酸化膜 〜8nm</text>
             <rect x="90" y="97" width="300" height="46" fill="var(--hole-soft)"/>
@@ -1077,16 +1114,16 @@ table.tt td.x{color:var(--ink-3)}
             </g>
             <line x1="70" y1="330" x2="520" y2="330" stroke="var(--line)" stroke-width="1.5"/>
             <path d="M120,326 C170,310 190,220 210,200 L280,196" fill="none" stroke="var(--one)" stroke-width="2.5"/>
-            <path d="M300,326 C350,310 370,220 390,200 L460,196" fill="none" stroke="var(--volt)" stroke-width="2.5"/>
+            <path d="M300,326 C350,310 370,220 390,200 L460,196" fill="none" stroke="var(--volt)" stroke-width="2.5" class="p3blink" style="animation-duration:3s"/>
             <text x="150" y="212" font-family="var(--sans)" font-size="11" fill="var(--one)">消去（FG 空）＝「1」</text>
             <text x="368" y="246" font-family="var(--sans)" font-size="11" fill="var(--volt)">書き込み（FG に電子）＝「0」</text>
-            <line x1="255" y1="192" x2="345" y2="192" stroke="var(--warn)" stroke-width="2" marker-end="url(#fgar)"/>
+            <line x1="255" y1="192" x2="345" y2="192" stroke="var(--warn)" stroke-width="2" marker-end="url(#fgar)" class="p3blink" style="animation-duration:3s"/>
             <text x="300" y="184" text-anchor="middle" font-family="var(--mono)" font-size="10.5" fill="var(--warn)">ΔV_th ＝ 閉じ込めた電荷</text>
             <line x1="300" y1="330" x2="300" y2="216" stroke="var(--ink-3)" stroke-width="1.5" stroke-dasharray="4 4"/>
             <text x="300" y="348" text-anchor="middle" font-family="var(--mono)" font-size="10" fill="var(--ink-2)">読み出し電圧（ここで流れる？）</text>
           </svg>
         </div>
-        <figcaption>読み出し電圧で、消去セルは流れ（1）、書き込みセルは流れない（0）。<b>V<sub>th</sub> の2本の山を細かく4本・8本に切れば1セルで2ビット・3ビット</b>（MLC/TLC）― ただし山の間隔＝雑音余裕（第1章）が狭くなり、読みも書きも遅く慎重になります。容量と信頼性の取引が、ここでも同じ形で現れます。</figcaption>
+        <figcaption>図は、浮遊ゲートの電子と、右の曲線・ΔV<sub>th</sub> の矢印をいっしょに明滅させて、「電子が入ると曲線が右へ動く」対応を見せています。読み出し電圧で、消去セルは流れ（1）、書き込みセルは流れない（0）。<b>V<sub>th</sub> の2本の山を細かく4本・8本に切れば1セルで2ビット・3ビット</b>（MLC/TLC）― ただし山の間隔＝雑音余裕（第1章）が狭くなり、読みも書きも遅く慎重になります。容量と信頼性の取引が、ここでも同じ形で現れます。</figcaption>
       </figure>
     </div>
   </div>
@@ -1144,6 +1181,18 @@ table.tt td.x{color:var(--ink-3)}
     <span class="tag">例題 ― 手で一度解く（メモリの物理）</span>
     <p><b>問.</b> 制御ゲートと浮遊ゲートの間の容量を 0.5 fF とする（仮定）。書き込みで V<sub>th</sub> を 2 V 上げるには、浮遊ゲートに電子を何個入れるか。10 年で V<sub>th</sub> のずれの 20% までしか失ってはいけないとすると、平均で何日に 1 個まで漏らしてよいか。</p>
     <p><b>解.</b> ΔV<sub>th</sub> ≈ Q/C なので Q = 0.5 fF × 2 V = 1 fC、電子にして 1×10⁻¹⁵ / 1.602×10⁻¹⁹ = <b>6,242 個</b>。20% は 1,248 個で、10 年 = 3.16×10⁸ 秒で割ると 4.0×10⁻⁶ 個/秒 ― <b>約 3 日に 1 個</b>。セルを小さくすると C が小さくなり、同じ ΔV<sub>th</sub> に要る電子の数は C に比例して減る。<span class="key">微細化するほど電子 1 個の重みが増し、漏れと雑音に弱くなる</span> ― 平面のまま縮めるのが行き詰まり、3D に積む方向へ転じた理由の一つです。</p>
+  </div>
+
+
+  <div class="caveat">
+    <span class="tag">落とし穴</span>
+    <p>① Flash に何度でも書ける、と思う ― 書き換えのたびにトンネル酸化膜に欠陥（トラップ）が溜まり、回数に上限がある。1 セルに多ビット（MLC・TLC）ほど山の間隔が狭く、上限は下がる。② 読み出しの電圧を上げれば確実に読める、と思う ― 読み出しの電圧は 2 本の I<sub>d</sub>-V<sub>g</sub> 曲線のあいだに置くもので、上げすぎると書き込みセルも流れて「1」と読んでしまう（図の破線）。③ DRAM は電源が入っていれば覚えている、と思う ― 小さな容量の電荷は漏れるので、定期的に読んで書き戻す（リフレッシュ）が要る（第5章の「くわしく」）。</p>
+  </div>
+
+  <div class="roles">
+    <div><b>営業・企画</b><span>「書き換え回数」「保持の年数」は、1 セル何ビットかと温度の条件をそろえて比べる。</span></div>
+    <div><b>設計・開発</b><span>多ビット化は容量と引き換えに余裕（山の間隔）を削る。誤り訂正（第2章のハミング）と組で設計する。</span></div>
+    <div><b>研究・製造</b><span>保持と寿命は、トンネル酸化膜の欠陥で決まる。膜の質が、そのまま製品の寿命になる。</span></div>
   </div>
 
 </section>
@@ -1205,6 +1254,11 @@ table.tt td.x{color:var(--ink-3)}
     <p><b>解.</b> 一段ずつ書き下すと、NOR(S, S) = S̄、NOR(A, S̄) = Ā·S、NOR(B, S) = B̄·S̄、Y = NOR(Ā·S, B̄·S̄) = NOT(Ā·S + B̄·S̄)。S = 1 なら NOT Ā = A、S = 0 なら NOT B̄ = B。つまり <b>Y = S·A + S̄·B</b> ― <span class="key">S の意味が入れ替わっただけのセレクタ</span>です。セレクタの双対はセレクタそのもので（入力の役を入れ替えれば同じ）、NOR 4 個で組める。</p>
     <p><b>問2.</b> NOR の SR ラッチに、電源投入直後（Q = Q̄ = X）から S = 1, R = 0 を入れ、次に S = R = 0 に戻した。Q はどうなるか。</p>
     <p><b>解.</b> Q̄ = NOR(S, Q) = NOR(1, X) = <b>0</b>（片方が 1 なので X でも確定）。すると Q = NOR(R, Q̄) = NOR(0, 0) = <b>1</b>。S を 0 に戻しても Q̄ = NOR(0, 1) = 0、Q = NOR(0, 0) = 1 のまま ― 1 が保たれる。NAND のラッチで「S = 0 で Q = 1」だった手順が、ちょうど 0 と 1 を読み替えた形で再現されます。</p>
+  </div>
+
+  <div class="caveat">
+    <span class="tag">落とし穴</span>
+    <p>① NOR の SR ラッチを NAND のラッチと同じ手順で動かす ― 効く向きが逆で、NOR のラッチは S・R が 1 で効き、両方 0 で保持する。② 双対の回路を「同じ働き」と思う ― 同じ配線を NOR で組むと、出力は 0 と 1 を読み替えたものになる（XOR → XNOR）。③ NOR も NAND と同じ速さだと考える ― CMOS の NOR は pMOS が直列で、論理的努力 g<sub>NOR2</sub> = (1 + 2γ)/(1 + γ) は g<sub>NAND2</sub> = (2 + γ)/(1 + γ) より大きい（γ = 2 で 5/3 と 4/3）。</p>
   </div>
 
   <div class="roles">
@@ -1317,6 +1371,11 @@ table.tt td.x{color:var(--ink-3)}
     <p><b>解.</b> 経路の努力 F = G · H = (1 × 4/3 × 1) × 64 = <b>85.3</b>。段の努力 f = F<sup>1/3</sup> = <b>4.40</b>。寄生遅延 P = 1 + 2 + 1 = 4。D = 3 × 4.40 + 4 = <b>17.2τ</b>。各段の大きさは後ろから決める: 最後のインバータの入力容量 = 64 × g / f = 64 / 4.40 = <b>14.5</b>。NAND2 の入力容量 = (4/3) × 14.5 / 4.40 = <b>4.40</b>。最初のインバータ = 1 × 4.40 / 4.40 = 1.0 で、与えた条件に戻る。<span class="key">1 → 4.4 → 14.5 → 64 と、容量がほぼ等比に並ぶ</span>のが最適の形です。</p>
   </div>
 
+  <div class="caveat">
+    <span class="tag">落とし穴</span>
+    <p>① 段数の奇偶による反転を忘れる ― 最適の段数が 3 でも、インバータが奇数段なら極性が逆になる。極性を保つなら 2 段か 4 段にし、遅れの差は小さい（この章の表で 2 段 18τ・3 段 15τ・4 段 15.3τ）。② FO4 を絶対の時間と思う ― FO4 は工程と電源電圧で変わる単位で、同じ回路でも電圧を下げると遅くなる（α 乗則）。③ 長い配線を大きなドライバ 1 個で引く ― 配線の遅延は長さの 2 乗で、途中にリピータを入れると長さに比例へ直せる。</p>
+  </div>
+
   <div class="roles">
     <div><b>営業・企画</b><span>周波数と電力は電圧と組で動く（DVFS）。</span></div>
     <div><b>設計・開発</b><span>大きな負荷は 1 段 4 倍ずつで引く。長い配線はリピータで区切る。</span></div>
@@ -1398,6 +1457,11 @@ table.tt td.x{color:var(--ink-3)}
     <p><b>解.</b> 状態は「使える尻尾」で、A（何も無い）・B（「1」）・C（「11」）・D（「110」がそろった、Z = 1）。A: 0 → A、1 → B。B: 0 → A（「10」の尻尾は「110」の頭に使えない）、1 → C。C: 0 → D、1 → C（「111」の尻尾は「11」）。D: 0 → A（「1100」に使える尻尾は無い）、1 → B（「1101」の尻尾は「1」）。<span class="key">「101」と違って D から C へは戻らない</span> ― 「110」は重なって現れることができないからです（110 の尻尾 0 は 110 の頭 1 と一致しない）。</p>
   </div>
 
+  <div class="caveat">
+    <span class="tag">落とし穴</span>
+    <p>① 使わない状態の番号を放っておく ― 雑音や電源投入でそこへ入ると抜けられないことがある。余った番号から必ずリセットの状態へ戻す（この章の「くわしく」）。② Moore 型と Mealy 型の出力の時刻を混同する ― Mealy の出力は入力が変わるとすぐ変わり、グリッチも出うる。Moore の出力は状態だけで決まり、時計の縁で変わる。③ 状態の番号はどう振っても同じ、と考える ― 振り方で次の状態の式の大きさが変わる。one-hot はフリップフロップが増えるが、式が短く速い。</p>
+  </div>
+
   <div class="roles">
     <div><b>営業・企画</b><span>装置の「動作モード」は、たいてい状態機械で説明できる。</span></div>
     <div><b>設計・開発</b><span>余った状態からもリセットへ戻す。FPGA では one-hot が安い。</span></div>
@@ -1405,9 +1469,9 @@ table.tt td.x{color:var(--ink-3)}
   </div>
 
   <div class="lab-go">
-    <span class="tag">手を動かす — NandLab 第4章・第5章</span>
-    <p>NandLab に状態機械の課題はまだありませんが、第4章の D-FF のチップを 2 個置き、上の N₁・N₀・Z の式を NAND で組めば、そのまま「101」検出器になります（採点はされない自由作業）。第5章のカウンタは「状態が 16 個で、遷移が +1 だけ」の最も単純な状態機械で、課題で採点されます。</p>
-    <div class="qs"><span class="lab">NandLab</span><a href="NandLab/index.html?quest=dff">D フリップフロップ</a><a href="NandLab/index.html?quest=shift4">4ビットシフトレジスタ</a><a href="NandLab/index.html?quest=count4">4ビットカウンタ</a></div>
+    <span class="tag">手を動かす — NandLab 第4章・第5章・第7章</span>
+    <p>第4章の D-FF のチップを 2 個置き、上の N₁・N₀・Z の式を NAND で組めば、そのまま「101」検出器になります。NandLab 第7章の課題「「101」検出器（状態機械）」が、重なりも含めた並びを 1 拍ずつ採点します（お手本は NAND 35 個）。第5章のカウンタは「状態が 16 個で、遷移が +1 だけ」の最も単純な状態機械で、課題で採点されます。</p>
+    <div class="qs"><span class="lab">NandLab</span><a href="NandLab/index.html?quest=dff">D フリップフロップ</a><a href="NandLab/index.html?quest=shift4">4ビットシフトレジスタ</a><a href="NandLab/index.html?quest=count4">4ビットカウンタ</a><span class="lab">NandLab 第7章</span><a href="NandLab/index.html?quest=det101">「101」検出器（状態機械）</a></div>
   </div>
 </section>
 
@@ -1535,9 +1599,9 @@ table.tt td.x{color:var(--ink-3)}
   </div>
 
   <div class="lab-go">
-    <span class="tag">手を動かす — NandLab 第1章・第5章</span>
-    <p>2 進 → グレイ符号の変換は、隣の桁どうしの XOR を並べるだけ。第1章の XOR のチップを 3 個置けば 4 ビットの変換器になります（採点はない自由作業）。第5章のカウンタの後ろに置くと、盤面で 1 ビットずつしか変わらない数え方が見えます。</p>
-    <div class="qs"><span class="lab">NandLab</span><a href="NandLab/index.html?quest=xor">XOR</a><a href="NandLab/index.html?quest=count4">4ビットカウンタ</a></div>
+    <span class="tag">手を動かす — NandLab 第1章・第5章・第7章</span>
+    <p>2 進 → グレイ符号の変換は、隣の桁どうしの XOR を並べるだけ。第1章の XOR のチップを 3 個置けば 4 ビットの変換器になり、NandLab 第7章で採点されます（2進 → グレイ、グレイ → 2進とも NAND 12 個。戻す側は上の桁から鎖に繋ぐ）。第5章のカウンタの後ろに置くと、盤面で 1 ビットずつしか変わらない数え方が見えます。</p>
+    <div class="qs"><span class="lab">NandLab</span><a href="NandLab/index.html?quest=xor">XOR</a><a href="NandLab/index.html?quest=count4">4ビットカウンタ</a><span class="lab">NandLab 第7章</span><a href="NandLab/index.html?quest=b2g">2進 → グレイ符号</a><a href="NandLab/index.html?quest=g2b">グレイ符号 → 2進</a></div>
   </div>
 </section>
 
@@ -1655,6 +1719,7 @@ table.tt td.x{color:var(--ink-3)}
         <tr><td>32,768 Hz → 1 Hz</td><td class="num">15 段</td><td>32,768 = 2¹⁵。FF 1 段で周波数が 1/2。</td></tr>
         <tr class="grp"><td colspan="3">第6〜8章（論理的努力は γ = 2 の教科書の値。τ の単位）</td></tr>
         <tr><td>NOR の世界の個数</td><td class="num">1 / 2 / 3 / 4 / 4 / 2</td><td>NOT / OR / AND / NAND / XNOR / SR ラッチ。NandLab 第6章のお手本を tests/quest.js が組んで数えた NOR の数。</td></tr>
+        <tr><td>計測のロジックの個数</td><td class="num">12 / 12 / 35</td><td>2進 → グレイ符号 / グレイ符号 → 2進 / 「101」検出器。NandLab 第7章のお手本を tests/quest.js が組んで数えた NAND の数（検出器は D フリップフロップ 2 個ぶんの 22 個を含む）。</td></tr>
         <tr><td>g<sub>NAND2</sub> / g<sub>NOR2</sub></td><td class="num">4/3 / 5/3</td><td>(2 + γ)/(1 + γ) と (1 + 2γ)/(1 + γ)、γ = 2。第2部の移動度の比 γ ≈ 3 なら 5/4 と 7/4。</td></tr>
         <tr><td>FO4</td><td class="num">5τ</td><td>d = g·h + p = 1 × 4 + 1。</td></tr>
         <tr><td>64 倍の負荷</td><td class="num">65 / 18 / 15 / 15.3 / 16.5 / 18 τ</td><td>N = 1〜6 段のインバータで D = N·64<sup>1/N</sup> + N。最小は N = 3（f = 4）。</td></tr>
@@ -1693,7 +1758,7 @@ table.tt td.x{color:var(--ink-3)}
       <h3>物理層のモデル</h3>
       <p>NAND の中身（<code>mos.js</code>）は「通じている／切れている／分からない」の3状態のスイッチ。伝達特性（<code>analog.js</code>）は最も素朴な二乗則で、n と p の強さが等しく、しきい値は既定 0.7 V（SemiLab の「NAND の中身へ」を通すとその V<sub>th</sub>）、電源 3.3 V。短チャネル効果・速度飽和・しきい値のばらつき（第4部 付録 B）は入っていません。</p>
       <h3>扱わないもの</h3>
-      <p>本文では原理を説明しているが、NandLab の課題には無いもの: 桁上げ先読み、オーバーフロー検出、メモリ（RAM16 は「実装部品」として盤面に置けるが、NAND からは組まず、採点にも使えない）、命令セットと制御、パイプライン、伝送ゲート、TDC と非同期 FIFO（第9・10章）。NOR だけの世界は NandLab 第6章で扱う（素子は混ぜない ― 第6章は NOR だけ、ほかの章は NAND だけで採点）。ゲートごとに違う遅延（第7章の論理的努力）と、状態機械の採点（第8章）は NandLab にありません。</p>
+      <p>本文では原理を説明しているが、NandLab の課題には無いもの: 桁上げ先読み、オーバーフロー検出、メモリ（RAM16 は「実装部品」として盤面に置けるが、NAND からは組まず、採点にも使えない）、命令セットと制御、パイプライン、伝送ゲート、TDC と非同期 FIFO（第9・10章）。NOR だけの世界は NandLab 第6章で扱う（素子は混ぜない ― 第6章は NOR だけ、ほかの章は NAND だけで採点）。ゲートごとに違う遅延（第7章の論理的努力）は NandLab にありません。状態機械（第8章の「101」検出器）とグレイ符号の変換器（第10章）は、NandLab 第7章で採点できます。</p>
     </div>
   </div>
 </section>

@@ -196,11 +196,11 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       <dl class="spec">
         <div><dt>参考書</dt><dd>11<small>部＋付録</small></dd></div>
         <div><dt>ラボ</dt><dd>11<small>本</small></dd></div>
-        <div><dt>採点つき課題</dt><dd>202<small>問</small></dd></div>
+        <div><dt>採点つき課題</dt><dd>205<small>問</small></dd></div>
         <div><dt>依存</dt><dd>0<small>ブラウザのみ</small></dd></div>
         <div><dt>通信</dt><dd>0<small>手元で完結</small></dd></div>
-        <div><dt>自動検査</dt><dd>5,463<small>件 (Node)</small></dd></div>
-        <div class="spec-cap">課題数は ProcessLab 16 ＋ SemiLab 26 ＋ CharLab 13 ＋ NandLab 31 ＋ PixelLab 19 ＋ PhotonLab 18 ＋ AnalogLab 16 ＋ OptoLab 18 ＋ QALab 21 ＋ LaserLab 12 ＋ DesignLab 12。検査は11本の <code>node tests/all.js</code> の合計（2026-09-13 時点）。</div>
+        <div><dt>自動検査</dt><dd>5,496<small>件 (Node)</small></dd></div>
+        <div class="spec-cap">課題数は ProcessLab 16 ＋ SemiLab 26 ＋ CharLab 13 ＋ NandLab 34 ＋ PixelLab 19 ＋ PhotonLab 18 ＋ AnalogLab 16 ＋ OptoLab 18 ＋ QALab 21 ＋ LaserLab 12 ＋ DesignLab 12。検査は11本の <code>node tests/all.js</code> の合計（2026-09-13 時点）。</div>
       </dl>
     </div>
   </div>
@@ -520,13 +520,14 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       </div>
       <div class="pair">
         <div><span class="kind read">参考書</span><a href="第3部_論理回路.html">論理回路の基礎</a><small>スイッチ4個から、計算機ができるまで · 10章＋付録</small></div>
-        <div><span class="kind lab">ラボ</span><a href="NandLab/index.html">NandLab</a><small>原始部品 ＝ NAND（第6章は NOR） · 6章 31問</small></div>
+        <div><span class="kind lab">ラボ</span><a href="NandLab/index.html">NandLab</a><small>原始部品 ＝ NAND（第6章は NOR） · 7章 34問</small></div>
       </div>
     </div>
     <div class="chap">
       <div><span class="cn">3-1</span><div class="ct"><a href="第3部_論理回路.html#s1">スイッチから論理へ ― なぜ NAND ひとつで足りるのか</a></div><div class="cd">CMOS の4石、NAND と NOR の万能性、ド・モルガン、3値、伝達特性と雑音余裕。</div></div>
       <div class="do"><span class="lbl">NandLab 第1章</span><a class="q" href="NandLab/index.html?quest=not">NOT</a><a class="q" href="NandLab/index.html?quest=and">AND</a><a class="q" href="NandLab/index.html?quest=or">OR</a><a class="q" href="NandLab/index.html?quest=xor">XOR</a><a class="q" href="NandLab/index.html?quest=nor">NOR</a><a class="q" href="NandLab/index.html?quest=xnor">XNOR</a></div>
       <div class="do"><span class="lbl">NandLab 第6章</span><a class="q" href="NandLab/index.html?quest=n_not">NOR で NOT</a><a class="q" href="NandLab/index.html?quest=n_or">NOR で OR</a><a class="q" href="NandLab/index.html?quest=n_and">NOR で AND</a><a class="q" href="NandLab/index.html?quest=n_nand">NOR で NAND</a><a class="q" href="NandLab/index.html?quest=n_xnor">NOR で一致（XNOR）</a><a class="q" href="NandLab/index.html?quest=n_sr">NOR の SR ラッチ</a></div>
+      <div class="do"><span class="lbl">NandLab 第7章</span><a class="q" href="NandLab/index.html?quest=b2g">2進 → グレイ符号</a><a class="q" href="NandLab/index.html?quest=g2b">グレイ符号 → 2進</a><a class="q" href="NandLab/index.html?quest=det101">「101」検出器</a></div>
     </div>
     <div class="chap">
       <div><span class="cn">3-2</span><div class="ct"><a href="第3部_論理回路.html#s2">選ぶ・見分ける ― 真理値表から回路へ</a></div><div class="cd">積和形と二段 NAND。セレクタ、デコーダ、比較器。</div></div>
@@ -850,7 +851,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
         <li><b>作り方:</b> 第1部 参考書 01〜05 → ProcessLab 第1〜4章<span class="r">13問</span><span class="why">その接合を工場はどう刻むか。第4章「フォトダイオードを作る」は工程で作った1本を SemiLab に渡して採点する ― 2つの部が繋がる</span></li>
         <li><b>デバイス層:</b> 第2部 2-3・2-4 → SemiLab 第3・4章<span class="r">9問</span><span class="why">暗電流の正体（生成電流）と、波長で決まる量子効率。両方そのまま第4部の性能表になる</span></li>
         <li><b>スイッチ:</b> 第2部 2-5 → SemiLab 第5章<span class="r">4問</span><span class="why">画素の中の4個のトランジスタ（転送・リセット・SF・選択）の物理</span></li>
-        <li><b>回路層:</b> 第3部 → NandLab<span class="r">31問</span><span class="why">列並列ADCのカウンタも制御ロジックも、この部の部品でできている</span></li>
+        <li><b>回路層:</b> 第3部 → NandLab<span class="r">34問</span><span class="why">列並列ADCのカウンタも制御ロジックも、この部の部品でできている</span></li>
         <li><b>センサ本体:</b> 第4部 00〜07 → PixelLab 第1〜3章<span class="r">12問</span><span class="why">光子→電子→電圧→数値→像の一本道。謎のカメラを測って当て、自分の画素を設計する</span></li>
         <li><b>床下:</b> 第4部 付録 A〜D とむすび<span class="r">読む</span><span class="why">トンネル・短チャネル・暗電流・ノイズ。すべて同じ欠陥と電界に戻る</span></li>
         <li><b>センサの外へ:</b> 第5部 → PhotonLab<span class="r">18問</span><span class="why">像を結ばず数える一族（PMT・APD・MPPC）と共通の物差し。SNRの「最適な M」を自分で探す</span></li>
@@ -945,7 +946,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       <pre>node ProcessLab\tests\all.js   411 件
 node SemiLab\tests\all.js    1,255 件
 node CharLab\tests\all.js      281 件
-node NandLab\tests\all.js      725 件
+node NandLab\tests\all.js      758 件
 node PixelLab\tests\all.js     433 件
 node PhotonLab\tests\all.js    396 件
 node AnalogLab\tests\all.js    334 件

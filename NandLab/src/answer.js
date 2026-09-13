@@ -342,6 +342,33 @@
       b.link(sig(g1, 0), g2, 1);
       b.output('Q', sig(g1, 0));
       b.output('P', sig(g2, 0));
+    } },
+
+    /* ---- 第7章 計測のロジック（第3部 08・10）。NAND の世界のチップで組む ---- */
+    { id: 'b2g', chip: 'B2G', build: function (b) {
+      var B = four(b, 'B');
+      b.output('G3', B[3]);
+      for (var i = 0; i < 3; i++) b.output('G' + i, b.chipn('XOR', { A: B[i], B: B[i + 1] }).Y);
+    } },
+    { id: 'g2b', chip: 'G2B', build: function (b) {
+      var G = four(b, 'G');
+      var b3 = G[3];
+      var b2 = b.chipn('XOR', { A: b3, B: G[2] }).Y;
+      var b1 = b.chipn('XOR', { A: b2, B: G[1] }).Y;
+      var b0 = b.chipn('XOR', { A: b1, B: G[0] }).Y;
+      b.output('B3', b3); b.output('B2', b2); b.output('B1', b1); b.output('B0', b0);
+    } },
+    { id: 'det101', chip: 'DET101', build: function (b) {
+      var x = b.input('X'), c = b.input('C');
+      /* 状態 Q1Q0（第3部 08）: N0 = X、N1 = Q0·X̄ + Q1·Q̄0·X、Z = Q1·Q0 */
+      var f0 = b.openChip('DFF'), f1 = b.openChip('DFF');
+      var q0 = f0.out('Q'), q1 = f1.out('Q');
+      var xn = b.chip('NOT', [x])[0], q0n = b.chip('NOT', [q0])[0];
+      var t1 = b.chipn('AND', { A: q0, B: xn }).Y;
+      var t2 = b.chipn('AND', { A: b.chipn('AND', { A: q1, B: q0n }).Y, B: x }).Y;
+      f0.to('D', x); f0.to('C', c);
+      f1.to('D', b.chipn('OR', { A: t1, B: t2 }).Y); f1.to('C', c);
+      b.output('Z', b.chipn('AND', { A: q1, B: q0 }).Y);
     } }
   ];
 

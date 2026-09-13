@@ -51,7 +51,8 @@
     { n: 3, name: '計算する',       note: '足す・引く・かける' },
     { n: 4, name: '記憶する',       note: '値を覚える。ここから時間が関わる' },
     { n: 5, name: '組み上げる',     note: '計算機の部品そのもの。この先はもう CPU' },
-    { n: 6, name: 'NOR だけで組む', note: '原始部品を NOR に取り替えて、同じ世界をもう一度' }
+    { n: 6, name: 'NOR だけで組む', note: '原始部品を NOR に取り替えて、同じ世界をもう一度' },
+    { n: 7, name: '計測のロジック', note: 'グレイ符号と状態機械 ― 時計をまたいで渡し、並びを見分ける（第3部 08・10）' }
   ];
 
   var QUESTS = [
@@ -454,6 +455,53 @@
     }
   ];
   QUESTS.push.apply(QUESTS, NOR_QUESTS);
+
+  /* ---- 第7章 ― 計測のロジック（第3部 08・10 の回路を採点つきで）----
+   * NAND の世界に戻る（NOR 素子は使えない）。goal は tests/quest.js が実測した NAND の数 */
+  var MEAS_QUESTS = [
+    {
+      id: 'b2g', name: '2進 → グレイ符号', goal: 12, stage: 7, needs: ['xor'],
+      desc: '4ビットの2進数 B3..B0 を、隣の数との違いがいつも 1 ビットだけのグレイ符号 G3..G0 に直す。G3 = B3、ほかは Gi = Bi ⊕ B(i+1)。',
+      why: '別の時計で読まれる多ビットの値（カウンタ・FIFO のポインタ）を、変わる途中で読まれても「古い値か新しい値」にしかならない形にして渡せる（第3部 10）。',
+      hint: 'XOR を 3 個。いちばん上の桁はそのまま出す。',
+      kind: 'comb', inputs: names('B', 4), outputs: names('G', 4),
+      rows: build(4, function (b) { return [b[0] ^ b[1], b[1] ^ b[2], b[2] ^ b[3], b[3]]; })
+    },
+    {
+      id: 'g2b', name: 'グレイ符号 → 2進', goal: 12, stage: 7, needs: ['b2g'],
+      desc: '受け取ったグレイ符号 G3..G0 を 2進数 B3..B0 に戻す。B3 = G3、下へ順に Bi = B(i+1) ⊕ Gi。',
+      why: 'グレイ符号のままでは足し算も大小の比較もできない。上の桁から順に XOR で戻す ― 1 桁ずつ前の答えを使うので、桁上げと同じく段数が桁数に比例する。',
+      hint: 'XOR を 3 個、上から鎖のように。B2 = G3 ⊕ G2、B1 = B2 ⊕ G1、B0 = B1 ⊕ G0。',
+      kind: 'comb', inputs: names('G', 4), outputs: names('B', 4),
+      rows: build(4, function (g) { var b3 = g[3], b2 = b3 ^ g[2], b1 = b2 ^ g[1], b0 = b1 ^ g[0]; return [b0, b1, b2, b3]; })
+    },
+    {
+      id: 'det101', name: '「101」検出器（状態機械）', goal: 35, stage: 7, needs: ['dff', 'and', 'or'],
+      desc: '入力 X を時計 C の立ち上がりごとに読み、直前の 3 回が 1・0・1 だったら Z = 1 を出す。Moore 型（Z は状態だけで決まる）で、重なりも数える（1 0 1 0 1 なら 2 回）。',
+      why: '第3部 08 の手順（状態 → 遷移表 → 番号 → 積和形）で作った回路が、そのまま動くかを確かめる。通信の同期語の検出も同じ形の状態機械。',
+      hint: '状態を 2 ビット Q1Q0 に。N0 = X、N1 = Q0·X̄ + Q1·Q̄0·X、Z = Q1·Q0（第3部 08 の式）。D フリップフロップ 2 個の D に N1・N0 を入れ、C を両方に配る。',
+      kind: 'seq', inputs: ['C', 'X'], outputs: ['Z'],
+      steps: [
+        { in: { X: 0, C: 0 }, want: { Z: null }, note: '電源投入直後。状態はまだ X' },
+        { in: { X: 0, C: 1 }, want: { Z: null }, note: '1 拍目。Q0 は 0 に決まるが、Q1 はまだ決まらない' },
+        { in: { X: 0, C: 0 }, want: { Z: null }, note: '下げる' },
+        { in: { X: 0, C: 1 }, want: { Z: 0 }, note: '2 拍目で状態が 00 に決まる' },
+        { in: { X: 1, C: 0 }, want: { Z: 0 }, note: 'X = 1 を用意' },
+        { in: { X: 1, C: 1 }, want: { Z: 0 }, note: '「1」を見た（01）' },
+        { in: { X: 0, C: 0 }, want: { Z: 0 }, note: 'X = 0 を用意' },
+        { in: { X: 0, C: 1 }, want: { Z: 0 }, note: '「1 0」を見た（10）' },
+        { in: { X: 1, C: 0 }, want: { Z: 0 }, note: 'X = 1 を用意' },
+        { in: { X: 1, C: 1 }, want: { Z: 1 }, note: '「1 0 1」がそろった（11）→ Z = 1' },
+        { in: { X: 0, C: 0 }, want: { Z: 1 }, note: 'Moore 型: 入力を変えても、次の縁までは Z = 1 のまま' },
+        { in: { X: 0, C: 1 }, want: { Z: 0 }, note: '…1 0 を見た（10）。重なりを数えるので 00 には戻らない' },
+        { in: { X: 1, C: 0 }, want: { Z: 0 }, note: 'X = 1 を用意' },
+        { in: { X: 1, C: 1 }, want: { Z: 1 }, note: '重なった 2 回目の「1 0 1」' },
+        { in: { X: 1, C: 0 }, want: { Z: 1 }, note: 'X = 1 のまま下げる' },
+        { in: { X: 1, C: 1 }, want: { Z: 0 }, note: '「1 1」は並びが崩れる（01）' }
+      ]
+    }
+  ];
+  QUESTS.push.apply(QUESTS, MEAS_QUESTS);
 
   var BY_ID = {};
   QUESTS.forEach(function (q) { BY_ID[q.id] = q; });
