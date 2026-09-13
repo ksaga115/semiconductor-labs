@@ -1,15 +1,15 @@
 # 半導体 ― 工程から像まで、読んで、作って、確かめる
 
-**入口は [`index.html`](index.html)（学びの地図）。** ブラウザで開くと、第0〜10部・付録と9ラボの目次と、章ごとに対応する
+**入口は [`index.html`](index.html)（学びの地図）。** ブラウザで開くと、第0〜10部・付録と10ラボの目次と、章ごとに対応する
 ラボの課題へのリンクが出る。この README はその Markdown 版（要点だけ）。
 
 半導体を、足場（第0部）から、製造工程 → 素子の物理 → 論理回路 → イメージセンサ → 光検出デバイス → アナログ回路 → 光学 → 信頼性と品質 → 光源とレーザー（第9部）までの10部に、全部をつなぐ総合演習（第10部）と、物性値と索引の付録を加えて通して学ぶための場所。
-各部は **参考書**（読んで理解する）と **ラボ**（自分の手で作って、機械に採点させる）の二層になっている（第0部・第9部・第10部・付録は参考書のみ）。
+各部は **参考書**（読んで理解する）と **ラボ**（自分の手で作って、機械に採点させる）の二層になっている（第0部・第10部・付録は参考書のみ）。
 
 ```
         第0部 足場   第1部 工程   第2部 素子     第3部 論理   第4部 像      第5部 数える   第6部 アナログ  第7部 光学   第8部 信頼性  第9部 光源
 参考書  数・波・量子  製造プロセス  デバイスの基礎  論理回路     イメージセンサ  光検出の系統   ラザビー       検出器の相手側 壊れ方を数える 光源とレーザー
-ラボ    ―           ProcessLab   SemiLab       NandLab     PixelLab      PhotonLab     AnalogLab     OptoLab      QALab        ―
+ラボ    ―           ProcessLab   SemiLab       NandLab     PixelLab      PhotonLab     AnalogLab     OptoLab      QALab        LaserLab
 
    工程 → 不純物 → pn接合 → MOSFET → インバータ → NAND → ALU → CPU
                      └→ フォトダイオード → 画素 → カメラ → 像
@@ -44,9 +44,10 @@
   NandLab\                       第3部 ラボ ― 原始部品 ＝ NAND（5章 25問）
   PixelLab\                      第4部 ラボ ― 原始部品 ＝ 光子と電子を数えること（3章 12問）
   PhotonLab\                     第5部 ラボ ― 原始部品 ＝ 光子とη（3章 12問。R・NEP・D*・最適なM・MPPC・背景光・計数・走行×RC・TCSPC）
-  AnalogLab\                     第6部 ラボ ― 原始部品 ＝ 二乗則のMOS 1個（3章 11問。Vov・gm・利得・GBW・TIA・kTC・SC・2段OTA）
-  OptoLab\                       第7部 ラボ ― 原始部品 ＝ 光線とその会計（3章 12問。カメラ方程式・回折・ガウス・ファイバ・λ/4・エテンデュ・cos⁴・モード結合）
-  QALab\                         第8部 ラボ ― 原始部品 ＝ 故障率と分布（3章 12問。MTTF・加速3種＋HAST・B10・Tj・TEC・Cpk・誤差・GR&R）
+  AnalogLab\                     第6部 ラボ ― 原始部品 ＝ 二乗則のMOS 1個（4章 13問。Vov・gm・利得・GBW・TIA・kTC・SC・2段OTA・ADC・DC-DC）
+  OptoLab\                       第7部 ラボ ― 原始部品 ＝ 光線とその会計（4章 15問。カメラ方程式・回折・ガウス・ファイバ・λ/4・エテンデュ・cos⁴・モード結合・ブルースター角・格子・回線）
+  QALab\                         第8部 ラボ ― 原始部品 ＝ 故障率と分布（4章 14問。MTTF・加速3種＋HAST・B10・Tj・TEC・Cpk・誤差・GR&R・管理図・不確かさ）
+  LaserLab\                      第9部 ラボ ― 原始部品 ＝ 共振器の会計と熱の光（3章 9問。黒体・LED・しきい値・スロープ効率・T₀・縦モード・DFB・モード同期・尖頭値）
 ```
 
 **ProcessLab と PixelLab は `../SemiLab/src/*.js` を読み込む。SemiLab と必ず兄弟に置く（PhotonLab の実行は単独で可、検査は SemiLab の道具を共用）。**
@@ -86,9 +87,10 @@ node CharLab\tests\all.js         184 件
 node NandLab\tests\all.js         642 件
 node PixelLab\tests\all.js        281 件
 node PhotonLab\tests\all.js       254 件
-node AnalogLab\tests\all.js       223 件
-node OptoLab\tests\all.js         240 件
-node QALab\tests\all.js           243 件
+node AnalogLab\tests\all.js       260 件
+node OptoLab\tests\all.js         301 件
+node QALab\tests\all.js           281 件
+node LaserLab\tests\all.js        200 件
 ```
 
 （件数は 2026-09-13 時点）

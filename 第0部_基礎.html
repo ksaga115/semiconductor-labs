@@ -657,7 +657,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <svg viewBox="0 0 760 240" role="img" aria-label="左はRC回路のステップ応答。1−e^(−t/τ)で立ち上がり、t=τで63%に達する。右は同じRC回路の周波数応答。遮断周波数fc=1/2πRCで−3dB、それより上では周波数が10倍になるごとに20dB下がる。" style="min-width:700px;width:100%;display:block">
         <text x="80" y="34" font-size="11" fill="var(--ink-2)" font-weight="600">① 時間で見る: v = 1 − e<tspan dy="-4" font-size="8">−t/τ</tspan></text>
         <text x="440" y="34" font-size="11" fill="var(--ink-2)" font-weight="600">② 周波数で見る（ボーデ線図）</text>
-        <g stroke="var(--line)" stroke-width="1"><path d="M80 50 V190 H380" fill="none"/><path d="M440 60 V190 H720" fill="none"/></g>
+        <g stroke="var(--line)" stroke-width="1" fill="none"><path d="M80 50 V190 H380"/><path d="M440 60 V190 H720"/></g>
         <polyline class="draw" style="--len:400" fill="none" stroke="var(--electron)" stroke-width="2.2" points="80,190 85,178.81 90,168.51 95,159.03 100,150.31 105,142.29 110,134.91 115,128.12 120,121.88 125,116.13 130,110.84 135,105.98 140,101.5 145,97.385 150,93.596 155,90.111 160,86.904 165,83.953 170,81.238 175,78.741 180,76.443 185,74.328 190,72.383 195,70.594 200,68.947 205,67.432 210,66.038 215,64.756 220,63.576 225,62.491 230,61.492 235,60.573 240,59.728 245,58.95 250,58.234 255,57.576 260,56.97 265,56.413 270,55.9 275,55.428 280,54.994 285,54.595 290,54.228 295,53.89 300,53.579 305,53.292 310,53.029 315,52.787 320,52.564 325,52.359 330,52.171 335,51.997 340,51.837 345,51.69 350,51.555 355,51.431 360,51.316 365,51.211 370,51.114 375,51.025 380,50.943"/>
         <path d="M80 101.5 H140 V190" stroke="var(--warn)" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
         <text x="146" y="122" font-size="9.5" fill="var(--warn)">t = τ で 63%</text>
@@ -934,7 +934,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <div class="fig-head"><span class="fig-title">OCCUPANCY — フェルミ・ディラック分布は温度で肩が丸くなる</span></div>
     <div class="fig-body scroll-x">
       <svg viewBox="0 0 760 240" role="img" aria-label="フェルミ・ディラック分布f(E)の3本の曲線。77K、300K、600K。いずれもE=EFで1/2を通り、温度が低いほど段差が急で、高いほど肩がなだらかになる。" style="min-width:700px;width:100%;display:block">
-        <g stroke="var(--line)" stroke-width="1"><path d="M80 40 V200 H680" fill="none"/><path d="M80 120 H680" stroke-dasharray="2 4"/></g>
+        <g stroke="var(--line)" stroke-width="1" fill="none"><path d="M80 40 V200 H680"/><path d="M80 120 H680" stroke-dasharray="2 4"/></g>
         <path d="M380 40 V200" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="4 3"/>
         <text x="388" y="34" font-size="10" fill="var(--ink-2)">E = E<tspan font-size="7" dy="2">F</tspan><tspan dy="-2">（f = 1/2）</tspan></text>
         <polyline fill="none" stroke="var(--electron)" stroke-width="2" points="80,40 200,40 260,40 290,40.002 302,40.009 314,40.04 326,40.181 338,40.815 344,41.721 350,43.613 356,47.486 362,55.11 368,69.02 374,91.208 380,120 386,148.79 392,170.98 398,184.89 404,192.51 410,196.39 416,198.28 422,199.19 434,199.82 452,199.98 500,200 680,200"/>
@@ -959,7 +959,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <div class="fig-head"><span class="fig-title">PRODUCT — 席の数 × 座る確率 ＝ 電子のいる場所</span></div>
     <div class="fig-body scroll-x">
       <svg viewBox="0 0 760 250" role="img" aria-label="伝導帯の底からのエネルギーを横軸に、状態密度g(E)∝√E（上に伸びる曲線）、ボルツマン分布f(E)（急に減る曲線）、その積n(E)（kT/2に山を持つ曲線）の3本。電子は伝導帯の底からkT程度の狭い範囲に集まる。" style="min-width:700px;width:100%;display:block">
-        <g stroke="var(--line)" stroke-width="1"><path d="M80 50 V200 H560" fill="none"/></g>
+        <g stroke="var(--line)" stroke-width="1" fill="none"><path d="M80 50 V200 H560"/></g>
         <g transform="translate(16 0) scale(0.8 1)">
           <polyline fill="none" stroke="var(--electron)" stroke-width="2" vector-effect="non-scaling-stroke" points="80,200 86,185 92,178.79 98,174.02 104,170 110,166.46 122,160.31 134,155 146,150.25 158,145.92 170,141.91 182,138.15 194,134.62 206,131.26 218,128.06 230,125 254,119.22 278,113.83 302,108.76 326,103.95 350,99.377 374,95 398,90.798 422,86.752 446,82.846 470,79.066 494,75.401 518,71.84 542,68.376 566,65 590,61.707 614,58.49 638,55.345 662,52.267 680,50"/>
           <polyline fill="none" stroke="var(--volt)" stroke-width="2" vector-effect="non-scaling-stroke" points="80,50 86,63.826 92,76.378 98,87.773 104,98.118 110,107.51 116,116.03 122,123.77 128,130.8 134,137.18 140,142.97 146,148.23 152,153 158,157.33 164,161.26 170,164.83 176,168.08 182,171.02 188,173.69 194,176.11 200,178.32 212,182.13 224,185.27 236,187.86 248,190 260,191.76 272,193.21 290,194.92 314,196.55 338,197.65 368,198.55 404,199.19 446,199.59 500,199.83 560,199.93 620,199.98 680,199.99"/>

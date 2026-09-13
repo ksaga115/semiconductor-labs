@@ -1,0 +1,129 @@
+/* 光源とレーザーの設計 ― 黒体・LED・レーザーのしきい値と傾き・温度・縦モード・DFB・モード同期
+ *
+ * 第9部『光源とレーザー』の式を、そのまま計算で踏むモデル。
+ *
+ * 設計で決めるもの（画面の左）:
+ *   tk      黒体の温度 [K]                 λmax = 2898 µm·K / T、可視（400〜700 nm）の割合はプランクの式を積分
+ *   etainj  LED の注入効率・iqe 内部量子効率・extr 取り出し効率
+ *   vf      LED の順電圧 [V]・lednm 発光の波長 [nm]   EQE = 注入 × IQE × 取り出し、電力効率 = EQE × hν/(qV)
+ *   r1, r2  レーザーの前と後ろの端面の反射率          鏡の損失 α_m = ln(1/R₁R₂)/(2L)
+ *   lum     共振器の長さ [µm]・ai 内部の損失 [cm⁻¹]・etai 注入効率
+ *   lasnm   発振の波長 [nm]                 微分量子効率 η_d = η_i α_m/(α_i+α_m)、スロープ効率 η_d·hν/q（両端面の合計）
+ *   ith25   25 ℃ のしきい値 [mA]・t0 特性温度 [K]・tempc 動作温度 [℃]・iop 駆動の電流 [mA]
+ *                                          I_th(T) = I_th25·exp((T−25)/T₀)、P = スロープ効率 × (I − I_th)
+ *   ng      群屈折率                         縦モードの間隔 Δλ = λ²/(2·n_g·L)
+ *   neff, pitchnm  DFB の実効屈折率と格子の周期 [nm]   ブラッグ波長 λ_B = 2·n_eff·Λ
+ *   dldt    DFB の波長の温度係数 [nm/K]              λ(T) = λ_B + dλ/dT·(T − 25)
+ *   lcavm   モード同期の共振器の長さ [m]              繰り返し f = c/(2L)
+ *   mlnm    モード同期の中心の波長 [nm]・dlnm スペクトルの幅 [nm]  ガウス形の最短のパルス Δt = 0.441·λ²/(c·Δλ)
+ *   pavg    平均の出力 [W]                          パルス 1 個 E = P/f、尖頭値 ≈ 0.94·E/Δt
+ *
+ * 【約束】数値はすべてこの式から導出できる。乱数は使わない。
+ * 【モデルの外】利得のスペクトルの形・キャリアの寿命・高温でのスロープ効率の低下・線幅・チャープ・
+ * 空間的なホールバーニングは入れていない。スロープ効率は温度によらず一定としている。
+ */
+(function (global) {
+  'use strict';
+  var LS = global.LS || (global.LS = {});
+
+  var H = 6.62607015e-34, C = 2.99792458e8, KB = 1.380649e-23, HC_EVNM = 1239.84;
+
+  function defaults() {
+    return {
+      tk: 2856,
+      etainj: 0.95, iqe: 0.8, extr: 0.3, vf: 3.0, lednm: 450,
+      r1: 0.31, r2: 0.31, lum: 500, ai: 10, etai: 0.9, lasnm: 850,
+      ith25: 10, t0: 60, tempc: 25, iop: 30,
+      ng: 3.6,
+      neff: 3.2, pitchnm: 242, dldt: 0.1,
+      lcavm: 1.5, mlnm: 800, dlnm: 5, pavg: 0.5
+    };
+  }
+
+  /* 黒体の分光放射（形だけ。定数倍は割合で消える） */
+  function planck(lamM, T) { return 1 / Math.pow(lamM, 5) / (Math.exp(H * C / (lamM * KB * T)) - 1); }
+
+  /* 可視（400〜700 nm）の割合: 0.1〜100 µm を対数の格子で積分（決まった格子なので毎回同じ値） */
+  function visFrac(T) {
+    var N = 4000, a = Math.log(0.1e-6), b = Math.log(100e-6), s = 0, t = 0;
+    for (var i = 0; i < N; i++) {
+      var x = a + (i + 0.5) * (b - a) / N, l = Math.exp(x), w = planck(l, T) * l * (b - a) / N;
+      t += w; if (l >= 400e-9 && l <= 700e-9) s += w;
+    }
+    return s / t;
+  }
+
+  function evaluate(d) {
+    /* 熱放射 */
+    var lamMaxUm = 2897.77 / d.tk;
+    var vis = visFrac(d.tk);
+    var Mwcm2 = 5.670374e-8 * Math.pow(d.tk, 4) / 1e4;
+
+    /* LED */
+    var hvLed = HC_EVNM / d.lednm;
+    var eqe = d.etainj * d.iqe * d.extr;
+    var wpe = eqe * hvLed / d.vf;
+
+    /* レーザーの共振器と傾き */
+    var Lcm = d.lum * 1e-4;
+    var am = Math.log(1 / (d.r1 * d.r2)) / (2 * Lcm);
+    var gth = d.ai + am;
+    var etad = d.etai * am / (d.ai + am);
+    var slope = etad * HC_EVNM / d.lasnm;                  /* W/A（両端面の合計） */
+    var s1 = (1 - d.r1) * Math.sqrt(d.r2), s2 = (1 - d.r2) * Math.sqrt(d.r1);
+    var front = s1 / (s1 + s2);                             /* 前の端面から出る割合 */
+    var ith = d.ith25 * Math.exp((d.tempc - 25) / d.t0);
+    var pmw = Math.max(0, slope * (d.iop - ith));           /* W/A × mA = mW */
+
+    /* 縦モードと DFB */
+    var fsrNm = d.lasnm * d.lasnm / (2 * d.ng * d.lum * 1000);
+    var lamB = 2 * d.neff * d.pitchnm;
+    var lamT = lamB + d.dldt * (d.tempc - 25);
+
+    /* モード同期のパルス */
+    var frep = C / (2 * d.lcavm);
+    var lamM = d.mlnm * 1e-9, dlM = d.dlnm * 1e-9;
+    var tauS = 0.441 * lamM * lamM / (C * dlM);
+    var epJ = d.pavg / frep;
+    var ppeak = 0.94 * epJ / tauS;
+
+    return {
+      lamMaxUm: lamMaxUm, vis: vis, Mwcm2: Mwcm2,
+      hvLed: hvLed, eqe: eqe, wpe: wpe,
+      am: am, gth: gth, etad: etad, slope: slope, front: front, ith: ith, pmw: pmw,
+      fsrNm: fsrNm, lamB: lamB, lamT: lamT,
+      frep: frep, tauFs: tauS * 1e15, epNj: epJ * 1e9, ppeakKw: ppeak / 1e3
+    };
+  }
+
+  /** L-I を 25 ℃ と動作温度で掃く */
+  function liSweep(d, n) {
+    n = n || 80;
+    var iMax = Math.max(60, 1.5 * d.iop), out = [];
+    for (var i = 0; i <= n; i++) {
+      var I = iMax * i / n;
+      var d25 = {}, k; for (k in d) d25[k] = d[k];
+      d25.tempc = 25; d25.iop = I;
+      var dT = {}; for (k in d) dT[k] = d[k];
+      dT.iop = I;
+      out.push({ i: I, p25: evaluate(d25).pmw, pT: evaluate(dT).pmw });
+    }
+    return out;
+  }
+
+  /** 黒体のスペクトル（山を 1 とした形）を 0.2〜3 µm で */
+  function planckSweep(d, n) {
+    n = n || 140;
+    var lm = 2.897771955e-3 / d.tk, bm = planck(lm, d.tk), out = [];
+    for (var i = 0; i <= n; i++) {
+      var um = 0.2 + 2.8 * i / n;
+      out.push({ um: um, b: planck(um * 1e-6, d.tk) / bm });
+    }
+    return out;
+  }
+
+  LS.laser = {
+    H: H, C: C, KB: KB, HC_EVNM: HC_EVNM,
+    defaults: defaults, evaluate: evaluate, visFrac: visFrac, liSweep: liSweep, planckSweep: planckSweep
+  };
+})(typeof window !== 'undefined' ? window : globalThis);
