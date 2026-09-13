@@ -69,7 +69,7 @@ T('落ちるべきもの', () => {
 
   /* cos⁴: 広角では暗く、望遠に逃げるのは上限破り、像高をずらすのは反則 */
   const q1 = Object.assign({}, A.get('cos4').design(), { fmm: 35 });
-  ok('cos4: 35mm（53%）は落ちる', !Q.grade('cos4', { design: q1 }).ok);
+  ok('cos4: 35mm（52%）は落ちる', !Q.grade('cos4', { design: q1 }).ok);
   const q2 = Object.assign({}, A.get('cos4').design(), { fmm: 85 });
   ok('cos4: 85mm は望遠逃げで落ちる', !Q.grade('cos4', { design: q2 }).ok);
   const q3 = Object.assign({}, A.get('cos4').design(), { hmm: 10 });

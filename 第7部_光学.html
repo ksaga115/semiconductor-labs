@@ -304,6 +304,16 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   display:block;margin-bottom:6px}
 .caveat p{font-size:13.5px;color:var(--ink-2);line-height:1.72}
 .caveat p + p{margin-top:10px}
+.ex{margin-top:20px;border:1px solid var(--line);border-left:2px solid var(--photon);border-radius:2px;background:var(--surface);padding:12px 16px;max-width:46em}
+.ex .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;color:var(--photon-2);display:block;margin-bottom:6px}
+.ex p{font-size:14px;line-height:1.8}
+.ex p + p{margin-top:8px}
+.chk{margin-top:18px;max-width:52em}
+.chk details{border-top:1px solid var(--line-2);padding:11px 0}
+.chk details:last-child{border-bottom:1px solid var(--line-2)}
+.chk summary{cursor:pointer;font-weight:700;font-size:14.5px}
+.chk summary .qn{font-family:var(--mono);font-size:10.5px;color:var(--photon-2);margin-right:8px;font-weight:600}
+.chk details p{margin-top:8px;color:var(--ink-2);font-size:14px;line-height:1.75}
 /* 参考書からラボへ渡す箱。読んだことを、隣のラボ（SemiLab / PixelLab）で自分の手で確かめる */
 .lab-go{margin-top:22px;border:1px solid var(--line);border-left:2px solid var(--digital);
   border-radius:2px;background:var(--surface);padding:12px 16px;max-width:46em}
@@ -411,6 +421,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li><a href="#s7"><span class="n">07</span><span>反射と膜</span></a></li>
     <li><a href="#s8"><span class="n">08</span><span>測る現場</span></a></li>
     <li class="dom"><span>付録</span></li>
+    <li><a href="#scheck"><span class="n">—</span><span>理解の確認</span></a></li>
     <li><a href="#s9"><span class="n">—</span><span>用語表</span></a></li>
     <li><a href="#sref"><span class="n">—</span><span>出典</span></a></li>
   </ol>
@@ -431,6 +442,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li><a href="#s7"><span class="n">07</span><span>反射と膜</span></a></li>
     <li><a href="#s8"><span class="n">08</span><span>測る現場</span></a></li>
     <li class="dom"><span>付録</span></li>
+    <li><a href="#scheck"><span class="n">—</span><span>理解の確認</span></a></li>
     <li><a href="#s9"><span class="n">—</span><span>用語表</span></a></li>
     <li><a href="#sref"><span class="n">—</span><span>出典</span></a></li>
   </ol>
@@ -530,6 +542,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p>測光量は4兄弟です: <b>光束 lm</b>（光源が出す総量）、<b>光度 cd = lm/sr</b>（ある方向への濃さ）、<b>照度 lx = lm/m&sup2;</b>（面が受ける密度）、<b>輝度 cd/m&sup2;</b>（見た目の明るさ。ディスプレイのニトがこれ）。LED のカタログは lm と cd、照明設計は lx、ディスプレイは cd/m&sup2; ― <span class="key">単位を見れば「どこで測った量か」が分かります</span>。放射量側にも同じ4兄弟（W・W/sr・W/m&sup2;・W/(sr&middot;m&sup2;)）がいて、赤外や UV ― 目に見えない光 ― では放射量しか意味を持ちません。サーモグラフィ（第5部）のカタログが W 系で書かれる理由です。</p>
   </div>
 
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（01 W と lm）</span>
+    <p><b>問.</b> 同じ 1 W の光でも、555 nm と 700 nm では何 lm か（V(700 nm) ≈ 0.0041）。照度計が 1 lx を示したとき、555 nm 単色なら何 W/m²・何光子/(µm²·s) か。</p>
+    <p><b>解.</b> 555 nm: <b>683 lm</b>。700 nm: 683 × 0.0041 = <b>2.8 lm</b> ― 同じ明るさに見せるには <b>約 240 倍</b>のパワーが要る。1 lx = 1/683 W/m² = <b>1.46 mW/m²</b>、光子1個は 1240/555 = 2.23 eV = 3.58×10⁻¹⁹ J なので <b>4.09×10¹⁵ 光子/(m²·s) ＝ 4.09×10³ 光子/(µm²·s)</b>。<span class="key">lx は目の重みを掛けた量なので、赤外の照明を lx で比べても意味がない</span> ― 監視カメラの「0.1 lx で撮れる」がスペクトルを書かないと比較できない理由です。</p>
+  </div>
+
   <div class="lab-go">
     <span class="tag">手を動かす — OptoLab 第1章</span>
     <p>lx→W→光子の換算を、第4部の 0.52%・190光子/px/s の出どころまで一気通貫で。</p>
@@ -576,6 +594,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <p>紙や壁のような拡散面は、照度 E を受けると<span class="key">輝度 L = &rho;E/&pi;</span> で四方へ照り返します（&rho; は反射率）。この L が次の03の主役 ― カメラが見ているのは照度ではなく<strong>被写体の輝度</strong>です。そして重要な会計原則: <strong>レンズをどう組んでも輝度は増やせません</strong>（明るく「見せる」ことはできても、単位面積・単位立体角あたりの光は増えない）。その正体は06の「くわしく」で。</p>
       <p>「ランベルト」の意味も一言: <span class="key">どの方向から見ても同じ明るさに見える</span>理想の拡散面のことです（月がほぼ円盤に見えるのはこの性質）。実物の紙・壁・拡散板はかなり良い近似でランベルト ― だから &pi; で割るだけの簡単な式が実務で通用します。</p>
     </div>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（02 立体角と逆二乗）</span>
+    <p><b>問.</b> 光度 100 cd の小さな光源から 2 m・4 m の面の照度は？ 2 m で面が 30° 傾いていたら？ 2 m 先の 500 lx を受ける白い紙（反射率 0.9、ランベルト面）の輝度は？</p>
+    <p><b>解.</b> E = I/r²: 2 m で <b>25 lx</b>、4 m で <b>6.25 lx</b>（距離 2 倍で 1/4）。30° 傾くと × cos30° = <b>21.7 lx</b>。紙の輝度は L = ρE/π = 0.9 × 500/π = <b>143 cd/m²</b> ― 一般的なモニタの白（100〜300 cd/m²）と同じ桁で、<span class="key">「明るい紙」と「画面の白」が同じ明るさに見える</span>のは、この数字が並んでいるからです。</p>
   </div>
 
   <div class="lab-go">
@@ -663,7 +687,15 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
 
   <div class="deep deep-note">
     <span class="tag">くわしく — cos⁴則：隅は4回割引される</span>
-    <p>カメラ方程式は光軸上の話で、軸を外れた像高では主光線角 &theta; のぶん暗くなります ― <span class="key">周辺照度 = 中心 × cos&#8308;&theta;</span>（距離が1回、面を斜めに見込む cos が2回、瞳が楕円に見えるのが1回）。tan&theta; = 像高/f なので<strong>広角ほど隅が暗い</strong>: フルサイズの隅（21.6mm）は 50mm で71%、35mm では53%。<a href="第4部_イメージセンサ.html">第4部</a>の現像が最初にやる「レンズシェーディング補正」の物理側の根拠で、補正はゲインで持ち上げる ― つまり<strong>隅は SNR でも損</strong>をしています。<a href="OptoLab/index.html?quest=cos4">OptoLab「隅を暗くしすぎない」</a>で窓ごと踏めます（実レンズはこの「自然な減光」にケラレが上乗せされます）。</p>
+    <p>カメラ方程式は光軸上の話で、軸を外れた像高では主光線角 &theta; のぶん暗くなります ― <span class="key">周辺照度 = 中心 × cos&#8308;&theta;</span>（瞳から像点までの距離が 1/cos&theta; に伸びて逆二乗で cos&sup2;&theta;、像点から見た瞳が傾いて楕円に縮むぶん cos&theta;、センサ面に斜めに当たるぶん cos&theta;）。tan&theta; = 像高/f なので<strong>広角ほど隅が暗い</strong>: フルサイズの隅（21.6mm）は 50mm で71%、35mm では52%。<a href="第4部_イメージセンサ.html">第4部</a>の現像が最初にやる「レンズシェーディング補正」の物理側の根拠で、補正はゲインで持ち上げる ― つまり<strong>隅は SNR でも損</strong>をしています。<a href="OptoLab/index.html?quest=cos4">OptoLab「隅を暗くしすぎない」</a>で窓ごと踏めます（実レンズはこの「自然な減光」にケラレが上乗せされます）。</p>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（03 カメラ方程式）</span>
+    <p><b>問1.</b> 焦点距離 50 mm のレンズで 1 m 先の物体を撮る。像距離と倍率は？ 物体上の 1 mm は、3 µm 画素で何画素になるか。</p>
+    <p><b>解.</b> 1/b = 1/50 − 1/1000 → b = <b>52.6 mm</b>、m = b/a = <b>0.0526</b>。1 mm は 52.6 µm ＝ <b>17.5 画素</b>。「傷 0.1 mm を 2 画素以上で見たい」なら、この倍率では足りない（1.75 画素）― 検査光学の倍率はこの割り算で決めます。</p>
+    <p><b>問2.</b> 1,000 lx の部屋、反射率 0.18、透過率 0.9。F1.4・F2.8・F5.6 でセンサ面の照度は？ フルサイズの隅（像高 21.6 mm）は、焦点距離 50・35・24 mm で中心の何%か。</p>
+    <p><b>解.</b> ρET/(4N²) で F1.4 <b>20.7 lx</b>、F2.8 <b>5.17 lx</b>、F5.6 <b>1.29 lx</b>（F 値 2 段ごとに 1/4）。隅は cos⁴(atan(21.6/f)) で 50 mm <b>71%</b>、35 mm <b>52%</b>、24 mm <b>31%</b>。<span class="key">広角の隅は中心より 1.7 段暗く</span>、現像のシェーディング補正はそのぶんゲインを掛ける ― 隅の SN 比はその分だけ損をしています。</p>
   </div>
 
   <div class="lab-go">
@@ -753,6 +785,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p>像側でピントが合っていると言える範囲（焦点深度）はおよそ <strong>&plusmn;2&lambda;N&sup2;</strong>（判定基準により係数は1〜2）。F2.8 なら &plusmn;9µm 程度 ― センサの取り付け公差はこの土俵で戦っています。N&sup2; で効くので、<span class="key">絞ると深度は急に楽になるが、04の回折で解像が死ぬ</span> ― 深度と解像はここでも同じ N を取り合います。物体側の被写界深度も同じ物理の相似形で、倍率の2乗で換算されます。</p>
   </div>
 
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（04 回折の限界）</span>
+    <p><b>問.</b> 555 nm でエアリー径 2.44λN を F2.8・F8・F11・F16 で。3 µm 画素のカメラでは、どこから先で「絞るほど甘くなる」か。顕微鏡で 0.5 µm の2点を 550 nm で見分けるには NA がいくつ要るか。</p>
+    <p><b>解.</b> F2.8: <b>3.8 µm</b>、F8: <b>10.8 µm</b>、F11: <b>14.9 µm</b>、F16: <b>21.7 µm</b>。第4部「解像の限界」の目安（N = 2p/λ）では 3 µm 画素で <b>F11</b> ― 点像が画素の約 5 倍に広がり、これ以上絞っても細部は増えない。0.5 µm の分解には NA ≥ 0.61 × 0.55/0.5 = <b>0.67</b>（乾燥系の NA 0.95 なら 0.35 µm、油浸 1.4 なら 0.24 µm まで）。焦点深度は ±2λN² で F2.8 <b>±8.7 µm</b>、F8 <b>±71 µm</b> ― <span class="key">深度は N² で急に楽になり、解像は N で素直に死ぬ</span>。</p>
+  </div>
+
   <div class="lab-go">
     <span class="tag">手を動かす — OptoLab 第2章</span>
     <p>エアリー径を画素に収め、NA で 0.5µm を見分ける。N のつまみの両側を体験する2問。</p>
@@ -801,6 +839,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <p>半径 w の平行ビームを焦点距離 f のレンズで絞ると、ウェストはこれだけ。<span class="key">入射ビームが太いほど小さく絞れる</span>（04の NA の話の言い換え）ので、加工機や顕微鏡はビームエキスパンダで太らせてから集光します。ビーム品質 M&sup2; はその倍数だけ絞れなくする係数 ― カタログの M&sup2; が金額になる理由（<a href="OptoLab/index.html?quest=gauss">OptoLab「20µm に絞る」</a>）。</p>
       <p>M&sup2; の読み方も一言: 理想の単一横モードが M&sup2;=1、マルチモードの LD は数〜数十。<strong>「M&sup2;=2 のビームは、同じ光学系で2倍しか絞れない」</strong>という換算がそのまま効きます。ダイオードレーザーが「明るいのに絞れない」ことがあるのは、この税金です。</p>
     </div>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（05 ガウスビーム）</span>
+    <p><b>問.</b> 1,064 nm のビームを f = 50 mm のレンズで絞る。入射ビーム半径 w = 1・2・4 mm（M² = 1）で、焦点のウェスト半径は？ w = 2 mm で M² = 1.3 なら？ ウェスト 10 µm のときのレイリー長と発散半角は？</p>
+    <p><b>解.</b> w₀′ = M²λf/(πw): w = 1 mm で <b>16.9 µm</b>、2 mm で <b>8.5 µm</b>、4 mm で <b>4.2 µm</b> ― <span class="key">入射を太らせた倍率だけ細く絞れる</span>。M² = 1.3 なら 2 mm でも <b>11.0 µm</b>（30% 太い）。ウェスト 10 µm では z<sub>R</sub> = πw₀²/λ = <b>0.30 mm</b>、発散半角 λ/(πw₀) = <b>34 mrad</b>（約 2°）― 細く絞った焦点は、前後 0.3 mm しか「細い」ままでいられない。</p>
   </div>
 
   <div class="lab-go">
@@ -880,6 +924,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <figcaption>レンズは光を「濃く」しない ― <span class="key">形を交換するだけ</span>。この保存則が、照明の明るさの上限・プロジェクタの設計・LED結合の 0.02% を全部支配しています。</figcaption>
   </figure>
 
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（06 ファイバ）</span>
+    <p><b>問.</b> コア 1.450・クラッド 1.445 のファイバの NA は？ モード半径 5.2 µm（MFD 10.4 µm 級の SM ファイバ）に、ウェスト半径 4 µm・3 µm のビームを同軸で入れると結合効率は？</p>
+    <p><b>解.</b> NA = √(1.450² − 1.445²) = <b>0.12</b> ― 屈折率差わずか 0.3% で、受け入れ半角は約 7°。結合は η = (2w₁w₂/(w₁² + w₂²))² で、4 µm なら <b>93%</b>、3 µm なら <b>75%</b>。<span class="key">スポットを小さくしすぎても入らない</span> ― 門①（スポット ≤ コア）は満たしていても、モードの形が合わないぶんが損になる。「入る」と「よく入る」の差がこの 18 ポイントです。</p>
+  </div>
+
   <div class="lab-go">
     <span class="tag">手を動かす — OptoLab 第3章</span>
     <p>2重の門の窓・モードの重なり・エテンデュの上限 ― ファイバ結合の3層を全部数字で。</p>
@@ -902,7 +952,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <div class="body-col">
       <h3>λ/4 単層の設計</h3>
       <div class="eq">R = ((n&#8321;n&#8323;&minus;n&#8322;&sup2;)/(n&#8321;n&#8323;+n&#8322;&sup2;))&sup2;　理想は n&#8322; = &radic;(n&#8321;n&#8323;)</div>
-      <p>厚み&lambda;/4の膜で、上面と下面の反射が逆位相で打ち消し合う。屈折率まで &radic;(n&#8321;n&#8323;) に合えば<strong>ゼロ</strong>。シリコンなら理想 n=1.97（SiN がほぼ適任）、ガラスなら理想1.22 ― そんな低屈折率の丈夫な材料が無いので MgF&#8322;(1.38) で 1.3% に妥協する、という実務も同じ式から読めます（<a href="OptoLab/index.html?quest=ar">OptoLab「λ/4 で反射を殺す」</a>）。広帯域や斜入射は多層膜の世界です。</p>
+      <p>厚み&lambda;/4の膜で、上面と下面の反射が逆位相で打ち消し合う。屈折率まで &radic;(n&#8321;n&#8323;) に合えば<strong>ゼロ</strong>。シリコンなら理想 n=1.97（SiN がほぼ適任）、ガラスなら理想1.22 ― そんな低屈折率の丈夫な材料が無いので MgF&#8322;(1.38) で約 1.3%（BK7 の n=1.52 で 1.3%、n=1.50 なら 1.4%）に妥協する、という実務も同じ式から読めます（<a href="OptoLab/index.html?quest=ar">OptoLab「λ/4 で反射を殺す」</a>）。広帯域や斜入射は多層膜の世界です。</p>
     </div>
   </div>
 
@@ -963,6 +1013,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   <div class="deep deep-note">
     <span class="tag">くわしく — 迷子の4%はどこへ行く：迷光とゴースト</span>
     <p>反射で失った光は消えません。<span class="key">鏡筒の中を彷徨って、あらぬ場所から像に混ざります</span>。面と面の間で2回反射した光が作る薄い像がゴースト（夜景の光源の対称位置に出るあれ）、方々で散った成分がベールのように黒を持ち上げるのがフレア ― <strong>コントラストの敵はレンズの枚数×R&sup2;</strong> で増えます。ARコートの本当の御利益は透過率の数%より、この迷光を桁で減らすこと。カメラ試験で黒がグレーに浮くとき、疑う順番は「コート・鏡筒の内面反射・センサのカバーガラス」です。</p>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（07 反射と膜）</span>
+    <p><b>問.</b> シリコン（n = 3.9）の素の反射は？ λ/4 単層の SiN（n = 2.0）と SiO₂（n = 1.46）では、設計波長で何%残るか。550 nm での SiN の厚みは？ 素のガラス面（96%）とAR面（99.5%）を 10 面・20 面通すと？</p>
+    <p><b>解.</b> 素のシリコン ((3.9−1)/(3.9+1))² = <b>35%</b>。SiN: ((3.9 − 2.0²)/(3.9 + 2.0²))² = <b>0.016%</b>（理想 √3.9 = 1.97 にほぼ一致）、厚み 550/(4 × 2.0) = <b>69 nm</b>。SiO₂ では <b>8.6%</b> ― 屈折率が理想から外れると、振幅が揃わず打ち消しきれない。10 面で素 0.96¹⁰ = <b>67%</b> 対 AR <b>95%</b>、20 面で <b>44%</b> 対 <b>90%</b>。<span class="key">ズームレンズは AR コート無しでは成立しない</span>、というのがこの掛け算です。</p>
   </div>
 
   <div class="lab-go">
@@ -1033,10 +1089,35 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p><strong>ファイバ結合は2条件＋ガウス重なりの近似。</strong>軸ずれ・角度ずれ・非ガウスモードの結合、多層膜・斜入射の膜設計は専用ツールの領分です。</p>
   </div>
 
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（08 測る現場）</span>
+    <p><b>問.</b> 帯域 1 kHz で SN 比 0.5 の微弱信号を、ロックインの帯域 0.1 Hz で測る。SN 比は何倍になるか。一次のローパス（等価雑音帯域 1/(4τ)）なら時定数はいくつで、読み値が落ち着くまで何秒待つか。</p>
+    <p><b>解.</b> √(1,000/0.1) = <b>100 倍</b>で SN 比 <b>50</b>。1/(4τ) = 0.1 Hz から τ = <b>2.5 s</b>、1% 以内に落ち着くには約 4.6τ ≈ <b>12 秒</b>。<span class="key">100 倍の静けさの代金が 1 点あたり 12 秒</span> ― 波長を 100 点掃くスペクトル測定なら 20 分。第5部の「計数は √t で買う」と同じ請求書が、アナログの側から来ています。</p>
+  </div>
+
   <div class="lab-go">
     <span class="tag">手を動かす — OptoLab 第1章</span>
     <p>1kHz の床を 0.1Hz の窓で 100 倍引き上げる。時定数という代金つき。</p>
     <div class="qs"><a href="OptoLab/index.html?quest=lockin">ロックインで床から引き上げる</a></div>
+  </div>
+</section>
+
+<!-- ================= 理解の確認 ================= -->
+<section class="stage" id="scheck">
+  <div class="stage-head"><span class="stage-num">—</span>
+    <h2>理解の確認 ― 10問で光の旅をたどり直す</h2></div>
+  <p class="lede">光源 → 空間 → レンズ → 検出器の順に並べてあります。答えを開く前に、どの章の式かを先に言ってみてください。</p>
+  <div class="chk">
+    <details><summary><span class="qn">Q1 · 01</span>赤外 LED の照明を lx で比べてはいけないのはなぜか。</summary><p>lm・lx は視感度 V(λ) を掛けた量で、赤外では V ≈ 0。人の目に見えない光の量は放射量（W/m²）で語るしかない。</p></details>
+    <details><summary><span class="qn">Q2 · 02</span>点光源から距離を 3 倍にすると照度は？ 面を 60° 傾けると？</summary><p>1/9。60° 傾けると × cos60° = 1/2。逆二乗×余弦が照明計算の最小単位。</p></details>
+    <details><summary><span class="qn">Q3 · 03</span>カメラを被写体から遠ざけても写真が暗くならないのはなぜか。星だけ例外なのはなぜか。</summary><p>1画素が見る被写体の面積が r² で増え、1点から届く光が 1/r² で減って打ち消し合うから（カメラ方程式に距離が無い）。星は面積を持たない点光源なので、逆二乗のまま暗くなる。</p></details>
+    <details><summary><span class="qn">Q4 · 03</span>広角レンズの隅が暗い物理的な理由を2つ以上。</summary><p>cos⁴ 則は3つの掛け算: 瞳から隅までの距離が 1/cos θ に伸びて逆二乗で cos²θ、隅から見た瞳が傾いて楕円に縮むぶん cos θ、センサ面に斜めに当たるぶん cos θ。実レンズではケラレが上乗せされる。</p></details>
+    <details><summary><span class="qn">Q5 · 04</span>小さい画素のカメラほど絞れないのはなぜか。</summary><p>点像の径 2.44λN が絞るほど太り、画素ピッチ p に対して N ≈ 2p/λ を超えると、それ以上絞っても解像が落ちるだけになるから。3 µm で F11、1.5 µm で F5.5。</p></details>
+    <details><summary><span class="qn">Q6 · 04</span>F 値を上げると、明るさ・解像・焦点深度はそれぞれどう動くか。</summary><p>明るさ ∝ 1/N²（暗く）、回折径 ∝ N（甘く）、焦点深度 ∝ N²（深く）。同じつまみの3つの顔。</p></details>
+    <details><summary><span class="qn">Q7 · 05</span>レーザーを細く絞りたいとき、なぜ一度ビームを太らせるのか。</summary><p>w₀′ = M²λf/(πw) で、入射半径 w に反比例して小さく絞れるから（大きな NA で集めるのと同じ）。M² はその倍率だけ絞れなくする税。</p></details>
+    <details><summary><span class="qn">Q8 · 06</span>LED の光を細い SM ファイバに「全部」入れられないのはなぜか。</summary><p>面積×立体角（エテンデュ）は受動光学系では減らせないから。結合の上限は (コア×NA / 光源径×NA)² の比で、径 100 µm・NA 0.9 の LED から SM へは約 0.02%。</p></details>
+    <details><summary><span class="qn">Q9 · 07</span>λ/4 反射防止膜が完全に反射を消す2つの条件は？</summary><p>厚み λ/(4n₂)（2つの反射が逆位相になる＝位相条件）と、屈折率 n₂ = √(n₁n₃)（2つの反射の振幅が等しくなる＝振幅条件）。設計波長を外れると位相条件が崩れて反射が戻る。</p></details>
+    <details><summary><span class="qn">Q10 · 08</span>ロックインで帯域を 1/100 にすると SN 比は何倍になるか。代金は何か。</summary><p>√100 = 10 倍。代金は時定数（帯域 B ↔ τ = 1/(4B)）で、落ち着くまで約 5τ 待つこと。静けさは時間で買う。</p></details>
   </div>
 </section>
 
@@ -1055,7 +1136,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>lm / cd / lx / cd/m²</td><td>光束（総量）・光度（方向密度）・照度（面密度）・輝度（見た目）。単位が測った場所を教える</td><td class="num">4兄弟</td></tr>
           <tr><td>逆二乗則</td><td>点光源の照度 E = I/r²。距離が光源径の5倍を超えたあたりから成立。斜め受けは ×cosθ</td><td class="num">2倍で1/4</td></tr>
           <tr><td>カメラ方程式</td><td>センサ面照度 = πLT/4N² = ρET/4N²。距離が消えるのが肝（面の被写体は引いても暗くならない）</td><td class="num">F2.8で 0.52%</td></tr>
-          <tr><td>cos⁴則</td><td>軸外の照度は cos⁴θ で減る（距離1・斜め2・楕円瞳1）。tanθ=像高/f ― 広角ほど隅が暗い。シェーディング補正の根拠</td><td class="num">50mm の隅で 71%</td></tr>
+          <tr><td>cos⁴則</td><td>軸外の照度は cos⁴θ で減る（距離の逆二乗で cos²・瞳の傾きで cos・入射の傾きで cos）。tanθ=像高/f ― 広角ほど隅が暗い。シェーディング補正の根拠</td><td class="num">50mm の隅で 71%</td></tr>
           <tr><td>F値 / NA</td><td>f/D と 光線円錐の開き。N ≈ 1/(2NA)。カメラと顕微鏡の同じもの</td><td class="num">明るさは 1/N²</td></tr>
           <tr><td>エアリー径 / レイリー分解能</td><td>2.44λN と 0.61λ/NA ― 同じ回折の2つの書き方。第4部「解像の限界」と同一。中心の円盤にエネルギーの84%</td><td class="num">F2.8で3.8µm</td></tr>
           <tr><td>焦点深度</td><td>像側でピントと言える厚み ±2λN² 級。絞ると深く、解像は浅く ― 同じ N の取り合い</td><td class="num">F2.8で±9µm</td></tr>
@@ -1083,16 +1164,33 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <table>
         <thead><tr><th>書名</th><th>著者</th><th>この部のどこ</th></tr></thead>
         <tbody>
-          <tr><td>Optics</td><td>Eugene Hecht<br>Pearson（邦訳『ヘクト 光学』丸善出版）</td>
+          <tr><td>Optics</td><td>Eugene Hecht<br>Pearson, 5th ed. (2017)（邦訳『ヘクト 光学』丸善出版）</td>
             <td><strong>幾何光学と波動光学の定番教科書。</strong>02〜04・07 の結像・回折・干渉・薄膜が導出付きで載っています。まず1冊ならこれ。</td></tr>
-          <tr><td>Fundamentals of<br>Photonics</td><td>B. E. A. Saleh &amp; M. C. Teich<br>Wiley</td>
+          <tr><td>Fundamentals of<br>Photonics</td><td>B. E. A. Saleh &amp; M. C. Teich<br>Wiley, 3rd ed. (2019)</td>
             <td>05・06 の本家。ガウスビーム・共振器・ファイバ・変調まで、フォトニクス全域を式で通します。第5部・第8部の光源側の物理もこの本の領分。</td></tr>
           <tr><td>光電子増倍管<br>ハンドブック（測光の章）</td><td>浜松ホトニクス</td>
             <td>01 の放射量・測光量の換算表と実務の単位系が、検出器屋の視点で整理されています。第5部の出典と同じ資料の前半。</td></tr>
         </tbody>
       </table>
     </div>
-    <figcaption><strong>書誌情報は、著者・出版社にとどめてあります。</strong>版が多い本ばかりなので、参照するときは手元の版の章立てで探してください。</figcaption>
+    <figcaption>版と年は記載時点の最新版です。章番号は版で動くので、参照するときは手元の版の目次で探してください。</figcaption>
+  </figure>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">PAPERS &amp; STANDARDS — 式と定義の出どころ</span></div>
+    <div class="scroll-x">
+      <table>
+        <thead><tr><th>何の話か</th><th>誰の、どの資料か</th><th>この部のどこ</th></tr></thead>
+        <tbody>
+          <tr><td>カンデラの定義（683 lm/W）</td><td>BIPM『The International System of Units (SI)』9th ed. (2019)</td><td>01。周波数 540×10¹² Hz（約 555 nm）の単色光で 1 W = 683 lm と<b>定義</b>されている。測って決まる値ではない。</td></tr>
+          <tr><td>円形開口の回折像</td><td>G. B. Airy<br>Trans. Cambridge Phil. Soc. 5, 283 (1835)</td><td>04。エアリーディスク（2.44λN）の原典。</td></tr>
+          <tr><td>分解能の基準</td><td>Lord Rayleigh<br>Phil. Mag. 8, 261 (1879)</td><td>04。一方の像の中心がもう一方の第1暗環に重なる距離（0.61λ/NA）を「見分けられる限界」とした基準。</td></tr>
+          <tr><td>ガウスビームと共振器</td><td>H. Kogelnik &amp; T. Li<br>Appl. Opt. 5, 1550 (1966)</td><td>05。ウェスト・レイリー長・発散角の式の標準的な導出。</td></tr>
+          <tr><td>ビーム品質 M²</td><td>A. E. Siegman<br>Proc. SPIE 1224, 2 (1990)</td><td>05。実ビームを「理想ガウスの何倍絞れないか」で表す M² の定義。</td></tr>
+          <tr><td>積分球</td><td>R. Ulbricht<br>Elektrotech. Z. 21, 595 (1900)</td><td>08。内面の多重拡散反射で全光束を1回の測定で求める方法の原典。</td></tr>
+        </tbody>
+      </table>
+    </div>
   </figure>
 
   <div class="foot">
