@@ -34,9 +34,15 @@
  *   linkkm ファイバの長さ [km]         受信 = 送信 − 損失 × 長さ − 接続
  *   dbkm   損失 [dB/km]・extdb 接続などの損失 [dB]・pdbm 送信 [dBm]
  *   dlnm   光源の波長の幅 [nm]・dps 波長分散 D [ps/(nm·km)]・gbps 速さ [Gb/s]  広がり = D·L·Δλ
+ *   ppum   撮像センサの画素ピッチ [µm]   系の MTF（ナイキスト 1/(2p)）= 回折の MTF（無収差の円形開口、遮断 1/(λN)）× |sinc(πpν)|
+ *                                     許すボケ c = 2 画素。像の側の焦点深度（無限遠）2Nc、物体の側の被写界深度 2Nc(1+m)/m²、
+ *                                     回折の点像の径 2.44λN(1+m)（実効 F 値 N(1+m)）
+ *   nH, nL, nsg  多層膜の高・低屈折率と基板  λ/4 の積み重ね（H で始めて H で終わる、2N+1 層）: Y = (nH/nL)^2N·nH²/nsg、R = ((1−Y)/(1+Y))²
+ *   npair  対の数 N・lam0 中心の波長 [nm]   高反射帯の幅 Δg = (4/π)asin((nH−nL)/(nH+nL))、帯の端 λ0/(1 ± Δg/2)
  *
  * 【約束】数値はすべてこの式から導出できる。乱数は使わない。
- * 【モデルの外】収差・ケラレ・偏光・多層膜・軸ずれ／角度ずれのある結合は入れていない
+ * 【モデルの外】収差・ケラレ・偏光素子・軸ずれ／角度ずれのある結合は入れていない。
+ * 多層膜は理想の λ/4 の積み重ね（吸収なし・垂直入射）の中心の反射と帯の幅だけ、MTF は無収差の円形開口と画素の開口だけ
  * （cos⁴則は自然な周辺減光だけ、モード結合は同軸・垂直のガウス重なりだけを持つ）。
  * エテンデュの結合上限は「面も角度も一様に埋まる」理想の光学系での値 ― 実物はここからさらに下がる。
  */
@@ -60,9 +66,18 @@
       hmm: 5, mfdum: 6.2,
       incdeg: 0,
       glmm: 1200, fsp: 50, slitum: 50, pxum: 25, lamlo: 400, lamhi: 1000,
-      linkkm: 10, dbkm: 0.2, extdb: 1, pdbm: 0, dlnm: 1, dps: 17, gbps: 10
+      linkkm: 10, dbkm: 0.2, extdb: 1, pdbm: 0, dlnm: 1, dps: 17, gbps: 10,
+      ppum: 3.45, nH: 2.35, nL: 1.46, nsg: 1.52, npair: 4, lam0: 550
     };
   }
+
+  /** 無収差の円形開口の MTF（ν ≥ νc で 0） */
+  function mtfDiff(nu, nuc) {
+    if (!(nuc > 0) || nu >= nuc) return 0;
+    var p = Math.acos(nu / nuc);
+    return 2 / Math.PI * (p - Math.cos(p) * Math.sin(p));
+  }
+  function sincAbs(x) { return x === 0 ? 1 : Math.abs(Math.sin(x) / x); }
 
   /**
    * 設計 → 数字。
@@ -137,6 +152,23 @@
     var spreadPs = d.dps * d.linkkm * d.dlnm;
     var bitPs = 1000 / d.gbps;
 
+    /* 撮像系の MTF（無収差の円形開口 × 画素の開口）・焦点深度・被写界深度（第7部 15・18） */
+    var pp = d.ppum || 3.45;
+    var nuNyq = 1000 / (2 * pp);                           /* lp/mm */
+    var nuc = 1000 / (lamUm * d.N);                        /* 回折の遮断周波数 lp/mm */
+    var mtfLens = mtfDiff(nuNyq, nuc), mtfPix = sincAbs(Math.PI * pp / 1000 * nuNyq);
+    var mtfSys = mtfLens * mtfPix;
+    var cUm = 2 * pp;                                      /* 許すボケ = 2 画素 */
+    var focusUm = 2 * d.N * cUm;                           /* 像の側の焦点深度（無限遠） */
+    var mt = isFinite(mag) ? mag : 0;
+    var dofMm = mt > 0 ? 2 * d.N * cUm * (1 + mt) / (mt * mt) / 1000 : Infinity;
+    var diffUm = 2.44 * lamUm * d.N * (1 + mt);            /* 実効 F 値での点像の径 */
+    /* λ/4 の多層膜（H で始めて H で終わる、2N+1 層）: 中心の波長の反射と高反射帯 */
+    var Yml = Math.pow(d.nH / d.nL, 2 * d.npair) * d.nH * d.nH / d.nsg;
+    var Rml = Math.pow((1 - Yml) / (1 + Yml), 2);
+    var dgml = 4 / Math.PI * Math.asin((d.nH - d.nL) / (d.nH + d.nL));
+    var bandLo = d.lam0 / (1 + dgml / 2), bandHi = d.lam0 / (1 - dgml / 2);
+
     return {
       Ew: Ew, L: L, Eimg: Eimg, EimgW: EimgW, phiUm: phiUm, Einv: Einv,
       bmm: bmm, mag: mag, airyUm: airyUm, resUm: resUm,
@@ -148,7 +180,10 @@
       etaMode: etaMode,
       Rs: Rs, Rp: Rp, brewDeg: brewDeg,
       rld: rld, spanMm: spanMm, bpNm: bpNm,
-      rxdbm: rxdbm, spreadPs: spreadPs, bitPs: bitPs
+      rxdbm: rxdbm, spreadPs: spreadPs, bitPs: bitPs,
+      nuNyq: nuNyq, nuc: nuc, mtfLens: mtfLens, mtfPix: mtfPix, mtfSys: mtfSys,
+      cUm: cUm, focusUm: focusUm, dofMm: dofMm, diffUm: diffUm,
+      Rml: Rml, dgml: dgml, bandLo: bandLo, bandHi: bandHi, layers: 2 * d.npair + 1
     };
   }
 
@@ -182,6 +217,6 @@
 
   OP.opto = {
     LMW: LMW, QEL: QEL,
-    defaults: defaults, evaluate: evaluate, nSweep: nSweep, wSweep: wSweep
+    defaults: defaults, evaluate: evaluate, nSweep: nSweep, wSweep: wSweep, mtfDiff: mtfDiff
   };
 })(typeof window !== 'undefined' ? window : globalThis);

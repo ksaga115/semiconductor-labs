@@ -111,6 +111,21 @@ T('落ちるべきもの', () => {
   ok('link: 波長の幅 0.1 nm は分散 136 ps で落ちる', !Q.grade('link', { design: k3 }).ok);
   const k4 = Object.assign({}, A.get('link').design(), { linkkm: 40 });
   ok('link: 長さを縮めるのは反則', !Q.grade('link', { design: k4 }).ok);
+
+  /* 第5章: MTF と焦点深度・多層膜・被写界深度の窓の両側と反則 */
+  const W = (id, p) => Q.grade(id, { design: Object.assign({}, A.get(id).design(), p) }).ok;
+  ok('mtf: F4.2 は焦点深度 58 µm で落ちる', !W('mtf', { N: 4.2 }));
+  ok('mtf: F5.6 は MTF 0.29 で落ちる', !W('mtf', { N: 5.6 }));
+  ok('mtf: 窓の端 F4.4 は通る', W('mtf', { N: 4.4 }));
+  ok('mtf: 画素を大きくするのは反則', !W('mtf', { ppum: 5 }));
+  ok('hr: 対 5 つ（99.06%）は落ちる', !W('hr', { npair: 5 }));
+  ok('hr: 対 8 つ（17 層）は予算破り', !W('hr', { npair: 8 }));
+  ok('hr: 中心 520 nm は 620 nm まで届かない', !W('hr', { lam0: 520 }));
+  ok('hr: 中心 580 nm は 500 nm まで届かない', !W('hr', { lam0: 580 }));
+  ok('hr: 屈折率の高い材料に替えるのは反則', !W('hr', { nH: 2.6 }));
+  ok('dof: F3.8 は深さ 4.7 mm で落ちる', !W('dof', { N: 3.8 }));
+  ok('dof: F5 は回折 7.5 µm で落ちる', !W('dof', { N: 5 }));
+  ok('dof: 物体を遠ざけるのは反則', !W('dof', { amm: 1000 }));
 });
 
 report();

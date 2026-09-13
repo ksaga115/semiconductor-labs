@@ -64,6 +64,18 @@
     link: {
       note: '80 km・送信 0 dBm・波長の幅 0.02 nm（DFB）。受信 −17 dBm、広がり 27 ps ≤ 50 ps。',
       design: function () { var d = O.defaults(); d.linkkm = 80; d.pdbm = 0; d.dlnm = 0.02; return d; }
+    },
+    mtf: {
+      note: 'F4.8・550 nm。系の MTF 0.334（回折 0.525 × 画素 0.637）、焦点深度 2 × 4.8 × 6.9 = 66.2 µm。',
+      design: function () { var d = O.defaults(); d.nm = 550; d.N = 4.8; return d; }
+    },
+    hr: {
+      note: '対を 6 つ（13 層）・中心 550 nm。中心の反射 99.64%、帯 478〜647 nm で 500〜620 nm を覆う。',
+      design: function () { var d = O.defaults(); d.npair = 6; d.lam0 = 550; return d; }
+    },
+    dof: {
+      note: 'F4.4。深さ 2 × 4.4 × 6.9 µm × 1.111 / 0.111² = 5.47 mm、点像 2.44 × 0.55 × 4.4 × 1.111 = 6.56 µm ≤ 6.9 µm。',
+      design: function () { var d = O.defaults(); d.nm = 550; d.amm = 500; d.N = 4.4; return d; }
     }
   };
 

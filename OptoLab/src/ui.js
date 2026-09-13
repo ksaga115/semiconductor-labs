@@ -51,7 +51,13 @@
     ['pdbm', '送信の電力', 'dBm', -30, 20],
     ['dlnm', '光源の波長の幅', 'nm', 0.001, 50],
     ['dps', '波長分散 D', 'ps/(nm·km)', -100, 100],
-    ['gbps', '速さ', 'Gb/s', 0.1, 100]
+    ['gbps', '速さ', 'Gb/s', 0.1, 100],
+    ['ppum', '撮像の画素ピッチ', 'µm', 0.5, 30],
+    ['nH', '多層膜の高屈折率', '', 1.3, 4],
+    ['nL', '多層膜の低屈折率', '', 1.1, 3],
+    ['nsg', '多層膜の基板', '', 1.3, 4],
+    ['npair', '多層膜の対の数 N', '（層は 2N+1）', 0, 30, true],
+    ['lam0', '多層膜の中心の波長', 'nm', 200, 3000]
   ];
 
   function num(t) {
@@ -234,7 +240,10 @@
       ['SM モード結合', (ev.etaMode * 100).toFixed(1) + ' %（w₁ ' + ev.w0um.toFixed(2) + ' / w₂ ' + (S.design.mfdum / 2).toFixed(2) + ' µm）', ev.etaMode < 0.5],
       ['斜めの反射 s / p', (ev.Rs * 100).toFixed(2) + ' % / ' + (ev.Rp * 100).toFixed(3) + ' %（ブルースター角 ' + ev.brewDeg.toFixed(1) + '°）'],
       ['分光器 範囲 / 分解能', ev.spanMm.toFixed(2) + ' mm / ' + ev.bpNm.toFixed(2) + ' nm（' + ev.rld.toFixed(1) + ' nm/mm）', ev.spanMm > 12.8],
-      ['回線 受信 / 分散', ev.rxdbm.toFixed(1) + ' dBm / ' + ev.spreadPs.toFixed(1) + ' ps（1 ビット ' + ev.bitPs.toFixed(0) + ' ps）', ev.spreadPs > ev.bitPs / 2]
+      ['回線 受信 / 分散', ev.rxdbm.toFixed(1) + ' dBm / ' + ev.spreadPs.toFixed(1) + ' ps（1 ビット ' + ev.bitPs.toFixed(0) + ' ps）', ev.spreadPs > ev.bitPs / 2],
+      ['MTF@ナイキスト / 焦点深度', ev.mtfSys.toFixed(3) + '（回折 ' + ev.mtfLens.toFixed(3) + ' × 画素 ' + ev.mtfPix.toFixed(3) + '・' + ev.nuNyq.toFixed(0) + ' lp/mm）/ ' + ev.focusUm.toFixed(1) + ' µm'],
+      ['被写界深度 / 回折の点像', (isFinite(ev.dofMm) ? ev.dofMm.toFixed(2) + ' mm' : '—') + ' / ' + ev.diffUm.toFixed(2) + ' µm（許すボケ ' + ev.cUm.toFixed(1) + ' µm）', ev.diffUm > ev.cUm],
+      ['多層膜 R / 高反射帯', (ev.Rml * 100).toFixed(3) + ' %（' + ev.layers + ' 層）/ ' + ev.bandLo.toFixed(0) + '〜' + ev.bandHi.toFixed(0) + ' nm']
     ];
     document.getElementById('derived').innerHTML = '<div class="dv">' + rows.map(function (r) {
       return '<span class="k">' + esc(r[0]) + '</span><span class="v' + (r[2] ? ' warn' : '') + '">' + esc(r[1]) + '</span>';

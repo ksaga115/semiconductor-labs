@@ -149,4 +149,40 @@ T('cos⁴則 ― 隅は4回割引', () => {
   near('cos⁴ の定義', ev.cos4, Math.pow(Math.cos(Math.atan(21.6 / 50)), 4), 1e-12);
 });
 
+T('MTF と焦点深度 ― 第7部 15', () => {
+  const a = evalWith({ nm: 550, N: 2.8, ppum: 3.45 }).ev;
+  near('ナイキスト 144.9 lp/mm', a.nuNyq, 144.93, 0.01);
+  near('回折の遮断 649.4 lp/mm（F2.8・550nm）', a.nuc, 649.35, 0.05);
+  near('画素の開口の MTF はナイキストで 2/π', a.mtfPix, 2 / Math.PI, 1e-9);
+  near('F2.8 の系 0.457', a.mtfSys, 0.4572, 0.0005);
+  near('F8 の系 0.157', evalWith({ nm: 550, N: 8, ppum: 3.45 }).ev.mtfSys, 0.1573, 0.0005);
+  near('焦点深度 2Nc（F8・c 6.9µm）', evalWith({ N: 8, ppum: 3.45 }).ev.focusUm, 110.4, 1e-9);
+  ok('遮断より細かい縞は 0', evalWith({ nm: 550, N: 22, ppum: 1 }).ev.mtfLens === 0);
+  ok('絞るほど MTF は下がる', evalWith({ nm: 550, N: 5.6 }).ev.mtfSys < evalWith({ nm: 550, N: 4 }).ev.mtfSys);
+});
+
+T('多層膜 ― 第7部 16', () => {
+  const R = (n) => evalWith({ npair: n }).ev.Rml;
+  near('H 1 層 32.3%', R(0), 0.3230, 0.0001);
+  near('N=4 で 97.6%', R(4), 0.97586, 0.0001);
+  near('N=5 で 99.06%', R(5), 0.99061, 0.0001);
+  near('N=8 で 99.95%', R(8), 0.99946, 0.0001);
+  const e = evalWith({ lam0: 550 }).ev;
+  near('帯の幅 Δg 0.300', e.dgml, 0.3002, 0.0001);
+  near('帯の端 478 nm', e.bandLo, 478.2, 0.2);
+  near('帯の端 647 nm', e.bandHi, 647.1, 0.2);
+  eq('層の数は 2N+1', evalWith({ npair: 6 }).ev.layers, 13);
+});
+
+T('被写界深度と回折 ― 第7部 18', () => {
+  const g = { fmm: 50, amm: 500, ppum: 3.45, nm: 550 };
+  const e = evalWith(Object.assign({ N: 8 }, g)).ev;
+  near('倍率 0.111', e.mag, 1 / 9, 1e-9);
+  near('F8 で 9.94 mm', e.dofMm, 9.936, 0.002);
+  const f46 = 6.9 / (2.44 * 0.55 * (1 + 1 / 9));
+  near('回折が c に並ぶ F4.63', f46, 4.627, 0.001);
+  near('F4.63 での深さ 5.75 mm', evalWith(Object.assign({ N: f46 }, g)).ev.dofMm, 5.747, 0.002);
+  near('F4.63 で点像 = c', evalWith(Object.assign({ N: f46 }, g)).ev.diffUm, 6.9, 1e-9);
+});
+
 report();
