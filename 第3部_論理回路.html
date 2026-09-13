@@ -143,6 +143,9 @@ input[type=range]::-moz-range-thumb{width:11px;height:11px;border-radius:50%;bac
 .eq i{font-style:normal;color:var(--one);font-weight:600}
 .eq u{text-decoration:none;color:var(--zero);font-weight:600}
 table{width:100%;border-collapse:collapse;font-size:13.5px}
+/* 列を細くしすぎない ― 日本語が 1〜3 文字ずつ縦に積まれるのを防ぐ。入りきらない表は外側の .scroll-x の中で横に送る */
+th,td{min-width:6.5em}
+th{white-space:nowrap}
 th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line-2);vertical-align:top}
 th{font-family:var(--mono);font-size:10px;letter-spacing:.07em;color:var(--ink-3);font-weight:500;border-bottom:1px solid var(--line)}
 td:first-child{font-family:var(--mono);font-weight:600;white-space:nowrap;color:var(--ink)}
@@ -187,7 +190,18 @@ table.tt td.x{color:var(--ink-3)}
 .p3dot{animation:p3dot 2.6s linear infinite}
 @keyframes p3blink{0%,100%{opacity:1}50%{opacity:.15}}
 .p3blink{animation:p3blink 1.2s ease-in-out infinite}
-@media (prefers-reduced-motion:reduce){.p3dot,.p3blink{animation:none}}
+@keyframes p3orbit{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.p3orbit{transform-box:view-box;transform-origin:200px 186px;animation:p3orbit 9.6s steps(16,end) infinite}
+@keyframes p3beat{from{transform:translateX(0)}to{transform:translateX(540px)}}
+.p3beat{animation:p3beat 8.1s steps(9,end) infinite}
+@media (prefers-reduced-motion:reduce){.p3dot,.p3blink,.p3orbit,.p3beat{animation:none}}
+/* 役割別の一言 */
+.roles{margin-top:18px;display:grid;grid-template-columns:minmax(0,1fr);border:1px solid var(--line);border-radius:2px;background:var(--surface);max-width:46em}
+@media(min-width:760px){.roles{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.roles > div{padding:10px 14px;border-bottom:1px solid var(--line-2)}
+@media(min-width:760px){.roles > div{border-bottom:0;border-right:1px solid var(--line-2)}.roles > div:last-child{border-right:0}}
+.roles b{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.07em;color:var(--ink-3);font-weight:600;margin-bottom:3px}
+.roles span{font-size:12.5px;color:var(--ink-2);line-height:1.65}
 .foot{margin-top:54px;padding-top:22px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-3);display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 @media print{.rail,.lab-go,.back,.btns{display:none!important}.main{display:block!important}figure,.caveat,.deep-note,.eq{break-inside:avoid}}
 </style>
@@ -202,11 +216,11 @@ table.tt td.x{color:var(--ink-3)}
       <h1>スイッチ4個から、<br><span class="lit">計算機</span>ができるまで</h1>
       <p class="sub">第2部の最後で作った MOSFET は、ゲートの電圧で通り道が繋がったり切れたりするだけのスイッチです。それを4個組むと NAND になり、NAND だけで NOT も AND も OR も、足し算も、記憶も、CPU の部品も作れる。なぜ NAND ひとつで足りるのか、なぜ 0 と 1 が何千段積んでも濁らないのか、記憶とは何か ― 第3部はその筋道です。</p>
       <div class="guide">
-        <div class="guide-h"><span>読み方</span><span>5章 ＝ NandLab の5章。章を読んだら末尾の課題を組む</span></div>
+        <div class="guide-h"><span>読み方</span><span>1〜5章 ＝ NandLab の1〜5章、6章 ＝ NandLab 第6章（NOR）。章を読んだら末尾の課題を組む</span></div>
         <div class="guide-b">
           <div><b>論理まで</b><span>1・2章。スイッチが NAND になり、NAND だけで全部の論理が作れること。選ぶ・見分ける回路まで。</span></div>
           <div><b>数と記憶</b><span>3・4章。2進数の足し算と2の補数、そして出力を入力へ戻すと「時間」が生まれること。</span></div>
-          <div><b>CPU の部品</b><span>5章。レジスタ・カウンタ・ALU。ここまで揃うと、CPU に足りないのはメモリと制御だけ。</span></div>
+          <div><b>CPU の部品</b><span>5章。レジスタ・カウンタ・ALU。ここまで揃うと、CPU に足りないのはメモリと制御だけ。6〜10章は発展 ― NOR と双対・速さの物理・状態機械・光子を数えるロジック・クロックをまたぐ。</span></div>
         </div>
       </div>
     </div>
@@ -240,6 +254,12 @@ table.tt td.x{color:var(--ink-3)}
     <li><a href="#s5"><span class="n">05</span><span>組み上げる</span></a></li>
     <li><a href="#scpu"><span class="n">—</span><span>CPU とメモリ階層</span></a></li>
     <li><a href="#smem"><span class="n">—</span><span>メモリの物理</span></a></li>
+    <li class="dom">発展</li>
+    <li><a href="#s6"><span class="n">06</span><span>NOR の世界と双対</span></a></li>
+    <li><a href="#s7"><span class="n">07</span><span>速さの物理</span></a></li>
+    <li><a href="#s8"><span class="n">08</span><span>状態機械の設計</span></a></li>
+    <li><a href="#s9"><span class="n">09</span><span>光子を数えるロジック</span></a></li>
+    <li><a href="#s10"><span class="n">10</span><span>クロックをまたぐ</span></a></li>
     <li class="dom">付録</li>
     <li><a href="#scheck"><span class="n">—</span><span>理解の確認</span></a></li>
     <li><a href="#sgl"><span class="n">—</span><span>用語表</span></a></li>
@@ -277,7 +297,7 @@ table.tt td.x{color:var(--ink-3)}
         <g font-family="var(--mono)" font-size="10.5" fill="var(--ink-2)"><text x="783" y="94" text-anchor="middle">SR → D → D-FF</text></g>
         <text x="783" y="112" text-anchor="middle" font-size="12" font-weight="700" fill="var(--ink)">記憶（時間が入る）</text>
         <!-- 4: cpu parts -->
-        <g font-family="var(--mono)" font-size="10.5" fill="var(--ink-2)"><text x="1007" y="62" text-anchor="middle">レジスタ · シフト</text><text x="1007" y="78" text-anchor="middle">カウンタ</text><text x="1007" y="94" text-anchor="middle">ALU（124 石）</text></g>
+        <g font-family="var(--mono)" font-size="10.5" fill="var(--ink-2)"><text x="1007" y="62" text-anchor="middle">レジスタ · シフト</text><text x="1007" y="78" text-anchor="middle">カウンタ</text><text x="1007" y="94" text-anchor="middle">ALU（NAND 124 個）</text></g>
         <text x="1007" y="112" text-anchor="middle" font-size="12" font-weight="700" fill="var(--ink)">CPU の部品</text>
         <g class="arrow" stroke="var(--ink-3)" stroke-width="1.4" fill="none"><line x1="206" y1="81" x2="234" y2="81" marker-end="url(#ar0)"/><line x1="430" y1="81" x2="458" y2="81" marker-end="url(#ar0)"/><line x1="654" y1="81" x2="682" y2="81" marker-end="url(#ar0)"/><line x1="878" y1="81" x2="906" y2="81" marker-end="url(#ar0)"/></g>
         <g font-family="var(--sans)" font-size="12" fill="var(--ink-2)">
@@ -290,7 +310,7 @@ table.tt td.x{color:var(--ink-3)}
         <g font-family="var(--mono)" font-size="9.5" fill="var(--ink-3)"><text x="16" y="212">→ 第2部 05 章</text><text x="912" y="212">→ NandLab「ここから先 ― CPU までの道順」</text></g>
       </svg>
     </div>
-    <figcaption>左の1段だけが物理（電圧）で、残りは記号の世界。切り替わりの場所が<b>しきい値</b>で、第2部の V<sub>th</sub> がそのまま出てきます。5段は NandLab の5章と同じ順です。</figcaption>
+    <figcaption>左の1段だけが物理（電圧）で、残りは記号の世界。切り替わりの場所が<b>しきい値</b>で、第2部の V<sub>th</sub> がそのまま出てきます。5段は NandLab の第1〜5章と同じ順です（NandLab 第6章の NOR の世界は、この部の第6章）。</figcaption>
   </figure>
 
   <div class="two">
@@ -354,7 +374,7 @@ table.tt td.x{color:var(--ink-3)}
       <p>NOT・AND・OR が揃えばどんな真理値表でも作れる（第2章）ので、<span class="key">NAND ひとつで全部作れる</span>。NOR でもまったく同じ（NOR(A,A) = NOT A、A+B = NOT NOR、A·B = NOR(NOT A, NOT B)）。アポロ誘導計算機は NOR だけで組まれていました。</p>
       <p><b>では AND と OR の2つでは？ 作れません。</b>AND も OR も「入力を 0 から 1 に上げると、出力は下がらない」性質（単調性）を持ち、それをいくら組み合わせても単調なまま。NOT は入力を上げると出力が下がるので、単調な部品からは決して出てこない。<b>否定を持っている</b>ことが、NAND と NOR が万能である理由そのものです。</p>
       <h3>XOR ― NAND 4個</h3>
-      <p>「違うときだけ 1」。素直に書くと A·B̄ + Ā·B で NAND 5〜6 個ですが、NAND(A,B) を共有すると4個で組めます: t = NAND(A,B)、Y = NAND(NAND(A,t), NAND(B,t))。第3章の足し算の1桁ぶんがこれです。</p>
+      <p>「違うときだけ 1」。素直に書くと A·B̄ + Ā·B で NAND 5 個（反転 2 ＋ 項 2 ＋ 束ね 1）ですが、NAND(A,B) を共有すると4個で組めます: t = NAND(A,B)、Y = NAND(NAND(A,t), NAND(B,t))。第3章の足し算の1桁ぶんがこれです。</p>
     </div>
     <div class="body-col">
       <h3>3値 ― 「まだ決まっていない」を持つ</h3>
@@ -392,7 +412,7 @@ table.tt td.x{color:var(--ink-3)}
   <div class="caveat">
     <span class="tag">断定していないこと</span>
     <p><b>伝達特性は最も素朴な二乗則（level 1）で、n と p の強さを同じにしています。</b>実物は p が弱いので坂が少し右にずれ、短チャネル（第4部 付録 B）では利得がもっと小さい。それでも「坂ができる」「利得が 1 を超える」「上下の釣り合いで出力が決まる」という肝は同じです。配線の容量と遅延、消費電力は入れていません。</p>
-    <p><b>しきい値 0.7 V と電源 3.3 V は決め打ちです。</b>第2部第5章で作った nMOS の V<sub>th</sub>・C<sub>ox</sub> はまだここに渡っていません。NandLab では NAND の中身の窓の「電圧で見る」で、盤面の入力に応じてこの坂の上の点が動くのを見られます。</p>
+    <p><b>しきい値の既定は 0.7 V、電源 3.3 V は決め打ちです。</b>SemiLab 第5章の「NAND の中身へ」を通すと、そこで作った nMOS の V<sub>th</sub> が NandLab の「電圧で見る」に渡り、坂がその素子で描かれます（渡るのは V<sub>th</sub> だけ ― この素朴なモデルは n と p の強さの比を 1 に固定しているので、C<sub>ox</sub> は坂の形を変えない）。NandLab では NAND の中身の窓の「電圧で見る」で、盤面の入力に応じてこの坂の上の点が動くのを見られます。</p>
   </div>
 
   <div class="deep-note">
@@ -406,6 +426,12 @@ table.tt td.x{color:var(--ink-3)}
     <span class="tag">例題 ― 手で一度解く（第1章）</span>
     <p><b>問.</b> 1 回の切り替えで充電する容量を 1 fF とする。電源 0.8 V で 0→1 に上げるとき、電源が払うエネルギーと、熱になるエネルギーは？ そういう節点が 10⁹ 個、周波数 3 GHz、1 拍あたり 10% が切り替わる（α = 0.1）チップの動的電力は？ 電源を 1.0 V から 0.8 V に下げると何割減るか。</p>
     <p><b>解.</b> 電源が払うのは <b>CV² = 10⁻¹⁵ × 0.8² = 0.64 fJ</b>。そのうち半分の 0.32 fJ は充電中に p 側のスイッチで熱になり、残り半分はコンデンサに溜まって、放電のとき n 側で熱になる ― 1往復で全部が熱です。チップ全体では P = αCV²f × 個数 = 0.1 × 10⁻¹⁵ × 0.64 × 3×10⁹ × 10⁹ = <b>192 W</b>（数字はすべて仮定の桁です）。電源を 1.0 → 0.8 V にすると V² が 0.64 倍で <b>36% 減</b>。周波数も電圧もいじらずに電力を 1/3 以上削れる手は他に無い ― だから電圧が最初に下げられてきました（Dennard ほか 1974 のスケーリング則）。そして下げ続けられなくなった理由が、第2部 05 の S 値の壁です。</p>
+  </div>
+
+  <div class="roles">
+    <div><b>営業・企画</b><span>CMOS が「切り替わる瞬間しか電力を使わない」ことが、低消費電力をうたう根拠。</span></div>
+    <div><b>設計・開発</b><span>利得が 1 を超える坂と雑音余裕が、デジタルを記号だけで考えてよい理由。</span></div>
+    <div><b>研究・製造</b><span>同じ回路でも p と n の強さの比で坂の位置がずれる。電源とゲートの電圧の余裕を測って確かめる。</span></div>
   </div>
 
   <div class="lab-go">
@@ -453,7 +479,7 @@ table.tt td.x{color:var(--ink-3)}
     <div class="body-col">
       <h3>セレクタ（MUX）― どちらを使うかを1本の線で</h3>
       <p>S が 0 なら A を、1 なら B を出す。Y = S̄·A + S·B。積和形の2項で、NAND にすると NAND(NAND(A, S̄), NAND(B, S))、反転を入れて <b>4個</b>。CPU が「計算した結果」と「メモリから読んだ値」のどちらをレジスタに入れるかを選ぶのがこれで、第5章のレジスタは「自分の値を書き戻すか、新しい値を入れるか」をこれで選びます。</p>
-      <p>4つから1つ選ぶ <b>4:1 セレクタ</b>は、2:1 を3個の<b>木</b>にする。S0 で (D0,D1) と (D2,D3) をそれぞれ選び、その2つを S1 で選ぶ。12個・深さ6。ALU が4種類の演算結果から1つを出すのに、同じ形が要ります。</p>
+      <p>4つから1つ選ぶ <b>4:1 セレクタ</b>は、2:1 を3個の<b>木</b>にする。S0 で (D0,D1) と (D2,D3) をそれぞれ選び、その2つを S1 で選ぶ。12個・深さ 5（S0 の反転 → 1 段目のセレクタ 2 段 → 2 段目のセレクタ 2 段）。ALU が4種類の演算結果から1つを出すのに、同じ形が要ります。</p>
       <h3>デコーダ ― 番号を「その1本だけ 1」に</h3>
       <p>2ビットの数を受けて、その番号の出力だけを 1 にする。4本の出力それぞれが「その組み合わせのときだけ 1 になる AND」で、Y0 = Ā·B̄、Y1 = Ā·B、Y2 = A·B̄、Y3 = A·B。お手本は10個。命令の番号から「この装置を動かせ」を作る<b>命令デコーダ</b>の原型で、メモリの番地選択もこれです。</p>
     </div>
@@ -534,6 +560,12 @@ table.tt td.x{color:var(--ink-3)}
     <p>Y = <b>AB + BC + CA</b>。ド・モルガンで <b>Y = NAND( NAND(A,B), NAND(B,C), NAND(C,A) )</b>。4項が3項になっただけでなく、<span class="key">反転が要らなくなった</span>（どの項にも否定の変数が残らない）ので、反転用の NAND がまるごと消えます。多数決は第2章のパリティ・ハミング符号と並ぶ「冗長で間違いを打ち消す」回路の基本形で、三重化した装置の出力を多数決で決める設計（TMR）にそのまま使われています。</p>
   </div>
 
+  <div class="roles">
+    <div><b>営業・企画</b><span>FPGA も制御回路も、中身は真理値表の組み合わせ。</span></div>
+    <div><b>設計・開発</b><span>表 → 積和形 → 共有と木で縮める順が、論理合成の結果を読む力になる。</span></div>
+    <div><b>研究・製造</b><span>グリッチは実機でも出る。測るときは拍の終わりの値を見る。</span></div>
+  </div>
+
   <div class="lab-go">
     <span class="tag">手を動かす — NandLab 第2章</span>
     <p>第1章で作った NOT・AND・OR・XNOR のチップを部品として使う。セレクタは4個で組めるが、AND と OR のチップで素直に組めば8個 ― 通ればどちらでもよい。右の「論理式」で自分の回路が S̄·A + S·B まで戻るのを見ると、積和形が回路の中にそのまま居るのが分かる。</p>
@@ -555,7 +587,7 @@ table.tt td.x{color:var(--ink-3)}
       <div class="eq">S = A ⊕ B ⊕ C　　C<sub>out</sub> = A·B + (A ⊕ B)·C</div>
       <h3>並べる ― 4ビット加算器と、桁上げの遅延</h3>
       <p>全加算器を4つ並べ、桁上がりを数珠つなぎにする（<b>リップルキャリー</b>）。一番下の C には定数 0。お手本は52個。7 + 5 = 12 が、自分で組んだ回路の上で見えます。</p>
-      <p>ただし桁上がりは<b>下から順に伝わる</b>。1桁ぶんの桁上げが NAND 2〜3段なら、4桁で 10 段前後、32桁なら 80 段近く待つことになる。実物の CPU が加算器に「桁上げ先読み」という別の工夫を入れるのはこのためで、NandLab の「時間を1歩ずつ進める」モードで、桁上げが右から左へ走っていくのが見えます。</p>
+      <p>ただし桁上がりは<b>下から順に伝わる</b>。1 桁ぶんの桁上げは、P = A⊕B を先に作っておけば NAND 2 段（例題の問3）。それでも 4 桁で 8 段、32 桁で 64 段待つことになる。NandLab のお手本の素直な組み方（半加算器 2 つと OR）では 1 桁 4 段で、4 ビット加算器の最上位の桁上がりは NAND を 19 段くぐってやっと確定します（お手本を展開して数えた値）。実物の CPU が加算器に「桁上げ先読み」という別の工夫を入れるのはこのためで、NandLab の「時間を1歩ずつ進める」モードで、桁上げが右から左へ走っていくのが見えます。</p>
     </div>
     <div class="body-col">
       <figure>
@@ -584,7 +616,7 @@ table.tt td.x{color:var(--ink-3)}
       <p>回路の中には 0 と 1 の列しかありません。それを「符号なしの 0〜15」と読むか「2の補数の −8〜7」と読むかは、回路ではなく読む側の約束です。同じ 1111 が 15 でも −1 でもある。NandLab の「束」は、配線をまとめて数として表示する機能で、束に X が1本でもあれば数を出さず「―」を出します。0 で埋めると、繋ぎ忘れが「たまたま 0」に見えてしまうからです。</p>
       <div class="caveat">
         <span class="tag">断定していないこと</span>
-        <p><b>この部の加算器はリップルキャリーだけです。</b>桁上げ先読み（CLA）や Kogge-Stone のような並列の桁上げは扱いません。オーバーフロー（2の補数で 7 + 1 = −8 になってしまう）の検出も、課題には含めていません。</p>
+        <p><b>NandLab の課題の加算器はリップルキャリーだけです。</b>桁上げ先読み（CLA）と Kogge–Stone のような並列の桁上げは、この章の「くわしく」と第7章で原理と段数だけを扱い、課題にはしていません。オーバーフロー（2の補数で 7 + 1 = −8 になってしまう）の検出も、課題には含めていません。</p>
       </div>
     </div>
   </div>
@@ -610,6 +642,7 @@ table.tt td.x{color:var(--ink-3)}
         </g>
         <text x="164" y="92" text-anchor="middle" font-family="var(--mono)" font-size="9" fill="var(--ink-3)">1111</text>
         <text x="200" y="299" text-anchor="middle" font-family="var(--mono)" font-size="9" fill="var(--ink-3)">1000</text>
+        <circle class="p3orbit" cx="200" cy="66" r="6" fill="var(--volt)"/>
         <!-- +1 の矢印 -->
         <path d="M 214 32 A 156 156 0 0 1 296 66" fill="none" stroke="var(--volt)" stroke-width="2.5" marker-end="url(#rgar)"/>
         <text x="268" y="34" font-family="var(--mono)" font-size="11.5" fill="var(--volt)" font-weight="600">+1 ＝ 一目盛り時計回り</text>
@@ -626,7 +659,7 @@ table.tt td.x{color:var(--ink-3)}
         </g>
       </svg>
     </div>
-    <figcaption>回路の中に「引き算」も「マイナス」も実在しません。あるのは16目盛りの盤面を時計回りに進む足し算だけで、<b>内側の読み方（2の補数）を約束した瞬間に、同じ回路が正負を扱えるようになる</b> ― 上の ADD/SUB の図でやっていることの、種明かしです。</figcaption>
+    <figcaption>回路の中に「引き算」も「マイナス」も実在しません。あるのは16目盛りの盤面を時計回りに進む足し算だけで、<b>内側の読み方（2の補数）を約束した瞬間に、同じ回路が正負を扱えるようになる</b> ― 上の ADD/SUB の図でやっていることの、種明かしです。紫の点は 0.6 秒に 1 目盛り（+1）ずつ進み、16 回で元の位置に戻ります ― 4 ビットのカウンタが 1111 の次に 0000 へ戻るのと同じ動きです。</figcaption>
   </figure>
 
   <div class="deep-note">
@@ -643,7 +676,13 @@ table.tt td.x{color:var(--ink-3)}
     <p><b>問2.</b> 7 + 1 を 4 ビットの 2 の補数で計算するとどうなるか。回路はそれをどう見分けられるか。</p>
     <p><b>解.</b> 0111 + 0001 = <b>1000</b> ＝ −8。文字盤の図の「+7 と −8 の境目」をまたいだオーバーフローです。見分け方は、<b>最上位の桁へ入る桁上がりと、最上位から出る桁上がりが違う</b>こと: ここでは入る側が 1、出る側が 0。この2本の XOR が 1 ならオーバーフロー ― NAND 4個を1つ足すだけで検出できます（この部の課題には含めていません）。</p>
     <p><b>問3.</b> 32 ビットのリップルキャリー加算器で、桁上げは何段の NAND を通るか。</p>
-    <p><b>解.</b> P<sub>i</sub> = A<sub>i</sub>⊕B<sub>i</sub> を先に作っておけば、1桁の桁上げは C<sub>i+1</sub> = NAND( NAND(A<sub>i</sub>,B<sub>i</sub>), NAND(P<sub>i</sub>,C<sub>i</sub>) ) で、C<sub>i</sub> からは <b>NAND 2 段</b>。32 桁で <b>約 64 段</b>。桁上げ先読みを木にした並列加算器（Kogge–Stone）なら、前置きの段は log₂32 = <b>5 段</b>（各段が NAND 2 段程度）で済む ― 桁数に比例する遅れが、桁数の対数に縮みます。</p>
+    <p><b>解.</b> P<sub>i</sub> = A<sub>i</sub>⊕B<sub>i</sub> を先に作っておけば、1桁の桁上げは C<sub>i+1</sub> = NAND( NAND(A<sub>i</sub>,B<sub>i</sub>), NAND(P<sub>i</sub>,C<sub>i</sub>) ) で、C<sub>i</sub> からは <b>NAND 2 段</b>。32 桁で <b>約 64 段</b>。桁上げ先読みを木にした並列加算器（Kogge–Stone）なら、G・P を作る 1 層と前置きの log₂32 = 5 層（1 層が NAND 2 段程度）で <b>約 12 段</b>で済む ― 桁数に比例する遅れが、桁数の対数に縮みます。</p>
+  </div>
+
+  <div class="roles">
+    <div><b>営業・企画</b><span>「何ビットの演算」は、表せる数の範囲の約束。</span></div>
+    <div><b>設計・開発</b><span>2 の補数とオーバーフロー、桁上げの段数が演算器の速さを決める。</span></div>
+    <div><b>研究・製造</b><span>1111 を 15 と読むか −1 と読むか ― 符号の読み違いはデータ解析でもよく起きる。</span></div>
   </div>
 
   <div class="lab-go">
@@ -812,6 +851,12 @@ table.tt td.x{color:var(--ink-3)}
     <p><b>解.</b> 最長の経路は、最下位の P<sub>0</sub>（3 段）→ 桁上げ C<sub>1</sub>・C<sub>2</sub>・C<sub>3</sub>（2 段 × 3）→ 最上位の和 S<sub>3</sub> = P<sub>3</sub>⊕C<sub>3</sub>（XOR 3 段）で <b>12 段</b>。前後の FF を足して 3 + 12 + 3 = <b>18 段</b>。32 ビットでは 3 + 2 × 31 + 3 = 68 段、FF を足して <b>74 段</b> ― 4 ビットの約 4 倍遅いクロックしか使えない。これを 4 ビットずつの 8 区間に FF で切れば（パイプライン）、1拍は再び 20 段前後に戻り、代わりに答えが出るまでの拍数が増えます。<b>「周波数」と「1つの答えが出るまでの時間」は別物</b> ― 並列加算器（第3章）と同様、回路の段数をどう配るかの設計です。</p>
   </div>
 
+  <div class="roles">
+    <div><b>営業・企画</b><span>クロックの周波数は、最長の経路で決まる。</span></div>
+    <div><b>設計・開発</b><span>setup / hold と 2 段の同期は必須の作法。準安定は確率（MTBF）で管理する。</span></div>
+    <div><b>研究・製造</b><span>外部のトリガをそのまま FF に入れると、まれに誤動作する ― 再現しにくい不具合の定番。</span></div>
+  </div>
+
   <div class="lab-go">
     <span class="tag">手を動かす — NandLab 第4章</span>
     <p>NAND を2つ互い違いに繋ぐ。上の「時間」を止めて Space で1歩ずつ進めると、S を 0 にした値が輪を回って落ち着くのが見える。両方 0 → 両方 1 で発振させてみる。D ラッチ、D フリップフロップの課題は「入力を順に与えて、そのつど出力が合っているか」で採点される ― 前の状態を保っていること自体が見たい性質だから。</p>
@@ -881,6 +926,12 @@ table.tt td.x{color:var(--ink-3)}
     <p><b>解.</b> カウンタの各桁は、下の桁が全部 1 のときだけ反転する ― つまり<b>1段ごとに周波数が半分</b>になる（分周）。Q0 は f/2、Q1 は f/4、…、Q3 は <b>f/16</b>。32,768 = 2¹⁵ なので <b>15 段</b>で 1 Hz。時計の水晶が 32,768 Hz という半端な値なのは、<span class="key">FF を並べるだけで秒が作れる 2 のべき乗</span>だからです。同じカウンタに「好きな値を入れる口」を足したものが CPU のプログラムカウンタ、比較器で「ある値で 0 に戻す」を足したものが 10 進カウンタや分周比を変えられるタイマ ― 第2章の部品を1個足すたびに用途が1つ増えます。</p>
   </div>
 
+  <div class="roles">
+    <div><b>営業・企画</b><span>装置の制御も CPU も、レジスタ・カウンタ・ALU の組み合わせ。</span></div>
+    <div><b>設計・開発</b><span>リセット線を忘れた回路は X から抜け出せない。</span></div>
+    <div><b>研究・製造</b><span>分周とタイマはカウンタそのもの。周波数は 2 のべき乗で追える。</span></div>
+  </div>
+
   <div class="lab-go">
     <span class="tag">手を動かす — NandLab 第5章</span>
     <p>レジスタは「FF ＋ 手前のセレクタ」を1桁ぶんチップにして4つ置く。カウンタはクロック部品を繋いで「動かす」と、自分で組んだ回路が勝手に数えはじめる。R を繋ぎ忘れると X のまま動かない ― それが正しい。ALU は1桁ぶんをチップにしてから4つ。「道のり」で、NOT からここまでが何の上に建っているかが図で見える。</p>
@@ -924,6 +975,7 @@ table.tt td.x{color:var(--ink-3)}
           <rect x="332" y="142" width="56" height="26" fill="var(--electron-soft)"/><rect x="392" y="142" width="56" height="26" fill="var(--volt-soft)"/><rect x="452" y="142" width="56" height="26" fill="var(--one-soft)"/><rect x="512" y="142" width="56" height="26" fill="var(--photon-soft)"/><rect x="572" y="142" width="56" height="26" fill="var(--unk-soft)"/>
           <rect x="392" y="176" width="56" height="26" fill="var(--electron-soft)"/><rect x="452" y="176" width="56" height="26" fill="var(--volt-soft)"/><rect x="512" y="176" width="56" height="26" fill="var(--one-soft)"/><rect x="572" y="176" width="56" height="26" fill="var(--photon-soft)"/><rect x="632" y="176" width="56" height="26" fill="var(--unk-soft)"/>
         </g>
+        <rect class="p3beat" x="152" y="36" width="56" height="170" fill="var(--volt)" fill-opacity=".16" stroke="none"/>
         <g font-family="var(--mono)" font-size="10" fill="var(--ink)" text-anchor="middle">
           <text x="180" y="57">IF</text><text x="240" y="57">ID</text><text x="300" y="57">EX</text><text x="360" y="57">MEM</text><text x="420" y="57">WB</text>
           <text x="240" y="91">IF</text><text x="300" y="91">ID</text><text x="360" y="91">EX</text><text x="420" y="91">MEM</text><text x="480" y="91">WB</text>
@@ -934,7 +986,7 @@ table.tt td.x{color:var(--ink-3)}
         <text x="420" y="222" font-size="10" fill="var(--warn)" text-anchor="middle">5 拍目からは、毎拍 1 つの命令が仕上がる（同じ拍に 5 つの段が同時に働く）</text>
       </svg>
     </div>
-    <figcaption>縦に見ると、5 拍目には 5 つの命令がそれぞれ別の段にいる。段の間のフリップフロップが「1 拍の予算」を段ごとに切り分けているので、クロックを上げられる。実際の CPU は段数をもっと増やし（深いパイプライン）、1 拍に複数の命令を並べて流す（スーパースカラ）ことで、さらに多くの命令を仕上げます。</figcaption>
+    <figcaption>縦に見ると、5 拍目には 5 つの命令がそれぞれ別の段にいる。段の間のフリップフロップが「1 拍の予算」を段ごとに切り分けているので、クロックを上げられる。実際の CPU は段数をもっと増やし（深いパイプライン）、1 拍に複数の命令を並べて流す（スーパースカラ）ことで、さらに多くの命令を仕上げます。薄い帯は 0.9 秒に 1 拍ずつ右へ進み、その拍に同時に働いている段（縦に並ぶ最大 5 つ）を示します。</figcaption>
   </figure>
 
   <div class="two">
@@ -1088,11 +1140,410 @@ table.tt td.x{color:var(--ink-3)}
   </div>
 
   <div class="qs"><span class="lab">NandLab</span><a href="NandLab/index.html">RAM を使って自由制作（パレットの RAM16。「実装部品」― NAND からは組んでおらず、課題の採点では使えない）</a></div>
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（メモリの物理）</span>
+    <p><b>問.</b> 制御ゲートと浮遊ゲートの間の容量を 0.5 fF とする（仮定）。書き込みで V<sub>th</sub> を 2 V 上げるには、浮遊ゲートに電子を何個入れるか。10 年で V<sub>th</sub> のずれの 20% までしか失ってはいけないとすると、平均で何日に 1 個まで漏らしてよいか。</p>
+    <p><b>解.</b> ΔV<sub>th</sub> ≈ Q/C なので Q = 0.5 fF × 2 V = 1 fC、電子にして 1×10⁻¹⁵ / 1.602×10⁻¹⁹ = <b>6,242 個</b>。20% は 1,248 個で、10 年 = 3.16×10⁸ 秒で割ると 4.0×10⁻⁶ 個/秒 ― <b>約 3 日に 1 個</b>。セルを小さくすると C が小さくなり、同じ ΔV<sub>th</sub> に要る電子の数は C に比例して減る。<span class="key">微細化するほど電子 1 個の重みが増し、漏れと雑音に弱くなる</span> ― 平面のまま縮めるのが行き詰まり、3D に積む方向へ転じた理由の一つです。</p>
+  </div>
+
+</section>
+
+<!-- ================= 06 ================= -->
+<section class="stage" id="s6">
+  <div class="stage-head"><span class="stage-num">06</span><h2>NOR だけの世界 ― 0 と 1 を読み替えると、回路はもう一つの回路になる</h2></div>
+  <p class="lede">第1章で「NOR でもまったく同じ」と一言で済ませたことを、ここで確かめます。原始部品を NOR に取り替えても全部が作れるだけでなく、<span class="key">NAND で作った回路の 0 と 1 を全部読み替えると、そのまま NOR の回路になる</span>。これが<b>双対性</b>で、NandLab の第6章はこの鏡の向こう側を歩く章です。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>NOR で全部 ― 4 つの部品</h3>
+      <p>NOR(A, B) は「どちらも 0 のときだけ 1」。両方の入力に同じものを入れると NOR(A, A) = NOT A。NOR の後ろに NOT を付ければ OR。AND はド・モルガンで A·B = NOT(NOT A + NOT B) = NOR(NOT A, NOT B)。NAND は AND の後ろに NOT。個数は NOT 1・OR 2・AND 3・NAND 4 で、NAND の世界の NOT 1・AND 2・OR 3 と比べると<b>AND と OR の役が入れ替わっただけ</b>です（NandLab 第6章のお手本の実測）。</p>
+      <div class="eq">NOT A = <b>NOR</b>(A, A)　　A + B = NOT <b>NOR</b>(A, B)<br>A·B = <b>NOR</b>(NOT A, NOT B)</div>
+      <h3>双対 ― 全部の線の 0 と 1 を読み替える</h3>
+      <p>回路の全部の線について、「電圧が高いほうを 1」と読む約束を「低いほうを 1」に取り替えてみます。回路は1本も変わらず、変わるのは読み方だけです。すると NAND の真理値表は、入力も出力も 0↔1 を入れ替えて読むと NOR の真理値表になる。たとえば NAND(0, 0) = 1 を読み替えると NOR(1, 1) = 0。一般に、関数 f を読み替えたもの（双対）は</p>
+      <div class="eq">f<sup>d</sup>(x₁, …, xₙ) = NOT f(NOT x₁, …, NOT xₙ)<br>NAND<sup>d</sup> = NOR　AND<sup>d</sup> = OR　XOR<sup>d</sup> = XNOR</div>
+      <p>だから <span class="key">NAND 4 個の XOR と同じ配線を NOR 4 個でやると、XNOR になる</span>。XOR の双対は NOT(XOR(NOT A, NOT B)) で、両方の入力を反転しても XOR は変わらないので、これは NOT(XOR(A, B)) = XNOR だからです。右の図で、同じ配線の上下が同じ入力に対していつも反対の答えを出すのを見てください。</p>
+    </div>
+    <div class="body-col">
+      <figure>
+        <div class="fig-head"><span class="fig-title">DUALITY — 同じ配線を、NAND と NOR で</span><span class="fig-title">入力は 00 → 01 → 10 → 11 を巡る</span></div>
+        <div class="fig-body">
+          <svg id="svgDual" viewBox="0 0 520 330" role="img" aria-label="同じ4ゲートの配線を、上は NAND 4個、下は NOR 4個で組んだ図。入力 A と B が順に巡り、上の出力は XOR、下の出力は XNOR になって、いつも反対の値を出す。"></svg>
+          <div class="btns"><span class="lab">入力</span><button class="btn" id="bDualNext">次の入力へ</button><button class="btn" id="bDualPlay" aria-pressed="true">再生中</button></div>
+          <p id="tDual" style="font-size:12.5px;color:var(--ink-2);margin-top:8px;min-height:1.7em"></p>
+        </div>
+        <figcaption>上下は1本も違わない同じ配線で、違うのは素子が NAND か NOR かだけです。入力が 00 → 01 → 10 → 11 と巡るたびに、上は XOR（違えば 1）、下は XNOR（同じなら 1）を出し、答えはいつも反対になる。線の色はその線の値（緑 1／青 0）。</figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>NOR の SR ラッチ ― 効く向きが逆になる</h3>
+      <p>第4章の SR ラッチ（NAND 2 個）は、S・R が <b>0 で効きました</b>。NOR 2 個を互い違いに繋ぐと、双対なので <b>1 で効く</b>: S = 1 で Q = 1、R = 1 で Q = 0、S = R = 0 のあいだは保持。式は Q = NOR(R, Q̄)、Q̄ = NOR(S, Q) です。</p>
+      <p>NOR の3値表は「片方が 1 なら、もう片方が X でも出力は 0 で確定」― NAND の「片方が 0 なら 1」の鏡写しです。だから電源投入直後の X は、S か R の 1 が追い出す。禁止入力も鏡写しで、S = R = 1（両方の出力が 0）から両方 0 に同時に戻すと発振しうる。NandLab の第6章の課題「NOR の SR ラッチ」は、この 1 で効く手順で採点されます。</p>
+      <div class="tts">
+        <div><div class="cap">NOR の 3 値表</div><table class="tt"><tr><th></th><th>B=0</th><th>B=1</th><th>B=X</th></tr><tr><td>A=0</td><td class="o">1</td><td class="o">0</td><td class="x">X</td></tr><tr><td>A=1</td><td class="o">0</td><td class="o">0</td><td class="o">0</td></tr><tr><td>A=X</td><td class="x">X</td><td class="o">0</td><td class="x">X</td></tr></table></div>
+      </div>
+    </div>
+    <div class="body-col">
+      <h3>CMOS では、なぜ NAND が選ばれるのか ― 数で</h3>
+      <p>第1章で「直列の pMOS が遅い」と書いたことを、第7章の<b>論理的努力</b>の言葉で数にしておきます。インバータと同じ強さで引くには、直列に 2 個並べたスイッチは幅を 2 倍にしなければならない。電子と正孔の移動度の比を γ とすると（第2部の 1164/386 で γ ≈ 3。教科書の多くは γ = 2 と置く）、インバータの入力容量は 1 + γ、2 入力の NAND は 2 + γ（直列の n を 2 倍に）、2 入力の NOR は 1 + 2γ（直列の p を 2 倍に）。これをインバータの値で割ったものが論理的努力 g です。</p>
+      <div class="eq">g<sub>NAND2</sub> = (2 + γ)/(1 + γ)　　g<sub>NOR2</sub> = (1 + 2γ)/(1 + γ)</div>
+      <p>γ = 2 で 4/3 と 5/3、γ = 3 で 5/4 と 7/4。<span class="key">同じ仕事をするのに、NOR は NAND の 1.25〜1.4 倍重い</span>。入力が 3 本に増えると差は開き、γ = 2 で NAND3 は 5/3、NOR3 は 7/3 です。NOR だけの世界は論理としては完全に対等でも、CMOS の物理が片方を選ぶ。ただし、抵抗とトランジスタで組んだ RTL（抵抗・トランジスタ論理）の時代は、並列のトランジスタで引き下げる NOR が基本の形でした。</p>
+    </div>
+  </div>
+
+  <div class="deep-note">
+    <span class="tag">くわしく — アポロ誘導計算機は、NOR 1 種類で組まれた</span>
+    <p>月へ行ったアポロ宇宙船の誘導計算機（Block II）は、<b>3 入力の NOR を 2 個入れた 1 種類の IC</b>、約 2,800 個で組まれていました（Hall 1996）。当時の IC は RTL で、NOR が最も素直に作れる形だった。部品を 1 種類に絞ったのは、同じ部品を大量に作って選別と試験を積み上げ、信頼性を確かめるためでした。</p>
+    <p>この部の言葉で言えば、アポロの設計者は第6章の世界に住んでいたことになります。NOR から NOT・OR・AND を作り、それを積んでレジスタと加算器を作る ― NandLab で NAND から ALU までやったことを、鏡の向こう側で、1960 年代に実際にやっていた。<span class="key">万能な素子が 1 種類あれば計算機は作れる</span>、というこの部の出発点は、思考実験ではなく、月まで飛んだ事実です。</p>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（第6章）</span>
+    <p><b>問1.</b> NAND 4 個の 2:1 セレクタ（S̄ = NAND(S, S)、Y = NAND(NAND(A, S̄), NAND(B, S))）と同じ配線を、NOR 4 個で組むと何になるか。</p>
+    <p><b>解.</b> 一段ずつ書き下すと、NOR(S, S) = S̄、NOR(A, S̄) = Ā·S、NOR(B, S) = B̄·S̄、Y = NOR(Ā·S, B̄·S̄) = NOT(Ā·S + B̄·S̄)。S = 1 なら NOT Ā = A、S = 0 なら NOT B̄ = B。つまり <b>Y = S·A + S̄·B</b> ― <span class="key">S の意味が入れ替わっただけのセレクタ</span>です。セレクタの双対はセレクタそのもので（入力の役を入れ替えれば同じ）、NOR 4 個で組める。</p>
+    <p><b>問2.</b> NOR の SR ラッチに、電源投入直後（Q = Q̄ = X）から S = 1, R = 0 を入れ、次に S = R = 0 に戻した。Q はどうなるか。</p>
+    <p><b>解.</b> Q̄ = NOR(S, Q) = NOR(1, X) = <b>0</b>（片方が 1 なので X でも確定）。すると Q = NOR(R, Q̄) = NOR(0, 0) = <b>1</b>。S を 0 に戻しても Q̄ = NOR(0, 1) = 0、Q = NOR(0, 0) = 1 のまま ― 1 が保たれる。NAND のラッチで「S = 0 で Q = 1」だった手順が、ちょうど 0 と 1 を読み替えた形で再現されます。</p>
+  </div>
+
+  <div class="roles">
+    <div><b>営業・企画</b><span>NAND と NOR は論理として対等。CMOS の物理が NAND を選ぶ。</span></div>
+    <div><b>設計・開発</b><span>双対で回路を読み替えられる。負論理（アクティブ・ロー）の信号を読むときにも使う。</span></div>
+    <div><b>研究・製造</b><span>古い装置（RTL・リレー）の図面は NOR が基本の形のことがある。</span></div>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — NandLab 第6章（NOR だけで組む）</span>
+    <p>パレットの NOR を使う。<b>素子は混ぜない</b> ― 第6章は NOR だけ、第1〜5章は NAND だけで採点されます。NAND の世界で作ったチップを持ち込むと、振る舞いが合っていても落ちる。NOR で XNOR を組むときは、第1章の NAND の XOR と同じ形に並べてみると、双対がそのまま答えになります。</p>
+    <div class="qs"><span class="lab">NandLab 第6章</span><a href="NandLab/index.html?quest=n_not">NOR で NOT</a><a href="NandLab/index.html?quest=n_or">NOR で OR</a><a href="NandLab/index.html?quest=n_and">NOR で AND</a><a href="NandLab/index.html?quest=n_nand">NOR で NAND</a><a href="NandLab/index.html?quest=n_xnor">NOR で一致（XNOR）</a><a href="NandLab/index.html?quest=n_sr">NOR の SR ラッチ</a></div>
+  </div>
+</section>
+
+<!-- ================= 07 ================= -->
+<section class="stage" id="s7">
+  <div class="stage-head"><span class="stage-num">07</span><h2>速さの物理 ― 遅延は RC、ゲートの大きさは「論理的努力」で決める</h2></div>
+  <p class="lede">NandLab は全部の NAND の遅延を 1 にしました。実物の遅延は、<b>何を、どれだけの強さで引くか</b>で決まり、ゲートごと・経路ごとに違います。<span class="key">小さなゲートで大きな負荷を直接引くのは遅く、段を増やして少しずつ大きくするほうが速い</span> ― この直観を数にする道具が、RC の遅延と論理的努力（logical effort）です。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>1 段の遅延 ― スイッチの抵抗が容量を充電する</h3>
+      <p>オンになった MOSFET を抵抗 R とみなすと、出力の節点につながる容量 C（次段のゲート・配線・自分の拡散）を充電・放電する時間が遅延です。階段状の入力に対して、RC の節点が途中の半分まで動く時間は ln 2 · RC = <b>0.69 RC</b>。R = 10 kΩ、C = 10 fF なら 69 ps です（値は桁の例）。</p>
+      <div class="eq">t<sub>pd</sub> ≈ 0.69 · R<sub>on</sub> · C<sub>負荷</sub><br>R<sub>on</sub> ∝ 1/幅　　C<sub>ゲート</sub> ∝ 幅</div>
+      <p>幅を 2 倍にすると R は半分になって速くなるが、自分の入力容量も 2 倍になって、<b>前の段を遅くする</b>。大きくすればよい、では済まない ― ここから「どれだけ大きくするか」の問題が始まります。</p>
+      <h3>論理的努力 ― d = g·h + p</h3>
+      <p>Sutherland・Sproull・Harris の整理では、1 段の遅延を基準の時間 τ の何倍かで次のように書きます。</p>
+      <div class="eq">d = <b>g</b> · <b>h</b> + p<br>h = C<sub>出力</sub> / C<sub>入力</sub>（電気的努力 ＝ ファンアウト）</div>
+      <p><b>g</b>（論理的努力）は「インバータと同じ電流を出すのに、入力容量が何倍要るか」で、ゲートの形だけで決まる（インバータ 1、NAND2 4/3、NOR2 5/3。γ = 2 のとき、第6章）。<b>p</b>（寄生遅延）は自分の拡散容量のぶんで、インバータ 1、2 入力のゲートで 2 程度。自分と同じインバータ 4 個を引くインバータ（<b>FO4</b>）は d = 1 × 4 + 1 = <b>5τ</b>。工程の速さを比べる物差しとして、実務で「FO4 何段ぶん」と言います。</p>
+    </div>
+    <div class="body-col">
+      <figure>
+        <div class="fig-head"><span class="fig-title">RACE — 64 倍の負荷を、1 段で引くか 3 段で引くか</span><span class="fig-title">単位 τ · d = g·h + p から</span></div>
+        <div class="fig-body">
+          <svg id="svgRace" viewBox="0 0 520 270" role="img" aria-label="64倍の負荷を引く2通りの経路の競走。上は幅1のインバータ1段で直接引き、遅延は65τ。下は1、4、16と4倍ずつ大きくした3段で、各段5τの合計15τ。点が時間の軸に沿って進み、下の経路が4倍以上早く着く。"></svg>
+          <div class="btns"><button class="btn" id="bRace">もう一度走らせる</button></div>
+        </div>
+        <figcaption>上: 幅 1 のインバータが 64 倍の負荷を直接引く。h = 64 なので d = 64 + 1 = <b>65τ</b>。下: 1 → 4 → 16 と 4 倍ずつ大きくした 3 段で引く。各段の h = 4 で d = 4 + 1 = 5τ、合計 <b>15τ</b>。点はどちらも同じ速さの時計で進み、段を増やしたほうが 4 倍以上早く着きます。</figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>経路の遅延を最小にする ― 段ごとの努力を揃える</h3>
+      <p>N 段の経路全体の努力は F = G · H です（G は各段の g の積、H は最後の負荷と最初の入力容量の比。途中で枝分かれがあれば、その分岐の比 B も掛ける）。遅延 D = Σ g<sub>i</sub>h<sub>i</sub> + P は、<b>各段の努力 f = g·h を全部同じ F<sup>1/N</sup> にしたとき最小</b>になります。積が一定の数を足すなら、全部等しいときが最小だからです（相加平均 ≥ 相乗平均）。</p>
+      <div class="eq">D<sub>min</sub> = N · F<sup>1/N</sup> + P<br>最適な段の努力 ≈ 3.6（p<sub>inv</sub> = 1 のとき。実務では 4 と覚える）</div>
+      <p>64 倍の負荷をインバータで引くなら F = 64。N = 1 で 64 + 1 = 65τ、N = 2 で 2 × 8 + 2 = 18τ、<b>N = 3 で 3 × 4 + 3 = 15τ</b>、N = 4 で 4 × 2.83 + 4 = 15.3τ、N = 5 で 16.5τ。段の努力が 4 前後のところが最適で、<span class="key">「1 段で 4 倍ずつ大きくする」</span>のが、大きな負荷（クロックの木・出力のパッド）を引く定石です。段数の奇偶で出力が反転するので、実際は論理を合わせて 3 段か 4 段を選びます。</p>
+    </div>
+    <div class="body-col">
+      <h3>配線 ― 長さの 2 乗で遅くなる</h3>
+      <p>配線は、抵抗と容量が一様に分布した線です。長さ L の線は抵抗も容量も L に比例するので、線そのものの遅延は <b>L² に比例</b>します（分布 RC 線の 50% 遅延 ≈ 0.38 rcL²。r・c は単位長さあたりの抵抗と容量）。長さを 2 倍にすると 4 倍遅い。</p>
+      <p>だから長い配線は、途中に<b>リピータ</b>（インバータ）を等間隔に入れて区切ります。k 個に区切ると、1 区間の遅延は 1/k² になり、それが k 回で線全体は 1/k、代わりにリピータの遅延が k 個ぶん足される ― ここでも「ほどよい段数」が最適になる。トランジスタが微細化で速くなっても、細くなった配線の r は上がるので、<b>今のチップの遅延の多くは配線</b>で決まっています。</p>
+      <div class="caveat">
+        <span class="tag">断定していないこと</span>
+        <p>g・p の値は、対称な CMOS ゲートを仮定した教科書の目安です（Weste &amp; Harris）。実物はセルライブラリの特性表（遅延の表）で決まります。τ は工程と電源電圧で決まる数 ps 程度の時間で、この部では τ の単位のまま扱います。</p>
+      </div>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">HOW MANY STAGES — 64 倍の負荷を N 段で引いたときの遅延</span><span class="fig-title">D = N · 64<sup>1/N</sup> + N（τ）</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 900 224" role="img" aria-label="64倍の負荷をN段のインバータで引いたときの遅延の棒グラフ。N=1で65τ、2で18τ、3で15τ、4で15.3τ、5で16.5τ、6で18τ。N=3が最小で、段の努力は4。" style="min-width:720px">
+        <path d="M100,180 H740" fill="none" stroke="var(--line)" stroke-width="1.5"/>
+        <rect x="120" y="37" width="60" height="143" fill="var(--surface-3)" stroke="var(--line)"/>
+        <rect x="230" y="140.4" width="60" height="39.6" fill="var(--surface-3)" stroke="var(--line)"/>
+        <rect x="340" y="147" width="60" height="33" fill="var(--volt-soft)" stroke="var(--volt)" stroke-width="2"/>
+        <rect x="450" y="146.3" width="60" height="33.7" fill="var(--surface-3)" stroke="var(--line)"/>
+        <rect x="560" y="143.7" width="60" height="36.3" fill="var(--surface-3)" stroke="var(--line)"/>
+        <rect x="670" y="140.4" width="60" height="39.6" fill="var(--surface-3)" stroke="var(--line)"/>
+        <g font-family="var(--mono)" font-size="12" font-weight="600" text-anchor="middle" fill="var(--ink)">
+          <text x="150" y="30">65τ</text><text x="260" y="133">18τ</text><text x="370" y="140" fill="var(--volt)">15τ</text><text x="480" y="139">15.3τ</text><text x="590" y="136">16.5τ</text><text x="700" y="133">18τ</text>
+        </g>
+        <g font-family="var(--mono)" font-size="11" text-anchor="middle" fill="var(--ink-2)">
+          <text x="150" y="198">N = 1</text><text x="260" y="198">N = 2</text><text x="370" y="198">N = 3</text><text x="480" y="198">N = 4</text><text x="590" y="198">N = 5</text><text x="700" y="198">N = 6</text>
+        </g>
+        <g font-family="var(--mono)" font-size="10" text-anchor="middle" fill="var(--ink-3)">
+          <text x="150" y="214">f = 64</text><text x="260" y="214">f = 8</text><text x="370" y="214">f = 4</text><text x="480" y="214">f = 2.83</text><text x="590" y="214">f = 2.30</text><text x="700" y="214">f = 2</text>
+        </g>
+        <g font-family="var(--sans)" font-size="12" fill="var(--ink-2)">
+          <text x="200" y="64">1 段で 64 倍を引くと、努力が 1 段に集中して遅い</text>
+          <text x="200" y="84">段を増やすと努力は分けられるが、寄生遅延 p が段数ぶん足される</text>
+          <text x="200" y="104" font-weight="700" fill="var(--volt)">最小は N = 3（段の努力 f = 4）― 「1 段 4 倍」の根拠</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>インバータだけの経路（g = 1、p = 1）なので D = N · 64<sup>1/N</sup> + N。N = 3 と 4 はほぼ同じ（15 と 15.3）で、最小の近くは平らです ― 段の努力が 3〜6 のあいだなら、最適からの損は 1 割程度に収まる。だから実務では段数をきっちり最適にするより、出力の論理（反転の有無）を合わせる側を優先します。</figcaption>
+  </figure>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">CARRY WAVE — 16 ビットで 1111…1 + 1 を計算するとき、桁上げが走る</span><span class="fig-title">1 目盛り ＝ NAND 1 段</span></div>
+    <div class="fig-body scroll-x">
+      <svg id="svgCarry" viewBox="0 0 900 252" role="img" aria-label="16ビットの加算で、全ビット1に1を足すとき、桁上げがどの時刻に各桁へ届くかのアニメーション。上のリップルキャリーは1桁にNAND2段ずつかかり、最上位の桁上げまで32段。下の並列加算器は前置き1層と4層の計算で、10段で全桁に届く。" style="min-width:720px"></svg>
+    </div>
+    <figcaption>上: リップルキャリー。1 桁の桁上げは NAND 2 段（第3章の問3）なので、桁上げ c<sub>i</sub> が i 桁目に届くのは 2i 段目、最上位から出る c<sub>16</sub> は <b>32 段目</b>。下: 桁上げ先読みを木にした並列加算器（Kogge–Stone）。最下位の桁上がりを最下位の桁に畳み込む前置きを 1 層、そのあと log₂16 = 4 層で全桁に行き渡る（1 層を NAND 2 段と数えて）。c<sub>16</sub> は <b>10 段目</b>で、同じ答えが 3 倍以上早く出る代わりに、ゲートと配線は多い。箱の色は「その桁に桁上げが届き、和が確定できる」ことを表します。</figcaption>
+  </figure>
+
+  <div class="deep-note">
+    <span class="tag">くわしく — 電圧を下げると、どれだけ遅くなるか（α 乗則）</span>
+    <p>第1章の例題で、電源を 1.0 V → 0.8 V にすると動的電力が 36% 減ると書きました。代わりに遅くなる割合も数にしておきます。短チャネルの MOSFET のオン電流は二乗則ではなく (V − V<sub>th</sub>)<sup>α</sup> に比例し、α は 1.3 前後です（Sakurai &amp; Newton 1990 の α 乗則。この α は、動的電力の式 αCV²f の「切り替わる割合」とは別の記号です）。遅延は「容量の電荷 CV ÷ 電流」なので</p>
+    <div class="eq">t<sub>pd</sub> ∝ C · V / (V − V<sub>th</sub>)<sup>α</sup></div>
+    <p>V<sub>th</sub> = 0.3 V、α = 1.3 と置くと（どちらも桁の例）、1.0 → 0.8 V で遅延は 0.8 × (0.7/0.5)<sup>1.3</sup> = 0.8 × 1.55 = <b>1.24 倍</b>。周波数を 1/1.24 に落とすと、動的電力 αCV²f は 0.64 / 1.24 = <b>0.52 倍</b> ― 性能を 2 割落として電力を半分にできる。<span class="key">電圧と周波数を組で動かす（DVFS）</span>のが割に合うのはこの式のためで、逆に V を V<sub>th</sub> に近づけすぎると分母が 0 に近づき、遅延が急に伸びます。</p>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（第7章）</span>
+    <p><b>問.</b> 入力容量 1 のインバータから始まり、NAND2 を 1 段挟んで、最後のインバータで 64 倍の負荷を引く 3 段の経路（INV → NAND2 → INV）がある。γ = 2（g<sub>NAND2</sub> = 4/3、p<sub>NAND2</sub> = 2）として、最小の遅延と、各段の入力容量を求めよ。</p>
+    <p><b>解.</b> 経路の努力 F = G · H = (1 × 4/3 × 1) × 64 = <b>85.3</b>。段の努力 f = F<sup>1/3</sup> = <b>4.40</b>。寄生遅延 P = 1 + 2 + 1 = 4。D = 3 × 4.40 + 4 = <b>17.2τ</b>。各段の大きさは後ろから決める: 最後のインバータの入力容量 = 64 × g / f = 64 / 4.40 = <b>14.5</b>。NAND2 の入力容量 = (4/3) × 14.5 / 4.40 = <b>4.40</b>。最初のインバータ = 1 × 4.40 / 4.40 = 1.0 で、与えた条件に戻る。<span class="key">1 → 4.4 → 14.5 → 64 と、容量がほぼ等比に並ぶ</span>のが最適の形です。</p>
+  </div>
+
+  <div class="roles">
+    <div><b>営業・企画</b><span>周波数と電力は電圧と組で動く（DVFS）。</span></div>
+    <div><b>設計・開発</b><span>大きな負荷は 1 段 4 倍ずつで引く。長い配線はリピータで区切る。</span></div>
+    <div><b>研究・製造</b><span>電源電圧を下げると遅延が伸びる。低温・低電圧での動作の余裕を確かめる。</span></div>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — NandLab 第3章・第5章</span>
+    <p>NandLab は遅延を全部 1 にしているので g も h も無いが、「時間を 1 歩ずつ進める」で、4 ビット加算器の桁上げが右から左へ走るのは見える。0111 + 0001 のように桁上げが最後まで伝わる入力を選び、何歩で落ち着くかを数えてみる ― 上の図のリップルの段数と同じ形が出ます。</p>
+    <div class="qs"><span class="lab">NandLab</span><a href="NandLab/index.html?quest=add4">4ビット加算器</a><a href="NandLab/index.html?quest=sub4">4ビット減算器</a><a href="NandLab/index.html?quest=alu4">4ビット ALU</a></div>
+  </div>
+</section>
+
+<!-- ================= 08 ================= -->
+<section class="stage" id="s8">
+  <div class="stage-head"><span class="stage-num">08</span><h2>状態機械を設計する ― 丸と矢印から、レジスタと積和形へ</h2></div>
+  <p class="lede">第5章の「くわしく」で名前だけ出した<b>有限状態機械（FSM）</b>を、ここで一から設計します。題材は、<b>「1 0 1」の並びが来たら 1 を出す検出器</b>。手順は4つ ― 状態を決める、遷移を表にする、状態に番号を振る、表を積和形にする。<span class="key">第2章（積和形）と第4章（フリップフロップ）の道具だけで、どんな「順序のある振る舞い」も回路になる</span>ことを確かめます。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>① 状態 ― 「ここまでに何を見たか」を覚える</h3>
+      <p>1 拍に 1 ビットずつ x が来ます。「101」を見つけるのに覚えておくべきことは、直前までの並びのうち<b>まだ使える尻尾</b>だけです: 何も無い（A）、「1」まで来た（B）、「10」まで来た（C）、「101」がそろった（D）。D のときに Z = 1 を出す。出力が状態だけで決まるので、<b>Moore 型</b>です。</p>
+      <h3>② 遷移 ― 各状態で、x = 0 と 1 のとき次はどこか</h3>
+      <p>A で 1 が来たら B、0 なら A のまま。B で 0 なら C、1 なら B のまま（「11」の使える尻尾は「1」）。C で 1 なら D、0 なら A（「100」には使える尻尾が無い）。D で 0 なら C（「1010」の尻尾は「10」）、1 なら B。<b>D から C・B へ戻る矢印が、重なった並び（10101 の中の 2 回）を数える</b>仕掛けです。</p>
+      <h3>③ 番号 ― 2 ビットの状態レジスタ</h3>
+      <p>状態が 4 つなので D-FF 2 個（Q₁Q₀）で足ります。A = 00、B = 01、C = 10、D = 11 と振ると、遷移は次の 8 行の表になる。電源投入直後の状態レジスタは X なので（第4章）、リセットで A に入れてから数え始めます。</p>
+      <div class="scroll-x" style="margin-top:12px"><table class="tt">
+        <tr><th>Q₁Q₀</th><th>x</th><th>次 N₁N₀</th><th>意味</th></tr>
+        <tr><td>00</td><td>0</td><td class="o">00</td><td>A → A</td></tr>
+        <tr><td>00</td><td>1</td><td class="o">01</td><td>A → B</td></tr>
+        <tr><td>01</td><td>0</td><td class="o">10</td><td>B → C</td></tr>
+        <tr><td>01</td><td>1</td><td class="o">01</td><td>B → B</td></tr>
+        <tr><td>10</td><td>0</td><td class="o">00</td><td>C → A</td></tr>
+        <tr><td>10</td><td>1</td><td class="o">11</td><td>C → D</td></tr>
+        <tr><td>11</td><td>0</td><td class="o">10</td><td>D → C</td></tr>
+        <tr><td>11</td><td>1</td><td class="o">01</td><td>D → B</td></tr>
+      </table></div>
+      <h3>④ 積和形 ― 次の状態と出力の式</h3>
+      <p>N₁ が 1 の行は (Q₁Q₀x) = 010・101・110。010 と 110 は Q₁ だけが違うのでまとめて Q₀·x̄、残りは Q₁·Q̄₀·x。N₀ は x = 1 の 4 行だけが 1 なので、<b>N₀ = x</b> ― 「今 1 が来たか」をそのまま覚えればよい。</p>
+      <div class="eq">N₁ = Q₀·x̄ + Q₁·Q̄₀·x　　N₀ = x　　Z = Q₁·Q₀</div>
+      <p>回路は D-FF 2 個と、この 3 本の積和形だけ。NandLab の第4章の D-FF と第2章の NAND 2 段で、そのまま組めます。</p>
+    </div>
+    <div class="body-col">
+      <figure>
+        <div class="fig-head"><span class="fig-title">FSM — 「101」検出器が、1 拍ずつ状態を渡り歩く</span><span class="fig-title">入力 1 0 1 0 1 1 0 1</span></div>
+        <div class="fig-body">
+          <svg id="svgFsm" viewBox="0 0 520 340" role="img" aria-label="4つの状態 A、B、C、D と、x が 0 と 1 のときの遷移の矢印からなる状態図。下に入力の列と出力 Z の列があり、1拍ごとに今の状態と通った矢印が光る。101 がそろうたびに D に入って Z が 1 になる。"></svg>
+          <div class="btns"><button class="btn" id="bFsmStep">1 拍進める</button><button class="btn" id="bFsmPlay" aria-pressed="true">再生中</button><button class="btn" id="bFsmReset">リセット（A へ）</button></div>
+          <p id="tFsm" style="font-size:12.5px;color:var(--ink-2);margin-top:8px;min-height:3.2em"></p>
+        </div>
+        <figcaption>丸が状態（下の数字が Q₁Q₀）、矢印の数字がそのとき来た x。二重の丸の D が「101 がそろった」状態で、そこにいる拍だけ Z = 1。入力 1 0 1 0 1 1 0 1 に対して Z は 0 0 1 0 1 0 0 1 ― 10101 の中の重なった 2 回も、最後の 101 も数えています。</figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>番号の振り方で、回路の形が変わる</h3>
+      <p>同じ 4 状態を <b>one-hot</b>（状態ごとに FF を 1 個持ち、どれか 1 個だけが 1）で持つと、FF は 4 個に増えます。そのかわり次の状態の式は「どこから矢印が入ってくるか」をそのまま書くだけになる:</p>
+      <div class="eq">A' = (A + C)·x̄　　B' = (A + B + D)·x<br>C' = (B + D)·x̄　　D' = C·x　　Z = D</div>
+      <p>2 進の振り方は FF が最少で、one-hot は式が短く速い。FPGA は LUT ごとに FF を持っていて FF が安いので、one-hot がよく使われます。番号をグレイ順に振って、遷移のたびに 1 ビットしか変わらないようにする振り方もある（第2章のカルノー図と同じ発想）。<span class="key">状態の意味は変えずに、番号の振り方だけで回路の大きさと速さが変わる</span>のが、FSM の設計の面白いところです。</p>
+    </div>
+    <div class="body-col">
+      <h3>Moore 型と Mealy 型</h3>
+      <p>出力を「状態と入力の組」で決めてよいなら（<b>Mealy 型</b>）、D の状態は要りません。A・B・C の 3 状態で、「C にいて x = 1 が来た」その拍に Z = 1 を出し、次は B へ行けばよい（「101」の尻尾は「1」）。状態が 1 つ減る代わりに、<b>出力が入力の変化に同じ拍の中で即座に反応</b>するので、入力の乱れ（グリッチ、第2章）がそのまま出力に出うる。Moore 型は 1 拍遅れる代わりに、出力が FF から出るのできれいです。</p>
+      <p>信号機、自動販売機、シリアル通信（UART）の受信、CPU の制御部（取り出し → 解読 → 実行 を巡る）― 順序のある振る舞いは、どれも丸と矢印を描くところから始まり、この手順で回路になります。</p>
+    </div>
+  </div>
+
+  <div class="deep-note">
+    <span class="tag">くわしく — 余った番号と、迷子にならない状態機械</span>
+    <p>状態が S 個なら、2 進で振るのに FF は ⌈log₂S⌉ 個要ります。5 状態なら 3 個で、<b>8 − 5 = 3 個の番号が余る</b>。正しく動いている限り余った番号には入らないはずですが、電源投入直後（X が 0/1 のどちらかに転んだとき）や、放射線でビットが 1 個反転したとき（第3部 メモリの物理の話と同じ）に、そこへ落ちることがある。</p>
+    <p>余った番号の行を「どうでもよい」として式を縮めると、落ちた先から<b>永遠に抜け出せない</b>ことがあります。だから信頼性の要る設計では、余った番号からも必ずリセットの状態へ戻る遷移を式に入れておく。<span class="key">「起きないはずの状態」の行き先まで決めておく</span>のが、第4章の「リセット線を忘れた回路は X のまま抜け出せない」の、状態機械版です。</p>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（第8章）</span>
+    <p><b>問.</b> 同じ手順で「1 1 0」を検出する Moore 型の状態機械を作れ。状態と遷移を答えよ。</p>
+    <p><b>解.</b> 状態は「使える尻尾」で、A（何も無い）・B（「1」）・C（「11」）・D（「110」がそろった、Z = 1）。A: 0 → A、1 → B。B: 0 → A（「10」の尻尾は「110」の頭に使えない）、1 → C。C: 0 → D、1 → C（「111」の尻尾は「11」）。D: 0 → A（「1100」に使える尻尾は無い）、1 → B（「1101」の尻尾は「1」）。<span class="key">「101」と違って D から C へは戻らない</span> ― 「110」は重なって現れることができないからです（110 の尻尾 0 は 110 の頭 1 と一致しない）。</p>
+  </div>
+
+  <div class="roles">
+    <div><b>営業・企画</b><span>装置の「動作モード」は、たいてい状態機械で説明できる。</span></div>
+    <div><b>設計・開発</b><span>余った状態からもリセットへ戻す。FPGA では one-hot が安い。</span></div>
+    <div><b>研究・製造</b><span>放射線や電源の瞬断で状態が飛ぶ ― 迷子にならない設計かを試験で確かめる。</span></div>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — NandLab 第4章・第5章</span>
+    <p>NandLab に状態機械の課題はまだありませんが、第4章の D-FF のチップを 2 個置き、上の N₁・N₀・Z の式を NAND で組めば、そのまま「101」検出器になります（採点はされない自由作業）。第5章のカウンタは「状態が 16 個で、遷移が +1 だけ」の最も単純な状態機械で、課題で採点されます。</p>
+    <div class="qs"><span class="lab">NandLab</span><a href="NandLab/index.html?quest=dff">D フリップフロップ</a><a href="NandLab/index.html?quest=shift4">4ビットシフトレジスタ</a><a href="NandLab/index.html?quest=count4">4ビットカウンタ</a></div>
+  </div>
+</section>
+
+<!-- ================= 09 ================= -->
+<section class="stage" id="s9">
+  <div class="stage-head"><span class="stage-num">09</span><h2>光子を数えるロジック ― カウンタ・TDC・ヒストグラム</h2></div>
+  <p class="lede">光子計数と TCSPC（第5部 06・12）の装置で、検出器のパルスを受け取ってから先は、全部この部の部品です。<b>いくつ来たか</b>はカウンタ、<b>いつ来たか</b>はカウンタに「目盛りの間を読む」遅延線を足した TDC（時間デジタル変換器）、<b>いつ何回来たか</b>の集計はメモリのヒストグラム。<span class="key">ピコ秒の時間を、ナノ秒の時計と、ゲートの遅延そのものを物差しにして測る</span>のがこの章の芯です。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>数える ― ゲートを開けたカウンタ</h3>
+      <p>検出器の出力を弁別器（第5部 11）で 0/1 のパルスにし、カウンタに入れる。ゲート信号が開いているあいだだけ数えれば「1 秒あたり何個」になります。何ビット要るかは最大の数で決まり、1 秒間に 10⁸ 個まで数えるなら 2²⁷ = 1.34×10⁸ ≥ 10⁸ で <b>27 ビット</b>。</p>
+      <p>第5章のカウンタは全部の FF が同じクロックで動く同期式で、最高の計数率はクロックの速さで決まる。検出器のパルスを直接 FF のクロックにつなぐ非同期のリップルカウンタ（1 段目の出力が次の段のクロック）は速いパルスも受けられますが、桁が下から順に遅れて変わるので、動いている最中に読むと途中の値を掴む ― 第10章の問題そのものです。</p>
+      <h3>いつ来たか ― 粗い時計と、細かい遅延線</h3>
+      <p>250 MHz の時計（周期 4 ns）で数えるだけでは、時刻は 4 ns 刻みにしか分からない。そこで到着のパルスを<b>遅延線</b>（同じバッファを何段もつないだ線）に流し、次の時計の立ち上がりで各段の出力を FF の列で一斉に取り込みます。パルスが通り過ぎた段は 1、まだの段は 0 ― 取り込んだ列は 111…1000…0 の形（<b>温度計符号</b>）になり、1 の数 k が「時計の縁の何段ぶん前に来たか」を表す。</p>
+      <div class="eq">t = n<sub>c</sub> · T<sub>c</sub> − k · τ<sub>段</sub><br>n<sub>c</sub>: 粗いカウンタ　k: 1 の数　τ<sub>段</sub>: 1 段の遅延</div>
+      <p>1 段の遅延を 20 ps と置くと（FPGA の桁上げの連鎖などで数 ps〜数十 ps の代表例。仮定）、4 ns を覆うのに 4 ns ÷ 20 ps = <b>200 段</b>。1 目盛り（LSB）は 20 ps で、目盛りに丸めることによるばらつきは LSB/√12 = <b>5.8 ps</b>（第6部 09 の量子化雑音と同じ式）。粗いカウンタを 16 ビットにすれば、測れる長さは 65,536 × 4 ns = <b>262 µs</b> です。</p>
+    </div>
+    <div class="body-col">
+      <figure>
+        <div class="fig-head"><span class="fig-title">TDC — 遅延線を進むパルスを、時計の縁で一斉に取り込む</span><span class="fig-title">16 段に縮めた図</span></div>
+        <div class="fig-body">
+          <svg id="svgTdc" viewBox="0 0 520 300" role="img" aria-label="16段の遅延線を、到着したパルスが右へ進む。時計の立ち上がりで、各段の出力を下のFFの列が一斉に取り込み、1の数kが到着の時刻を表す温度計符号になる。下の棒は、到着のたびにkの度数を1本ずつ積んだもの。"></svg>
+          <div class="btns"><span class="lab">到着</span><button class="btn" id="bTdcNext">次の到着へ</button><button class="btn" id="bTdcPlay" aria-pressed="true">再生中</button></div>
+          <p id="tTdc" style="font-size:12.5px;color:var(--ink-2);margin-top:8px;min-height:1.7em"></p>
+        </div>
+        <figcaption>上の列が遅延線で、到着したパルスは 1 段 τ ずつ右へ進む（橙の段がパルスの通り過ぎた段）。時計の立ち上がりで、下の FF の列がその瞬間の各段を一斉に取り込む ― 1 が k 個並んだ温度計符号になり、到着は時計の縁の k·τ 前と分かる。いちばん下の棒は、到着のたびに k の度数を 1 本ずつ積んだもの（TCSPC のヒストグラムの小さな模型）。実物は 4 ns を 20 ps で覆う 200 段です。</figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>目盛りは等間隔ではない ― 符号密度で校正する</h3>
+      <p>200 段のバッファの遅延は製造のばらつきで少しずつ違い、目盛りの幅がそろわない（<b>微分非直線性、DNL</b>）。校正の定石は<b>符号密度試験</b>です。時計と無関係な時刻（別の発振器や、光源の光子）で大量に測ると到着は一様にばらけるので、各目盛りに入った回数は目盛りの幅に比例する。10⁶ 回を 200 目盛りに入れれば 1 目盛り平均 5,000 回、数のばらつきは √5000 = 71 回で、幅を <b>1.4%</b> の精度で読める。回数から各目盛りの本当の幅を表にしておき、測った k をその表で時間に直します。</p>
+      <h3>集計する ― ヒストグラムのメモリ</h3>
+      <p>TCSPC では同じ実験を何百万回も繰り返し、到着の時刻ごとの回数を積む（第5部 06）。80 MHz のレーザーなら周期は 12.5 ns で、20 ps の目盛りなら 12.5 ns ÷ 20 ps = <b>625 本</b>の棒。棒 1 本を 16 ビットのカウンタにすると 625 × 16 = 10,000 ビット ＝ <b>1.25 KB</b> の SRAM です（CPU とメモリ階層の節）。光子 1 個ごとに「その番地を読んで、+1 して、書き戻す」― 読み・足し・書きの 1 巡りが、計数率の上限の一つになります。</p>
+    </div>
+    <div class="body-col">
+      <h3>誰の揺らぎが勝つか ― 二乗和で比べる</h3>
+      <p>測った時刻のばらつきは、検出器の揺らぎ（SPAD・MPPC のジッタや、PMT の走行時間の広がり）と、TDC の目盛りの丸めの<b>二乗和</b>です。検出器を 30 ps（仮定）とすると、20 ps の目盛りなら √(30² + 5.8²) = <b>30.6 ps</b> で、TDC はほとんど効かない。100 ps の目盛りだと丸めが 28.9 ps になり、合計 <b>41.6 ps</b> ― 目盛りが検出器の揺らぎと同じ桁になると、はっきり悪くなる。<span class="key">TDC の目盛りは、検出器の揺らぎの数分の 1 で十分</span>で、それより細かくしても結果はほとんど良くならない。</p>
+      <p>光子の到着は時計と無関係なので、取り込みの FF は準安定（第4章）になりうる。温度計符号では、境目の FF が迷って 111011000… のような<b>泡（バブル）</b>が出ることがあり、「最初の 0 を探す」読み方だと大きく読み違える。<b>1 の数を数える</b>読み方にしておけば、泡 1 個の読み違いは 1 目盛りで済みます。</p>
+    </div>
+  </div>
+
+  <div class="caveat">
+    <span class="tag">落とし穴</span>
+    <p>① 目盛りの幅（LSB）と時間の分解能を混同する ― 分解能は LSB/√12 と検出器の揺らぎの二乗和で、DNL の校正をしていなければさらに悪い。② 遅延線の 1 段の遅延は温度と電源電圧で動く ― 1 周期を覆う段数と校正の表は、使う温度で取り直す。③ ヒストグラムの「読んで +1 して書く」の途中に次の光子が来ると、1 個が消える ― 計数の不感時間（第5部 12）は検出器だけでなく、この 1 巡りにもある。</p>
+  </div>
+
+  <div class="roles">
+    <div><b>営業・企画</b><span>「分解能 ○ ps」は、目盛りの幅なのか、揺らぎの二乗和なのかを確かめて比べる。</span></div>
+    <div><b>設計・開発</b><span>目盛りは検出器の揺らぎの数分の 1 で十分。DNL の校正の手順までが TDC の設計。</span></div>
+    <div><b>研究・製造</b><span>遅延線の目盛りは温度で動く。校正は使う温度で取り直す。</span></div>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（第9章）</span>
+    <p><b>問.</b> 周期 12.5 ns（80 MHz）の TCSPC を、250 MHz の粗い時計と 1 段 20 ps の遅延線の TDC で測る。(1) 遅延線は何段要るか。(2) 12.5 ns を覆うヒストグラムの棒の数と、16 ビットのカウンタで持つときのメモリの大きさは。(3) 検出器の揺らぎが 30 ps のとき、合わせた時間のばらつきは。</p>
+    <p><b>解.</b> (1) 遅延線は粗い時計の 1 周期ぶんだけ覆えばよいので、4 ns ÷ 20 ps = <b>200 段</b>。(2) 12.5 ns ÷ 20 ps = <b>625 本</b>、625 × 16 = 10,000 ビット ＝ <b>1.25 KB</b>。(3) √(30² + (20/√12)²) = √(900 + 33.3) = <b>30.6 ps</b>。TDC の丸めは全体の 2% も増やさない ― 装置の時間分解能を決めているのは検出器です。</p>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — NandLab 第5章・PhotonLab</span>
+    <p>「数える」は NandLab 第5章のカウンタそのもの。R を繋ぎ忘れると X のまま動かないのは、実機の計数回路でも同じです。TCSPC の繰り返しと計数の上限は、PhotonLab の課題で数として確かめられます。</p>
+    <div class="qs"><span class="lab">NandLab</span><a href="NandLab/index.html?quest=count4">4ビットカウンタ</a><a href="NandLab/index.html?quest=shift4">4ビットシフトレジスタ</a><span class="lab">PhotonLab</span><a href="PhotonLab/index.html?quest=count">数えて待つ</a><a href="PhotonLab/index.html?quest=pile">TCSPC の繰り返し</a></div>
+  </div>
+</section>
+
+<!-- ================= 10 ================= -->
+<section class="stage" id="s10">
+  <div class="stage-head"><span class="stage-num">10</span><h2>クロックをまたぐ ― グレイ符号と非同期 FIFO</h2></div>
+  <p class="lede">カメラの中では、センサを読む時計、AD 変換の時計、伝送の時計（第6部 12）が別々に回っています。ある時計で作った多ビットの値を別の時計で読むと、ビットの変わる瞬間のずれで、<b>どちらでもない値</b>を掴むことがある。<span class="key">1 回に 1 ビットしか変わらない数え方（グレイ符号）に直してから渡す</span>のが解法で、非同期 FIFO はその応用です。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>多ビットの値は、変わる瞬間に読んではいけない</h3>
+      <p>4 ビットのカウンタが 0111（7）から 1000（8）に変わるとき、4 本の線が全部変わる。配線の長さや FF の遅れで、4 本が変わる時刻は少しずつずれる。別の時計がちょうどその間に読むと、0111 と 1000 の混ざった値 ― 1111（15）や 0000（0）も含む、線の組み合わせのどれか ― を掴みうる。1 本ずつなら 2 段の FF（第4章）で準安定は抑えられますが、<b>何本もの線がそろって新しい値になったか</b>は保証されません。</p>
+      <h3>グレイ符号 ― 隣の数との違いは、いつも 1 ビット</h3>
+      <p>隣り合う数が 1 ビットしか違わない並べ方が<b>グレイ符号</b>（Gray の特許の「反射 2 進符号」）。2 進 b からは、隣の桁との XOR で作れます（NAND 4 個の XOR を桁の数だけ）。7 = 0111 は 0100、8 = 1000 は 1100 で、違うのは最上位の 1 ビットだけ。15 → 0 に戻るときも 1000 → 0000 の 1 ビット。だから途中で読んでも<b>古い値か新しい値のどちらか</b>になる ― 1 ずれるだけで、でたらめな値は出ない。戻すときは上の桁から XOR を積み重ねます。</p>
+      <div class="eq">g = b ⊕ (b ≫ 1)<br>b<sub>i</sub> = g<sub>n−1</sub> ⊕ g<sub>n−2</sub> ⊕ … ⊕ g<sub>i</sub></div>
+    </div>
+    <div class="body-col">
+      <figure>
+        <div class="fig-head"><span class="fig-title">BINARY vs GRAY — 変わる途中を、別の時計が読む</span><span class="fig-title">ビットごとに変わる時刻がずれている</span></div>
+        <div class="fig-body">
+          <svg id="svgGray" viewBox="0 0 520 300" role="img" aria-label="同じカウンタの値が次の値に変わる途中を、別の時計が読む図。上は2進、下はグレイ符号。右の4本の線は各ビットが変わる時刻で、縦の線が読む時刻。2進では古い値でも新しい値でもない値を読むことがあるが、グレイ符号では必ず古い値か新しい値になる。"></svg>
+          <div class="btns"><span class="lab">カウンタ</span><button class="btn" id="bGrayNext">次の値へ</button><button class="btn" id="bGrayPlay" aria-pressed="true">再生中</button></div>
+          <p id="tGray" style="font-size:12.5px;color:var(--ink-2);margin-top:8px;min-height:3.4em"></p>
+        </div>
+        <figcaption>右の 4 本はビット（上が最上位）で、刻みがそのビットの変わる時刻。ビットごとに少しずつ遅れる（下の桁ほど早い）と仮定した一例です。縦の線が別の時計の読む時刻で、その時刻までに変わったビットだけが新しい値になる。2 進は変わるビットが多いほど「どちらでもない値」を掴みやすく、グレイ符号は変わるのが 1 ビットなので、読めるのは古い値か新しい値だけです。</figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>非同期 FIFO ― 書く時計と読む時計のあいだの貯め池</h3>
+      <p>書き込み側は自分の時計で書き込み番地（ポインタ）を +1、読み出し側は自分の時計で読み出し番地を +1 します。「空か・満杯か」を知るには相手のポインタが要るので、ポインタを<b>グレイ符号にしてから</b> 2 段の FF で相手の時計へ渡す（Cummings 2002 の定番の構成）。グレイ符号がきれいに一周するよう深さは 2 のべき乗にし、ポインタを 1 ビット長く持って「一周多く進んだ」を満杯として見分けます。渡るのに 2〜3 拍の遅れがあるので、フラグは安全側（空きがある・中身があると言うのが遅れる側）にずれるだけで、壊れはしない。</p>
+    </div>
+    <div class="body-col">
+      <h3>深さを決める ― 流れ込む速さと流れ出す速さの差</h3>
+      <p>書き込みが速く読み出しが遅いとき、一度に書く塊（バースト）の間に溜まる量は B(1 − f<sub>読</sub>/f<sub>書</sub>) です。センサの 1 行 2,048 画素を 100 MHz で書き、80 MHz で読むなら 2,048 × (1 − 0.8) = <b>410 語</b>が溜まる。2 のべき乗に切り上げて <b>512 語</b>で、ポインタの受け渡しの遅れ（数拍）もこの余裕に収まる。行と行の間の休みで読み出しが追いつけないなら、どんな深さでもいつか溢れる ― <span class="key">深さは平均の速さではなく、塊の大きさと速さの差で決まる</span>。</p>
+      <div class="eq">深さ ≥ B · (1 − f<sub>読</sub> / f<sub>書</sub>) ＋ 受け渡しの遅れのぶん</div>
+    </div>
+  </div>
+
+  <div class="caveat">
+    <span class="tag">落とし穴</span>
+    <p>① 多ビットの 2 進のバスを、ビットごとに 2 段の FF で同期しても正しくない（ビットごとに違う拍で新しい値になる）。② グレイ符号が効くのは「1 回に 1 だけ変わる」値だけ ― 任意の値の受け渡しには、値を保持したまま「渡した」の 1 ビットだけを同期する握手（ハンドシェイク）か、FIFO を使う。③ 深さを 2 のべき乗でない数にすると、グレイ符号の一周の最後で 2 ビット以上変わる。</p>
+  </div>
+
+  <div class="roles">
+    <div><b>営業・企画</b><span>カメラの「フレームの取りこぼし」は、しばしば FIFO の深さと伝送の帯域の問題。</span></div>
+    <div><b>設計・開発</b><span>多ビットはグレイ符号か FIFO で渡す。深さは「塊 × 速さの差」で決める。</span></div>
+    <div><b>研究・製造</b><span>取りこぼしの再現は、塊の大きさと読み出しの休みを変えて試す。</span></div>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（第10章）</span>
+    <p><b>問1.</b> 5 と 6 を 4 ビットの 2 進とグレイ符号で書き、変わるビットの数を比べよ。</p>
+    <p><b>解.</b> 2 進は 0101 → 0110 で、下の 2 ビットが変わる。グレイ符号は g(5) = 0101 ⊕ 0010 = <b>0111</b>、g(6) = 0110 ⊕ 0011 = <b>0101</b> で、違うのは下から 2 番目の 1 ビットだけ。</p>
+    <p><b>問2.</b> 1 行 4,096 画素を 200 MHz で書き、150 MHz で読む。FIFO は何語要るか（2 のべき乗で）。</p>
+    <p><b>解.</b> 4,096 × (1 − 150/200) = <b>1,024 語</b> ― ちょうど 2¹⁰ で、受け渡しの遅れの余裕が無い。次の <b>2,048 語</b>にするのが安全です。</p>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — NandLab 第1章・第5章</span>
+    <p>2 進 → グレイ符号の変換は、隣の桁どうしの XOR を並べるだけ。第1章の XOR のチップを 3 個置けば 4 ビットの変換器になります（採点はない自由作業）。第5章のカウンタの後ろに置くと、盤面で 1 ビットずつしか変わらない数え方が見えます。</p>
+    <div class="qs"><span class="lab">NandLab</span><a href="NandLab/index.html?quest=xor">XOR</a><a href="NandLab/index.html?quest=count4">4ビットカウンタ</a></div>
+  </div>
 </section>
 
 <!-- ================= 理解の確認 ================= -->
 <section class="stage" id="scheck">
-  <div class="stage-head"><span class="stage-num">—</span><h2>理解の確認 ― 10問で章をつなぎ直す</h2></div>
+  <div class="stage-head"><span class="stage-num">—</span><h2>理解の確認 ― 20問で章をつなぎ直す</h2></div>
   <p class="lede">答えを開く前に、どの章の何を使うかを先に言ってみてください。後ろの問いほど、前の章の結果を使います。</p>
   <div class="qa">
     <details><summary><span class="qn">Q1 · 1章</span>AND と OR だけでは NOT が作れないのはなぜか。</summary><p>AND も OR も<b>単調</b>（入力を 0→1 に上げても出力は下がらない）で、単調な部品をどう繋いでも単調なまま。NOT は入力を上げると出力が下がるので出てこない。否定を内蔵している NAND・NOR だけが万能になれる。</p></details>
@@ -1105,6 +1556,16 @@ table.tt td.x{color:var(--ink-3)}
     <details><summary><span class="qn">Q8 · 4章</span>最高クロック周波数を決めているのは何か。速すぎる経路でも壊れるのはなぜか。</summary><p>1/T で、T ≥ t(clk→Q) + t(<b>最長</b>の組合せ) + t(setup)。逆に最短の経路が t(hold) より速いと、前の値を取り込み終わる前に次の値が届いて壊れる（hold 違反）。</p></details>
     <details><summary><span class="qn">Q9 · 4章</span>外部からのボタン入力を FF で受けるとき、FF を2段にするのはなぜか。</summary><p>1段目は必ずいつか setup を破って準安定になり得る。2段目までの1拍を「落ち着く時間」にすると、失敗の確率が <b>e<sup>−t<sub>r</sub>/τ</sup></b> で指数的に下がる（MTBF の式）。無くすのではなく、実用上起きない確率まで下げる。</p></details>
     <details><summary><span class="qn">Q10 · 通し</span>電源電圧を 1.0 V から 0.8 V にすると動的電力は何倍か。なぜ下げ続けられないのか。</summary><p>αCV²f なので <b>0.64 倍</b>。電圧を下げるとオン電流が減って遅くなり、取り戻すために V<sub>th</sub> を下げるとオフ電流が S 値（≥ 59.5 mV/桁、第2部 5章）の指数で増える。速さ・電圧・漏れの三すくみ。</p></details>
+    <details><summary><span class="qn">Q11 · 6章</span>NAND 4 個の XOR と同じ配線を NOR 4 個で組むと何になるか。それはなぜか。</summary><p><b>XNOR</b>（同じなら 1）。全部の線の 0 と 1 を読み替えると NAND は NOR になり、回路の関数 f は双対 f<sup>d</sup>(x) = NOT f(NOT x) になる。XOR は両方の入力を反転しても変わらないので、XOR の双対は NOT XOR ＝ XNOR。</p></details>
+    <details><summary><span class="qn">Q12 · 6章</span>NOR の SR ラッチの S・R が「1 で効く」のはなぜか。</summary><p>NOR は片方の入力が 1 なら、もう片方が何でも（X でも）出力が 0 に決まる。S = 1 で Q̄ が 0 に確定し、それが Q = NOR(R, Q̄) を 1 にする。NAND の「片方が 0 なら 1」をちょうど読み替えた形で、双対。</p></details>
+    <details><summary><span class="qn">Q13 · 7章</span>64 倍の負荷をインバータで引くとき、最も速い段数と遅延は？</summary><p>D = N·64<sup>1/N</sup> + N を比べて <b>N = 3 で 15τ</b>（段の努力 f = 4）。N = 1 は 65τ、N = 4 は 15.3τ。1 段で 4 倍ずつ大きくするのが最適に近い。</p></details>
+    <details><summary><span class="qn">Q14 · 7章</span>配線の長さを 2 倍にすると、線の遅延は何倍か。長い配線にリピータを入れるのはなぜか。</summary><p>抵抗も容量も長さに比例するので遅延は L² に比例して <b>4 倍</b>。k 区間に区切ると各区間は 1/k²、k 回で線全体は 1/k になる（代わりにリピータの遅延が足される）。</p></details>
+    <details><summary><span class="qn">Q15 · 8章</span>「101」検出器で、状態を A = 00・B = 01・C = 10・D = 11 と振ると N₀ = x になるのはなぜか。</summary><p>Q₀ = 1 の状態（B と D）には x = 1 の矢印でしか入らず、Q₀ = 0 の状態（A と C）には x = 0 の矢印でしか入らないから。番号の振り方しだいで、式がこれだけ簡単になる。</p></details>
+    <details><summary><span class="qn">Q16 · 8章</span>5 状態の状態機械を 2 進で振ると FF は何個要るか。余った番号はどう扱うべきか。</summary><p>⌈log₂5⌉ = <b>3 個</b>で、3 つの番号が余る。電源投入直後や放射線によるビットの反転でそこに落ちても、必ずリセットの状態へ戻る遷移を入れておく。「どうでもよい」で縮めると、抜け出せない状態が残ることがある。</p></details>
+    <details><summary><span class="qn">Q17 · 9章</span>TDC の目盛りを 20 ps から 5 ps に細かくしても、検出器の揺らぎが 30 ps なら、時間のばらつきはどれだけ良くなるか。</summary><p>丸めのばらつきは 20/√12 = 5.8 ps から 5/√12 = 1.4 ps に減るが、二乗和は √(30² + 5.8²) = 30.6 ps から √(30² + 1.4²) = 30.0 ps で、<b>約 2%</b> しか良くならない。目盛りは検出器の揺らぎの数分の 1 で十分。</p></details>
+    <details><summary><span class="qn">Q18 · 9章</span>遅延線の温度計符号を「最初の 0 の位置」で読むと、何が困るか。</summary><p>境目の FF が準安定で迷うと 111011000… のような<b>泡</b>が出て、最初の 0 が手前で見つかり大きく読み違える。<b>1 の数を数える</b>読み方なら、泡 1 個の誤りは 1 目盛りで済む。</p></details>
+    <details><summary><span class="qn">Q19 · 10章</span>別の時計へ 4 ビットのカウンタの値を渡すとき、各ビットを 2 段の FF で同期するだけでは足りないのはなぜか。</summary><p>ビットごとに新しい値になる拍が違いうるので、0111 → 1000 の途中で 1111 のような<b>どちらでもない値</b>を掴む。グレイ符号なら 1 ビットしか変わらないので、読めるのは古い値か新しい値だけ。</p></details>
+    <details><summary><span class="qn">Q20 · 10章</span>FIFO の深さは何で決まるか。平均の速さが釣り合っていれば FIFO は要らないか。</summary><p>塊の大きさ B と速さの差で <b>B(1 − f<sub>読</sub>/f<sub>書</sub>)</b>。平均が釣り合っていても、塊を書いている間は溜まるので要る。逆に平均で読み出しが追いつかなければ、どんな深さでもいつか溢れる。</p></details>
   </div>
 </section>
 
@@ -1141,6 +1602,20 @@ table.tt td.x{color:var(--ink-3)}
         <tr><td>メモリ階層 / AMAT</td><td>速く小さい記憶から遅く大きい記憶への階段と、平均の待ち時間 ＝ ヒット時間 + ミス率 × ミスの代価</td><td class="num">レジスタ→キャッシュ→DRAM</td></tr>
         <tr><td>SRAM / DRAM / フラッシュ</td><td>インバータの輪で覚える記憶、容量の電荷で覚える記憶（読み書きで要リフレッシュ）、閉じ込めた電荷で電源なしに覚える記憶</td><td class="num">6T / 1T1C / 浮遊ゲート</td></tr>
         <tr><td>FPGA / LUT</td><td>回路を後から書き換えられる素子と、その基本部品である k 入力の真理値表の記憶（2<sup>k</sup> ビット）</td><td class="num">表を回路として使う</td></tr>
+        <tr><td>双対性</td><td>全部の線の 0 と 1 を読み替えると、回路は双対の関数 NOT f(NOT x) を計算する。NAND と NOR、AND と OR、XOR と XNOR が入れ替わる</td><td class="num">NAND の XOR → NOR で XNOR</td></tr>
+        <tr><td>NOR の万能性</td><td>NOR だけでどんな論理でも組めること。NOT = NOR(A,A)、AND = NOR(NOT A, NOT B)</td><td class="num">NOT 1・OR 2・AND 3・NAND 4</td></tr>
+        <tr><td>論理的努力 g</td><td>インバータと同じ電流を出すのに、入力容量が何倍要るか。ゲートの形だけで決まる</td><td class="num">NAND2 4/3・NOR2 5/3（γ=2）</td></tr>
+        <tr><td>電気的努力 h / 寄生遅延 p</td><td>出力の容量と入力の容量の比（ファンアウト）と、自分の拡散容量による遅延。1 段の遅延 d = g·h + p</td><td class="num">p: INV 1・2 入力 2</td></tr>
+        <tr><td>FO4</td><td>自分と同じインバータ 4 個を引くインバータの遅延。工程の速さの物差し</td><td class="num">5τ</td></tr>
+        <tr><td>分布 RC 配線 / リピータ</td><td>抵抗と容量が一様に分布した配線（遅延は長さの 2 乗）と、それを区切って速くするために挟むインバータ</td><td class="num">≈ 0.38 rcL²</td></tr>
+        <tr><td>α 乗則</td><td>短チャネルの MOSFET のオン電流が (V − V<sub>th</sub>)<sup>α</sup> に比例するという近似。電圧を下げたときの遅れを見積もる</td><td class="num">α ≈ 1.3</td></tr>
+        <tr><td>Moore 型 / Mealy 型</td><td>出力が状態だけで決まる状態機械と、状態と入力の組で決まる状態機械</td><td class="num">「101」: 4 状態 / 3 状態</td></tr>
+        <tr><td>状態の割り当て / one-hot</td><td>状態に 2 進の番号を振る方法。one-hot は状態ごとに FF を 1 個持ち、1 個だけを 1 にする</td><td class="num">FF 最少 / 式が最短</td></tr>
+        <tr><td>TDC（時間デジタル変換器）</td><td>粗いカウンタと遅延線を組み合わせ、時計の周期より細かく到着の時刻を測る回路</td><td class="num">1 目盛り 数 ps〜数十 ps</td></tr>
+        <tr><td>温度計符号 / 泡</td><td>遅延線の各段を一斉に取り込んだ 111…000 の列と、境目の FF の準安定で混じる逆転（111011…）</td><td class="num">1 の数を数えて読む</td></tr>
+        <tr><td>符号密度試験 / DNL</td><td>時計と無関係な到着で各目盛りの幅を測る校正と、その目盛りの幅のむら（微分非直線性）</td><td class="num">10⁶ 回で幅を 1.4%</td></tr>
+        <tr><td>グレイ符号</td><td>隣り合う数が 1 ビットしか違わない符号。g = b ⊕ (b ≫ 1)。時計をまたいで数を渡すときに使う</td><td class="num">7→8 は 0100→1100</td></tr>
+        <tr><td>非同期 FIFO / CDC</td><td>別々の時計で書き読みする貯め池と、時計をまたぐ受け渡し（クロック・ドメイン・クロッシング）の設計</td><td class="num">深さ ≈ B(1 − f<sub>読</sub>/f<sub>書</sub>)</td></tr>
       </tbody>
     </table></div>
   </figure>
@@ -1164,19 +1639,38 @@ table.tt td.x{color:var(--ink-3)}
         <tr><td>第4章</td><td class="num">2 / 5 / 11</td><td>SR ラッチ / D ラッチ（SR ＋ 門 2 ＋ NOT）/ D-FF（D ラッチ × 2 ＋ NOT）。</td></tr>
         <tr><td>第5章</td><td class="num">60 / 44 / 70 / 124</td><td>レジスタ（(D-FF 11 ＋ MUX 4) × 4）/ シフトレジスタ（D-FF × 4）/ カウンタ / ALU。</td></tr>
         <tr><td>16語 × 4bit の RAM</td><td class="num">600 個超</td><td>D ラッチ 5 × 64 ビット ＝ 320 に、番地のデコーダと読み出しのセレクタを足した概算。NandLab README「ここから先」。</td></tr>
-        <tr class="grp"><td colspan="3">電圧（analog.js の二乗則。電源 3.3 V、V<sub>th</sub> 0.7 V、n と p は同じ強さ）</td></tr>
+        <tr class="grp"><td colspan="3">電圧（analog.js の二乗則。電源 3.3 V、V<sub>th</sub> 0.7 V（既定）、n と p は同じ強さ）</td></tr>
         <tr><td>切り替わりの電圧</td><td class="num">≈ 1.7 V</td><td>B = 3.3 V（1）に固定して A を掃いたとき、出力が電源から地面へ落ちる位置。上の p と下の n 直列の電流が釣り合う点を二分法で解いた。n が直列なぶん、インバータの 1.65 V より少し右。</td></tr>
         <tr><td>V<sub>IL</sub> / V<sub>IH</sub></td><td class="num">1.52 / 1.99 V</td><td>坂の傾きが −1 になる2点。この外側では入力の揺れが出力で小さくなる。</td></tr>
         <tr><td>V<sub>OH</sub> / V<sub>OL</sub></td><td class="num">3.03 / 0.24 V</td><td>V<sub>IL</sub> と V<sub>IH</sub> を入れたときの出力。</td></tr>
         <tr><td>雑音余裕 NM<sub>L</sub> / NM<sub>H</sub></td><td class="num">1.28 / 1.04 V</td><td>NM<sub>L</sub> = V<sub>IL</sub> − V<sub>OL</sub>、NM<sub>H</sub> = V<sub>OH</sub> − V<sub>IH</sub>。前の段の出力がこれだけ汚れても、次の段が読み違えない。</td></tr>
-        <tr><td>坂の最大利得</td><td class="num">−100 以下</td><td>二乗則で上下が飽和領域に入る点の傾き。理想化した二乗則では刻みを細かくするほど大きく出る（上の図の 220 点で −112、600 点で −290）。実物は数十。1 を超えていれば議論は同じ。</td></tr>
+        <tr><td>坂の最大利得</td><td class="num">−100 以下</td><td>二乗則で上下が飽和領域に入る点の傾き。理想化した二乗則では刻みを細かくするほど大きく出る（上の図の 220 点で −112、600 点で −287）。実物は数十。1 を超えていれば議論は同じ。</td></tr>
         <tr class="grp"><td colspan="3">例題の数字（仮定を置いた桁の例）</td></tr>
         <tr><td>0.64 fJ / 192 W</td><td class="num">CV² / αCV²f·N</td><td>C = 1 fF、V = 0.8 V で CV² = 6.4×10⁻¹⁶ J。α = 0.1、f = 3 GHz、節点 10⁹ 個で 0.1 × 6.4×10⁻¹⁶ × 3×10⁹ × 10⁹ = 192 W。C・α・個数は仮定。</td></tr>
         <tr><td>電圧 1.0 → 0.8 V</td><td class="num">36% 減</td><td>動的電力は V² に比例: 0.8² = 0.64。</td></tr>
-        <tr><td>32 ビットの桁上げ</td><td class="num">64 段 / 5 段</td><td>リップルは 1 桁 NAND 2 段 × 32。Kogge–Stone の前置き段は log₂32 = 5（各段は NAND 2 段程度）。</td></tr>
+        <tr><td>32 ビットの桁上げ</td><td class="num">64 段 / 12 段</td><td>リップルは 1 桁 NAND 2 段 × 32。Kogge–Stone は G・P の 1 層 ＋ 前置き log₂32 = 5 層、1 層を NAND 2 段と数えて 12 段（下の 16 ビットの行と同じ数え方）。</td></tr>
+        <tr><td>4:1 セレクタの深さ / 4 ビット加算器の桁上げ</td><td class="num">5 段 / 19 段</td><td>NandLab のお手本を展開し、入力から出力までの最長の NAND の段数を数えた（チップの境目の中継は数えない）。全加算器は下からの桁上がり C から上への桁上がりまで NAND 4 段。</td></tr>
         <tr><td>1拍 18 段</td><td class="num">≈ 2.8 GHz</td><td>clk→Q 3 ＋ 組合せ 10 ＋ setup 3 ＋ 余裕 2。1 段 20 ps は説明用の仮定で、18 × 20 ps = 360 ps → 1/360 ps = 2.78 GHz。</td></tr>
         <tr><td>MTBF</td><td class="num">0.011 s → 8×10⁷ 年</td><td>e<sup>t<sub>r</sub>/τ</sup>/(T<sub>w</sub>f<sub>clk</sub>f<sub>data</sub>)、τ = T<sub>w</sub> = 20 ps、f<sub>clk</sub> = 1 GHz、f<sub>data</sub> = 10⁸ /s。t<sub>r</sub> = 0.2 ns で e¹⁰/2×10⁶ = 0.011 s、1 ns で e⁵⁰/2×10⁶ = 2.6×10¹⁵ s。比は e⁴⁰ = 2.4×10¹⁷。</td></tr>
         <tr><td>32,768 Hz → 1 Hz</td><td class="num">15 段</td><td>32,768 = 2¹⁵。FF 1 段で周波数が 1/2。</td></tr>
+        <tr class="grp"><td colspan="3">第6〜8章（論理的努力は γ = 2 の教科書の値。τ の単位）</td></tr>
+        <tr><td>NOR の世界の個数</td><td class="num">1 / 2 / 3 / 4 / 4 / 2</td><td>NOT / OR / AND / NAND / XNOR / SR ラッチ。NandLab 第6章のお手本を tests/quest.js が組んで数えた NOR の数。</td></tr>
+        <tr><td>g<sub>NAND2</sub> / g<sub>NOR2</sub></td><td class="num">4/3 / 5/3</td><td>(2 + γ)/(1 + γ) と (1 + 2γ)/(1 + γ)、γ = 2。第2部の移動度の比 γ ≈ 3 なら 5/4 と 7/4。</td></tr>
+        <tr><td>FO4</td><td class="num">5τ</td><td>d = g·h + p = 1 × 4 + 1。</td></tr>
+        <tr><td>64 倍の負荷</td><td class="num">65 / 18 / 15 / 15.3 / 16.5 / 18 τ</td><td>N = 1〜6 段のインバータで D = N·64<sup>1/N</sup> + N。最小は N = 3（f = 4）。</td></tr>
+        <tr><td>INV → NAND2 → INV</td><td class="num">17.2τ</td><td>F = (4/3) × 64 = 85.3、f = 85.3<sup>1/3</sup> = 4.40、P = 4、D = 3 × 4.40 + 4。入力容量は 1 → 4.40 → 14.5。</td></tr>
+        <tr><td>16 ビットの桁上げ</td><td class="num">32 段 / 10 段</td><td>リップルは 2 段 × 16。Kogge–Stone は前置き 1 層 ＋ log₂16 = 4 層、1 層を NAND 2 段と数えて 10 段。</td></tr>
+        <tr><td>1.0 → 0.8 V の遅れ</td><td class="num">1.24 倍</td><td>α 乗則 t ∝ V/(V − V<sub>th</sub>)<sup>α</sup>、V<sub>th</sub> = 0.3 V、α = 1.3（仮定）: 0.8 × (0.7/0.5)<sup>1.3</sup> = 1.24。周波数を合わせた動的電力は 0.64/1.24 = 0.52 倍。</td></tr>
+        <tr><td>「101」検出器</td><td class="num">FF 2 個</td><td>N₁ = Q₀x̄ + Q₁Q̄₀x、N₀ = x、Z = Q₁Q₀（本文の遷移表から積和形）。</td></tr>
+        <tr class="grp"><td colspan="3">第9・10章とメモリの物理の例題（1 段 20 ps・検出器 30 ps・容量 0.5 fF は仮定）</td></tr>
+        <tr><td>27 ビット</td><td class="num">2²⁷ = 1.34×10⁸</td><td>1 秒に 10⁸ 個まで数えるのに要るビット数（2²⁶ = 6.7×10⁷ では足りない）。</td></tr>
+        <tr><td>遅延線の段数 / 丸め / 測れる長さ</td><td class="num">200 段 / 5.8 ps / 262 µs</td><td>4 ns ÷ 20 ps。LSB/√12 = 20/√12。粗いカウンタ 16 ビットで 65,536 × 4 ns。</td></tr>
+        <tr><td>符号密度試験</td><td class="num">1.4%</td><td>10⁶ 回 ÷ 200 目盛り = 5,000 回、1/√5000 = 0.0141。</td></tr>
+        <tr><td>ヒストグラム</td><td class="num">625 本 / 1.25 KB</td><td>12.5 ns ÷ 20 ps、625 × 16 ビット = 10,000 ビット。</td></tr>
+        <tr><td>時間のばらつき</td><td class="num">30.6 / 41.6 ps</td><td>√(30² + (20/√12)²) と √(30² + (100/√12)²)。</td></tr>
+        <tr><td>FIFO の深さ</td><td class="num">410 → 512 語</td><td>2,048 × (1 − 80/100) = 409.6。2 のべき乗に切り上げ。例題: 4,096 × (1 − 150/200) = 1,024。</td></tr>
+        <tr><td>グレイ符号</td><td class="num">0100 → 1100</td><td>g = b ⊕ (b ≫ 1)。7 = 0111 → 0100、8 = 1000 → 1100。5 → 0111、6 → 0101。</td></tr>
+        <tr><td>浮遊ゲートの電子</td><td class="num">6,242 個 / 約 3 日に 1 個</td><td>Q = 0.5 fF × 2 V = 1 fC ÷ 1.602×10⁻¹⁹ C。10 年で 20% = 1,248 個 ÷ 3.16×10⁸ s = 4.0×10⁻⁶ 個/s。</td></tr>
         <tr class="grp"><td colspan="3">第2部から</td></tr>
         <tr><td>µ<sub>n</sub> / µ<sub>p</sub></td><td class="num">1164 / 386</td><td>10¹⁶ の移動度（cm²/V·s）。NAND が NOR より速い理由。第2部第1章の表。</td></tr>
         <tr><td>nMOS の V<sub>th</sub></td><td class="num">0.4〜0.6 V</td><td>SemiLab「NAND の中身へ」の課題の範囲。酸化膜 7 nm・基板 2.5×10¹⁷ で 0.427 V。</td></tr>
@@ -1197,9 +1691,9 @@ table.tt td.x{color:var(--ink-3)}
     </div>
     <div class="body-col">
       <h3>物理層のモデル</h3>
-      <p>NAND の中身（<code>mos.js</code>）は「通じている／切れている／分からない」の3状態のスイッチ。伝達特性（<code>analog.js</code>）は最も素朴な二乗則で、n と p の強さが等しく、しきい値 0.7 V、電源 3.3 V。短チャネル効果・速度飽和・しきい値のばらつき（第4部 付録 B）は入っていません。</p>
+      <p>NAND の中身（<code>mos.js</code>）は「通じている／切れている／分からない」の3状態のスイッチ。伝達特性（<code>analog.js</code>）は最も素朴な二乗則で、n と p の強さが等しく、しきい値は既定 0.7 V（SemiLab の「NAND の中身へ」を通すとその V<sub>th</sub>）、電源 3.3 V。短チャネル効果・速度飽和・しきい値のばらつき（第4部 付録 B）は入っていません。</p>
       <h3>扱わないもの</h3>
-      <p>桁上げ先読み、オーバーフロー検出、メモリ（RAM/ROM）、命令セットと制御、パイプライン。NAND 以外の原始部品（NOR だけの世界、伝送ゲート）。「原始部品は NAND だけ」を崩すと NandLab の本体が無くなるので、足すとしても「ここだけは実装部品」と画面上で区別する方針です。</p>
+      <p>本文では原理を説明しているが、NandLab の課題には無いもの: 桁上げ先読み、オーバーフロー検出、メモリ（RAM16 は「実装部品」として盤面に置けるが、NAND からは組まず、採点にも使えない）、命令セットと制御、パイプライン、伝送ゲート、TDC と非同期 FIFO（第9・10章）。NOR だけの世界は NandLab 第6章で扱う（素子は混ぜない ― 第6章は NOR だけ、ほかの章は NAND だけで採点）。ゲートごとに違う遅延（第7章の論理的努力）と、状態機械の採点（第8章）は NandLab にありません。</p>
     </div>
   </div>
 </section>
@@ -1228,6 +1722,17 @@ table.tt td.x{color:var(--ink-3)}
         <tr><td>The map method for synthesis of<br>combinational logic circuits</td><td>M. Karnaugh<br>Trans. AIEE Pt. I 72, 593 (1953)</td><td>2章。カルノー図の原典。</td></tr>
         <tr><td>A parallel algorithm for the efficient<br>solution of a general class of<br>recurrence equations</td><td>P. M. Kogge &amp; H. S. Stone<br>IEEE Trans. Comput. C-22, 786 (1973)</td><td>3章。桁上げを log₂n 段で求める並列前置き計算（Kogge–Stone 加算器）。</td></tr>
         <tr><td>Anomalous behavior of synchronizer<br>and arbiter circuits</td><td>T. J. Chaney &amp; C. E. Molnar<br>IEEE Trans. Comput. C-22, 421 (1973)</td><td>4章。準安定が実在し、有限時間で必ず決着するとは言えないことを実測で示した論文。</td></tr>
+        <tr><td>Journey to the Moon: The History<br>of the Apollo Guidance Computer</td><td>Eldon C. Hall<br>AIAA (1996)</td><td>6章。NOR 1 種類の IC で組まれたアポロ誘導計算機の設計の記録。</td></tr>
+        <tr><td>Logical Effort:<br>Designing Fast CMOS Circuits</td><td>I. Sutherland, B. Sproull, D. Harris<br>Morgan Kaufmann (1999)</td><td>7章。d = g·h + p と、経路の努力を段に等しく配る設計法の原典。</td></tr>
+        <tr><td>CMOS VLSI Design:<br>A Circuits and Systems Perspective</td><td>N. H. E. Weste &amp; D. M. Harris<br>Addison-Wesley, 4th ed. (2011)</td><td>6・7章。ゲートの論理的努力と寄生遅延の値、配線の遅延とリピータ。</td></tr>
+        <tr><td>The transient response of damped<br>linear networks with particular regard<br>to wideband amplifiers</td><td>W. C. Elmore<br>J. Appl. Phys. 19, 55 (1948)</td><td>7章。RC の網の遅延を見積もる Elmore 遅延の原典。</td></tr>
+        <tr><td>Alpha-power law MOSFET model and<br>its applications to CMOS inverter delay<br>and other formulas</td><td>T. Sakurai &amp; A. R. Newton<br>IEEE J. Solid-State Circuits 25, 584 (1990)</td><td>7章。短チャネルの電流と遅延の α 乗則。</td></tr>
+        <tr><td>A method for synthesizing<br>sequential circuits</td><td>G. H. Mealy<br>Bell Syst. Tech. J. 34, 1045 (1955)</td><td>8章。Mealy 型の状態機械。</td></tr>
+        <tr><td>Gedanken-experiments on<br>sequential machines</td><td>E. F. Moore<br>Automata Studies, Princeton Univ. Press, pp. 129–153 (1956)</td><td>8章。Moore 型の状態機械。</td></tr>
+        <tr><td>Review of methods for time interval<br>measurements with picosecond resolution</td><td>J. Kalisz<br>Metrologia 41, 17 (2004)</td><td>9章。粗いカウンタと補間（遅延線・バーニア）を組み合わせる TDC の方式の総説。</td></tr>
+        <tr><td>Advanced Time-Correlated<br>Single Photon Counting Techniques</td><td>W. Becker<br>Springer (2005)</td><td>9章。TCSPC の装置 ― 弁別・TDC・ヒストグラムのメモリ・計数率の上限。</td></tr>
+        <tr><td>Pulse code communication<br>（US Patent 2,632,058）</td><td>F. Gray<br>(1953)</td><td>10章。反射 2 進符号（グレイ符号）の原典。</td></tr>
+        <tr><td>Simulation and Synthesis Techniques<br>for Asynchronous FIFO Design</td><td>C. E. Cummings<br>SNUG San Jose (2002)</td><td>10章。グレイ符号のポインタを 2 段の FF で渡す、非同期 FIFO の定番の構成。</td></tr>
       </tbody>
     </table></div>
   </figure>
@@ -1529,12 +2034,310 @@ var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce
 if(!reduce){timer=setInterval(function(){go(cur+1)},2400)}else{stop()}
 })();
 
+/* ================= 06 双対（同じ配線を NAND と NOR で） ================= */
+(function(){
+var svg=$('svgDual');if(!svg)return;
+var IN=[[0,0],[0,1],[1,0],[1,1]],k=1,timer=null;
+var RM=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function g(kind,a,b){return kind==='nand'?1-(a&b):1-(a|b)}
+function net(y0,kind,title,a,b){
+  var t1=g(kind,a,b),u=g(kind,a,t1),v=g(kind,b,t1),y=g(kind,u,v);
+  el(svg,'text',{x:46,y:y0-12,'font-family':SANS,'font-size':12,'font-weight':700,fill:C('ink')},title);
+  function w(d,val){el(svg,'path',{d:d,fill:'none',stroke:sigColor(val),'stroke-width':2.6})}
+  w('M46,'+(y0+22)+' H226',a);w('M90,'+(y0+22)+' V'+(y0+57)+' H116',a);
+  w('M46,'+(y0+108)+' H226',b);w('M100,'+(y0+108)+' V'+(y0+73)+' H116',b);
+  w('M164,'+(y0+65)+' H190 V'+(y0+38)+' H226',t1);w('M190,'+(y0+65)+' V'+(y0+92)+' H226',t1);
+  w('M274,'+(y0+30)+' H320 V'+(y0+57)+' H356',u);w('M274,'+(y0+100)+' H320 V'+(y0+73)+' H356',v);
+  w('M404,'+(y0+65)+' H430',y);
+  [[140,y0+65],[250,y0+30],[250,y0+100],[380,y0+65]].forEach(function(p){
+    el(svg,'rect',{x:p[0]-24,y:p[1]-18,width:48,height:36,rx:5,fill:C('surface'),stroke:C('ink-2'),'stroke-width':1.5});
+    el(svg,'text',{x:p[0],y:p[1]+4,'text-anchor':'middle','font-family':MONO,'font-size':10,fill:C('ink-2')},kind.toUpperCase());
+  });
+  el(svg,'text',{x:6,y:y0+26,'font-family':MONO,'font-size':12,'font-weight':700,fill:sigColor(a)},'A='+a);
+  el(svg,'text',{x:6,y:y0+112,'font-family':MONO,'font-size':12,'font-weight':700,fill:sigColor(b)},'B='+b);
+  el(svg,'text',{x:436,y:y0+69,'font-family':MONO,'font-size':13,'font-weight':700,fill:sigColor(y)},'Y = '+y);
+  return y;
+}
+function draw(){
+  clear(svg);var a=IN[k][0],b=IN[k][1];
+  var y1=net(40,'nand','NAND 4 個 → XOR（違えば 1）',a,b);
+  var y2=net(200,'nor','同じ配線を NOR 4 個で → XNOR（同じなら 1）',a,b);
+  $('tDual').textContent='A = '+a+'、B = '+b+'：上（NAND）は '+y1+'、下（NOR）は '+y2+' ― いつも反対。';
+}
+function next(){k=(k+1)%4;draw()}
+function stop(){if(timer){clearInterval(timer);timer=null}var p=$('bDualPlay');p.textContent='自動で巡る';p.setAttribute('aria-pressed','false')}
+function play(){if(timer){stop();return}var p=$('bDualPlay');p.textContent='再生中';p.setAttribute('aria-pressed','true');timer=setInterval(next,1500)}
+$('bDualNext').addEventListener('click',function(){stop();next()});
+$('bDualPlay').addEventListener('click',play);
+draw();
+if(!RM){timer=setInterval(next,1500)}else{stop()}
+})();
+
+/* ================= 07 競走（1 段と 3 段） ================= */
+(function(){
+var svg=$('svgRace');if(!svg)return;
+var RM=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var MS=55,HOLD=1600,t0=null,dots=[];
+function X(t){return 70+t*6}
+var L=[{y:70,total:65,segs:[[0,65,'×1 → 負荷 64']],label:'1 段：幅 1 のインバータが 64 倍を直接引く',end:'65τ'},
+       {y:160,total:15,segs:[[0,5,'×1'],[5,10,'×4'],[10,15,'×16']],label:'3 段：1 → 4 → 16 と 4 倍ずつ大きく',end:'15τ（4.3 倍速い）'}];
+function build(){
+  clear(svg);dots=[];
+  L.forEach(function(ln){
+    el(svg,'text',{x:70,y:ln.y-26,'font-family':SANS,'font-size':12,'font-weight':700,fill:C('ink')},ln.label);
+    ln.segs.forEach(function(s,i){
+      el(svg,'rect',{x:X(s[0]),y:ln.y-8,width:X(s[1])-X(s[0]),height:16,fill:i%2?C('photon-soft'):C('volt-soft'),stroke:i%2?C('photon-2'):C('volt'),'stroke-width':1});
+      el(svg,'text',{x:(X(s[0])+X(s[1]))/2,y:ln.y+4,'text-anchor':'middle','font-family':MONO,'font-size':10,fill:C('ink')},s[2]);
+    });
+    el(svg,'text',{x:X(ln.total)+8,y:ln.y+4,'font-family':MONO,'font-size':11.5,'font-weight':700,fill:C('ink')},ln.end);
+    el(svg,'path',{d:'M'+X(0)+','+(ln.y+20)+' H'+X(ln.total),fill:'none',stroke:C('line'),'stroke-width':1.5,'stroke-dasharray':'4 4'});
+    dots.push({ln:ln,c:el(svg,'circle',{cx:X(0),cy:ln.y+20,r:5.5,fill:C('volt')})});
+  });
+  el(svg,'path',{d:'M'+X(0)+',230 H'+X(70),fill:'none',stroke:C('ink-3'),'stroke-width':1});
+  for(var tt=0;tt<=70;tt+=10){
+    el(svg,'path',{d:'M'+X(tt)+',226 V234',fill:'none',stroke:C('ink-3'),'stroke-width':1});
+    el(svg,'text',{x:X(tt),y:248,'text-anchor':'middle','font-family':MONO,'font-size':10,fill:C('ink-3')},String(tt));
+  }
+  el(svg,'text',{x:280,y:265,'text-anchor':'middle','font-family':SANS,'font-size':10.5,fill:C('ink-3')},'時間（τ の単位）');
+}
+function place(ms){dots.forEach(function(d){var tt=Math.min(d.ln.total,ms/MS);d.c.setAttribute('cx',X(tt))})}
+function frame(now){
+  if(t0===null)t0=now;var e=now-t0,cyc=65*MS+HOLD;
+  if(e>cyc){t0=now;e=0}
+  place(e);requestAnimationFrame(frame);
+}
+build();
+if(RM){place(1e9)}else{requestAnimationFrame(frame)}
+$('bRace').addEventListener('click',function(){if(RM){place(1e9);return}t0=null});
+})();
+
+/* ================= 07 桁上げの波（リップルと並列） ================= */
+(function(){
+var svg=$('svgCarry');if(!svg)return;
+var RM=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var step=0,END=32,HOLDN=12,boxes=[],timer=null,info,bar;
+function xOf(i){return 110+(15-i)*44}
+function rip(i){return 2*i}
+function ks(i){return i===0?0:2+2*Math.ceil(Math.log(i)/Math.LN2-1e-9)}
+function row(y,title,right,fn){
+  el(svg,'text',{x:48,y:y-17,'font-family':SANS,'font-size':12,'font-weight':700,fill:C('ink')},title);
+  el(svg,'text',{x:814,y:y-17,'text-anchor':'end','font-family':MONO,'font-size':11,fill:C('ink-2')},right);
+  for(var i=0;i<=16;i++){
+    var cx=i<16?xOf(i):66;
+    var r=el(svg,'rect',{x:cx-18,y:y,width:36,height:34,rx:3,fill:C('surface-2'),stroke:C('unk'),'stroke-width':1.4,'stroke-dasharray':'3 2'});
+    var tx=el(svg,'text',{x:cx,y:y+22,'text-anchor':'middle','font-family':MONO,'font-size':14,'font-weight':700,fill:C('ink-3')},'?');
+    boxes.push({r:r,t:tx,i:i,at:fn(i)});
+  }
+}
+function build(){
+  clear(svg);boxes=[];
+  row(44,'リップルキャリー ― 桁上げ cᵢ が i 桁目に届くのは 2i 段目','32 段で完了',rip);
+  for(var i=0;i<16;i++)el(svg,'text',{x:xOf(i),y:96,'text-anchor':'middle','font-family':MONO,'font-size':9.5,fill:C('ink-3')},String(i));
+  el(svg,'text',{x:66,y:96,'text-anchor':'middle','font-family':MONO,'font-size':9.5,fill:C('ink-3')},'c16');
+  row(148,'並列加算器（Kogge–Stone）― 前置き 1 層 ＋ log₂16 = 4 層','10 段で完了',ks);
+  info=el(svg,'text',{x:48,y:212,'font-family':MONO,'font-size':11.5,fill:C('ink-2')},'');
+  el(svg,'rect',{x:48,y:222,width:766,height:8,fill:C('surface-3')});
+  bar=el(svg,'rect',{x:48,y:222,width:0,height:8,fill:C('volt')});
+  [[10,'10 段（並列）','middle'],[32,'32 段（リップル）','end']].forEach(function(m){
+    var x=48+766*m[0]/END;
+    el(svg,'path',{d:'M'+x+',218 V234',fill:'none',stroke:C('ink-3'),'stroke-width':1.2});
+    el(svg,'text',{x:m[2]==='end'?814:x,y:247,'text-anchor':m[2],'font-family':MONO,'font-size':10,fill:C('ink-3')},m[1]);
+  });
+}
+function paint(){
+  var s=Math.min(step,END);
+  boxes.forEach(function(b){
+    var ok=s>=b.at,top=b.i===16;
+    b.r.setAttribute('fill',ok?(top?C('one-soft'):C('zero-soft')):C('surface-2'));
+    b.r.setAttribute('stroke',ok?(top?C('one'):C('zero')):C('unk'));
+    b.r.setAttribute('stroke-dasharray',ok?'':'3 2');
+    b.t.textContent=ok?(top?'1':'0'):'?';
+    b.t.setAttribute('fill',ok?(top?C('one'):C('zero')):C('ink-3'));
+  });
+  bar.setAttribute('width',766*s/END);
+  info.textContent='t = '+s+' 段　（リップルは c'+Math.min(16,Math.floor(s/2))+' まで、並列は '+(s>=10?'全桁':'途中')+'）';
+}
+function tick(){step++;if(step>END+HOLDN)step=0;paint()}
+build();
+if(RM){step=END;paint()}else{paint();timer=setInterval(tick,150)}
+})();
+
+/* ================= 08 「101」検出器 ================= */
+(function(){
+var svg=$('svgFsm');if(!svg)return;
+var RM=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var POS={A:60,B:190,C:320,D:450},CODE={A:'00',B:'01',C:'10',D:'11'},Y=130;
+var NEXT={A:['A','B'],B:['C','B'],C:['A','D'],D:['C','B']};
+var SEQ=[1,0,1,0,1,1,0,1];
+var E={
+  A0:{d:'M38,118 C2,96 2,164 38,142',lx:22,ly:104,l:'0'},
+  A1:{d:'M84,130 H164',lx:125,ly:123,l:'1'},
+  B1:{d:'M178,152 C160,196 220,196 202,152',lx:190,ly:205,l:'1'},
+  B0:{d:'M214,130 H294',lx:255,ly:123,l:'0'},
+  C1:{d:'M344,122 H424',lx:385,ly:115,l:'1'},
+  D0:{d:'M426,138 H346',lx:385,ly:155,l:'0'},
+  C0:{d:'M312,153 Q190,300 68,153',lx:190,ly:245,l:'0'},
+  D1:{d:'M442,107 Q320,10 198,107',lx:320,ly:50,l:'1'}
+};
+var st='A',k=0,zs=[],last=null,timer=null,nodes={},paths={},cells=[],zcells=[],cur;
+function build(){
+  clear(svg);
+  var defs=el(svg,'defs',{});
+  var mk=el(defs,'marker',{id:'fsmar',viewBox:'0 0 10 10',refX:9,refY:5,markerWidth:7,markerHeight:7,orient:'auto'});
+  el(mk,'path',{d:'M0,0 L10,5 L0,10 z',fill:C('ink-3')});
+  for(var key in E){
+    paths[key]=el(svg,'path',{d:E[key].d,fill:'none',stroke:C('ink-3'),'stroke-width':1.6,'marker-end':'url(#fsmar)'});
+    el(svg,'text',{x:E[key].lx,y:E[key].ly,'text-anchor':'middle','font-family':MONO,'font-size':12,'font-weight':700,fill:C('ink-2')},E[key].l);
+  }
+  el(svg,'circle',{cx:POS.D,cy:Y,r:29,fill:'none',stroke:C('ink-2'),'stroke-width':1.4});
+  ['A','B','C','D'].forEach(function(s){
+    nodes[s]=el(svg,'circle',{cx:POS[s],cy:Y,r:24,fill:C('surface'),stroke:C('ink-2'),'stroke-width':1.6});
+    el(svg,'text',{x:POS[s],y:Y+2,'text-anchor':'middle','font-family':MONO,'font-size':15,'font-weight':700,fill:C('ink')},s);
+    el(svg,'text',{x:POS[s],y:Y+16,'text-anchor':'middle','font-family':MONO,'font-size':9.5,fill:C('ink-3')},CODE[s]);
+  });
+  el(svg,'text',{x:POS.D,y:Y+49,'text-anchor':'middle','font-family':MONO,'font-size':11,'font-weight':700,fill:C('one')},'Z = 1');
+  el(svg,'text',{x:30,y:287,'text-anchor':'middle','font-family':MONO,'font-size':12,'font-weight':700,fill:C('ink-2')},'x');
+  el(svg,'text',{x:30,y:319,'text-anchor':'middle','font-family':MONO,'font-size':12,'font-weight':700,fill:C('ink-2')},'Z');
+  for(var i=0;i<SEQ.length;i++){
+    var cx=70+i*50;
+    el(svg,'rect',{x:cx-20,y:268,width:40,height:26,rx:3,fill:SEQ[i]?C('one-soft'):C('zero-soft'),stroke:SEQ[i]?C('one'):C('zero'),'stroke-width':1});
+    el(svg,'text',{x:cx,y:286,'text-anchor':'middle','font-family':MONO,'font-size':13,'font-weight':700,fill:SEQ[i]?C('one'):C('zero')},String(SEQ[i]));
+    var zr=el(svg,'rect',{x:cx-20,y:300,width:40,height:26,rx:3,fill:C('surface-2'),stroke:C('line'),'stroke-width':1});
+    var zt=el(svg,'text',{x:cx,y:318,'text-anchor':'middle','font-family':MONO,'font-size':13,'font-weight':700,fill:C('ink-3')},'');
+    zcells.push({r:zr,t:zt});
+  }
+  cur=el(svg,'rect',{x:48,y:264,width:44,height:34,rx:4,fill:'none',stroke:C('volt'),'stroke-width':2.5});
+}
+function paint(msg){
+  ['A','B','C','D'].forEach(function(s){nodes[s].setAttribute('fill',s===st?C('volt-soft'):C('surface'));nodes[s].setAttribute('stroke',s===st?C('volt'):C('ink-2'));nodes[s].setAttribute('stroke-width',s===st?3:1.6)});
+  for(var key in paths){paths[key].setAttribute('stroke',key===last?C('volt'):C('ink-3'));paths[key].setAttribute('stroke-width',key===last?3:1.6)}
+  zcells.forEach(function(z,i){
+    if(i<zs.length){var v=zs[i];z.r.setAttribute('fill',v?C('one-soft'):C('zero-soft'));z.r.setAttribute('stroke',v?C('one'):C('zero'));z.t.textContent=String(v);z.t.setAttribute('fill',v?C('one'):C('zero'))}
+    else{z.r.setAttribute('fill',C('surface-2'));z.r.setAttribute('stroke',C('line'));z.t.textContent=''}
+  });
+  cur.setAttribute('x',48+Math.min(k,SEQ.length-1)*50);
+  cur.setAttribute('opacity',k<SEQ.length?1:0.25);
+  $('tFsm').textContent=msg;
+}
+function reset(){st='A';k=0;zs=[];last=null;paint('リセットで A（00）に入った。次の拍に x = '+SEQ[0]+' が来る。')}
+function step(){
+  if(k>=SEQ.length){reset();return}
+  var x=SEQ[k],from=st;st=NEXT[st][x];last=from+x;var z=st==='D'?1:0;zs.push(z);k++;
+  paint(k+' 拍目: x = '+x+' で '+from+' → '+st+'（Q₁Q₀ = '+CODE[st]+'）、Z = '+z+(z?' ― 101 がそろった。':'。'));
+}
+function stop(){if(timer){clearInterval(timer);timer=null}var p=$('bFsmPlay');p.textContent='自動で進める';p.setAttribute('aria-pressed','false')}
+function play(){if(timer){stop();return}var p=$('bFsmPlay');p.textContent='再生中';p.setAttribute('aria-pressed','true');timer=setInterval(step,1200)}
+$('bFsmStep').addEventListener('click',function(){stop();step()});
+$('bFsmPlay').addEventListener('click',play);
+$('bFsmReset').addEventListener('click',function(){stop();reset()});
+build();reset();
+if(!RM){timer=setInterval(step,1200)}else{stop();for(var i=0;i<SEQ.length;i++)step()}
+})();
+
 /* ================= レール ================= */
 (function(){
 var links=Array.prototype.slice.call(document.querySelectorAll('.rail a'));if(!links.length||!('IntersectionObserver' in window))return;
 var map={};links.forEach(function(a){map[a.getAttribute('href').slice(1)]=a});
 var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){links.forEach(function(a){a.classList.remove('on')});var a=map[e.target.id];if(a)a.classList.add('on')}})},{rootMargin:'-20% 0px -70% 0px'});
 document.querySelectorAll('section.stage').forEach(function(s){io.observe(s)});
+})();
+
+/* ================= 09 TDC（遅延線を進むパルスを、時計の縁で取り込む） ================= */
+(function(){
+var svg=$('svgTdc');if(!svg)return;
+var RM=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var N=16,K=[9,4,13,7,11,2,9,6],e=0,f=0,hold=0,timer=null,cnt=[];
+for(var i=0;i<N+1;i++)cnt.push(0);
+function X(i){return 32+i*29}
+function draw(){
+  clear(svg);var k=K[e],shown=Math.min(f,k),edge=f>=k;
+  el(svg,'text',{x:32,y:22,'font-family':SANS,'font-size':12,'font-weight':700,fill:C('ink')},'遅延線（1 段 ＝ τ）― 到着したパルスが右へ進む');
+  for(var i=0;i<N;i++){
+    el(svg,'rect',{x:X(i),y:32,width:24,height:26,rx:3,fill:i<shown?C('photon-soft'):C('surface'),stroke:C('ink-3'),'stroke-width':1.2});
+  }
+  if(!edge)el(svg,'path',{d:'M'+(X(shown)-2.5)+',28 V62',stroke:C('photon'),'stroke-width':3,fill:'none'});
+  el(svg,'text',{x:32,y:84,'font-family':SANS,'font-size':11.5,fill:C('ink-2')},edge?'時計の立ち上がり ― 下の FF の列が、各段をいま一斉に取り込んだ':'時計の縁を待っている（パルスは 1 段 τ ずつ進む）');
+  for(var j=0;j<N;j++){
+    var v=edge?(j<k?1:0):null;
+    el(svg,'rect',{x:X(j),y:94,width:24,height:26,rx:3,fill:C('surface-2'),stroke:C('ink-3'),'stroke-width':1.2});
+    el(svg,'text',{x:X(j)+12,y:112,'text-anchor':'middle','font-family':MONO,'font-size':12,'font-weight':700,fill:v===null?C('ink-3'):sigColor(v)},v===null?'·':String(v));
+  }
+  el(svg,'text',{x:32,y:146,'font-family':MONO,'font-size':12,fill:edge?C('ink'):C('ink-3')},edge?('1 の数 k = '+k+' → 到着は時計の縁の '+k+'τ 前'):'1 の数 k = ?');
+  el(svg,'text',{x:32,y:166,'font-family':MONO,'font-size':11,fill:C('ink-2')},'t = n_c·T_c − k·τ（τ = 20 ps なら '+(edge?k*20:'?')+' ps 前）');
+  el(svg,'text',{x:32,y:196,'font-family':SANS,'font-size':11.5,fill:C('ink-2')},'k の度数 ― 到着のたびに 1 本ずつ積む');
+  el(svg,'path',{d:'M32,286 H'+(X(N-1)+24),stroke:C('line'),'stroke-width':1,fill:'none'});
+  for(var b=1;b<=N;b++){
+    var h=Math.min(cnt[b],6)*12;
+    if(h>0)el(svg,'rect',{x:X(b-1)+4,y:286-h,width:16,height:h,fill:C('photon'),'fill-opacity':0.75});
+  }
+  $('tTdc').textContent=edge?('到着 '+(e+1)+'：k = '+k+'。実物は 4 ns を 20 ps で覆う 200 段で、k が 1 増えるごとに 20 ps 早く来たことになる。'):'パルスが遅延線を進んでいる…';
+}
+function step(){
+  var k=K[e];
+  if(f<k){f++;if(f>=k){cnt[k]++;hold=0}draw();return}
+  hold++;if(hold<10)return;
+  e=(e+1)%K.length;if(e===0){for(var i=0;i<cnt.length;i++)cnt[i]=0}f=0;draw();
+}
+function stop(){if(timer){clearInterval(timer);timer=null}var p=$('bTdcPlay');p.textContent='自動で進む';p.setAttribute('aria-pressed','false')}
+function play(){if(timer){stop();return}var p=$('bTdcPlay');p.textContent='再生中';p.setAttribute('aria-pressed','true');timer=setInterval(step,150)}
+$('bTdcNext').addEventListener('click',function(){stop();var k=K[e];if(f<k){f=k;cnt[k]++}else{e=(e+1)%K.length;f=K[e];cnt[f]++}draw()});
+$('bTdcPlay').addEventListener('click',play);
+if(RM){f=K[0];cnt[K[0]]++;draw();stop()}else{draw();timer=setInterval(step,150)}
+})();
+
+/* ================= 10 2 進とグレイ符号（変わる途中を別の時計が読む） ================= */
+(function(){
+var svg=$('svgGray');if(!svg)return;
+var RM=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var SK=[0.18,0.42,0.66,0.88];           /* ビット 0〜3 が変わる時刻（窓の中の割合。一例の仮定） */
+var SMP=[0.55,0.30,0.78,0.50,0.62];      /* 別の時計が読む時刻（一例） */
+var v=6,n=0,timer=null;
+function gray(b){return b^(b>>1)}
+function ungray(g){var b=0;for(var s=g;s;s>>=1)b^=s;return b}
+function bits(x){return [(x>>3)&1,(x>>2)&1,(x>>1)&1,x&1]}
+function capture(a,b,s){var r=0;for(var i=0;i<4;i++){var ai=(a>>i)&1,bi=(b>>i)&1;var bit=(ai!==bi&&s>=SK[i])?bi:ai;r|=bit<<i}return r}
+function row(x,y,val,lab){
+  el(svg,'text',{x:x,y:y-8,'font-family':SANS,'font-size':10.5,fill:C('ink-3')},lab);
+  var bs=bits(val);
+  for(var i=0;i<4;i++){
+    el(svg,'rect',{x:x+i*19,y:y,width:17,height:22,rx:2,fill:C('surface-2'),stroke:C('ink-3'),'stroke-width':1});
+    el(svg,'text',{x:x+i*19+8.5,y:y+15.5,'text-anchor':'middle','font-family':MONO,'font-size':12,'font-weight':700,fill:sigColor(bs[i])},String(bs[i]));
+  }
+}
+function lines(y,a,b,s){
+  for(var i=3;i>=0;i--){
+    var yy=y+(3-i)*13;
+    el(svg,'path',{d:'M350,'+yy+' H505',stroke:C('line'),'stroke-width':1,fill:'none'});
+    if(((a>>i)&1)!==((b>>i)&1))el(svg,'path',{d:'M'+(350+155*SK[i])+','+(yy-5)+' V'+(yy+5),stroke:C('volt'),'stroke-width':2.2,fill:'none'});
+  }
+  el(svg,'path',{d:'M'+(350+155*s)+','+(y-8)+' V'+(y+47),stroke:C('warn'),'stroke-width':1.6,fill:'none'});
+}
+function panel(y0,title,a,b,s,dec){
+  el(svg,'text',{x:14,y:y0,'font-family':SANS,'font-size':12,'font-weight':700,fill:C('ink')},title);
+  row(14,y0+26,a,'前の値');row(104,y0+26,b,'次の値');
+  var c=capture(a,b,s);row(194,y0+26,c,'読めた値');
+  var ok=(c===a||c===b);
+  el(svg,'text',{x:282,y:y0+42,'font-family':MONO,'font-size':12,'font-weight':700,fill:ok?C('one'):C('warn')},ok?'✓':'✗');
+  lines(y0+20,a,b,s);
+  return c;
+}
+function draw(){
+  clear(svg);var a=v,b=(v+1)%16,s=SMP[n%SMP.length];
+  el(svg,'text',{x:350,y:16,'font-family':SANS,'font-size':10.5,fill:C('ink-3')},'各ビットの変わる時刻と、読む時刻');
+  var cb=panel(40,'2 進',a,b,s);
+  var cg=panel(170,'グレイ符号',gray(a),gray(b),s);
+  var gv=ungray(cg);
+  var okb=(cb===a||cb===b),okg=(gv===a||gv===b);
+  var nb=0,ng=0;for(var i=0;i<4;i++){if(((a^b)>>i)&1)nb++;if(((gray(a)^gray(b))>>i)&1)ng++}
+  $('tGray').textContent=a+' → '+b+'：2 進は '+nb+' ビットが変わり、読めたのは '+cb+(okb?'（前か次の値）':'（どちらでもない）')+'。グレイ符号は '+ng+' ビットだけ変わり、読めたのは '+gv+'（'+(gv===a?'前の値':'次の値')+'）。';
+}
+function next(){v=(v+1)%16;n++;draw()}
+function stop(){if(timer){clearInterval(timer);timer=null}var p=$('bGrayPlay');p.textContent='自動で進む';p.setAttribute('aria-pressed','false')}
+function play(){if(timer){stop();return}var p=$('bGrayPlay');p.textContent='再生中';p.setAttribute('aria-pressed','true');timer=setInterval(next,1800)}
+$('bGrayNext').addEventListener('click',function(){stop();next()});
+$('bGrayPlay').addEventListener('click',play);
+draw();
+if(!RM){timer=setInterval(next,1800)}else{stop()}
 })();
 })();
 </script>
