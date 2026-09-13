@@ -45,11 +45,19 @@
  *   aql,ltpd 合格品質水準・ロット許容不良率 [%]・alp,bet 生産者危険・消費者危険 [%]
  *   nsmp,cacc 1 回抜き取りのサンプル数 n と合格判定数 c
  *            合格の確率 Pa(p) = Σ_{k≤c} C(n,k) p^k (1−p)^(n−k)（二項分布の OC 曲線）
+ *   lmp1,lmt1,lmp2,lmt2  LM-80 の 2 点の光束維持率 [%] と時間 [h]   Φ(t) = B·exp(−αt) を 2 点から決める（IES TM-21）
+ *   lmT      LM-80 の試験時間 [h]・lmN 試料の数・lmP 寿命の基準 [%]（L70 なら 70）
+ *            Lp = ln(B/p)/α。報告できるのは試験時間の 6 倍（試料 20 個以上）・5.5 倍（10〜19 個）まで
+ *   lamr     冗長にする部品の故障率 λ [/h]・mttr 交換までの時間 [h]・trep 全部を新品にする周期 [年]
+ *            2 台並列: 修理なし 1.5/λ、修理 1 か所 (3λ+μ)/(2λ²)。多数決（3 台中 2 台）: 3R²−2R³
+ *   deff,dsig,drep  2² 要因計画で見つけたい効果 Δ・試行のばらつき σ・条件ごとの繰り返しの回数
+ *            N = 4·回数、効果の標準誤差 2σ/√N、両側 5% の検出力 Φ(Δ/SE − 1.96) + Φ(−Δ/SE − 1.96)
  *
  * 【約束】数値はすべてこの式から導出できる。乱数は使わない。
  * 【モデルの外】ワイブルの当てはめ（プロット）・TECの電流最適化・
  * 非正規分布・系統誤差・電圧/電流密度の加速は入れていない。
  * GR&R の分散分析の表そのもの（部品×測定者の交互作用の分離）と、JIS Z 9015 の切り替えの規則は入れていない。
+ * TM-21 の当てはめの区間の規則（最後の 5,000 h）・冗長の共通原因と修理の失敗・一部実施の交絡は入れていない。
  */
 (function (global) {
   'use strict';
@@ -73,7 +81,10 @@
       ucal: 2, resd: 0.5, srep: 0.5, nrep: 1, tco: 0.2,
       tmu: 55, tms: 125, cfs: 24, nnl: 1.9, mnl: 1 / 3, eknl: 1414,
       spv: 0.03,
-      aql: 1, ltpd: 5, alp: 5, bet: 10, nsmp: 50, cacc: 1
+      aql: 1, ltpd: 5, alp: 5, bet: 10, nsmp: 50, cacc: 1,
+      lmp1: 99.0, lmt1: 1000, lmp2: 97.0, lmt2: 6000, lmT: 6000, lmN: 20, lmP: 70,
+      lamr: 2e-5, mttr: 168, trep: 1,
+      deff: 3, dsig: 2, drep: 2
     };
   }
 
@@ -185,8 +196,35 @@
     var paAql = binCdf(cS, nS, (d.aql || 0) / 100);
     var paLtpd = binCdf(cS, nS, (d.ltpd || 0) / 100);
 
+    /* TM-21: 2 点から Φ(t) = B·exp(−αt) を決めて Lp を外挿。報告できるのは試験時間の k 倍まで
+       （試料 20 個以上で 6 倍、10〜19 個で 5.5 倍、10 個未満は TM-21 の外） */
+    var lmA = Math.log((d.lmp1 || 1) / (d.lmp2 || 1)) / ((d.lmt2 || 1) - (d.lmt1 || 0));
+    var lmB = (d.lmp1 || 0) / 100 * Math.exp(lmA * (d.lmt1 || 0));
+    var lpCalc = lmA > 0 ? Math.log(lmB / ((d.lmP || 70) / 100)) / lmA : Infinity;
+    var nN = Math.round(d.lmN || 0), kTm = nN >= 20 ? 6 : (nN >= 10 ? 5.5 : 0);
+    var lpCap = kTm * (d.lmT || 0);
+    var lpRep = Math.min(lpCalc, lpCap);
+
+    /* 冗長（同じ部品・独立に壊れる）: 2 台並列の MTTF（修理なし・修理 1 か所）と、
+       全部を周期 T で新品にするときの、周期の終わりの生存率 */
+    var lamr = d.lamr || 0, mu = d.mttr > 0 ? 1 / d.mttr : 0;
+    var mttfPar = lamr > 0 ? 1.5 / lamr : Infinity;
+    var mttfRep = lamr > 0 ? (3 * lamr + mu) / (2 * lamr * lamr) : Infinity;
+    var r1 = Math.exp(-lamr * HOURS_Y * (d.trep || 0));
+    var rPar = 1 - (1 - r1) * (1 - r1), rSer = r1 * r1, rVote = 3 * r1 * r1 - 2 * r1 * r1 * r1;
+    var tCross = lamr > 0 ? Math.LN2 / (lamr * HOURS_Y) : Infinity;   /* 多数決が単体と入れ替わる年（R = 0.5） */
+
+    /* 2² 要因計画: 効果 = 高の平均 − 低の平均 → 標準誤差 2σ/√N。両側 5% の判定の検出力 */
+    var doeN = 4 * Math.round(d.drep || 0);
+    var doeSE = doeN > 0 ? 2 * (d.dsig || 0) / Math.sqrt(doeN) : Infinity;
+    var dz = doeSE > 0 && isFinite(doeSE) ? (d.deff || 0) / doeSE : 0;
+    var doePow = phi(dz - 1.959964) + phi(-dz - 1.959964);
+
     return {
       afnl: afnl, cycNl: cycNl, daysNl: daysNl,
+      lmA: lmA, lmB: lmB, lpCalc: lpCalc, lpK: kTm, lpCap: lpCap, lpRep: lpRep,
+      mttfPar: mttfPar, mttfRep: mttfRep, r1: r1, rPar: rPar, rSer: rSer, rVote: rVote, tCross: tCross,
+      doeN: doeN, doeSE: doeSE, doePow: doePow,
       ndcRaw: ndcRaw, ndc: ndc, pgrrTv: pgrrTv, tv: tv,
       paAql: paAql, paLtpd: paLtpd, alphaAct: 1 - paAql, betaAct: paLtpd,
       lamFit: lamFit, mttfH: mttfH, mttfY: mttfY,

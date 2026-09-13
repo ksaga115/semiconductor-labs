@@ -166,4 +166,30 @@ T('抜き取りの OC 曲線 ― 二項分布', () => {
   ok('c ≤ 2 ではどの n でも α 5%・β 10% を両立しない', !any);
 });
 
+T('TM-21・冗長・要因計画 ― 第8部 16〜18 の数字', () => {
+  const a = evalWith({}).ev;
+  within('α = ln(0.990/0.970)/5,000 = 4.08×10⁻⁶', a.lmA, 4.0818e-6, 1.001);
+  within('B = 0.994', a.lmB, 0.99405, 1.0001);
+  within('式の上の L70 ≒ 85,900 h', a.lpCalc, 85920, 1.001);
+  within('L90 ≒ 24,400 h', evalWith({ lmP: 90 }).ev.lpCalc, 24350, 1.002);
+  within('L80 ≒ 53,200 h', evalWith({ lmP: 80 }).ev.lpCalc, 53206, 1.001);
+  near('6,000 h・20 個で報告は 36,000 h まで', a.lpRep, 36000, 1e-6);
+  near('15 個なら 5.5 倍の 33,000 h', evalWith({ lmN: 15 }).ev.lpCap, 33000, 1e-6);
+  near('9 個は TM-21 の外（上限 0）', evalWith({ lmN: 9 }).ev.lpCap, 0, 1e-12);
+  near('修理なしの並列は 1.5/λ = 75,000 h', a.mttfPar, 75000, 1e-6);
+  within('MTTR 24 h で 5.2×10⁷ h', evalWith({ mttr: 24 }).ev.mttfRep, 5.216e7, 1.001);
+  within('MTTR 168 h で 7.5×10⁶ h', a.mttfRep, 7.515e6, 1.001);
+  const y5 = evalWith({ trep: 5 }).ev;
+  within('5 年: 単体 41.6%', y5.r1, 0.416, 1.002);
+  within('5 年: 2 台並列 65.9%', y5.rPar, 0.659, 1.002);
+  within('5 年: 2 台直列 17.3%', y5.rSer, 0.173, 1.003);
+  within('多数決は 3.96 年で単体と入れ替わる', a.tCross, 3.956, 1.001);
+  near('入れ替わりの年では多数決 = 単体 = 0.5', evalWith({ trep: a.tCross }).ev.rVote, 0.5, 1e-9);
+  within('0.83 年で多数決 0.95', evalWith({ trep: 0.8301 }).ev.rVote, 0.95, 1.0005);
+  near('2 回ずつ（N = 8）の標準誤差 1.41 nm', a.doeSE, Math.sqrt(2), 1e-9);
+  within('4 回ずつ（N = 16）の検出力 85%', evalWith({ drep: 4 }).ev.doePow, 0.851, 1.002);
+  ok('3 回ずつ（N = 12）は 80% に届かない', evalWith({ drep: 3 }).ev.doePow < 0.8);
+  within('N ≥ (2(1.96+0.84)σ/Δ)² ≒ 13.9（第8部 16 の 5.6σ/Δ）', Math.pow(2 * (1.959964 + 0.841621) * 2 / 3, 2), 13.95, 1.002);
+});
+
 report();

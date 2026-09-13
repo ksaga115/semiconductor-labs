@@ -68,7 +68,20 @@
     ['alp', '生産者危険 α', '%', 0.1, 50],
     ['bet', '消費者危険 β', '%', 0.1, 50],
     ['nsmp', 'サンプル数 n', '個', 1, 5000, true],
-    ['cacc', '合格判定数 c', '個', 0, 100, true]
+    ['cacc', '合格判定数 c', '個', 0, 100, true],
+    ['lmp1', 'LM-80 の点 1 の光束', '%', 50, 100],
+    ['lmt1', '点 1 の時間', 'h', 0, 100000],
+    ['lmp2', 'LM-80 の点 2 の光束', '%', 50, 100],
+    ['lmt2', '点 2 の時間', 'h', 1, 100000],
+    ['lmT', 'LM-80 の試験時間', 'h', 1000, 50000],
+    ['lmN', '試料の数', '個', 1, 100, true],
+    ['lmP', '寿命の基準 Lp', '%（L70 なら 70）', 10, 99],
+    ['lamr', '冗長の部品の λ', '/h', 1e-8, 1e-2],
+    ['mttr', '交換までの時間 MTTR', 'h', 0.1, 10000],
+    ['trep', '全部を新品にする周期', '年', 0.01, 30],
+    ['deff', '見つけたい効果 Δ', 'nm', 0.01, 100],
+    ['dsig', '試行のばらつき σ', 'nm', 0.01, 100],
+    ['drep', '条件ごとの繰り返し', '回（2² 計画）', 1, 100, true]
   ];
 
   function num(t) {
@@ -247,7 +260,11 @@
       ['不確かさ u_c / U（k=2）', ev.ucg.toFixed(3) + ' % / ' + ev.Ug.toFixed(3) + ' %'],
       ['温度サイクル（NL）', 'AF ' + ev.afnl.toFixed(1) + ' → ' + ev.cycNl.toFixed(0) + ' 回・' + ev.daysNl.toFixed(1) + ' 日（' + S.design.cfs + ' 回/日）'],
       ['ndc / %GR&R（全変動比）', ev.ndc + '（' + ev.ndcRaw.toFixed(2) + '） / ' + (ev.pgrrTv * 100).toFixed(1) + ' %', ev.ndc < 5],
-      ['抜き取り α / β', (ev.alphaAct * 100).toFixed(2) + ' % / ' + (ev.betaAct * 100).toFixed(2) + ' %（n ' + S.design.nsmp + '・c ' + S.design.cacc + '）']
+      ['抜き取り α / β', (ev.alphaAct * 100).toFixed(2) + ' % / ' + (ev.betaAct * 100).toFixed(2) + ' %（n ' + S.design.nsmp + '・c ' + S.design.cacc + '）'],
+      ['LED の L' + S.design.lmP + '（式 / 報告できる）', ev.lpCalc.toFixed(0) + ' h / ' + ev.lpRep.toFixed(0) + ' h（試験の ' + ev.lpK + ' 倍まで）'],
+      ['2 台並列の MTTF（修理なし / 修理つき）', ev.mttfPar.toFixed(0) + ' h / ' + ev.mttfRep.toExponential(2) + ' h'],
+      ['周期の終わり 単体 / 並列 / 多数決', ev.r1.toFixed(3) + ' / ' + ev.rPar.toFixed(3) + ' / ' + ev.rVote.toFixed(3) + '（入れ替わり ' + ev.tCross.toFixed(2) + ' 年）'],
+      ['2² 計画 N / 標準誤差 / 検出力', ev.doeN + ' 回 / ' + ev.doeSE.toFixed(3) + ' / ' + (ev.doePow * 100).toFixed(1) + ' %', ev.doePow < 0.8]
     ];
     document.getElementById('derived').innerHTML = '<div class="dv">' + rows.map(function (r) {
       return '<span class="k">' + esc(r[0]) + '</span><span class="v' + (r[2] ? ' warn' : '') + '">' + esc(r[1]) + '</span>';

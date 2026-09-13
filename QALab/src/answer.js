@@ -72,6 +72,22 @@
     oc: {
       note: 'n = 132・c = 3。AQL 1% で合格 95.6 %（α 4.4 %）、LTPD 5% で合格 9.9 %（β 9.9 %）― 教科書の定番の計画。',
       design: function () { var d = M.defaults(); d.nsmp = 132; d.cacc = 3; return d; }
+    },
+    tm21: {
+      note: '試験 9,000 h・試料 20 個。式の上の L70 は 85,900 h、上限は 6 × 9,000 = 54,000 h なので「L70 は 54,000 h を超える」と書ける。',
+      design: function () { var d = M.defaults(); d.lmT = 9000; d.lmN = 20; return d; }
+    },
+    repair: {
+      note: 'MTTR 24 h（翌日交換）。(3λ + 1/24)/(2λ²) = 5.2×10⁷ h ― 修理なしの並列 7.5 万 h の約 700 倍。',
+      design: function () { var d = M.defaults(); d.mttr = 24; return d; }
+    },
+    vote: {
+      note: '9 か月（0.75 年）ごとに 3 台とも交換。R = 0.877 → 3R² − 2R³ = 0.958。単体なら 0.877 で届かない。',
+      design: function () { var d = M.defaults(); d.trep = 0.75; return d; }
+    },
+    doe: {
+      note: '各 4 回（N = 16）。標準誤差 2 × 2/√16 = 1.0 nm、Δ/SE = 3.0 で検出力 85%。',
+      design: function () { var d = M.defaults(); d.drep = 4; return d; }
     }
   };
 

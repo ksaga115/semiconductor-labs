@@ -240,6 +240,9 @@ code{font-family:var(--mono);font-size:.9em;background:var(--surface-2);padding:
 .qa h4{font-size:14px;margin-bottom:4px;color:var(--ink)}
 .qa p{font-size:14px;color:var(--ink-2)}
 table{width:100%;border-collapse:collapse;font-size:13.5px}
+/* 列を細くしすぎない ― 日本語が 1〜3 文字ずつ縦に積まれるのを防ぐ。入りきらない表は外側の .scroll-x の中で横に送る */
+th,td{min-width:6.5em}
+th{white-space:nowrap}
 th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line-2);vertical-align:top}
 th{font-family:var(--mono);font-size:10px;letter-spacing:.07em;color:var(--ink-3);font-weight:500;
   border-bottom:1px solid var(--line)}
@@ -366,6 +369,25 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
 .blink{animation:p8blink 1.8s ease-in-out infinite}
 @keyframes p8draw { 0%{stroke-dashoffset:var(--len,600)} 55%{stroke-dashoffset:0} 100%{stroke-dashoffset:0} }
 .draw{stroke-dasharray:var(--len,600);animation:p8draw 4s linear infinite}
+/* 管理図の点を時間の順に打つ（--i 番目の群が i×0.3 秒で現れる） */
+@keyframes p8seq{0%{opacity:0}4%{opacity:1}92%{opacity:1}100%{opacity:0}}
+.seq{animation:p8seq 9s linear infinite backwards;animation-delay:calc(var(--i)*.3s)}
+/* 棒が 0 から伸びる */
+@keyframes p8grow{0%{transform:scaleX(0)}40%{transform:scaleX(1)}100%{transform:scaleX(1)}}
+.grow{transform-box:fill-box;transform-origin:0 50%;animation:p8grow 5s ease-out infinite}
+/* 章ごとの「落とし穴」と「役割別の一言」 */
+.pit{margin-top:20px;border:1px solid var(--line);border-left:2px solid var(--warn);border-radius:2px;background:var(--surface);padding:12px 16px;max-width:46em}
+.pit .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;color:var(--warn);display:block;margin-bottom:6px}
+.pit ul{margin:0;padding-left:1.2em}
+.pit li{font-size:14px;line-height:1.75;margin:3px 0}
+.roles{margin-top:12px;display:grid;grid-template-columns:minmax(0,1fr);gap:8px;max-width:46em}
+@media (min-width:900px){.roles{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.roles div{border:1px solid var(--line);border-radius:2px;padding:8px 12px;background:var(--surface-2);font-size:13px;line-height:1.7;color:var(--ink-2)}
+.roles b{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:var(--ink-3);font-weight:500;margin-bottom:2px}
+/* 故障解析の流れ: 今の段を順に枠で示す（止めると枠は消え、図はそのまま読める） */
+@keyframes p8step{0%{opacity:0}1%,19%{opacity:1}20%,100%{opacity:0}}
+.stepon{opacity:0;animation:p8step 10s linear infinite backwards;animation-delay:calc(var(--i)*2s)}
+@media (prefers-reduced-motion:reduce){.seq,.grow,.draw,.flow,.blink,.stepon{animation:none!important}}
 </style>
 
 <header class="wrap hero">
@@ -374,7 +396,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <a class="back" href="index.html">&larr; Labs / 半導体 ― 第8部 信頼性と品質（実践: QALab）</a><br>
       <span class="eyebrow">FIT &rarr; Arrhenius &rarr; Weibull &rarr; Cpk</span>
       <h1>信頼性と品質 ― <span class="lit">壊れ方</span>を数える</h1>
-      <p class="sub">作った物はいつか壊れ、作るたびに数字はばらつきます。第1部〜第7部で作ってきたデバイスたちが<strong>客先で10年生きる</strong>ことと、<strong>工場で百万個そろう</strong>こと ― その2つを祈りではなく数字で請求するのが、この部の言葉（FIT・アレニウス・ワイブル・θ・Cpk）です。保証書を書く人も、放熱器を選ぶ人も、工程能力を報告する人も、同じ式の別の窓口に座っています。章の並びも仕事の順です: <strong>壊れ方の言葉</strong>（01 バスタブ・FIT）→ <strong>時間の早送り</strong>（02 加速）→ <strong>壊れ方の診断</strong>（03 ワイブル）→ <strong>温度という原因</strong>（04 熱・05 TEC）→ <strong>そろわない方の品質</strong>（06 Cpk・07 誤差）→ <strong>書類と規格の現場</strong>（08）。</p>
+      <p class="sub">作った物はいつか壊れ、作るたびに数字はばらつきます。第1部〜第7部で作ってきたデバイスたちが<strong>客先で10年生きる</strong>ことと、<strong>工場で百万個そろう</strong>こと ― その2つを祈りではなく数字で請求するのが、この部の言葉（FIT・アレニウス・ワイブル・θ・Cpk）です。保証書を書く人も、放熱器を選ぶ人も、工程能力を報告する人も、同じ式の別の窓口に座っています。章の並びも仕事の順です: <strong>壊れ方の言葉</strong>（01 バスタブ・FIT）→ <strong>時間の早送り</strong>（02 加速）→ <strong>壊れ方の診断</strong>（03 ワイブル）→ <strong>温度という原因</strong>（04 熱・05 TEC）→ <strong>そろわない方の品質</strong>（06 Cpk・07 誤差）→ <strong>書類と規格の現場</strong>（08）。そのあとに、測る・調べる・守る道具（09〜13）、<strong>壊れる物理・抜き取り・実験計画</strong>（14〜16）、<strong>光デバイスの寿命と冗長化</strong>（17・18）が続きます。</p>
       <div class="depth-row">
         <div class="depth" role="group" aria-label="説明の深さ">
           <button id="dSimple" aria-pressed="true">かんたん</button>
@@ -424,6 +446,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li><a href="#s12"><span class="n">11</span><span>故障解析</span></a></li>
     <li><a href="#s13"><span class="n">12</span><span>規格・安全・法規</span></a></li>
     <li><a href="#s14"><span class="n">13</span><span>データ解析</span></a></li>
+    <li class="dom"><span>壊れる物理・抜く・試す</span></li>
+    <li><a href="#s15"><span class="n">14</span><span>故障の物理</span></a></li>
+    <li><a href="#s16"><span class="n">15</span><span>抜き取りと OC</span></a></li>
+    <li><a href="#s17"><span class="n">16</span><span>実験計画法</span></a></li>
+<li><a href="#s18"><span class="n">17</span><span>光デバイスの寿命</span></a></li>
+<li><a href="#s19"><span class="n">18</span><span>冗長化</span></a></li>
     <li class="dom"><span>付録</span></li>
     <li><a href="#scheck"><span class="n">—</span><span>理解の確認</span></a></li>
     <li><a href="#s9"><span class="n">—</span><span>用語表</span></a></li>
@@ -451,6 +479,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li><a href="#s12"><span class="n">11</span><span>故障解析</span></a></li>
     <li><a href="#s13"><span class="n">12</span><span>規格・法規</span></a></li>
     <li><a href="#s14"><span class="n">13</span><span>データ解析</span></a></li>
+    <li class="dom"><span>壊れる物理・抜く・試す</span></li>
+    <li><a href="#s15"><span class="n">14</span><span>故障の物理</span></a></li>
+    <li><a href="#s16"><span class="n">15</span><span>抜き取りと OC</span></a></li>
+    <li><a href="#s17"><span class="n">16</span><span>実験計画法</span></a></li>
+<li><a href="#s18"><span class="n">17</span><span>光デバイスの寿命</span></a></li>
+<li><a href="#s19"><span class="n">18</span><span>冗長化</span></a></li>
     <li class="dom"><span>付録</span></li>
     <li><a href="#scheck"><span class="n">—</span><span>理解の確認</span></a></li>
     <li><a href="#s9"><span class="n">—</span><span>用語表</span></a></li>
@@ -477,6 +511,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
         <text x="40" y="100" font-size="10" fill="var(--ink-3)" text-anchor="middle" transform="rotate(-90 40 100)">故障率 λ(t)</text>
         <path d="M85 84 C 130 112, 170 124, 230 128 L 500 128 C 560 124, 620 112, 670 84"
               stroke="var(--electron)" stroke-width="2.4" fill="none" class="draw" style="--len:800"/>
+        <circle r="4.5" fill="var(--photon)"><animateMotion path="M85 84 C 130 112, 170 124, 230 128 L 500 128 C 560 124, 620 112, 670 84" dur="8s" repeatCount="indefinite"/></circle>
         <path d="M230 20 V180 M500 20 V180" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="4 4"/>
         <g font-size="10" text-anchor="middle">
           <text x="155" y="44" fill="var(--warn)" font-weight="600">初期不良（m&lt;1）</text>
@@ -520,6 +555,19 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p><b>解.</b> λ ≤ 0.92/(総台·時間) なので、10 FIT には 0.92/10⁻⁸ = 9.2×10⁷ 台·時間（使用条件換算）。÷78 で試験炉の中では 1.18×10⁶ 台·時間 ― 1,000 時間なら <b>1,180 個</b>。JESD47 の標準の 231 個（3 ロット × 77）で言えるのは <b>51 FIT</b> まで。<span class="key">低い FIT を主張するほど、要る標本が比例して増える</span> ― 報告書の FIT を見たら、まず標本数を逆算してみる。</p>
   </div>
 
+  <div class="pit">
+    <span class="tag">落とし穴 ― 01 で踏みやすいこと</span>
+    <ul>
+      <li><b>MTTF を保証期間と読む</b> ― 故障率一定なら MTTF の時点で残るのは 37%。「MTTF 11 年」の装置でも 5 年で 3 台に 1 台が止まる（生存 64.5%）。</li>
+      <li><b>FIT の足し算をいつでも使う</b> ― 足し算が成り立つのはバスタブの平らな底（偶発・m = 1）の区間だけ。初期不良と摩耗の時期には別の式（03）。</li>
+      <li><b>「0 故障」を故障率 0 と読む</b> ― 言えるのは標本数で決まる上限だけ。標準の 231 個・HTOL 1,000 h で言えるのは 60% の信頼で 51 FIT まで。</li>
+    </ul>
+  </div>
+  <div class="roles">
+    <div><b>営業・企画</b>カタログの MTTF は「1 年で壊れる割合」に直して話す（100 万時間なら年 0.9%）。</div>
+    <div><b>設計・開発</b>系の目標の FIT から部品の FIT を逆算し、直列の数も設計の自由度として使う。</div>
+    <div><b>研究・製造</b>FIT の報告には、信頼水準・仮定の Ea・標本数の 3 つを必ず添える。</div>
+  </div>
   <div class="lab-go">
     <span class="tag">手を動かす — QALab 第1章</span>
     <p>部品の FIT と直列数から系の MTTF を出し、「20年」の請求書を部品品質で払うか、部品点数で払うかを比べる。同じ目標に払い方が2つあることが、そのまま設計の自由度になる。</p>
@@ -537,18 +585,18 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <div class="body-col">
       <h3>AF — 温度の為替レート</h3>
       <div class="eq">AF = exp[ (Ea/k) · (1/T<sub>使用</sub> &minus; 1/T<sub>試験</sub>) ]　　k = 8.62×10⁻⁵ eV/K</div>
-      <p>化学反応の速度が温度で指数的に速くなるのと同じ形で、多くの故障メカニズムも速くなります。定番の数字: <span class="key">Ea = 0.7 eV で 55℃→125℃ なら AF &asymp; 78</span>。使用条件の10年（87,600時間）は、125℃ の炉の中では 1,123時間 ― 約7週間で「済む」。125℃・1000時間という業界標準の HTOL 試験は、この換算でおよそ<strong>9年ぶんの前借り</strong>です。温度は絶対温度（K）で入れること ― ℃のまま引き算すると全部間違えます。</p>
+      <p>化学反応の速度が温度で指数的に速くなるのと同じ形で、多くの故障メカニズムも速くなります。定番の数字: <span class="key">Ea = 0.7 eV で 55℃→125℃ なら AF &asymp; 78</span>。使用条件の10年（87,600時間）は、125℃ の炉の中では 1,128時間 ― 約7週間で「済む」。125℃・1000時間という業界標準の HTOL 試験は、この換算でおよそ<strong>9年ぶんの前借り</strong>です。温度は絶対温度（K）で入れること ― ℃のまま引き算すると全部間違えます。</p>
     </div>
     <div class="body-col">
       <h3>Ea は物性定数ではなく「仮定」</h3>
-      <p>加速率は Ea に指数で効きます。そして Ea は故障メカニズムごとに違う: 酸化膜破壊・エレクトロマイグレーション・金属間化合物の成長 ― JEDEC の JEP122 に<span class="key">0.3〜1.2 eV ほどの幅</span>で表になっています。だから信頼性報告書でまず見るのは FIT の値ではなく<strong>仮定した Ea</strong>。Ea を 0.7 から 1.0 に「盛る」と同じ試験が3倍以上の寿命を主張できてしまう ― それは加速したのではなく、仮定を変えただけです（<a href="QALab/index.html?quest=accel">QALab の課題</a>はこのため Ea を固定しています）。</p>
+      <p>加速率は Ea に指数で効きます。そして Ea は故障メカニズムごとに違う: 酸化膜破壊・エレクトロマイグレーション・金属間化合物の成長 ― JEDEC の JEP122 に<span class="key">0.3〜1.2 eV ほどの幅</span>で表になっています。だから信頼性報告書でまず見るのは FIT の値ではなく<strong>仮定した Ea</strong>。Ea を 0.7 から 1.0 に「盛る」と、同じ 125℃ の試験が約 6.5 倍の寿命を主張できてしまう ― それは加速したのではなく、仮定を変えただけです（<a href="QALab/index.html?quest=accel">QALab の課題</a>はこのため Ea を固定しています）。</p>
     </div>
   </div>
 
   <figure class="full">
     <div class="fig-head"><span class="fig-title">SLOPE — アレニウスの坂は 1/T の直線、傾きが Ea</span></div>
     <div class="fig-body scroll-x">
-      <svg viewBox="0 0 760 230" role="img" aria-label="横軸1/T（右ほど低温）、縦軸log AFのアレニウスプロット。Ea=0.4、0.7、1.0eVの3本の直線。Eaが大きいほど傾きが急で、同じ温度差で買える加速が大きい。55℃と125℃の位置が示される。" style="min-width:700px;width:100%;display:block">
+      <svg viewBox="0 0 760 230" role="img" aria-label="横軸1/T（右ほど低温）、縦軸log AFのアレニウスプロット。Ea=0.4、0.7、1.0eVの3本の直線を式から計算して描いたもの。55℃の使用条件を×1として、125℃ではそれぞれ×12・×78・×502、150℃では×24・×259・×2800。Eaが大きいほど傾きが急で、同じ温度差で買える加速が大きい。" style="min-width:700px;width:100%;display:block">
         <g stroke="var(--line)" stroke-width="1" opacity="0.6">
           <path d="M70 20 V180"/><path d="M70 180 H700"/>
           <path d="M70 140 H700"/><path d="M70 100 H700"/><path d="M70 60 H700"/>
@@ -556,27 +604,34 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
         <g font-size="9" fill="var(--ink-3)">
           <text x="62" y="184" text-anchor="end">×1</text><text x="62" y="144" text-anchor="end">×10</text>
           <text x="62" y="104" text-anchor="end">×100</text><text x="62" y="64" text-anchor="end">×1000</text>
-          <text x="180" y="198" text-anchor="middle">150℃</text><text x="320" y="198" text-anchor="middle">125℃</text><text x="660" y="198" text-anchor="middle">55℃（使用）</text>
+          <text x="120.0" y="198" text-anchor="middle">150℃</text><text x="237.1" y="198" text-anchor="middle">125℃</text><text x="458.5" y="198" text-anchor="middle">85℃</text><text x="660" y="198" text-anchor="middle">55℃（使用）</text>
         </g>
         <text x="385" y="220" font-size="10" fill="var(--ink-3)" text-anchor="middle">1/T →（右ほど低温）</text>
-        <path d="M660 176 L320 118 L120 84" stroke="var(--si)" stroke-width="2.2" fill="none" class="draw" style="--len:600"/>
-        <path d="M660 176 L320 86 L160 44" stroke="var(--warn)" stroke-width="2.2" fill="none" class="draw" style="--len:640;animation-delay:.4s"/>
-        <path d="M660 176 L400 150 L120 122" stroke="var(--volt)" stroke-width="2" fill="none" class="draw" style="--len:600;animation-delay:.8s"/>
+        <path d="M660.0 180.0 L237.1 104.4 L120.0 83.5" stroke="var(--si)" stroke-width="2.2" fill="none" class="draw" style="--len:600"/>
+        <path d="M660.0 180.0 L237.1 72.0 L120.0 42.1" stroke="var(--warn)" stroke-width="2.2" fill="none" class="draw" style="--len:640;animation-delay:.4s"/>
+        <path d="M660.0 180.0 L237.1 136.8 L120.0 124.8" stroke="var(--volt)" stroke-width="2" fill="none" class="draw" style="--len:600;animation-delay:.8s"/>
         <g font-size="9.5">
           <path d="M470 26 h18" stroke="var(--warn)" stroke-width="2.4"/><text x="494" y="30" fill="var(--warn)">Ea = 1.0 eV（急 ― よく加速する）</text>
           <path d="M470 39 h18" stroke="var(--si)" stroke-width="2.4"/><text x="494" y="43" fill="var(--si)">Ea = 0.7 eV（定番: 125℃で ×78）</text>
           <path d="M470 52 h18" stroke="var(--volt)" stroke-width="2.4"/><text x="494" y="56" fill="var(--volt)">Ea = 0.4 eV（緩 ― 温度で稼げない）</text>
         </g>
-        <circle cx="320" cy="118" r="4" fill="var(--si)"/>
-        <text x="300" y="164" font-size="9" fill="var(--ink-2)" text-anchor="middle">↑ HTOL 125℃ の位置</text>
+        <circle cx="237.1" cy="104.4" r="4" fill="var(--si)"/>
+        <text x="237.1" y="164" font-size="9" fill="var(--ink-2)" text-anchor="middle">↑ HTOL 125℃（×78）</text>
       </svg>
     </div>
-    <figcaption>片対数×逆数温度で描くと<span class="key">直線になり、傾きがそのまま Ea</span>。故障モードごとに直線が違う ― 報告書の Ea を JEP122 と突き合わせるとは、この傾きの妥当性を確かめることです。10℃則（下の「くわしく」）はこの直線の局所の読みにすぎません。</figcaption>
+    <figcaption>片対数×逆数温度で描くと<span class="key">直線になり、傾きがそのまま Ea</span>（図は 55℃ を ×1 として式から計算: 125℃ で Ea 0.4・0.7・1.0 eV がそれぞれ ×12・×78・×502）。故障モードごとに直線が違う ― 報告書の Ea を JEP122 と突き合わせるとは、この傾きの妥当性を確かめることです。10℃則（下の「くわしく」）はこの直線の局所の読みにすぎません。</figcaption>
   </figure>
 
   <div class="deep deep-note">
     <span class="tag">くわしく — 温度以外の早送り: 湿度（Peck）と温度サイクル（Coffin-Manson）</span>
     <p>アレニウスが早送りするのは「時間」ですが、湿気と熱膨張の故障には別の為替レートがあります。湿気（腐食・マイグレーション）は <span class="key">Peck の式: AF = (RH比)ⁿ × アレニウス</span>（Peck 1986 の原典値は n=2.7・Ea=0.79 eV。実務では n=3 に丸めることが多く、この本と QALab は n=3 で計算）― 定番の <strong>85℃/85%RH</strong> は使用 40℃/60%RH に対し湿度で2.8倍×温度で40倍 ≒ <strong>113倍</strong>（n=2.7 なら約101倍）。「85/85 を1,000時間 ≒ 10年の湿気保証」という言い回しの根拠がこの掛け算です ― ただし使用条件の仮定（ここでは 40℃/60%RH）に強く依存します。はんだやワイヤの熱膨張差疲労は回数で数え、<span class="key">Coffin-Manson: 寿命サイクル数 ∝ ΔT⁻ⁿ</span>（はんだで n≈2）― 温度サイクル試験 −40〜125℃（ΔT165K）は日常のΔT30Kに対し (165/30)² ≒ <strong>30倍の回数早送り</strong>。どちらも QALab で数値にできます。</p>
+  </div>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — 回す速さと最高温度まで入れる: Norris-Landzberg</span>
+    <p>純 Coffin-Manson は温度の振れ幅だけで数えますが、はんだの疲労はサイクルの速さと最高温度にもよります。Norris と Landzberg（1969）は SnPb はんだについて、次の形を当てはめました（T は K、f は 1 日あたりの回数）。</p>
+    <div class="eq">AF = (ΔT<sub>s</sub>/ΔT<sub>u</sub>)<sup>1.9</sup> × (f<sub>u</sub>/f<sub>s</sub>)<sup>1/3</sup> × exp[1414 × (1/T<sub>max,u</sub> − 1/T<sub>max,s</sub>)]</div>
+    <p>使用 ΔT 30 K・1 回/日・最高 55 ℃ を −40〜125 ℃ で試すと、同じ周波数なら ΔT の項 25.5 × 最高温度の項 2.13 = <b>AF 54.4</b>。実際の槽は 1 日に何十回も回すので周波数の項が効き、24 回/日で <b>AF 18.9</b>（10 年の 3,650 回は 194 回・8.1 日）、36 回/日で <b>AF 16.5</b>（222 回・6.2 日）。<span class="key">周波数を 8 倍にすると AF は 1/2</span> ― 速く回すほど 1 回あたりにはんだがクリープする時間が減り、1 回の試験で進む損傷が小さくなる。これは上の純 Coffin-Manson（n = 2・30 倍・121 回）とは<b>別のモデル</b>で、指数と定数は SnPb の値です。鉛フリーのはんだは定数が違うので、材料ごとの文献値で置き換えてください。</p>
   </div>
 
   <div class="deep deep-note">
@@ -590,10 +645,23 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p><b>解.</b> AF = 78 で <b>1,130 h</b>。500 h には AF 175 が要り、試験温度 <b>142℃</b>。湿気は Peck（n = 3、Ea 0.79 eV）で 85/85 が AF <b>113</b> → <b>778 h</b>、HAST 130℃ は AF <b>1,960</b> → <b>45 h</b>。JESD47 は THB 1,000 h の代替に HAST 96 h を挙げていますが、この式の比（1,960/113 ≈ 17）で換算すると THB 1,000 h は HAST 約 57 h に相当するので、規格の 96 h はそれより長い安全側にあります。はんだは Coffin–Manson (165/30)² = <b>30</b> で、使用 3,650 回が <b>121 サイクル</b>。<span class="key">同じ「10 年」が、機構ごとに別の通貨（温度・湿度・回数）で払われる</span> ― どの試験がどの故障を早送りしているかを取り違えると、実証したことにならない。</p>
   </div>
 
+  <div class="pit">
+    <span class="tag">落とし穴 ― 02 で踏みやすいこと</span>
+    <ul>
+      <li><b>温度を ℃ のまま入れる</b> ― アレニウスの式の温度は絶対温度（K）。</li>
+      <li><b>Ea を盛って試験を縮める</b> ― 0.7 → 1.0 eV にすると、同じ 125 ℃ の試験で約 6.5 倍の寿命を主張できてしまう。加速したのではなく仮定を変えただけ。</li>
+      <li><b>1 つの試験で全部を早送りしたつもりになる</b> ― 湿気は Peck、はんだは回数（Coffin-Manson・Norris-Landzberg）で別の通貨で払う。</li>
+    </ul>
+  </div>
+  <div class="roles">
+    <div><b>営業・企画</b>「10 年相当」は Ea と使用温度の仮定の上の数字だと添えて伝える。</div>
+    <div><b>設計・開発</b>試験温度は、加速したい量と槽・材料の上限の両側から決める。</div>
+    <div><b>研究・製造</b>故障の機構ごとの Ea を JEP122 と照合し、できれば 2〜3 温度で実測する。</div>
+  </div>
   <div class="lab-go">
     <span class="tag">手を動かす — QALab 第1章</span>
     <p>Ea・使用温度・実証したい寿命を固定したまま、試験温度だけで「500時間以内」の請求書を払う。湿気は 85/85 の槽の中で、はんだは −40〜125℃ のサイクルで、同じ早送りを別の通貨で払う。</p>
-    <div class="qs"><a href="QALab/index.html?quest=accel">10 年を 500 時間で実証する</a><a href="QALab/index.html?quest=peck">湿気の 10 年を 1,000 時間で</a><a href="QALab/index.html?quest=cm">はんだの 10 年を 200 サイクルで</a><a href="QALab/index.html?quest=hast">HAST ― 100 時間の壁</a></div>
+    <div class="qs"><a href="QALab/index.html?quest=accel">10 年を 500 時間で実証する</a><a href="QALab/index.html?quest=peck">湿気の 10 年を 1,000 時間で</a><a href="QALab/index.html?quest=cm">はんだの 10 年を 200 サイクルで</a><a href="QALab/index.html?quest=hast">HAST ― 100 時間の壁</a><span class="lab">第5章</span><a href="QALab/index.html?quest=nl">温度サイクルを回す速さ ― Norris-Landzberg</a></div>
   </div>
 </section>
 
@@ -649,6 +717,19 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p><b>解.</b> B10 = η(−ln 0.9)<sup>1/m</sup> = η × 0.1054<sup>1/m</sup>: m = 0.5 で <b>111 h</b>、1 で <b>1,054 h</b>、2 で <b>3,246 h</b>、3 で <b>4,723 h</b>。同じ η でも、初期不良型（m = 0.5）の最初の 10% は摩耗型（m = 3）の 40 倍早く来る。m = 2 で B10 5,000 h には η ≥ 5,000/0.3246 = <b>15,400 h</b>。<span class="key">平均的な寿命（η）より、形（m）のほうが「最初の 10%」を大きく動かす</span> ― 寿命試験の一番の収穫が m である理由です。</p>
   </div>
 
+  <div class="pit">
+    <span class="tag">落とし穴 ― 03 で踏みやすいこと</span>
+    <ul>
+      <li><b>m を見ずに平均（η）で比べる</b> ― 同じ η でも B10 は m = 0.5 で 111 h、m = 3 で 4,723 h。</li>
+      <li><b>摩耗型（m ＞ 1）にバーンインをかける</b> ― 全部の個体の寿命を等しく削るだけ。効くのは m ＜ 1 の集団だけ。</li>
+      <li><b>折れ線のワイブルプロットに 1 本の直線を引く</b> ― 折れ点は故障モードが混ざっている合図。前後を別々に解析する。</li>
+    </ul>
+  </div>
+  <div class="roles">
+    <div><b>営業・企画</b>保証期間の話は、平均ではなく B10（最初の 10%）の言葉でする。</div>
+    <div><b>設計・開発</b>対策会議の最初の議題を「m はいくつか」にする。</div>
+    <div><b>研究・製造</b>故障データは機構ごとに分けて打点し、m を報告する。</div>
+  </div>
   <div class="lab-go">
     <span class="tag">手を動かす — QALab 第1章</span>
     <p>m = 2（摩耗）を固定して、B10 ≥ 5,000 時間の請求書を η で払う。逆算すると η ≥ 15,400h ― 「10%までの静けさ」が尺度でいくらになるかの勘定。</p>
@@ -677,7 +758,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   <figure class="full">
     <div class="fig-head"><span class="fig-title">THERMAL OHM — 熱の回路図（電圧=温度・電流=熱・抵抗=θ）</span></div>
     <div class="fig-body scroll-x">
-      <svg viewBox="0 0 760 200" role="img" aria-label="熱抵抗の直列回路。発熱Pの電流源からθjc、θcs、θsaの3つの抵抗を通って周囲温度のグラウンドへ。各ノードの温度Tj、Tc、Tsが降りていく。" style="min-width:700px;width:100%;display:block">
+      <svg viewBox="0 0 760 300" role="img" aria-label="熱抵抗の直列回路。発熱Pの電流源からθjc、θcs、θsaの3つの抵抗を通って周囲温度のグラウンドへ。各ノードの温度Tj、Tc、Tsが降りていく。下の棒は各ノードの温度で、θsa 30 K/W（Tj 104 ℃）と 15 K/W（Tj 74 ℃）の2つの設計を交互に示す。" style="min-width:700px;width:100%;display:block">
         <circle cx="100" cy="90" r="20" stroke="var(--warn)" fill="none" stroke-width="1.8"/>
         <path d="M100 78 v24 M95 86 l5 -8 l5 8" stroke="var(--warn)" stroke-width="1.5" fill="none"/>
         <text x="100" y="134" font-size="10" fill="var(--warn)" text-anchor="middle">発熱 P [W]</text>
@@ -707,9 +788,28 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <text x="580" y="120" font-size="9.5" fill="var(--ink-2)">θsa を 15 にすると 74 ℃</text>
           <text x="580" y="136" font-size="9.5" fill="var(--si)">　→ 寿命 約6.4 倍（02の坂）</text>
         </g>
+        <g>
+          <rect x="171" y="196.0" width="26" height="80.0" fill="var(--warn)" opacity="0.75"><animate attributeName="height" values="80.0;80.0;51.4;51.4;80.0" keyTimes="0;0.4;0.5;0.9;1" dur="8s" repeatCount="indefinite"/><animate attributeName="y" values="196.0;196.0;224.6;224.6;196.0" keyTimes="0;0.4;0.5;0.9;1" dur="8s" repeatCount="indefinite"/></rect>
+          <rect x="279" y="198.9" width="26" height="77.1" fill="var(--volt)" opacity="0.75"><animate attributeName="height" values="77.1;77.1;48.6;48.6;77.1" keyTimes="0;0.4;0.5;0.9;1" dur="8s" repeatCount="indefinite"/><animate attributeName="y" values="198.9;198.9;227.4;227.4;198.9" keyTimes="0;0.4;0.5;0.9;1" dur="8s" repeatCount="indefinite"/></rect>
+          <rect x="387" y="199.8" width="26" height="76.2" fill="var(--si)" opacity="0.75"><animate attributeName="height" values="76.2;76.2;47.6;47.6;76.2" keyTimes="0;0.4;0.5;0.9;1" dur="8s" repeatCount="indefinite"/><animate attributeName="y" values="199.8;199.8;228.4;228.4;199.8" keyTimes="0;0.4;0.5;0.9;1" dur="8s" repeatCount="indefinite"/></rect>
+          <rect x="507" y="257.0" width="26" height="19.0" fill="var(--ink-3)" opacity="0.75"></rect>
+          <path d="M160 276 H545" stroke="var(--line)" stroke-width="1" fill="none"/>
+        </g>
+        <g font-size="9.5" text-anchor="middle" fill="var(--ink-2)">
+          <text x="184" y="290">Tj</text>
+          <text x="292" y="290">Tc</text>
+          <text x="400" y="290">Ts</text>
+          <text x="520" y="290">Tamb</text>
+        </g>
+        <g font-size="9.5" fill="var(--ink-2)">
+          <text x="556" y="214">棒 ＝ ノードの温度（20 ℃ から）</text>
+          <text x="556" y="232" fill="var(--warn)">θsa 30 K/W: 104・101・100・40 ℃</text>
+          <text x="556" y="250" fill="var(--si)">θsa 15 K/W: 74・71・70・40 ℃</text>
+          <text x="556" y="268" fill="var(--ink-3)">（2 つの設計を交互に）</text>
+        </g>
       </svg>
     </div>
-    <figcaption>オームの法則そのままに、<span class="key">温度は抵抗を通るたびに P×θ ずつ降りていく</span>。ノードの温度を左から読めば、どの区間が支配的か（＝どこを直せば効くか）が一目で分かります。</figcaption>
+    <figcaption>オームの法則そのままに、<span class="key">温度は抵抗を通るたびに P×θ ずつ降りていく</span>。ノードの温度を左から読めば、どの区間が支配的か（＝どこを直せば効くか）が一目で分かります。下の棒は Tj = T<sub>amb</sub> + P·Σθ から計算した各ノードの温度で、放熱器を 30 → 15 K/W にすると、θsa の区間の落差（60 → 30 K）だけが縮むのが見えます。</figcaption>
   </figure>
 
   <div class="deep deep-note">
@@ -723,6 +823,19 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p><b>解.</b> Tj = 40 + 2 × 32 = <b>104℃</b>。θsa 15 なら 40 + 2 × 17 = <b>74℃</b>、寿命は exp[(0.7/k)(1/347.15 − 1/377.15)] = <b>6.4 倍</b>。Tj ≤ 85℃ には 2 × (2 + θsa) ≤ 45 → θsa ≤ <b>20.5 K/W</b>。<span class="key">30℃ 下げると寿命が 6 倍</span> ― 放熱器の値段と寿命の値段を同じ表で比べられるのが、この会計の強みです。</p>
   </div>
 
+  <div class="pit">
+    <span class="tag">落とし穴 ― 04 で踏みやすいこと</span>
+    <ul>
+      <li><b>θja を実基板の設計に使う</b> ― JESD51 の標準基板に載せた比較用の値で、銅箔やビアで大きく変わる。</li>
+      <li><b>定常の θ でパルスを見積もる</b> ― 短いパルスは熱容量が受け止めるので、過渡熱インピーダンス Zth(t) で見る。</li>
+      <li><b>「Tj 85 ℃ 以下」を物理の限界と読む</b> ― 寿命の為替レート表から来た目安で、Ea と寿命の目標で変わる。</li>
+    </ul>
+  </div>
+  <div class="roles">
+    <div><b>営業・企画</b>放熱器の違いを寿命の倍率で説明できる（104 → 74 ℃ で約 6.4 倍）。</div>
+    <div><b>設計・開発</b>θsa ≤ 20.5 K/W のように逆算してから放熱器を選ぶ。</div>
+    <div><b>研究・製造</b>実基板の Tj は測って確かめる。</div>
+  </div>
   <div class="lab-go">
     <span class="tag">手を動かす — QALab 第2章</span>
     <p>発熱・周囲温度・θjc・θcs を固定し、放熱器の θsa だけで Tj ≤ 85℃ を払う。逆算は θsa ≤ 20.5 K/W ― カタログの放熱器の欄でどの行から買えるかが決まる数字。</p>
@@ -766,6 +879,9 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
         <circle cx="199" cy="82" r="4" fill="var(--electron)"/>
         <path d="M199 82 V128" stroke="var(--electron)" stroke-width="1.2" stroke-dasharray="3 3"/>
         <text x="206" y="72" font-size="9.5" fill="var(--electron-2)">成立するのは直線が負荷より上の範囲だけ</text>
+        <circle cx="311.7" cy="128" r="3.5" fill="var(--warn)"/>
+        <circle r="4.5" fill="var(--si)"><animateMotion path="M70 30 L440 180" dur="7s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;0" keyTimes="0;0.6533" calcMode="discrete" dur="7s" repeatCount="indefinite"/></circle>
+        <circle r="4.5" fill="var(--warn)" opacity="0"><animateMotion path="M70 30 L440 180" dur="7s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;1" keyTimes="0;0.6533" calcMode="discrete" dur="7s" repeatCount="indefinite"/></circle>
         <g>
           <rect x="560" y="60" width="90" height="34" rx="4" fill="var(--surface-2)" stroke="var(--electron)"/>
           <text x="605" y="81" font-size="10" fill="var(--electron-2)" text-anchor="middle">冷たい側 Qc</text>
@@ -779,7 +895,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
         </g>
       </svg>
     </div>
-    <figcaption>QALab の右の盤面と同じ直線。<span class="key">「何度」と「何ワット」は直線の上でしか両立しない</span> ― そして払った熱は倍付けで高温側に現れ、04 の会計に戻ってきます。</figcaption>
+    <figcaption>QALab の右の盤面と同じ直線。動く点は ΔT を 0 から ΔTmax まで進め、負荷の線を下回った所（橙の点、吸える最大の ΔT）から色が変わる ― 例題の数字なら 53 K。<span class="key">「何度」と「何ワット」は直線の上でしか両立しない</span> ― そして払った熱は倍付けで高温側に現れ、04 の会計に戻ってきます。</figcaption>
   </figure>
 
   <div class="ex">
@@ -788,6 +904,19 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p><b>解.</b> Q<sub>c</sub> = 5 × (1 − ΔT/70): ΔT 60 K で <b>0.71 W</b>（1.2 W の負荷は吸えない）、50 K で <b>1.43 W</b>。1.2 W を吸える上限は 70 × (1 − 1.2/5) = <b>53 K</b>。「50 K 以上冷やしたい」なら窓は <b>50〜53 K</b> しかない。<span class="key">あと 10 K 深く冷やしたいなら、TEC を2段にするか熱負荷を半分にするしかない</span> ― そして熱い側にはこの 1.2 W と TEC 自身の電力が出てくるので、04 の θ の会計がもう一度始まります。</p>
   </div>
 
+  <div class="pit">
+    <span class="tag">落とし穴 ― 05 で踏みやすいこと</span>
+    <ul>
+      <li><b>温度差と吸熱を同時に欲張る</b> ― 直線の上でしか両立しない（Qmax 5 W・ΔTmax 70 K で 60 K なら 0.71 W）。</li>
+      <li><b>カタログの Qmax を欲しい温度差での吸熱と読む</b> ― Qmax は ΔT = 0 の値。</li>
+      <li><b>熱い側の放熱を忘れる</b> ― 吸った熱と TEC 自身の電力が出てくる（COP はしばしば 1 未満）。失敗のほとんどは熱い側で起きる。</li>
+    </ul>
+  </div>
+  <div class="roles">
+    <div><b>営業・企画</b>「何度まで」と「何ワット」はセットで聞く。</div>
+    <div><b>設計・開発</b>熱い側の θ の会計（04）まで含めて冷却を設計する。</div>
+    <div><b>研究・製造</b>到達温度が浮いたら、冷たい側より先に熱い側の放熱を疑う。</div>
+  </div>
   <div class="lab-go">
     <span class="tag">手を動かす — QALab 第2章</span>
     <p>Qmax・ΔTmax・熱負荷を固定して、「50K 以上冷やし、かつ負荷を吸い切る」ΔT の窓を探す。窓は 50〜53K しかない ― 直線のトレードオフが両側から挟んでくる。</p>
@@ -816,23 +945,25 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   <figure class="full">
     <div class="fig-head"><span class="fig-title">CPK — 分布と規格の距離を σ で測る</span></div>
     <div class="fig-body scroll-x">
-      <svg viewBox="0 0 900 240" role="img" aria-label="正規分布の山と、両側の規格限界LSL・USL。山の中心が規格中心から少しずれており、近い側の規格までの距離を3σで割ったものがCpk。はみ出しの裾がppm。" style="min-width:800px;width:100%;display:block">
+      <svg viewBox="0 0 900 240" role="img" aria-label="正規分布の山と、両側の規格限界LSL・USL。06 の例題の工程（規格±0.3、中心のずれ+0.05、σ0.1）を正規分布の式で描いたもの。近い側（上限）までの距離0.25を3σで割ったCpkは0.83で、上限の外への裾が約6,200 ppm。" style="min-width:800px;width:100%;display:block">
         <path d="M70 190 H700" stroke="var(--line)" stroke-width="1"/>
-        <path d="M110 189 C 200 187, 260 180, 310 150 C 360 112, 380 54, 410 54 C 440 54, 460 112, 510 150 C 560 180, 620 187, 700 189"
+        <path d="M110 190.0 L115 190.0 L120 190.0 L125 190.0 L130 190.0 L135 189.9 L140 189.9 L145 189.9 L150 189.9 L155 189.8 L160 189.8 L165 189.8 L170 189.7 L175 189.6 L180 189.5 L185 189.4 L190 189.3 L195 189.2 L200 189.0 L205 188.7 L210 188.5 L215 188.2 L220 187.8 L225 187.4 L230 186.9 L235 186.3 L240 185.7 L245 184.9 L250 184.0 L255 183.0 L260 181.9 L265 180.6 L270 179.2 L275 177.6 L280 175.8 L285 173.8 L290 171.6 L295 169.2 L300 166.6 L305 163.7 L310 160.6 L315 157.3 L320 153.7 L325 149.9 L330 145.8 L335 141.6 L340 137.2 L345 132.5 L350 127.7 L355 122.8 L360 117.8 L365 112.7 L370 107.5 L375 102.4 L380 97.3 L385 92.2 L390 87.3 L395 82.6 L400 78.1 L405 73.9 L410 70.0 L415 66.4 L420 63.2 L425 60.5 L430 58.2 L435 56.4 L440 55.1 L445 54.3 L450 54.0 L455 54.3 L460 55.1 L465 56.4 L470 58.2 L475 60.5 L480 63.2 L485 66.4 L490 70.0 L495 73.9 L500 78.1 L505 82.6 L510 87.3 L515 92.2 L520 97.3 L525 102.4 L530 107.5 L535 112.7 L540 117.8 L545 122.8 L550 127.7 L555 132.5 L560 137.2 L565 141.6 L570 145.8 L575 149.9 L580 153.7 L585 157.3 L590 160.6 L595 163.7 L600 166.6 L605 169.2 L610 171.6 L615 173.8 L620 175.8 L625 177.6 L630 179.2 L635 180.6 L640 181.9 L645 183.0 L650 184.0 L655 184.9 L660 185.7 L665 186.3 L670 186.9 L675 187.4 L680 187.8 L685 188.2 L690 188.5 L695 188.7 L700 189.0"
               stroke="var(--si)" stroke-width="2.2" fill="none" class="draw" style="--len:800"/>
         <path d="M170 30 V190 M650 30 V190" stroke="var(--warn)" stroke-width="1.8"/>
         <text x="170" y="22" font-size="10" fill="var(--warn)" text-anchor="middle">LSL（下限）</text>
         <text x="650" y="22" font-size="10" fill="var(--warn)" text-anchor="middle">USL（上限）</text>
-        <path d="M410 54 V190" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="3 3"/>
-        <text x="410" y="210" font-size="9.5" fill="var(--ink-2)" text-anchor="middle">工程の平均 µ</text>
+        <path d="M450 54 V190" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="3 3"/>
+        <path d="M410 150 V190" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="2 3"/>
+        <text x="456" y="210" font-size="9.5" fill="var(--ink-2)">工程の平均 µ（中心から +0.05）</text>
+        <text x="404" y="226" font-size="9.5" fill="var(--ink-3)" text-anchor="end">規格の中心</text>
         <path d="M410 200 H426" stroke="none"/>
-        <path d="M410 176 H448" stroke="var(--electron)" stroke-width="2"/>
-        <text x="430" y="170" font-size="9" fill="var(--electron-2)" text-anchor="middle">σ</text>
-        <path d="M410 40 H650" stroke="var(--warn)" stroke-width="1.2" stroke-dasharray="5 3"/>
-        <text x="530" y="34" font-size="9.5" fill="var(--warn)" text-anchor="middle">近い側の距離 ÷ 3σ ＝ Cpk</text>
+        <path d="M450 176 H530" stroke="var(--electron)" stroke-width="2"/>
+        <text x="490" y="170" font-size="9" fill="var(--electron-2)" text-anchor="middle">σ</text>
+        <path d="M450 40 H650" stroke="var(--warn)" stroke-width="1.2" stroke-dasharray="5 3"/>
+        <text x="550" y="34" font-size="9.5" fill="var(--warn)" text-anchor="middle">近い側の距離 ÷ 3σ ＝ Cpk</text>
         <path d="M652 186 C 668 184, 684 183, 698 183" stroke="var(--warn)" stroke-width="0" fill="none"/>
         <g fill="var(--warn)" opacity="0.5">
-          <path d="M650 189 C 664 188, 680 187, 700 187 L 700 190 L 650 190 Z"/>
+          <path d="M650 190 L650 184.0 L655 184.9 L660 185.7 L665 186.3 L670 186.9 L675 187.4 L680 187.8 L685 188.2 L690 188.5 L695 188.7 L700 189.0 L700 190 Z"/>
         </g>
         <text x="658" y="174" font-size="9" fill="var(--warn)">はみ出し = ppm</text>
         <g font-size="9.5" fill="var(--ink-2)">
@@ -844,7 +975,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
         </g>
       </svg>
     </div>
-    <figcaption>Cpk は<span class="key">「山の端から規格の壁までの距離」を σ 単位で測った数</span>。中心がずれるほど近い側の壁が迫る ― 中心合わせとばらつき削減が同じ価値を持つ理由が、この絵の中にあります。</figcaption>
+    <figcaption>図は例題の工程（規格 ±0.3・ずれ +0.05・σ 0.1）: 上限まで 2.5σ で Cpk 0.83、上側の裾だけで 6,210 ppm、両側で 6,440 ppm。Cpk は<span class="key">「山の端から規格の壁までの距離」を σ 単位で測った数</span>。中心がずれるほど近い側の壁が迫る ― 中心合わせとばらつき削減が同じ価値を持つ理由が、この絵の中にあります。</figcaption>
   </figure>
 
   <div class="deep deep-note">
@@ -858,6 +989,19 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p><b>解.</b> σ = 0.1: Cpk = (0.3 − 0.05)/0.3 = <b>0.83</b>、不良 <b>6,440 ppm</b>。Cpk 1.33 には σ ≤ 0.25/(3 × 1.33) = <b>0.0627</b>、そのとき不良は <b>34 ppm</b>。中心が合った σ 0.075 の工程も Cpk は 1.33 だが、不良は <b>63 ppm</b>。<span class="key">同じ Cpk でも ppm は倍近く違う</span> ― Cpk は近い側の壁しか見ないので、ずれた工程は片側の裾だけ、中心の合った工程は両側の裾で不良を出すからです。Cpk→ppm の換算表（63 ppm）は「中心が合っている」前提の数字だと覚えておく。</p>
   </div>
 
+  <div class="pit">
+    <span class="tag">落とし穴 ― 06 で踏みやすいこと</span>
+    <ul>
+      <li><b>Cpk → ppm を保証と読む</b> ― 換算は正規分布の前提。実工程の裾は正規より厚いことがある。</li>
+      <li><b>同じ Cpk なら ppm も同じと思う</b> ― 中心がずれた工程と合った工程で、同じ Cpk 1.33 でも 34 ppm と 63 ppm。</li>
+      <li><b>「6σ = 3.4 ppm」を統計の定理と思う</b> ― 1.5σ のシフトを込みにした運動側の約束事。</li>
+    </ul>
+  </div>
+  <div class="roles">
+    <div><b>営業・企画</b>Cpk を聞いたら、中心のずれと分布の形も聞く。</div>
+    <div><b>設計・開発</b>中心合わせと σ の削減を、同じ価値の設計の変数として扱う。</div>
+    <div><b>研究・製造</b>Cpk は管理状態（09）を作ってから出す。</div>
+  </div>
   <div class="lab-go">
     <span class="tag">手を動かす — QALab 第3章</span>
     <p>規格幅と中心ずれを固定し、σ だけで Cpk ≥ 1.33 を払う。ずれ 0.05 のぶん σ の許しは 0.0627 まで縮む ― 「中心を合わせれば σ は 0.075 でよかった」が数字で見える。</p>
@@ -899,8 +1043,8 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <text x="530" y="36" font-size="10.5" fill="var(--ink)" text-anchor="middle" font-weight="600">誤差予算 ― 支配項しか効かない</text>
           <g font-size="9" fill="var(--ink-3)" text-anchor="end">
             <text x="416" y="72">A=0.3, B=0.6</text>
-            <text x="416" y="108">B を半分に磨く</text>
-            <text x="416" y="144">A（大きい方）を 0.4 に</text>
+            <text x="416" y="108">A（小さい方）を 0.15 に</text>
+            <text x="416" y="144">B（大きい方）を 0.4 に</text>
           </g>
           <g>
             <rect x="424" y="60" width="134" height="16" fill="var(--warn)" opacity="0.85"/>
@@ -922,12 +1066,27 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <span class="tag">例題 ― 手で一度解く（07 誤差の合成と GR&amp;R）</span>
     <p><b>問.</b> 規格 ±0.3 の寸法を測る測定系で、同じ人が測り直したばらつき（繰り返し）が σ 0.02、人・日による差（再現性）が σ 0.006。%GR&amp;R（6σ<sub>測定</sub> を公差 0.6 で割ったもの）は？ 合格・条件付き・不合格のどれか。</p>
     <p><b>解.</b> σ<sub>測定</sub> = √(0.02² + 0.006²) = 0.0209、%GR&amp;R = 6 × 0.0209/0.6 = <b>20.9%</b> ― 10〜30% の<b>条件付き</b>（用途と費用で判断）。再現性を 0 にしても √(0.02²) = 0.02 → 20% で、ほとんど下がらない。<span class="key">支配しているのは繰り返し（器具そのもの）で、人の教育をいくらしても合格にはならない</span> ― 誤差予算の「最大の積み木から」がここでもそのまま効きます。</p>
+    <p><b>問2.</b> 同じ物差しで、工程の部品のばらつき σ<sub>部品</sub> = 0.03 を見分けられるか。見分ける力は有効区分数 ndc = 1.41 × σ<sub>部品</sub>/σ<sub>測定</sub>（小数は切り捨て）で表し、5 以上を合格とする（AIAG MSA 第 4 版の考え方）。</p>
+    <p><b>解.</b> 1.41 × 0.03/0.0209 = 2.03 → <b>ndc 2</b> ― 部品を 2 つの区分にしか分けられず、工程の管理には使えない。繰り返しを 0.007 に絞ると σ<sub>測定</sub> = 0.0092 で、公差比は <b>9.2%</b>（合格）なのに <b>ndc 4</b>（不足）。0.005 まで絞ると σ<sub>測定</sub> = 0.0078 で <b>ndc 5</b>・公差比 7.8%・全変動比（σ<sub>測定</sub>/σ<sub>全体</sub>）25%。<span class="key">公差に対して合格でも、部品のばらつきに対して物差しが粗ければ、管理図（09）の点は物差しの揺らぎで動く</span> ― 能力の高い工程ほど、公差比ではなく ndc で物差しを選びます。</p>
   </div>
 
+  <div class="pit">
+    <span class="tag">落とし穴 ― 07 で踏みやすいこと</span>
+    <ul>
+      <li><b>独立な誤差を足し算で合成する</b> ― 二乗和の平方根（0.3 と 0.4 で 0.7 ではなく 0.5）。</li>
+      <li><b>支配項以外を磨く</b> ― 0.3 と 0.6 の小さい方を半分にしても、合成は 0.67 → 0.62 にしかならない。</li>
+      <li><b>公差比（%GR&amp;R）だけで物差しを選ぶ</b> ― 能力の高い工程では、公差比 9.2% で合格の物差しでも ndc 4 で部品を見分けられない。</li>
+    </ul>
+  </div>
+  <div class="roles">
+    <div><b>営業・企画</b>仕様の精度は予算表の最大の項で決まると説明できる。</div>
+    <div><b>設計・開発</b>誤差の予算表を書き、最大の項に資源を向ける。</div>
+    <div><b>研究・製造</b>工程を叩く前に、物差し（GR&amp;R・ndc）を検定する。</div>
+  </div>
   <div class="lab-go">
     <span class="tag">手を動かす — QALab 第3章</span>
     <p>誤差Aを 0.3% に固定して、合成 0.51% 以下の予算を誤差Bで払う。B ≤ 0.41% ― 二乗和は「両方半分ずつ」を許してくれない。</p>
-    <div class="qs"><a href="QALab/index.html?quest=prop">誤差の合成を 0.51% に</a><a href="QALab/index.html?quest=grr">物差しを検定する ― GR&amp;R</a></div>
+    <div class="qs"><a href="QALab/index.html?quest=prop">誤差の合成を 0.51% に</a><a href="QALab/index.html?quest=grr">物差しを検定する ― GR&amp;R</a><span class="lab">第5章</span><a href="QALab/index.html?quest=ndc">物差しの見分ける力 ― ndc</a></div>
   </div>
 </section>
 
@@ -1002,9 +1161,27 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p><b>解.</b> τ = RC = 1.5 kΩ × 100 pF = <b>150 ns</b>、ピーク電流 2 kV / 1.5 kΩ = <b>1.3 A</b>、エネルギー ½CV² = ½ × 100 pF × (2 kV)² = <b>0.2 mJ</b>。<span class="key">1.3 A が 100 ns 級で数 µm の配線やゲート酸化膜を通る</span> ― 人が「感じない」放電でも、チップの中の局所の電流密度と電界は破壊に十分です。JS-001（HBM）・JS-002（CDM）の試験はこの回路定数を規格化したもので、パッケージの定格「HBM 2 kV」はこの放電に耐えたという意味です。</p>
   </div>
 
+  <div class="pit">
+    <span class="tag">落とし穴 ― 08 で踏みやすいこと</span>
+    <ul>
+      <li><b>試験の名前だけで何を実証したか分かった気になる</b> ― バスタブのどの壁（または湿気）を攻めているかに翻訳する。</li>
+      <li><b>FIT の結論の数字だけを読む</b> ― 仮定・標本・信頼水準の 3 つを差し替えれば大きく動く。</li>
+      <li><b>ESD の不良を加速試験で追う</b> ― 摩耗ではなく一発の事故。弱った個体（潜在損傷）は市場で初期不良になる。取り扱いの工程を調べる。</li>
+    </ul>
+  </div>
+  <div class="roles">
+    <div><b>営業・企画</b>報告書の 3 点（仮定・標本・信頼水準）を聞ける。</div>
+    <div><b>設計・開発</b>認定の計画を、故障の機構ごとに組む。</div>
+    <div><b>研究・製造</b>接地とリストバンドを、回路定数（HBM 150 ns・1.3 A）として管理する。</div>
+  </div>
+  <div class="lab-go">
+    <span class="tag">手を動かす — QALab 第1章</span>
+    <p>バーンインが効くかは m の診断から（ワイブル）。HTOL と THB・HAST の早送りの倍率は 02 の式で払う。</p>
+    <div class="qs"><a href="QALab/index.html?quest=weib">B10 寿命を 5,000 時間に</a><a href="QALab/index.html?quest=accel">10 年を 500 時間で実証する</a><a href="QALab/index.html?quest=hast">HAST ― 100 時間の壁</a></div>
+  </div>
   <div class="caveat">
     <span class="tag">この部が単純化していること</span>
-    <p><strong>加速は温度（アレニウス）・湿度（Peck）・温度サイクル（Coffin-Manson）の3本です。</strong>電圧・電流密度の加速、加速どうしの組み合わせ（サイクル＋湿度など）、Coffin-Manson の周波数・保持時間補正（Norris-Landzberg）はモデル外。実際の認定計画は規格原文で。</p>
+    <p><strong>加速は温度（アレニウス）・湿度（Peck）・温度サイクル（Coffin-Manson）の3本です。</strong>電圧・電流密度の加速、加速どうしの組み合わせ（サイクル＋湿度など）、Coffin-Manson の周波数と最高温度の補正は 02 の「くわしく」で Norris-Landzberg（SnPb の定数）として扱い、保持時間の補正と鉛フリーの定数はモデル外。実際の認定計画は規格原文で。</p>
     <p><strong>Cpk→ppm は正規分布、θ は一次元定常、TEC は一次近似です。</strong>裾の厚い分布・過渡熱・TEC の電流依存は、それぞれ実測とシミュレーションの領分。この部の式は「桁と方向を最初に当てる」ための一次見積もりとして使ってください。</p>
   </div>
 </section>
@@ -1036,12 +1213,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
         <rect x="474" y="84" width="204" height="40" rx="6" fill="var(--volt)" opacity="0.10" stroke="var(--volt)" stroke-dasharray="4 3"/>
         <polyline points="90,118 114,132 138,104 162,140 186,112 210,126 234,96 258,150 282,122 306,108 330,52 354,134 378,116 402,128 426,100 450,144 474,104 498,98 522,112 546,92 570,108 594,100 618,114 642,96 666,106" fill="none" stroke="var(--ink-3)" stroke-width="1"/>
         <g fill="var(--electron)">
-          <circle cx="90" cy="118" r="3.5"/><circle cx="114" cy="132" r="3.5"/><circle cx="138" cy="104" r="3.5"/><circle cx="162" cy="140" r="3.5"/><circle cx="186" cy="112" r="3.5"/><circle cx="210" cy="126" r="3.5"/><circle cx="234" cy="96" r="3.5"/><circle cx="258" cy="150" r="3.5"/><circle cx="282" cy="122" r="3.5"/><circle cx="306" cy="108" r="3.5"/><circle cx="354" cy="134" r="3.5"/><circle cx="378" cy="116" r="3.5"/><circle cx="402" cy="128" r="3.5"/><circle cx="426" cy="100" r="3.5"/><circle cx="450" cy="144" r="3.5"/>
+          <circle class="seq" style="--i:0" cx="90" cy="118" r="3.5"/><circle class="seq" style="--i:1" cx="114" cy="132" r="3.5"/><circle class="seq" style="--i:2" cx="138" cy="104" r="3.5"/><circle class="seq" style="--i:3" cx="162" cy="140" r="3.5"/><circle class="seq" style="--i:4" cx="186" cy="112" r="3.5"/><circle class="seq" style="--i:5" cx="210" cy="126" r="3.5"/><circle class="seq" style="--i:6" cx="234" cy="96" r="3.5"/><circle class="seq" style="--i:7" cx="258" cy="150" r="3.5"/><circle class="seq" style="--i:8" cx="282" cy="122" r="3.5"/><circle class="seq" style="--i:9" cx="306" cy="108" r="3.5"/><circle class="seq" style="--i:11" cx="354" cy="134" r="3.5"/><circle class="seq" style="--i:12" cx="378" cy="116" r="3.5"/><circle class="seq" style="--i:13" cx="402" cy="128" r="3.5"/><circle class="seq" style="--i:14" cx="426" cy="100" r="3.5"/><circle class="seq" style="--i:15" cx="450" cy="144" r="3.5"/>
         </g>
         <g fill="var(--volt)">
-          <circle cx="474" cy="104" r="3.5"/><circle cx="498" cy="98" r="3.5"/><circle cx="522" cy="112" r="3.5"/><circle cx="546" cy="92" r="3.5"/><circle cx="570" cy="108" r="3.5"/><circle cx="594" cy="100" r="3.5"/><circle cx="618" cy="114" r="3.5"/><circle cx="642" cy="96" r="3.5"/><circle cx="666" cy="106" r="3.5"/>
+          <circle class="seq" style="--i:16" cx="474" cy="104" r="3.5"/><circle class="seq" style="--i:17" cx="498" cy="98" r="3.5"/><circle class="seq" style="--i:18" cx="522" cy="112" r="3.5"/><circle class="seq" style="--i:19" cx="546" cy="92" r="3.5"/><circle class="seq" style="--i:20" cx="570" cy="108" r="3.5"/><circle class="seq" style="--i:21" cx="594" cy="100" r="3.5"/><circle class="seq" style="--i:22" cx="618" cy="114" r="3.5"/><circle class="seq" style="--i:23" cx="642" cy="96" r="3.5"/><circle class="seq" style="--i:24" cx="666" cy="106" r="3.5"/>
         </g>
-        <circle cx="330" cy="52" r="5" fill="var(--warn)"/>
+        <circle class="seq" style="--i:10" cx="330" cy="52" r="5" fill="var(--warn)"/>
         <g font-size="10">
           <text x="344" y="46" fill="var(--warn)">管理限界の外 ― すぐに原因を探す</text>
           <text x="706" y="64" fill="var(--warn)">UCL</text><text x="706" y="124" fill="var(--ink-2)">CL</text><text x="706" y="184" fill="var(--warn)">LCL</text>
@@ -1070,6 +1247,19 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p><b>解.</b> 両側で 0.27%、平均 370 点に 1 回。50 点/日なら <b>約 7 日に 1 回</b>。警報のたびに調べる手間がかかるので、限界を 3σ に置くのは「空振り」と「見逃し」の釣り合いの慣習です。</p>
     <p><b>問2.</b> 5 個ずつの群で、X̿ = 100.0 nm、R̄ = 2.0 nm だった。X̄ 図の管理限界は？ 1σ の平均のずれは、1 個ずつ打つ図と n = 5 の X̄ 図で、それぞれ平均何点で見つかるか。</p>
     <p><b>解.</b> 100.0 ± 0.577 × 2.0 = <b>98.85〜101.15 nm</b>。1 個ずつでは平均 <b>44 点</b>、n = 5 では平均の σ が 1/√5 になり、ずれが √5 = 2.24 倍大きく見えるので <b>4.5 群</b>。<span class="key">平均を取ると、小さなずれが速く見える</span> ― 第5部の「√t で買う」と同じ算術です。</p>
+  </div>
+  <div class="pit">
+    <span class="tag">落とし穴 ― 09 で踏みやすいこと</span>
+    <ul>
+      <li><b>管理限界と規格限界を混同する</b> ― 管理限界は工程自身のデータだけから決まり、規格とは無関係。</li>
+      <li><b>管理状態でない工程で Cpk を出す</b> ― 測った日によって変わるので意味を持たない。</li>
+      <li><b>判定のルールを増やせば良いと思う</b> ― 見逃しは減るが空振りも増える（3σ だけでも 370 点に 1 回）。</li>
+    </ul>
+  </div>
+  <div class="roles">
+    <div><b>営業・企画</b>「管理状態」と「規格の中」は別の話だと説明できる。</div>
+    <div><b>設計・開発</b>見張る項目（膜厚・CD・暗電流など）と群の大きさを決める。</div>
+    <div><b>研究・製造</b>限界を外れたら、ロットを止めて装置と材料を調べる。</div>
   </div>
   <div class="lab-go">
     <span class="tag">手を動かす — QALab 第4章</span>
@@ -1131,6 +1321,19 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p><b>問.</b> 光パワーメータで 1.000 mW と読んだ。校正証明書の拡張不確かさ 2%（k = 2）、表示の最小桁 0.01 mW、10 回の繰り返しの標準偏差 0.5%、温度係数 0.1%/K で室温が ±2 K 動く。合成標準不確かさと拡張不確かさ（k = 2）は？</p>
     <p><b>解.</b> 校正 2/2 = 1.00%。分解能は ±0.005 mW（±0.5%）の矩形で 0.5/√3 = 0.29%。繰り返しは平均の不確かさ 0.5/√10 = 0.16%（タイプ A）。温度は ±0.2% の矩形で 0.2/√3 = 0.12%。u<sub>c</sub> = √(1.00² + 0.29² + 0.16² + 0.12²) = <b>1.06%</b>、U = <b>2.1%（k = 2）</b>。報告は「1.000 mW ± 0.021 mW（k = 2）」。<span class="key">QE や感度の測定値に付く ±2% の多くは、パワーメータの校正そのもの</span>です。</p>
   </div>
+  <div class="pit">
+    <span class="tag">落とし穴 ― 10 で踏みやすいこと</span>
+    <ul>
+      <li><b>拡張不確かさに k を書かない</b> ― 「1.000 mW ± 0.021 mW（k = 2）」のように必ず添える。</li>
+      <li><b>誤差と不確かさを同じ意味で使う</b> ― 誤差は真の値との差（知りようがない）、不確かさは信頼の幅（見積もれる）。</li>
+      <li><b>平均の回数で校正の不確かさを減らそうとする</b> ― 校正 2% のままでは、何回平均しても U ≈ 2.1% が床になる。</li>
+    </ul>
+  </div>
+  <div class="roles">
+    <div><b>営業・企画</b>QE や感度に付く ±2% の多くは、パワーメータの校正そのものと説明できる。</div>
+    <div><b>設計・開発</b>不確かさの予算表で、磨くべき項を先に決める。</div>
+    <div><b>研究・製造</b>校正のトレーサビリティ（ISO/IEC 17025）を記録に残す。</div>
+  </div>
   <div class="lab-go">
     <span class="tag">手を動かす — QALab 第4章</span>
     <p>校正 2% のままでは何回平均しても U 1.3% に届かない。支配項（校正）と平均の回数の両方を決める。</p>
@@ -1172,12 +1375,20 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <text x="682" y="118">工程・設計・材料</text><text x="682" y="134">・使われ方へ</text><text x="682" y="150">再発防止と報告</text>
         </g>
         <path d="M30 196 H730 M722 191 L730 196 L722 201" stroke="var(--warn)" stroke-width="1.6" fill="none"/>
+        <g stroke="var(--ink)" stroke-width="2" fill="none">
+          <rect class="stepon" style="--i:0" x="15" y="31" width="134" height="64" rx="8"/>
+          <rect class="stepon" style="--i:1" x="165" y="31" width="134" height="64" rx="8"/>
+          <rect class="stepon" style="--i:2" x="315" y="31" width="134" height="64" rx="8"/>
+          <rect class="stepon" style="--i:3" x="465" y="31" width="134" height="64" rx="8"/>
+          <rect class="stepon" style="--i:4" x="615" y="31" width="134" height="64" rx="8"/>
+        </g>
+        <circle r="4" fill="var(--warn)"><animateMotion path="M30 196 H722" dur="10s" repeatCount="indefinite"/></circle>
         <text x="30" y="216" font-size="10" fill="var(--si)">壊さない（何度でも見られる）</text>
         <text x="730" y="216" font-size="10" fill="var(--warn)" text-anchor="end">壊す（戻れない）</text>
         <text x="380" y="238" font-size="9.5" fill="var(--ink-3)" text-anchor="middle">場所を絞るほど、次の手順が使える ― TEM の試料は、狙った 1 か所を 100 nm 以下の薄さに切り出したもの</text>
       </svg>
     </div>
-    <figcaption>左から右へ進むほど分解能は上がるが、見られる範囲は狭まり、試料は元に戻らない。だから<span class="key">③の「光らせて場所を特定する」段が、全体の成否を決める要</span>です。ここに<a href="第5部_光検出デバイス.html#s7">第5部 07</a> の高感度カメラ（EMMI）と、<a href="第7部_光学.html#s8">第7部 08</a> のロックインの考え方が入っています。</figcaption>
+    <figcaption>左から右へ進むほど分解能は上がるが、見られる範囲は狭まり、試料は元に戻らない。だから<span class="key">③の「光らせて場所を特定する」段が、全体の成否を決める要</span>です。枠は①から⑤へ順に進み、下の点は「壊さない」から「戻れない」へ進みます。ここに<a href="第5部_光検出デバイス.html#s7">第5部 07</a> の高感度カメラ（EMMI）と、<a href="第7部_光学.html#s8">第7部 08</a> のロックインの考え方が入っています。</figcaption>
   </figure>
 
   <div class="two">
@@ -1209,6 +1420,24 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p><b>問2.</b> 赤外カメラの 1 枚の温度の雑音が 20 mK のとき、ロックイン発熱解析で 1 秒 100 枚を 100 秒積むと、雑音はおよそどこまで下がるか。</p>
     <p><b>解.</b> 枚数 N = 10⁴、雑音はおよそ 1/√N で下がるので 20 mK / 100 ≈ <b>0.2 mK</b>（係数は同期検波の方式で変わる目安）。<span class="key">mW 以下の発熱でも場所が見える</span>理由です。</p>
   </div>
+  <div class="pit">
+    <span class="tag">落とし穴 ― 11 で踏みやすいこと</span>
+    <ul>
+      <li><b>場所を特定する前に削る</b> ― ③より前に開けたり削ったりすると、場所の手がかりが永久に消える。</li>
+      <li><b>現象を原因として報告する</b> ― 「酸化膜の破壊」は現象。ESD か、製造の欠陥か、使い方の過電圧かまで遡る。</li>
+      <li><b>1 枚の熱画像に映らないから発熱なしと判断する</b> ― ロックインで 10⁴ 枚積めば、20 mK の雑音が約 0.2 mK まで下がる。</li>
+    </ul>
+  </div>
+  <div class="roles">
+    <div><b>営業・企画</b>解析の順序（壊さない → 壊す）と、かかる日数の見込みを伝えられる。</div>
+    <div><b>設計・開発</b>原因が設計なら、FIT とワイブルの m の見直しにつなぐ。</div>
+    <div><b>研究・製造</b>原因が工程なら、管理図の見張りの項目を増やす。</div>
+  </div>
+  <div class="lab-go">
+    <span class="tag">手を動かす — QALab 第1章・第4章</span>
+    <p>解析の結論は数字に戻す ― 原因がロット全体なら FIT と m を、工程なら管理図の見張りを見直す。</p>
+    <div class="qs"><a href="QALab/index.html?quest=mttf">系の MTTF を 20 年に</a><a href="QALab/index.html?quest=weib">B10 寿命を 5,000 時間に</a><a href="QALab/index.html?quest=spc">管理限界を引く</a></div>
+  </div>
 </section>
 
 <!-- ================= 12 ================= -->
@@ -1233,7 +1462,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   <figure class="full">
     <div class="fig-head"><span class="fig-title">CLASS — 可視の連続光レーザーのクラスの上限（IEC 60825-1）</span></div>
     <div class="fig-body scroll-x">
-      <svg viewBox="0 0 760 210" role="img" aria-label="可視の連続光レーザーのクラスを光出力の対数軸に並べた図。クラス2は1ミリワットまで、3Rは5ミリワットまで、3Bは500ミリワットまで、それを超えるとクラス4。クラス1は波長・時間・ビームの条件で決まる。" style="min-width:700px;width:100%;display:block">
+      <svg viewBox="0 0 760 234" role="img" aria-label="可視の連続光レーザーのクラスを光出力の対数軸に並べた図。100 mW のビームが OD 2 の保護めがねで 1 mW まで弱まる様子を、点が軸の上を動いて示す。クラス2は1ミリワットまで、3Rは5ミリワットまで、3Bは500ミリワットまで、それを超えるとクラス4。クラス1は波長・時間・ビームの条件で決まる。" style="min-width:700px;width:100%;display:block">
         <rect x="100" y="54" width="120" height="36" fill="var(--si)" opacity="0.35"/>
         <rect x="220" y="54" width="84" height="36" fill="var(--photon)" opacity="0.45"/>
         <rect x="304" y="54" width="240" height="36" fill="var(--warn)" opacity="0.45"/>
@@ -1255,6 +1484,10 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
         </g>
         <text x="100" y="36" font-size="10" fill="var(--ink-3)">クラス 1 の上限は波長・露光時間・ビームの条件で決まる（ふつうに使えば安全な水準）。この図は可視 400〜700 nm の連続光の場合</text>
         <text x="400" y="204" font-size="9.5" fill="var(--ink-3)" text-anchor="middle">光出力（対数）→</text>
+        <path d="M460 138 H220" stroke="var(--ink-3)" stroke-width="1.2" stroke-dasharray="4 4" fill="none"/>
+        <circle cx="460" cy="138" r="3" fill="var(--warn)"/><circle cx="220" cy="138" r="3" fill="var(--si)"/>
+        <circle r="4.5" fill="var(--photon)"><animateMotion path="M460 138 H220" dur="5s" repeatCount="indefinite"/></circle>
+        <text x="100" y="226" font-size="9.5" fill="var(--ink-2)">動く点: 100 mW のビームを OD 2 の保護めがねで 1/100 に弱めると 1 mW（例題 1）― 対数の軸の上では 2 桁ぶん左へ</text>
       </svg>
     </div>
     <figcaption>クラスの境目は波長とパルスの条件で大きく変わるので、図の値は可視の連続光に限った目安です。製品のクラスは、規格の手順で被ばく放出限界（AEL）と比べて決め、ラベルと取扱説明に書かれます。<span class="key">保護めがねは「その波長で、どれだけ弱めるか」（光学濃度 OD）で選ぶ</span> ― OD 3 は 1/1,000 です。</figcaption>
@@ -1280,6 +1513,24 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p><b>解.</b> 鉛は 0.02 mg で、部品全体では <b>0.002%</b>。しかし判定は<b>均質な材料（ここではめっき層）ごと</b>なので、2% ＞ 0.1% で上限を超える（適用除外に当たらなければ不適合）。<span class="key">「全体で薄まっているから大丈夫」は通らない</span>、というのが均質材料の考え方です。</p>
   </div>
 
+  <div class="pit">
+    <span class="tag">落とし穴 ― 12 で踏みやすいこと</span>
+    <ul>
+      <li><b>「全体で薄まっている」から RoHS に適合と判断する</b> ― 判定は均質な材料ごと（めっき層に 2% の鉛なら不適合）。</li>
+      <li><b>1.55 µm の「アイセーフ」を危険なしと読む</b> ― 網膜に届かないので MPE が大きいという意味で、危険がないという意味ではない。</li>
+      <li><b>要約の数値で判断する</b> ― 規格と法令は改定される。判断は最新の原文と社内の担当部署で行う。</li>
+    </ul>
+  </div>
+  <div class="roles">
+    <div><b>営業・企画</b>輸出の該非判定と、RoHS の適用除外の期限を確かめてから見積もる。</div>
+    <div><b>設計・開発</b>レーザーのクラスは、規格の手順で AEL と比べて決める。</div>
+    <div><b>研究・製造</b>保護めがねは、波長と光学濃度で選ぶ（100 mW → 1 mW は OD 2）。</div>
+  </div>
+  <div class="lab-go">
+    <span class="tag">手を動かす — QALab 第1章・第4章・第5章</span>
+    <p>規格は計算の骨格を決める ― JESD47 の HAST、ISO/IEC 17025 の不確かさの予算、JIS Z 9015 の抜き取りの OC 曲線。</p>
+    <div class="qs"><a href="QALab/index.html?quest=hast">HAST ― 100 時間の壁</a><a href="QALab/index.html?quest=gum">不確かさの予算</a><a href="QALab/index.html?quest=oc">抜き取りの OC 曲線 ― α と β を両立</a></div>
+  </div>
   <div class="caveat">
     <span class="tag">09〜12 が単純化していること</span>
     <p><strong>管理図は正規分布・独立なデータの前提です。</strong>自己相関のある工程や、ごく小さなずれを見る EWMA・CUSUM 管理図は扱っていません。<strong>不確かさは相関のない成分の一次の合成です。</strong>相関や非線形、自由度の補正（ウェルチ・サタースウェイト）は GUM の原文で。<strong>規格・法令の数値と区分は執筆時点の骨格の要約で、改定されます。</strong>実際の判断は最新の原文と、社内の法務・品質・安全の担当部署に確認してください。</p>
@@ -1349,17 +1600,514 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p><b>問2.</b> 蛍光の寿命を 2% の精度で求めたい。理想の単一指数なら何個の光子を集めればよいか。TCSPC の検出が毎秒 1.6×10⁶ 個（第5部 06 のパイルアップ 2%）なら何秒か。</p>
     <p><b>解.</b> 1/√N ≤ 0.02 から N ≥ <b>2,500 個</b>、1.6 ms。FLIM で 256 × 256 画素の全部を 2% にするなら 1.6×10⁸ 個で約 100 秒 ― 第5部 06 の「FLIM が遅い」の数字の中身です。</p>
   </div>
+  <div class="pit">
+    <span class="tag">落とし穴 ― 13 で踏みやすいこと</span>
+    <ul>
+      <li><b>検量線の点を真ん中に集める</b> ― 同じ 5 点でも 1.5〜2.5 mW に集めると、傾きの不確かさは 4 倍になる。</li>
+      <li><b>カウントの少ないヒストグラムに最小二乗で当てはめる</b> ― 寿命が偏って求まる。ポアソンをそのまま使う最尤推定で。</li>
+      <li><b>外れ値を捨てる規則を、見てから決める</b> ― 規則は測る前に決め、捨てた点と理由を記録に残す。</li>
+    </ul>
+  </div>
+  <div class="roles">
+    <div><b>営業・企画</b>「長く平均すれば良い」はドリフトが無いときだけ（アラン偏差の最適な τ）と説明できる。</div>
+    <div><b>設計・開発</b>当てはめのパラメータの数は、データが決められる数までに抑える。</div>
+    <div><b>研究・製造</b>結果は不確かさの桁に丸めて報告する。</div>
+  </div>
+  <div class="lab-go">
+    <span class="tag">手を動かす — QALab 第4章・第5章</span>
+    <p>報告の桁は不確かさで決まり、物差しの粗さは ndc で見る ― 解析の前に、データの持つ幅を数える。</p>
+    <div class="qs"><a href="QALab/index.html?quest=gum">不確かさの予算</a><a href="QALab/index.html?quest=ndc">物差しの見分ける力 ― ndc</a></div>
+  </div>
 </section>
 
+
+<!-- ================= 14 ================= -->
+<section class="stage" id="s15">
+  <div class="stage-head"><span class="stage-num">14</span>
+    <h2>故障の物理 ― 電流・電界・宇宙線が素子を壊す</h2></div>
+  <p class="lede">01〜03 は壊れ方を「数える」言葉でした。ここでは半導体の中で<b>何が</b>壊れるのかを、代表的な機構ごとに物理で読みます。機構ごとに加速する条件（温度・電流・電界・放射線）が違うので、<span class="key">どの機構かで、効く試験も Ea も変わる</span> ― 02 のアレニウスを使う前に、まず機構を名指しするのが作法です。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>エレクトロマイグレーション ― 電子の風が原子を運ぶ</h3>
+      <p>配線に大きな電流密度（MA/cm² 級）を流すと、流れる電子が金属の原子に運動量を渡し、原子が電子の流れの向き（陰極から陽極へ）に少しずつ移動します。原子が抜けた上流側に空洞（<b>ボイド</b>）ができて断線し、原子がたまった下流側に盛り上がり（<b>ヒロック</b>）ができて隣の配線と短絡する。寿命は Black の式（Black 1969）で表されます。</p>
+      <div class="eq">MTTF = A · J<sup>−n</sup> · exp(E<sub>a</sub>/kT)</div>
+      <p>電流密度の指数 n は 2 がよく使われ、E<sub>a</sub> は Al 系で約 0.5〜0.7 eV、Cu で約 0.8〜1.0 eV とされることが多い（構造と世代で変わるので、数字は JEP122 と各社の報告で確かめる）。n = 2 なら<span class="key">電流密度を 1.5 倍にすると寿命は 1/2.25</span>、E<sub>a</sub> 0.9 eV で配線が 105 ℃ から 125 ℃ に上がるとさらに 1/4.0 ― 合わせて約 1/9。配線の幅を決める設計規則（許容電流密度）は、この式から逆算されています。</p>
+    </div>
+    <div class="body-col">
+      <h3>TDDB ― ゲート酸化膜は電界で少しずつ傷む</h3>
+      <p>酸化膜に電界をかけ続けると、膜の中に欠陥（トラップ）が少しずつ増え、それがつながった瞬間に絶縁が破れます（経時絶縁破壊、<b>TDDB</b>）。寿命は電界に指数関数的に依存するモデルで表され、代表的な E モデルと 1/E モデルでは、高い電界の試験から低い電界（使用条件）へ外挿したときの寿命が桁で違ってくる ― <span class="key">加速試験から使用条件の寿命を言うとき、モデルの選び方が最大の仮定</span>です。第2部 05 の酸化膜を薄くするほど、同じ電圧で電界が上がります。</p>
+      <h3>NBTI と HCI ― しきい値がじわじわ動く</h3>
+      <p>pMOS のゲートに負の電圧をかけたまま高温にすると、酸化膜との界面に準位ができて V<sub>th</sub> の大きさが増えます（<b>NBTI</b>）。変化は時間のべき乗 ΔV<sub>th</sub> ∝ t<sup>n</sup>（n は 0.1〜0.25 程度と報告されることが多い）で進み、ストレスを外すと一部が戻る ― 止めてから測るまでの時間で値が変わるので、測り方ごと決めておく必要があります（Schroder と Babcock 2003）。<b>HCI</b>（ホットキャリア注入）は、ドレインの近くの高い電界で加速されたキャリアが酸化膜に飛び込んで傷める現象で、従来の世代では格子の散乱が減る<b>低温のほうが悪化しやすい</b>とされてきた ― 「温度を上げれば加速される」が当てはまらない例です（微細な世代では温度の依存が変わる）。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">ELECTROMIGRATION — 電子の風で、上流が痩せて下流が太る</span><span class="fig-title">模式図（大きさは誇張）</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 222" role="img" aria-label="エレクトロマイグレーションの模式図。左の陰極から右の陽極へ、配線の中を電子が流れ続ける。電子に押された金属の原子が下流へ運ばれ、上流の陰極側に空洞（ボイド）が育ち、下流の陽極側に盛り上がり（ヒロック）が育つ。下に Black の式。" style="min-width:700px;width:100%;display:block">
+        <rect x="100" y="78" width="50" height="84" fill="var(--surface-3)" stroke="var(--ink-3)" stroke-width="1"/>
+        <rect x="610" y="78" width="50" height="84" fill="var(--surface-3)" stroke="var(--ink-3)" stroke-width="1"/>
+        <rect x="150" y="98" width="460" height="44" fill="var(--si-soft)" stroke="var(--si)" stroke-width="1.2"/>
+        <ellipse cx="585" cy="98" rx="16" ry="2" fill="var(--si)">
+          <animate attributeName="ry" values="1;8;8" keyTimes="0;0.8;1" dur="7s" repeatCount="indefinite"/>
+        </ellipse>
+        <ellipse cx="176" cy="104" rx="3" ry="2" fill="var(--surface)" stroke="var(--warn)" stroke-width="1.2">
+          <animate attributeName="rx" values="3;20;20" keyTimes="0;0.8;1" dur="7s" repeatCount="indefinite"/>
+          <animate attributeName="ry" values="2;6;6" keyTimes="0;0.8;1" dur="7s" repeatCount="indefinite"/>
+        </ellipse>
+        <g fill="var(--electron)">
+          <circle cx="158" cy="112" r="3"><animateMotion path="M0 0 H440" dur="3.3s" begin="0.00s" repeatCount="indefinite"/></circle>
+          <circle cx="158" cy="122" r="3"><animateMotion path="M0 0 H440" dur="3.3s" begin="-0.37s" repeatCount="indefinite"/></circle>
+          <circle cx="158" cy="132" r="3"><animateMotion path="M0 0 H440" dur="3.3s" begin="-0.74s" repeatCount="indefinite"/></circle>
+          <circle cx="158" cy="112" r="3"><animateMotion path="M0 0 H440" dur="3.3s" begin="-1.11s" repeatCount="indefinite"/></circle>
+          <circle cx="158" cy="122" r="3"><animateMotion path="M0 0 H440" dur="3.3s" begin="-1.48s" repeatCount="indefinite"/></circle>
+          <circle cx="158" cy="132" r="3"><animateMotion path="M0 0 H440" dur="3.3s" begin="-1.85s" repeatCount="indefinite"/></circle>
+          <circle cx="158" cy="112" r="3"><animateMotion path="M0 0 H440" dur="3.3s" begin="-2.22s" repeatCount="indefinite"/></circle>
+          <circle cx="158" cy="122" r="3"><animateMotion path="M0 0 H440" dur="3.3s" begin="-2.59s" repeatCount="indefinite"/></circle>
+          <circle cx="158" cy="132" r="3"><animateMotion path="M0 0 H440" dur="3.3s" begin="-2.96s" repeatCount="indefinite"/></circle>
+        </g>
+        <g font-size="10">
+          <text x="150" y="56" fill="var(--warn)">ボイド（断線の芽）</text>
+          <text x="380" y="72" fill="var(--electron-2)" text-anchor="middle">電子の流れ → 原子が押されて下流へ</text>
+          <text x="660" y="56" fill="var(--si)" text-anchor="end">ヒロック（短絡の芽）</text>
+          <text x="125" y="180" fill="var(--ink-2)" text-anchor="middle">陰極（−）</text>
+          <text x="635" y="180" fill="var(--ink-2)" text-anchor="middle">陽極（＋）</text>
+        </g>
+        <text x="380" y="208" font-size="10" fill="var(--ink-3)" text-anchor="middle">寿命 MTTF = A·J⁻ⁿ·exp(Ea/kT)（Black の式）― 電流密度 J と温度の両方で縮む</text>
+      </svg>
+    </div>
+    <figcaption>原子の流れは電流の向きではなく<b>電子の流れの向き</b>（陰極 → 陽極）。流れが一様な直線の中ほどでは出入りがつり合うので、壊れるのは流れが途切れる場所 ― 配線の端・ビア（層をつなぐ穴）・結晶粒の境目です。<span class="key">断線（ボイド）も短絡（ヒロック）も、同じ原子の移動の両端</span>で起きます。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>ソフトエラー ― 宇宙線の中性子がビットを反転させる</h3>
+      <p>宇宙線が大気とぶつかって生まれた中性子（地上で 10 MeV 以上のものが毎時 13 個/cm² 程度 ― ニューヨークの海面の基準値、JESD89A）や、パッケージの材料に含まれる微量の α 線源が、シリコンの中で電荷をまき散らします。メモリのセルがその電荷を集め、ビットを保つのに要る電荷（<b>臨界電荷 Q<sub>crit</sub></b>）を超えると、ビットが反転する（May と Woods 1979 が DRAM の α 線で報告）。<span class="key">素子は壊れないがデータが化け、温度では加速されない</span> ― 中性子の量（高度とともに増える）と Q<sub>crit</sub>（セルが小さいほど小さい）で決まるので、試験は加速器の中性子ビームや α 線源で行い、FIT/Mbit で数えます。</p>
+    </div>
+    <div class="body-col">
+      <h3>ESD ― 寿命ではなく、一発の事故</h3>
+      <p>静電気の放電（ESD）は、摩耗ではなく<b>一回の過大なストレス</b>で入力の保護回路や酸化膜を壊します。耐量は人体の放電を模した HBM（100 pF・1.5 kΩ）や、帯電した部品自身の放電を模した CDM の電圧で表し（JS-001 / JS-002、08）、対策は素子の保護回路と、工場の接地・イオナイザ・湿度の管理の両方で行います。<span class="key">アレニウスで語れない故障</span>なので、ESD の不良が出たら加速試験ではなく、取り扱いの工程を調べるのが先です。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">MECHANISMS — 機構ごとに、加速するものが違う</span></div>
+    <div class="scroll-x">
+      <table>
+        <thead><tr><th>機構</th><th>壊れるもの</th><th>加速する条件</th><th>寿命のモデルの形</th><th>温度との関係</th></tr></thead>
+        <tbody>
+          <tr><td>EM</td><td>配線（断線・短絡）</td><td>電流密度・温度</td><td>Black: J⁻ⁿ·exp(Ea/kT)</td><td>高温で速い</td></tr>
+          <tr><td>TDDB</td><td>ゲート酸化膜の絶縁</td><td>電界・温度</td><td>E モデル・1/E モデル（指数）</td><td>高温で速い</td></tr>
+          <tr><td>NBTI</td><td>pMOS の V<sub>th</sub></td><td>負のゲート電圧・温度</td><td>ΔV<sub>th</sub> ∝ tⁿ（一部は回復）</td><td>高温で速い</td></tr>
+          <tr><td>HCI</td><td>MOSFET の V<sub>th</sub>・電流</td><td>ドレインの高い電界</td><td>電流・電圧のべき乗</td><td>従来の世代では低温で悪化</td></tr>
+          <tr><td>ソフトエラー</td><td>データ（素子は無事）</td><td>中性子・α 線の量、Q<sub>crit</sub></td><td>反応断面積 × 粒子の束</td><td>ほぼよらない</td></tr>
+          <tr><td>ESD</td><td>保護回路・酸化膜</td><td>静電気の放電</td><td>寿命ではなく耐量（HBM・CDM の電圧）</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <figcaption>モデルの形は代表的なものです。E<sub>a</sub> や指数は機構・構造・世代で変わるので、数字は JEP122 と各社の報告で確かめ、社内の信頼性の担当と合わせてください。1 つの試験（たとえば HTOL）が全部の機構を同じ倍率で加速するわけではない ― <span class="key">加速率は機構ごとに別々に計算して、いちばん早く壊れる機構で寿命を決める</span>。</figcaption>
+  </figure>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — 光のデバイスの壊れ方</span>
+    <p>レーザーダイオードは、光出力を一定に保つ回路（APC）の駆動電流が時間とともに少しずつ増えるのが劣化のしるしで、寿命は「電流が初めから何 % 増えたら寿命」と基準を決めて外挿します（第9部 11）。端面が光の強さに耐えられずに一瞬で溶ける光学損傷（COD）は、摩耗ではなく一発の故障です。光電子増倍管は、大きな陽極電流を流し続けると光電面とダイノードの感度が下がる（疲労）ので、使える電流に上限が決められている（浜松ホトニクスの光電子増倍管のハンドブック）。シンチレータや光学ガラスは放射線で着色して透過が下がります（放射線損傷）。<span class="key">光のデバイスの寿命は、温度だけでなく「光の強さ・流した電荷の積算」で進むものが多い</span> ― 加速の条件も、機構に合わせて選びます。</p>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（14 故障の物理）</span>
+    <p><b>問1.</b> Al–Cu の配線（E<sub>a</sub> 0.6 eV・n = 2 と仮定）を、電流密度 1.2 倍・配線の温度 105 → 125 ℃ で使うことになった。エレクトロマイグレーションの寿命は何倍になるか。</p>
+    <p><b>解.</b> 電流で 1/1.2² = 0.694 倍、温度で AF = exp[(0.6/k)(1/378.15 − 1/398.15)] = 2.52 なので 1/2.52 = 0.397 倍。合わせて <b>0.275 倍（約 1/3.6）</b>。<span class="key">温度と電流は掛け算で効く</span> ― 放熱（04）が配線の寿命にも効く理由です。</p>
+    <p><b>問2.</b> 1 ビットあたりの中性子の反応断面積を 10⁻¹⁴ cm² と仮定する。海面（13 個/cm²/h）で、1 Gbit（2³⁰ ビット）のメモリの SER は何 FIT で、平均で何時間に 1 回ビットが化けるか。64 Gbit（8 GB）なら？</p>
+    <p><b>解.</b> 1 ビットで 13 × 10⁻¹⁴ = 1.3×10⁻¹³ /h、1 Mbit で 136 FIT、1 Gbit で <b>1.40×10⁵ FIT</b> ― 平均 <b>7,164 時間（約 0.8 年）に 1 回</b>。64 Gbit では 8.9×10⁶ FIT で <b>約 112 時間（5 日）に 1 回</b>。<span class="key">大きなメモリでは誤り訂正（ECC、第3部）が前提</span>になります。断面積はセルの構造で桁で変わるので、実際の値は加速器の試験で測ります。</p>
+  </div>
+
+  <div class="pit">
+    <span class="tag">落とし穴 ― 14 で踏みやすいこと</span>
+    <ul>
+      <li><b>どの機構にも同じ Ea を当てる</b> ― 機構ごとに加速する条件が違う。いちばん早く壊れる機構で寿命を決める。</li>
+      <li><b>HCI も温度を上げれば加速されると思う</b> ― 従来の世代では低温のほうが悪化しやすい。</li>
+      <li><b>ソフトエラーを高温の試験で見る</b> ― 温度ではほぼ加速されない。中性子のビームや α 線源で試験し、FIT/Mbit で数える。</li>
+    </ul>
+  </div>
+  <div class="roles">
+    <div><b>営業・企画</b>大きなメモリでは誤り訂正が前提だと説明できる（64 Gbit で約 5 日に 1 回化ける）。</div>
+    <div><b>設計・開発</b>電流密度と温度は掛け算で効く（1.2 倍・105 → 125 ℃ で寿命 0.275 倍）ことを配線と放熱の設計に入れる。</div>
+    <div><b>研究・製造</b>NBTI は止めてから測るまでの時間で値が変わるので、測り方ごと決める。</div>
+  </div>
+  <div class="lab-go">
+    <span class="tag">手を動かす — QALab 第1章</span>
+    <p>アレニウスの加速で「10 年」を試験の時間に換算する。どの機構の E<sub>a</sub> を置くかで、同じ試験の意味がどれだけ変わるかを確かめる。</p>
+    <div class="qs"><a href="QALab/index.html?quest=accel">10 年を 500 時間で実証する</a></div>
+  </div>
+</section>
+
+<!-- ================= 15 ================= -->
+<section class="stage" id="s16">
+  <div class="stage-head"><span class="stage-num">15</span>
+    <h2>抜き取り検査と OC 曲線 ― 全部は見られないとき</h2></div>
+  <p class="lede">壊して調べる試験や大量の出荷では、全数を検査できません。ロットから n 個を抜き、不良が c 個以下なら合格にする ― この判定がどれくらい間違うかを 1 本の曲線で見せるのが <b>OC 曲線</b>（検査特性曲線）です。<span class="key">抜き取り検査は品質を作らない ― 良いロットと悪いロットを、決まった確率で見分けるだけ</span>。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>合格する確率は二項分布</h3>
+      <p>不良率 p のロットから n 個を抜いたとき、不良が c 個以下で合格する確率は（ロットが抜く数よりずっと大きいとき）</p>
+      <div class="eq">P<sub>a</sub>(p) = Σ<sub>x=0…c</sub> C(n, x) · p<sup>x</sup> · (1 − p)<sup>n−x</sup></div>
+      <p>n = 50・c = 1 の計画では、不良率 1% のロットは <b>91.1%</b> の確率で合格し、5% のロットでも <b>27.9%</b> は合格してしまう。p を横軸に P<sub>a</sub> を描いたのが OC 曲線で、理想（ある不良率を境に 1 から 0 へ垂直に落ちる）には、抜く数を増やすほど近づきます。</p>
+    </div>
+    <div class="body-col">
+      <h3>2 つの危険 ― 生産者と消費者</h3>
+      <p>合格させたい水準の良いロットを不合格にしてしまう確率を<b>生産者危険 α</b>（ふつう 5%）、不合格にしたい悪いロットを合格にしてしまう確率を<b>消費者危険 β</b>（ふつう 10%）と呼びます。前者の不良率の水準が AQL の考え方、後者が LTPD です。n = 50・c = 1 では、P<sub>a</sub> = 95% になるのは p = <b>0.72%</b>、P<sub>a</sub> = 10% になるのは p = <b>7.6%</b> ― 「0.7% のロットはほぼ通し、7.6% のロットはほぼ止める」計画で、その間のロットは運しだいで通ります。<span class="key">2 つの不良率を近づけたいなら、抜く数を増やすしかない</span>。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">OC CURVE — 抜き取りの計画が、どの不良率をどれだけ通すか</span><span class="fig-title">二項分布から計算</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 246" role="img" aria-label="OC曲線。横軸はロットの不良率0から10%、縦軸は合格する確率。n=50・c=1の曲線はゆっくり下がり、不良率0.72%で95%、7.6%で10%。n=230・c=0の曲線は急に落ち、不良率1%で約10%しか合格しない。曲線の上を点が動いて、不良率に応じた合格の確率を示す。" style="min-width:700px;width:100%;display:block">
+        <g stroke="var(--line)" stroke-width="1" fill="none"><path d="M90 30 V200 H660"/><path d="M90 120 H660 M90 40 H660" stroke-dasharray="2 4"/></g>
+        <path d="M90.0 40.0 L95.7 72.9 L101.4 99.0 L107.1 119.8 L112.8 136.4 L118.5 149.5 L124.2 159.9 L129.9 168.2 L135.6 174.8 L141.3 180.0 L147.0 184.1 L152.7 187.4 L158.4 190.0 L164.1 192.1 L169.8 193.8 L175.5 195.1 L181.2 196.1 L186.9 196.9 L192.6 197.5 L198.3 198.1 L204.0 198.5 L209.7 198.8 L215.4 199.0 L221.1 199.2 L226.8 199.4 L232.5 199.5 L238.2 199.6 L243.9 199.7 L249.6 199.8 L255.3 199.8 L261.0 199.9 L266.7 199.9 L272.4 199.9 L278.1 199.9 L283.8 199.9 L289.5 200.0 L295.2 200.0 L300.9 200.0 L306.6 200.0 L312.3 200.0 L318.0 200.0 L323.7 200.0 L329.4 200.0 L335.1 200.0 L340.8 200.0 L346.5 200.0 L352.2 200.0 L357.9 200.0 L363.6 200.0 L369.3 200.0 L375.0 200.0 L380.7 200.0 L386.4 200.0 L392.1 200.0 L397.8 200.0 L403.5 200.0 L409.2 200.0 L414.9 200.0 L420.6 200.0 L426.3 200.0 L432.0 200.0 L437.7 200.0 L443.4 200.0 L449.1 200.0 L454.8 200.0 L460.5 200.0 L466.2 200.0 L471.9 200.0 L477.6 200.0 L483.3 200.0 L489.0 200.0 L494.7 200.0 L500.4 200.0 L506.1 200.0 L511.8 200.0 L517.5 200.0 L523.2 200.0 L528.9 200.0 L534.6 200.0 L540.3 200.0 L546.0 200.0 L551.7 200.0 L557.4 200.0 L563.1 200.0 L568.8 200.0 L574.5 200.0 L580.2 200.0 L585.9 200.0 L591.6 200.0 L597.3 200.0 L603.0 200.0 L608.7 200.0 L614.4 200.0 L620.1 200.0 L625.8 200.0 L631.5 200.0 L637.2 200.0 L642.9 200.0 L648.6 200.0 L654.3 200.0 L660.0 200.0" stroke="var(--volt)" stroke-width="2" fill="none" class="draw" style="--len:700"/>
+        <path d="M90.0 40.0 L95.7 40.2 L101.4 40.7 L107.1 41.6 L112.8 42.8 L118.5 44.2 L124.2 45.8 L129.9 47.7 L135.6 49.7 L141.3 52.0 L147.0 54.3 L152.7 56.8 L158.4 59.4 L164.1 62.1 L169.8 64.8 L175.5 67.6 L181.2 70.5 L186.9 73.4 L192.6 76.3 L198.3 79.3 L204.0 82.3 L209.7 85.2 L215.4 88.2 L221.1 91.2 L226.8 94.1 L232.5 97.0 L238.2 99.9 L243.9 102.8 L249.6 105.6 L255.3 108.4 L261.0 111.2 L266.7 113.9 L272.4 116.5 L278.1 119.1 L283.8 121.7 L289.5 124.2 L295.2 126.6 L300.9 129.0 L306.6 131.4 L312.3 133.7 L318.0 135.9 L323.7 138.1 L329.4 140.2 L335.1 142.3 L340.8 144.3 L346.5 146.3 L352.2 148.2 L357.9 150.0 L363.6 151.8 L369.3 153.6 L375.0 155.3 L380.7 156.9 L386.4 158.5 L392.1 160.1 L397.8 161.6 L403.5 163.0 L409.2 164.4 L414.9 165.8 L420.6 167.1 L426.3 168.4 L432.0 169.6 L437.7 170.8 L443.4 171.9 L449.1 173.0 L454.8 174.1 L460.5 175.1 L466.2 176.1 L471.9 177.1 L477.6 178.0 L483.3 178.9 L489.0 179.8 L494.7 180.6 L500.4 181.4 L506.1 182.2 L511.8 182.9 L517.5 183.6 L523.2 184.3 L528.9 184.9 L534.6 185.6 L540.3 186.2 L546.0 186.8 L551.7 187.3 L557.4 187.9 L563.1 188.4 L568.8 188.9 L574.5 189.4 L580.2 189.8 L585.9 190.3 L591.6 190.7 L597.3 191.1 L603.0 191.5 L608.7 191.9 L614.4 192.2 L620.1 192.6 L625.8 192.9 L631.5 193.2 L637.2 193.5 L642.9 193.8 L648.6 194.1 L654.3 194.3 L660.0 194.6" stroke="var(--electron)" stroke-width="2.4" fill="none" class="draw" style="--len:900"/>
+        <circle cx="130.8" cy="48.0" r="4.5" fill="var(--ok)"/>
+        <circle cx="520.8" cy="184.0" r="4.5" fill="var(--warn)"/>
+        <circle cx="147.0" cy="184.1" r="4" fill="var(--volt)"/>
+        <circle r="4" fill="var(--photon)"><animateMotion path="M90.0 40.0 L95.7 40.2 L101.4 40.7 L107.1 41.6 L112.8 42.8 L118.5 44.2 L124.2 45.8 L129.9 47.7 L135.6 49.7 L141.3 52.0 L147.0 54.3 L152.7 56.8 L158.4 59.4 L164.1 62.1 L169.8 64.8 L175.5 67.6 L181.2 70.5 L186.9 73.4 L192.6 76.3 L198.3 79.3 L204.0 82.3 L209.7 85.2 L215.4 88.2 L221.1 91.2 L226.8 94.1 L232.5 97.0 L238.2 99.9 L243.9 102.8 L249.6 105.6 L255.3 108.4 L261.0 111.2 L266.7 113.9 L272.4 116.5 L278.1 119.1 L283.8 121.7 L289.5 124.2 L295.2 126.6 L300.9 129.0 L306.6 131.4 L312.3 133.7 L318.0 135.9 L323.7 138.1 L329.4 140.2 L335.1 142.3 L340.8 144.3 L346.5 146.3 L352.2 148.2 L357.9 150.0 L363.6 151.8 L369.3 153.6 L375.0 155.3 L380.7 156.9 L386.4 158.5 L392.1 160.1 L397.8 161.6 L403.5 163.0 L409.2 164.4 L414.9 165.8 L420.6 167.1 L426.3 168.4 L432.0 169.6 L437.7 170.8 L443.4 171.9 L449.1 173.0 L454.8 174.1 L460.5 175.1 L466.2 176.1 L471.9 177.1 L477.6 178.0 L483.3 178.9 L489.0 179.8 L494.7 180.6 L500.4 181.4 L506.1 182.2 L511.8 182.9 L517.5 183.6 L523.2 184.3 L528.9 184.9 L534.6 185.6 L540.3 186.2 L546.0 186.8 L551.7 187.3 L557.4 187.9 L563.1 188.4 L568.8 188.9 L574.5 189.4 L580.2 189.8 L585.9 190.3 L591.6 190.7 L597.3 191.1 L603.0 191.5 L608.7 191.9 L614.4 192.2 L620.1 192.6 L625.8 192.9 L631.5 193.2 L637.2 193.5 L642.9 193.8 L648.6 194.1 L654.3 194.3 L660.0 194.6" dur="8s" repeatCount="indefinite"/></circle>
+        <g font-size="10">
+          <text x="152" y="36" fill="var(--ok)">p = 0.72% で合格 95%（α = 5%）</text>
+          <text x="532" y="168" fill="var(--warn)">p = 7.6% で合格 10%（β）</text>
+          <text x="166" y="150" fill="var(--volt)">c = 0 は p = 1% でも</text>
+          <text x="166" y="164" fill="var(--volt)">9.9% しか合格しない</text>
+          <text x="430" y="62" fill="var(--electron-2)">n = 50・c = 1（50 個抜いて 1 個までなら合格）</text>
+          <text x="430" y="80" fill="var(--volt)">n = 230・c = 0（0 故障の実証と同じ形）</text>
+        </g>
+        <g font-family="var(--mono)" font-size="9.5" fill="var(--ink-3)">
+          <text x="84" y="204" text-anchor="end">0</text><text x="84" y="124" text-anchor="end">0.5</text><text x="84" y="44" text-anchor="end">1</text>
+          <text x="90" y="216" text-anchor="middle">0</text><text x="204" y="216" text-anchor="middle">2</text><text x="318" y="216" text-anchor="middle">4</text><text x="432" y="216" text-anchor="middle">6</text><text x="546" y="216" text-anchor="middle">8</text><text x="660" y="216" text-anchor="middle">10 %</text>
+        </g>
+        <text x="375" y="236" font-size="10" fill="var(--ink-3)" text-anchor="middle">ロットの不良率 p →　　縦軸: そのロットが合格する確率 Pa</text>
+      </svg>
+    </div>
+    <figcaption>動く点は n = 50・c = 1 の曲線の上を、良いロットから悪いロットへ進みます。<span class="key">曲線の傾きが急なほど、良いロットと悪いロットをはっきり見分ける</span>。同じ c = 0 でも、抜く数 n が大きいほど左で急に落ちる ― 厳しい計画は、良いロットまで落としやすくなる（生産者危険が上がる）ことにも注意。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>c = 0 の計画と、0 故障の信頼性試験は同じ式</h3>
+      <p>c = 0（1 個でも不良なら不合格）の計画では P<sub>a</sub> = (1 − p)<sup>n</sup>。「p = 1% のロットを 90% の確率で止める」には (0.99)<sup>n</sup> ≤ 0.10 から <b>n = 230 個</b>。これは 01 の「0 故障で言える上限」と同じ計算で、ポアソンで近似すると np ≥ −ln(0.1) = 2.30（01 の 60% の信頼なら 0.92）。<span class="key">不良 0 個から言えるのは、抜いた数で決まる上限だけ</span>です。</p>
+    </div>
+    <div class="body-col">
+      <h3>α と β を両方満たす計画を探す</h3>
+      <p>AQL 1%・LTPD 5% で α ≤ 5%・β ≤ 10% という定番の要求を、二項分布で総当たりすると、両立する最小の計画は <b>n = 132・c = 3</b>（α = 4.43%・β = 9.92%）。<span class="key">c ≤ 2 では、どんな n でも両立しない</span>（n = 1,000 まで調べた）― c を固定したまま n を増やすと、β は下がるが良いロットも落ちて α が上がるからです。2 つの危険を同時に抑えるには、抜く数と合格判定の個数を<b>一緒に</b>増やす必要があります。</p>
+      <h3>規格の抜き取り表（JIS Z 9015-1 / ISO 2859-1）</h3>
+      <p>実務では、ロットの大きさと検査の水準からサンプルの文字を引き、AQL ごとに n と合格判定の個数 c を表から選びます。品質の実績しだいで「なみ・きつい・ゆるい」検査を切り替える規則も含まれる。JIS Z 9015-1（ISO 2859-1）は、こうした計画を表と切り替えの規則にまとめた方式です。表の使い方の細部と版は、最新の原文と社内の品質保証の担当で確認してください ― この章は、表の中の n と c がどんな OC 曲線を持つかを読むための骨格です。</p>
+    </div>
+  </div>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — ppm の品質は、抜き取りでは測れない</span>
+    <p>Cpk 1.33 の工程の不良は 63 ppm（06）。これを抜き取りで確かめようとすると、c = 0 でも「90% の信頼で 63 ppm 以下」と言うのに n = ln(0.1)/ln(1 − 6.3×10⁻⁵) ≈ <b>3.7×10⁴ 個</b>が要る。<span class="key">ppm の品質は、管理図と Cpk（06・09）で工程に作り込んで保証する</span>もので、抜き取りは工程の外から来るもの（購入品の受け入れ・工程を変えた直後）の見張りに向きます。</p>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（15 抜き取りと OC 曲線）</span>
+    <p><b>問1.</b> n = 50・c = 1 の計画で、不良率 2% のロットが合格する確率は？ 同じ 50 個で c = 0 にすると？</p>
+    <p><b>解.</b> c = 1: 0.98⁵⁰ + 50 × 0.02 × 0.98⁴⁹ = <b>73.6%</b>。c = 0: 0.98⁵⁰ = <b>36.4%</b>。c を 1 つ減らすだけで、同じロットの合格は半分になる ― 厳しくするのは簡単だが、良いロットも落ちやすくなります。</p>
+    <p><b>問2.</b> 購入品の不良率が 0.5% 以下であることを、95% の信頼で確かめたい（c = 0）。何個抜けばよいか。</p>
+    <p><b>解.</b> (0.995)<sup>n</sup> ≤ 0.05 から n ≥ ln 0.05 / ln 0.995 = 597.6 → <b>598 個</b>。1 個でも不良が出たら「0.5% 以下」とは言えないので、追加の抜き取りか全数検査に切り替えます。</p>
+  </div>
+
+  <div class="pit">
+    <span class="tag">落とし穴 ― 15 で踏みやすいこと</span>
+    <ul>
+      <li><b>抜き取りで品質が上がると思う</b> ― 抜き取りは良いロットと悪いロットを決まった確率で見分けるだけ。</li>
+      <li><b>c を固定したまま n だけ増やす</b> ― AQL 1%・LTPD 5% の α 5%・β 10% は、c ≤ 2 ではどんな n でも両立しない。</li>
+      <li><b>ppm の品質を抜き取りで確かめようとする</b> ― 63 ppm を c = 0 で言うのに 3.7×10⁴ 個が要る。工程で作り込む。</li>
+    </ul>
+  </div>
+  <div class="roles">
+    <div><b>営業・企画</b>受け入れ検査の n と c が、どの不良率のロットをどれだけ通すかを OC 曲線で説明できる。</div>
+    <div><b>設計・開発</b>購入品の見張り（抜き取り）と、工程の作り込み（Cpk・管理図）を分けて計画する。</div>
+    <div><b>研究・製造</b>不良が出たときの切り替え（追加の抜き取りか全数検査）を先に決めておく。</div>
+  </div>
+  <div class="lab-go">
+    <span class="tag">手を動かす — QALab 第5章・第3章</span>
+    <p>AQL 1%・LTPD 5%・α 5%・β 10% を両方満たす n と c を探す（c ≤ 2 では届かない）。そして抜き取りで確かめる前に、工程で作り込む ― 中心のずれとばらつきで Cpk 1.33 を満たす工程を作る。</p>
+    <div class="qs"><a href="QALab/index.html?quest=oc">抜き取りの OC 曲線 ― α と β を両立</a><a href="QALab/index.html?quest=cpk">Cpk 1.33 の工程</a></div>
+  </div>
+</section>
+
+<!-- ================= 16 ================= -->
+<section class="stage" id="s17">
+  <div class="stage-head"><span class="stage-num">16</span>
+    <h2>実験計画法 ― 少ない試行で、効く因子と組み合わせを見つける</h2></div>
+  <p class="lede">条件（温度・時間・濃度…）を 1 つずつ変える実験は、回数がかかるうえに、<b>因子どうしの組み合わせの効き（交互作用）</b>を見逃します。実験計画法（DOE）は、全部の因子を同時に振って、少ない回数で主効果と交互作用を分けて読む方法です。第1部の工程の条件出しや、装置の動作点の最適化で使われます。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>2 水準の要因計画 ― 4 回で 2 因子を読む</h3>
+      <p>酸化の温度 A（900・1000 ℃）と時間 B（30・60 分）の 2 因子を、それぞれ低・高の 2 水準で全部の組み合わせ（2² = 4 回）行う。膜の厚さを<b>仮の測定値</b>で 20・40・28・62 nm（A 低 B 低・A 高 B 低・A 低 B 高・A 高 B 高）とすると、効果は「高の平均 − 低の平均」で</p>
+      <div class="eq">A の主効果 = (40 + 62)/2 − (20 + 28)/2 = <b>27 nm</b>　B の主効果 = (28 + 62)/2 − (20 + 40)/2 = <b>15 nm</b>　交互作用 AB = (20 + 62)/2 − (40 + 28)/2 = <b>7 nm</b></div>
+      <p>交互作用が 0 でないのは、<b>温度が高いほど時間の効きが大きい</b>（B の効きが A 低で 8 nm、A 高で 22 nm）から。熱酸化は温度で速さが指数関数的に変わるので、こうなるのが自然です（第1部）。<span class="key">1 つずつ変える実験では、この「組み合わせの効き」が見えない</span>。</p>
+    </div>
+    <div class="body-col">
+      <h3>効果は雑音と比べて読む</h3>
+      <p>各効果は「高の平均 − 低の平均」なので、全部で N 回の試行のばらつきが σ なら、効果の標準誤差は <b>2σ/√N</b>。4 条件を 2 回ずつ（N = 8）行い σ = 2 nm なら 1.41 nm で、27・15・7 nm はどれも 2 × 1.41 = 2.8 nm を大きく超える ― 本物の効果と言えます。<span class="key">繰り返しをしないと σ が分からず、効果が本物か雑音か判定できない</span>。試行の順番は無作為に並べる（<b>無作為化</b>）― 装置の温まりや材料のドリフト（13 のアラン偏差）が特定の条件に乗って、効果と取り違えるのを防ぐためです。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">INTERACTION — 線が平行でなければ、組み合わせが効いている</span><span class="fig-title">仮の測定値（計算の練習用）</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 232" role="img" aria-label="2因子の要因計画の交互作用図と効果の棒グラフ。左は温度Aの低・高に対する膜の厚さで、時間B=30分の線は20から40 nm、B=60分の線は28から62 nmに上がる。2本の線が平行でないのが交互作用。右は効果の大きさで、Aの主効果27 nm、Bの主効果15 nm、交互作用7 nm。ひげは±2倍の標準誤差2.8 nm。" style="min-width:700px;width:100%;display:block">
+        <g stroke="var(--line)" stroke-width="1" fill="none"><path d="M110 40 V190 H420"/><path d="M110 150 H360 M110 110 H360 M110 70 H360" stroke-dasharray="2 4"/></g>
+        <path d="M150 150 L360 110" stroke="var(--electron)" stroke-width="2.4" fill="none" class="draw" style="--len:260"/>
+        <path d="M150 134 L360 66" stroke="var(--photon)" stroke-width="2.4" fill="none" class="draw" style="--len:260"/>
+        <g><circle cx="150" cy="150" r="4" fill="var(--electron)"/><circle cx="360" cy="110" r="4" fill="var(--electron)"/><circle cx="150" cy="134" r="4" fill="var(--photon)"/><circle cx="360" cy="66" r="4" fill="var(--photon)"/></g>
+        <path d="M580 70 V176" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+        <rect x="580" y="80" width="135" height="16" fill="var(--electron)" opacity="0.75" class="grow"/>
+        <rect x="580" y="112" width="75" height="16" fill="var(--photon)" opacity="0.75" class="grow"/>
+        <rect x="580" y="144" width="35" height="16" fill="var(--volt)" opacity="0.75" class="grow"/>
+        <g stroke="var(--ink)" stroke-width="1.2" fill="none"><path d="M701 88 H729 M701 84 V92 M729 84 V92"/><path d="M641 120 H669 M641 116 V124 M669 116 V124"/><path d="M601 152 H629 M601 148 V156 M629 148 V156"/></g>
+        <g font-size="10">
+          <text x="110" y="30" fill="var(--ink-2)">膜の厚さ [nm]</text>
+          <text x="370" y="70" fill="var(--photon-2)">62（B = 60 分）</text>
+          <text x="370" y="114" fill="var(--electron-2)">40（B = 30 分）</text>
+          <text x="140" y="138" fill="var(--photon-2)" text-anchor="end">28</text>
+          <text x="140" y="154" fill="var(--electron-2)" text-anchor="end">20</text>
+          <text x="150" y="208" fill="var(--ink-2)" text-anchor="middle">A = 900 ℃</text>
+          <text x="360" y="208" fill="var(--ink-2)" text-anchor="middle">A = 1000 ℃</text>
+          <text x="512" y="40" fill="var(--ink-2)">効果の大きさ [nm]</text>
+          <text x="512" y="56" fill="var(--ink-3)" font-size="9">ひげ ＝ ±2 × 標準誤差（N = 8・σ = 2 nm）</text>
+          <text x="572" y="92" fill="var(--ink-2)" text-anchor="end">A 温度</text>
+          <text x="572" y="124" fill="var(--ink-2)" text-anchor="end">B 時間</text>
+          <text x="572" y="156" fill="var(--ink-2)" text-anchor="end">AB</text>
+          <text x="735" y="92" fill="var(--ink)">27</text>
+          <text x="675" y="124" fill="var(--ink)">15</text>
+          <text x="635" y="156" fill="var(--ink)">7</text>
+        </g>
+        <g font-family="var(--mono)" font-size="9.5" fill="var(--ink-3)">
+          <text x="104" y="194" text-anchor="end">0</text><text x="104" y="154" text-anchor="end">20</text><text x="104" y="114" text-anchor="end">40</text><text x="104" y="74" text-anchor="end">60</text>
+        </g>
+        <text x="380" y="226" font-size="10" fill="var(--ink-3)" text-anchor="middle">2² 要因計画（4 条件 × 2 回）― 左: 交互作用の図、右: 効果とその不確かさ</text>
+      </svg>
+    </div>
+    <figcaption>2 本の線の傾きの差が交互作用です（平行なら交互作用 0）。右の棒のひげは ±2 × 2σ/√N で、ひげが 0 の線をまたがなければ、その効果は雑音では説明しにくい。<span class="key">要因計画は、同じ 4 回の試行を全部の効果の推定に使い回す</span> ― 1 つずつ変える実験より少ない回数で、交互作用まで読めます。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>因子が増えたら ― 一部実施と直交表</h3>
+      <p>因子が k 個なら全部の組み合わせは 2<sup>k</sup> 回（7 因子で 128 回）。高次の交互作用は小さいと仮定してその一部だけを行う<b>一部実施要因計画</b>や<b>直交表</b>（L8 なら 8 回で 2 水準の因子を最大 7 個）を使うと、回数を大きく減らせます。代わりに、ある効果と別の交互作用が区別できなくなる（<b>交絡</b>）ので、<span class="key">何と何が交絡しているかを知ったうえで使う</span>のが条件です。</p>
+    </div>
+    <div class="body-col">
+      <h3>最適化 ― 応答曲面と、ばらつきに鈍い条件</h3>
+      <p>効く因子が分かったら、3 水準以上で振って曲がり具合まで測り、応答を 2 次式で近似して最適な条件を探す（<b>応答曲面法</b>）。品質工学（田口の方法）は、平均を合わせるより先に<b>ばらつきが小さくなる条件</b>（外乱に鈍い条件）を探す考え方で、SN 比という指標を使います ― 06 の Cpk を、設計の段階で上げる発想です。</p>
+    </div>
+  </div>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — 何回繰り返せば、効果を見逃さないか</span>
+    <p>見つけたい効果 Δ を、両側 5% の判定・検出力 80%（本当に Δ があれば 80% の確率で見つける）で見つけるには、効果の標準誤差がおよそ Δ/(1.96 + 0.84) = Δ/2.8 以下である必要がある（正規分布・σ が既知の近似）。2σ/√N ≤ Δ/2.8 から <b>N ≥ (5.6σ/Δ)²</b>。σ = 2 nm の工程で 5 nm の効果なら N ≥ 5.0 → 2² 計画を 2 回ずつ（N = 8）。<span class="key">回数は、見つけたい効果の大きさと σ から先に決める</span> ― 実験のあとで「差が出なかった」と言っても、回数が足りなければ何も言えていません。</p>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（16 実験計画法）</span>
+    <p><b>問1.</b> 上の 4 つの値で、1 つずつ変える実験（B 低のまま A を振り、A 低のまま B を振る）から A 高 B 高の厚さを予測すると何 nm か。実際（62 nm）とどれだけ違うか。</p>
+    <p><b>解.</b> 20 + (40 − 20) + (28 − 20) = <b>48 nm</b>。実際との差 14 nm は、交互作用 AB = 7 nm の 2 倍 ― <span class="key">1 つずつの実験は「効果が足し算で重なる」と暗に仮定している</span>。</p>
+    <p><b>問2.</b> σ = 2 nm の工程で、3 nm の効果を検出力 80% で見つけたい（両側 5%）。2² 計画を何回ずつ行えばよいか。</p>
+    <p><b>解.</b> N ≥ (5.6 × 2/3)² = 13.9 → 4 条件なら <b>各 4 回（N = 16）</b>。効果を半分の大きさまで見たいと、回数は 4 倍になります。</p>
+  </div>
+  <div class="pit">
+    <span class="tag">落とし穴 ― 16 で踏みやすいこと</span>
+    <ul>
+      <li><b>1 つずつ変えた実験から組み合わせを予測する</b> ― 例では 48 nm と予測したが実際は 62 nm（交互作用の 2 倍の差）。</li>
+      <li><b>繰り返しをしない</b> ― σ が分からず、効果が本物か雑音か判定できない。</li>
+      <li><b>試行を条件ごとにまとめて行う</b> ― 装置の温まりや材料のドリフトが効果に乗る。順番は無作為に並べる。</li>
+    </ul>
+  </div>
+  <div class="roles">
+    <div><b>営業・企画</b>条件出しの回数と期間を、見つけたい効果の大きさから見積もれる。</div>
+    <div><b>設計・開発</b>一部実施や直交表は、何と何が交絡しているかを知ったうえで使う。</div>
+    <div><b>研究・製造</b>回数は実験の前に N ≥ (5.6σ/Δ)² で決める。</div>
+  </div>
+  <div class="lab-go">
+    <span class="tag">手を動かす — QALab 第6章</span>
+    <p>σ 2 nm の工程で 3 nm の効果を検出力 80% で見つける回数を、予算 20 回の中で決める。</p>
+    <div class="qs"><a href="QALab/index.html?quest=doe">実験の回数を先に決める</a></div>
+  </div>
+</section>
+
+<!-- ================= 17 ================= -->
+<section class="stage" id="s18">
+  <div class="stage-head"><span class="stage-num">17</span>
+    <h2>光デバイスの寿命試験 ― 暗くなる・電流が増えるを、基準の線で切る</h2></div>
+  <p class="lede">LED やレーザーダイオード（LD）は、ある日突然壊れるより先に、少しずつ<b>暗くなる</b>・同じ光を出すのに<b>電流が増える</b>という形で衰えます。こうした特性の劣化（パラメトリックな劣化）は、<span class="key">「どこまで落ちたら寿命か」という基準の線を先に決め、測った変化をその線まで外挿して寿命にする</span>。外挿には、式の形の仮定と「どこまで伸ばしてよいか」の約束がつきまといます。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>LED ― 光束維持率と L70</h3>
+      <p>照明用の LED は、決めた電流・温度で点け続けて光束の低下を測り（IES LM-80、6,000 時間以上）、その結果を指数関数 Φ(t) = B·exp(−αt) に当てはめて外挿します（IES TM-21）。初めの光束の 70% に落ちる時刻が <b>L70</b>。TM-21 は当てはめに使う区間（6,000〜10,000 時間の試験なら最後の 5,000 時間）と、<span class="key">外挿してよいのは試験時間の 6 倍まで</span>（試料 20 個以上。10〜19 個なら 5.5 倍）という上限を決めています。</p>
+      <p>仮の測定値で、1,000 時間で 99.0%・6,000 時間で 97.0% だったとすると、α = ln(0.990/0.970)/5,000 = 4.08×10⁻⁶ /h、B = 0.994 で、式の上の L70 は <b>85,900 時間</b>。しかし報告できるのは<b>「L70 は 36,000 時間を超える」</b>（6,000 × 6）まで ― それより先は、式の形の仮定だけで出てくる数字だからです。</p>
+    </div>
+    <div class="body-col">
+      <h3>LD ― 一定の光を保つための電流の増加</h3>
+      <p>LD は光出力を一定に保つ回路（APC）で動かすことが多く、劣化は<b>駆動電流の増加</b>として見えます（第9部 11）。寿命は「電流が初めから何 % 増えたら寿命」と基準を決めて、増え方を外挿して求める（基準は用途と規格で決める。ここでは 20% とする）。光通信の LD と受光素子の認定試験の骨格は Telcordia GR-468 にまとめられています。</p>
+      <p>仮の数字で、85 ℃ の試験で電流が 1,000 時間あたり 1.0% ずつ増えたなら、20% に届くのは <b>20,000 時間</b>。使用 40 ℃ へアレニウスで換算すると、E<sub>a</sub> を 0.4 eV と置けば AF 6.44 で <b>12.9 万時間（14.7 年）</b>、0.7 eV と置けば AF 26.0 で <b>59 年</b> ― <span class="key">同じ試験から、E<sub>a</sub> の仮定だけで 4 倍違う寿命が出る</span>（02 と同じ注意）。端面が一瞬で溶ける COD のような突発の故障は、この外挿とは別に FIT で数えます（14）。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">L70 — 短い試験から遠くへ伸ばす、その上限</span><span class="fig-title">仮の測定値・指数関数の当てはめから計算</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 244" role="img" aria-label="LED の光束維持率の外挿の図。横軸は時間（0〜10万時間）、縦軸は初めの光束に対する割合（60〜100%）。1,000〜6,000時間の6つの測定点（仮の値）に指数関数を当てはめ、外挿すると約85,900時間で70%に届く。しかしTM-21で報告できるのは試験時間の6倍の36,000時間までで、そこでの値は85.8%。" style="min-width:700px;width:100%;display:block">
+        <g stroke="var(--line)" stroke-width="1" fill="none"><path d="M90 40 V200 H660"/><path d="M90 80 H660 M90 120 H660" stroke-dasharray="2 4"/></g>
+        <path d="M90 160 H660" stroke="var(--warn)" stroke-width="1.4" stroke-dasharray="6 4" fill="none"/>
+        <path d="M295.2 40 V200" stroke="var(--volt)" stroke-width="1.6" fill="none"/>
+        <path d="M90.0 42.4 L101.4 45.6 L112.8 48.8 L124.2 52.0 L135.6 55.2 L147.0 58.3 L158.4 61.4 L169.8 64.5 L181.2 67.5 L192.6 70.5 L204.0 73.6 L215.4 76.5 L226.8 79.5 L238.2 82.4 L249.6 85.3 L261.0 88.2 L272.4 91.1 L283.8 93.9 L295.2 96.7 L306.6 99.5 L318.0 102.3 L329.4 105.0 L340.8 107.7 L352.2 110.4 L363.6 113.1 L375.0 115.8 L386.4 118.4 L397.8 121.0 L409.2 123.6 L420.6 126.2 L432.0 128.8 L443.4 131.3 L454.8 133.8 L466.2 136.3 L477.6 138.8 L489.0 141.2 L500.4 143.6 L511.8 146.0 L523.2 148.4 L534.6 150.8 L546.0 153.2 L557.4 155.5 L568.8 157.8 L580.2 160.1 L591.6 162.4 L603.0 164.6 L614.4 166.9 L625.8 169.1 L637.2 171.3 L648.6 173.5 L660.0 175.6" stroke="var(--electron)" stroke-width="1.8" stroke-dasharray="5 4" fill="none"/>
+        <path d="M95.7 44.0 L98.5 44.8 L101.4 45.6 L104.3 46.4 L107.1 47.2 L110.0 48.0 L112.8 48.8 L115.7 49.6 L118.5 50.4 L121.3 51.2 L124.2 52.0" stroke="var(--si)" stroke-width="3" fill="none"/>
+        <circle cx="95.7" cy="44.0" r="2.6" fill="var(--si)"/><circle cx="101.4" cy="45.6" r="2.6" fill="var(--si)"/><circle cx="107.1" cy="47.2" r="2.6" fill="var(--si)"/><circle cx="112.8" cy="48.8" r="2.6" fill="var(--si)"/><circle cx="118.5" cy="50.4" r="2.6" fill="var(--si)"/><circle cx="124.2" cy="52.0" r="2.6" fill="var(--si)"/>
+        <circle cx="295.2" cy="96.7" r="4" fill="var(--volt)"/>
+        <circle cx="579.7" cy="160" r="4.5" fill="var(--photon)"/>
+        <circle r="4" fill="var(--electron)"><animateMotion path="M90.0 42.4 L101.4 45.6 L112.8 48.8 L124.2 52.0 L135.6 55.2 L147.0 58.3 L158.4 61.4 L169.8 64.5 L181.2 67.5 L192.6 70.5 L204.0 73.6 L215.4 76.5 L226.8 79.5 L238.2 82.4 L249.6 85.3 L261.0 88.2 L272.4 91.1 L283.8 93.9 L295.2 96.7 L306.6 99.5 L318.0 102.3 L329.4 105.0 L340.8 107.7 L352.2 110.4 L363.6 113.1 L375.0 115.8 L386.4 118.4 L397.8 121.0 L409.2 123.6 L420.6 126.2 L432.0 128.8 L443.4 131.3 L454.8 133.8 L466.2 136.3 L477.6 138.8 L489.0 141.2 L500.4 143.6 L511.8 146.0 L523.2 148.4 L534.6 150.8 L546.0 153.2 L557.4 155.5 L568.8 157.8 L580.2 160.1 L591.6 162.4 L603.0 164.6 L614.4 166.9 L625.8 169.1 L637.2 171.3 L648.6 173.5 L660.0 175.6" dur="9s" repeatCount="indefinite"/></circle>
+        <g font-size="10">
+          <text x="96" y="30" fill="var(--si)">測定点（仮の値）</text>
+          <text x="301.2" y="30" fill="var(--volt)">報告できる上限 36,000 h（6,000 h × 6）</text>
+          <text x="96" y="154" fill="var(--warn)">L70（初めの 70%）</text>
+          <text x="289.2" y="110" fill="var(--volt)" text-anchor="end">36,000 h で 85.8%</text>
+          <text x="470" y="100" fill="var(--electron-2)">指数関数の外挿（式の形の仮定）</text>
+          <text x="575.7" y="180" fill="var(--photon-2)" text-anchor="end">式の上の L70 ＝ 85,900 h</text>
+        </g>
+        <g font-family="var(--mono)" font-size="9.5" fill="var(--ink-3)">
+          <text x="84" y="204" text-anchor="end">60%</text><text x="84" y="164" text-anchor="end">70%</text><text x="84" y="124" text-anchor="end">80%</text><text x="84" y="84" text-anchor="end">90%</text><text x="84" y="44" text-anchor="end">100%</text>
+          <text x="90" y="216" text-anchor="middle">0</text><text x="204" y="216" text-anchor="middle">20</text><text x="318" y="216" text-anchor="middle">40</text><text x="432" y="216" text-anchor="middle">60</text><text x="546" y="216" text-anchor="middle">80</text><text x="660" y="216" text-anchor="middle">100</text>
+        </g>
+        <text x="375" y="236" font-size="10" fill="var(--ink-3)" text-anchor="middle">時間（千時間）→　　縦軸: 初めの光束に対する割合</text>
+      </svg>
+    </div>
+    <figcaption>測定点は左端の 6,000 時間の中に詰まっていて、L70 はその 14 倍も先にある。<span class="key">外挿の距離が長いほど、答えは測定ではなく式の形で決まる</span> ― TM-21 の 6 倍の上限は、その歯止めです。動く点は外挿の線の上を進みます。</figcaption>
+  </figure>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — 外挿の式を選ぶと、寿命が変わる</span>
+    <p>劣化の進み方が指数関数か、時間のべき乗（√t など）か、直線かで、同じ測定点から外挿した寿命は大きく変わります。短い試験では、どの式もデータの範囲の中ではほとんど同じに見えるので、<b>データだけでは式を選べない</b> ― <span class="key">外挿の上限（TM-21 の 6 倍）は、この「式が選べない」ことへの歯止め</span>です。LD でも、初めの数百時間に電流が速く増えて（慣らし）その後ゆっくりになる例があり、どの区間で傾きを取るかを先に決めておく必要があります。温度を 2〜3 水準で振って劣化の速さを並べれば、E<sub>a</sub> そのものを測れる（02 のアレニウスの直線の傾き）ので、仮定を実測に置き換えられます。</p>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（17 光デバイスの寿命試験）</span>
+    <p><b>問1.</b> 上の LED（B = 0.994・α = 4.08×10⁻⁶ /h）で、L90 と L80 は式の上でいくつか。試料が 15 個・試験 6,000 時間なら、どこまで報告できるか。</p>
+    <p><b>解.</b> L = ln(B/p)/α から、L90 = <b>24,400 時間</b>、L80 = <b>53,200 時間</b>。試料 15 個なら外挿の上限は 5.5 × 6,000 = <b>33,000 時間</b>なので、L90 は 24,400 時間と書けるが、L80 は「33,000 時間を超える」までしか書けない。</p>
+    <p><b>問2.</b> 上の LD で、寿命の基準を「電流 50% 増」に緩めると、40 ℃ の寿命は（E<sub>a</sub> 0.4 eV）？</p>
+    <p><b>解.</b> 85 ℃ で 50,000 時間、× 6.44 で <b>32.2 万時間（36.8 年）</b>。<span class="key">基準の線を動かすと、寿命は比例して動く</span>（直線の劣化を仮定した場合）― 寿命の数字には、必ず基準の線と E<sub>a</sub> を添えて読む。</p>
+  </div>
+
+  <div class="pit">
+    <span class="tag">落とし穴 ― 17 で踏みやすいこと</span>
+    <ul>
+      <li><b>式の上の L70 をそのまま報告する</b> ― 報告できるのは試験時間の 6 倍まで（85,900 h の計算でも、6,000 h の試験なら 36,000 h）。</li>
+      <li><b>外挿の式をデータで選べると思う</b> ― 短い試験では、指数・べき乗・直線がデータの範囲でほとんど同じに見える。</li>
+      <li><b>Ea と基準の線を書かずに LD の寿命を渡す</b> ― 同じ試験から、Ea 0.4 eV と 0.7 eV で 14.7 年と 59 年に分かれる。</li>
+    </ul>
+  </div>
+  <div class="roles">
+    <div><b>営業・企画</b>L70 の数字は、試験時間の何倍かと基準の線を添えて伝える。</div>
+    <div><b>設計・開発</b>寿命の基準（電流 20% 増など）を、用途に合わせて先に決める。</div>
+    <div><b>研究・製造</b>2〜3 温度で試験して、Ea を仮定から実測に置き換える。</div>
+  </div>
+  <div class="lab-go">
+    <span class="tag">手を動かす — QALab 第6章・第1章</span>
+    <p>TM-21 の上限のもとで「L70 は 50,000 時間を超える」と書くための試験時間と試料の数を決める。アレニウスの課題では、E<sub>a</sub> の仮定が寿命の数字をどれだけ動かすかを確かめる。</p>
+    <div class="qs"><a href="QALab/index.html?quest=tm21">L70 を 5 万時間と書くには</a><span class="lab">第1章</span><a href="QALab/index.html?quest=accel">10 年を 500 時間で実証する</a></div>
+  </div>
+</section>
+
+<!-- ================= 18 ================= -->
+<section class="stage" id="s19">
+  <div class="stage-head"><span class="stage-num">18</span>
+    <h2>冗長化と系の信頼性 ― 並べると、何がどれだけ良くなるか</h2></div>
+  <p class="lede">01 では、部品を直列に並べると FIT が足し算で増えることを見ました。逆に、同じ働きの部品を<b>並列</b>に置けば、1 つが壊れても系は動き続ける。<span class="key">冗長化は MTTF をあまり延ばさないのに、初めの数年に止まる確率を大きく下げる</span> ― この非対称を数字で読みます。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>直列と並列 ― 掛け算の向きが逆</h3>
+      <div class="eq">R<sub>直列</sub> = Π R<sub>i</sub>　　R<sub>並列</sub> = 1 − Π(1 − R<sub>i</sub>)</div>
+      <p>故障率一定 λ の同じ部品 2 つを、両方とも動かしたまま並列にすると（ホットスタンバイ）、MTTF = 1/λ + 1/(2λ) = <b>1.5/λ</b> ― 5 割しか延びない。ところが、MTTF 5 万時間（仮定）のファン 1 台の 1 年後の生存率 83.9% は、2 台並列で <b>97.4%</b> になり、1 年で止まる確率は 16.1% から 2.6% へ約 1/6。<span class="key">冗長化の効き目は、平均ではなく「早い時期の故障の確率」に出る</span>。直列の 2 台は逆に、1 年で 70.4% しか残らない。</p>
+    </div>
+    <div class="body-col">
+      <h3>修理と共通原因 ― 並列の値打ちを決める 2 つ</h3>
+      <p>1 台が壊れたらすぐに気づいて直す（修理率 μ = 1/MTTR）なら、系が止まるのは修理の間にもう 1 台が壊れたときだけで、MTTF<sub>系</sub> = (3λ + μ)/(2λ²)（同じ 2 台・修理 1 か所の並列）。λ = 2×10⁻⁵ /h・MTTR 24 時間なら <b>5.2×10⁷ 時間</b>、修理に 1 週間かかれば 7.5×10⁶ 時間 ― 監視と交換の速さが、そのまま系の寿命になる。ただしこれは 2 台が<b>独立に</b>壊れる前提です。<span class="key">同じ電源・同じ温度・同じロットのように、両方を同時に壊す共通原因があると、冗長化の効果は大きく削られる</span>。電源を分ける・別の型を混ぜるのは、共通原因を断つための設計です。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">REDUNDANCY — 並べ方で、生き残りの曲線が変わる</span><span class="fig-title">λ = 2×10⁻⁵ /h（MTTF 5 万時間）から計算</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 244" role="img" aria-label="系の生存率の時間変化。横軸は0から10年、縦軸は生存率。単体の指数関数、2台並列、2台直列、3台中2台の多数決の4本の曲線。5年の時点で並列0.66、単体0.42、多数決0.38、直列0.17。多数決は生存率0.5（3.96年）で単体と入れ替わり、それ以降は単体より悪い。" style="min-width:700px;width:100%;display:block">
+        <g stroke="var(--line)" stroke-width="1" fill="none"><path d="M90 40 V200 H660"/><path d="M90 120 H660" stroke-dasharray="2 4"/><path d="M375.0 40 V200" stroke-dasharray="3 4"/></g>
+        <path d="M90.0 40.0 L101.4 50.8 L112.8 60.9 L124.2 70.3 L135.6 79.1 L147.0 87.3 L158.4 94.9 L169.8 102.0 L181.2 108.7 L192.6 114.8 L204.0 120.6 L215.4 126.0 L226.8 131.0 L238.2 135.7 L249.6 140.0 L261.0 144.1 L272.4 147.9 L283.8 151.4 L295.2 154.7 L306.6 157.7 L318.0 160.6 L329.4 163.3 L340.8 165.8 L352.2 168.1 L363.6 170.2 L375.0 172.3 L386.4 174.1 L397.8 175.9 L409.2 177.5 L420.6 179.0 L432.0 180.5 L443.4 181.8 L454.8 183.0 L466.2 184.2 L477.6 185.2 L489.0 186.2 L500.4 187.2 L511.8 188.0 L523.2 188.8 L534.6 189.6 L546.0 190.3 L557.4 191.0 L568.8 191.6 L580.2 192.1 L591.6 192.7 L603.0 193.2 L614.4 193.6 L625.8 194.1 L637.2 194.5 L648.6 194.8 L660.0 195.2" stroke="var(--warn)" stroke-width="2" fill="none" class="draw" style="--len:700"/>
+        <path d="M90.0 40.0 L101.4 40.6 L112.8 42.1 L124.2 44.5 L135.6 47.5 L147.0 51.1 L158.4 55.1 L169.8 59.4 L181.2 64.0 L192.6 68.8 L204.0 73.7 L215.4 78.6 L226.8 83.6 L238.2 88.6 L249.6 93.5 L261.0 98.4 L272.4 103.1 L283.8 107.8 L295.2 112.3 L306.6 116.7 L318.0 120.9 L329.4 125.0 L340.8 129.0 L352.2 132.7 L363.6 136.4 L375.0 139.9 L386.4 143.2 L397.8 146.4 L409.2 149.4 L420.6 152.3 L432.0 155.0 L443.4 157.6 L454.8 160.1 L466.2 162.4 L477.6 164.7 L489.0 166.8 L500.4 168.8 L511.8 170.6 L523.2 172.4 L534.6 174.1 L546.0 175.7 L557.4 177.2 L568.8 178.6 L580.2 179.9 L591.6 181.2 L603.0 182.3 L614.4 183.4 L625.8 184.5 L637.2 185.5 L648.6 186.4 L660.0 187.2" stroke="var(--volt)" stroke-width="2" fill="none" class="draw" style="--len:700;animation-delay:.3s"/>
+        <path d="M90.0 40.0 L101.4 45.5 L112.8 50.8 L124.2 56.0 L135.6 60.9 L147.0 65.7 L158.4 70.3 L169.8 74.8 L181.2 79.1 L192.6 83.3 L204.0 87.3 L215.4 91.2 L226.8 94.9 L238.2 98.5 L249.6 102.0 L261.0 105.4 L272.4 108.7 L283.8 111.8 L295.2 114.8 L306.6 117.8 L318.0 120.6 L329.4 123.3 L340.8 126.0 L352.2 128.5 L363.6 131.0 L375.0 133.4 L386.4 135.7 L397.8 137.9 L409.2 140.0 L420.6 142.1 L432.0 144.1 L443.4 146.0 L454.8 147.9 L466.2 149.7 L477.6 151.4 L489.0 153.1 L500.4 154.7 L511.8 156.2 L523.2 157.7 L534.6 159.2 L546.0 160.6 L557.4 162.0 L568.8 163.3 L580.2 164.5 L591.6 165.8 L603.0 166.9 L614.4 168.1 L625.8 169.2 L637.2 170.2 L648.6 171.3 L660.0 172.3" stroke="var(--ink-2)" stroke-width="2.2" fill="none" class="draw" style="--len:700;animation-delay:.6s"/>
+        <path d="M90.0 40.0 L101.4 40.2 L112.8 40.7 L124.2 41.6 L135.6 42.7 L147.0 44.1 L158.4 45.8 L169.8 47.6 L181.2 49.6 L192.6 51.7 L204.0 54.0 L215.4 56.4 L226.8 58.9 L238.2 61.4 L249.6 64.1 L261.0 66.7 L272.4 69.5 L283.8 72.2 L295.2 75.0 L306.6 77.8 L318.0 80.6 L329.4 83.4 L340.8 86.2 L352.2 89.0 L363.6 91.7 L375.0 94.5 L386.4 97.2 L397.8 99.9 L409.2 102.5 L420.6 105.1 L432.0 107.7 L443.4 110.2 L454.8 112.7 L466.2 115.2 L477.6 117.5 L489.0 119.9 L500.4 122.2 L511.8 124.5 L523.2 126.7 L534.6 128.8 L546.0 130.9 L557.4 133.0 L568.8 135.0 L580.2 136.9 L591.6 138.8 L603.0 140.7 L614.4 142.5 L625.8 144.3 L637.2 146.0 L648.6 147.7 L660.0 149.3" stroke="var(--si)" stroke-width="2.6" fill="none" class="draw" style="--len:700;animation-delay:.9s"/>
+        <circle cx="375.0" cy="94.5" r="3.5" fill="var(--si)"/><circle cx="375.0" cy="133.4" r="3.5" fill="var(--ink-2)"/><circle cx="375.0" cy="139.9" r="3.5" fill="var(--volt)"/><circle cx="375.0" cy="172.3" r="3.5" fill="var(--warn)"/>
+        <circle cx="315.5" cy="120" r="3.5" fill="var(--ink)"/>
+        <circle r="4" fill="var(--si)"><animateMotion path="M90.0 40.0 L101.4 40.2 L112.8 40.7 L124.2 41.6 L135.6 42.7 L147.0 44.1 L158.4 45.8 L169.8 47.6 L181.2 49.6 L192.6 51.7 L204.0 54.0 L215.4 56.4 L226.8 58.9 L238.2 61.4 L249.6 64.1 L261.0 66.7 L272.4 69.5 L283.8 72.2 L295.2 75.0 L306.6 77.8 L318.0 80.6 L329.4 83.4 L340.8 86.2 L352.2 89.0 L363.6 91.7 L375.0 94.5 L386.4 97.2 L397.8 99.9 L409.2 102.5 L420.6 105.1 L432.0 107.7 L443.4 110.2 L454.8 112.7 L466.2 115.2 L477.6 117.5 L489.0 119.9 L500.4 122.2 L511.8 124.5 L523.2 126.7 L534.6 128.8 L546.0 130.9 L557.4 133.0 L568.8 135.0 L580.2 136.9 L591.6 138.8 L603.0 140.7 L614.4 142.5 L625.8 144.3 L637.2 146.0 L648.6 147.7 L660.0 149.3" dur="9s" repeatCount="indefinite"/></circle><circle r="4" fill="var(--ink-2)"><animateMotion path="M90.0 40.0 L101.4 45.5 L112.8 50.8 L124.2 56.0 L135.6 60.9 L147.0 65.7 L158.4 70.3 L169.8 74.8 L181.2 79.1 L192.6 83.3 L204.0 87.3 L215.4 91.2 L226.8 94.9 L238.2 98.5 L249.6 102.0 L261.0 105.4 L272.4 108.7 L283.8 111.8 L295.2 114.8 L306.6 117.8 L318.0 120.6 L329.4 123.3 L340.8 126.0 L352.2 128.5 L363.6 131.0 L375.0 133.4 L386.4 135.7 L397.8 137.9 L409.2 140.0 L420.6 142.1 L432.0 144.1 L443.4 146.0 L454.8 147.9 L466.2 149.7 L477.6 151.4 L489.0 153.1 L500.4 154.7 L511.8 156.2 L523.2 157.7 L534.6 159.2 L546.0 160.6 L557.4 162.0 L568.8 163.3 L580.2 164.5 L591.6 165.8 L603.0 166.9 L614.4 168.1 L625.8 169.2 L637.2 170.2 L648.6 171.3 L660.0 172.3" dur="9s" repeatCount="indefinite"/></circle><circle r="4" fill="var(--volt)"><animateMotion path="M90.0 40.0 L101.4 40.6 L112.8 42.1 L124.2 44.5 L135.6 47.5 L147.0 51.1 L158.4 55.1 L169.8 59.4 L181.2 64.0 L192.6 68.8 L204.0 73.7 L215.4 78.6 L226.8 83.6 L238.2 88.6 L249.6 93.5 L261.0 98.4 L272.4 103.1 L283.8 107.8 L295.2 112.3 L306.6 116.7 L318.0 120.9 L329.4 125.0 L340.8 129.0 L352.2 132.7 L363.6 136.4 L375.0 139.9 L386.4 143.2 L397.8 146.4 L409.2 149.4 L420.6 152.3 L432.0 155.0 L443.4 157.6 L454.8 160.1 L466.2 162.4 L477.6 164.7 L489.0 166.8 L500.4 168.8 L511.8 170.6 L523.2 172.4 L534.6 174.1 L546.0 175.7 L557.4 177.2 L568.8 178.6 L580.2 179.9 L591.6 181.2 L603.0 182.3 L614.4 183.4 L625.8 184.5 L637.2 185.5 L648.6 186.4 L660.0 187.2" dur="9s" repeatCount="indefinite"/></circle><circle r="4" fill="var(--warn)"><animateMotion path="M90.0 40.0 L101.4 50.8 L112.8 60.9 L124.2 70.3 L135.6 79.1 L147.0 87.3 L158.4 94.9 L169.8 102.0 L181.2 108.7 L192.6 114.8 L204.0 120.6 L215.4 126.0 L226.8 131.0 L238.2 135.7 L249.6 140.0 L261.0 144.1 L272.4 147.9 L283.8 151.4 L295.2 154.7 L306.6 157.7 L318.0 160.6 L329.4 163.3 L340.8 165.8 L352.2 168.1 L363.6 170.2 L375.0 172.3 L386.4 174.1 L397.8 175.9 L409.2 177.5 L420.6 179.0 L432.0 180.5 L443.4 181.8 L454.8 183.0 L466.2 184.2 L477.6 185.2 L489.0 186.2 L500.4 187.2 L511.8 188.0 L523.2 188.8 L534.6 189.6 L546.0 190.3 L557.4 191.0 L568.8 191.6 L580.2 192.1 L591.6 192.7 L603.0 193.2 L614.4 193.6 L625.8 194.1 L637.2 194.5 L648.6 194.8 L660.0 195.2" dur="9s" repeatCount="indefinite"/></circle>
+        <g font-size="10">
+          <path d="M470 50 h18" stroke="var(--si)" stroke-width="2.6"/><text x="494" y="54" fill="var(--si)">2 台並列（5 年で 0.66）</text>
+          <path d="M470 66 h18" stroke="var(--ink-2)" stroke-width="2.2"/><text x="494" y="70" fill="var(--ink-2)">単体（0.42）</text>
+          <path d="M470 82 h18" stroke="var(--volt)" stroke-width="2"/><text x="494" y="86" fill="var(--volt)">3 台中 2 台の多数決（0.38）</text>
+          <path d="M470 98 h18" stroke="var(--warn)" stroke-width="2"/><text x="494" y="102" fill="var(--warn)">2 台直列（0.17）</text>
+          <text x="315.5" y="186" fill="var(--ink)" text-anchor="end">R = 0.5（3.96 年）で入れ替わる</text>
+        </g>
+        <g font-family="var(--mono)" font-size="9.5" fill="var(--ink-3)">
+          <text x="84" y="204" text-anchor="end">0</text><text x="84" y="124" text-anchor="end">0.5</text><text x="84" y="44" text-anchor="end">1</text>
+          <text x="90" y="216" text-anchor="middle">0</text><text x="204" y="216" text-anchor="middle">2</text><text x="318" y="216" text-anchor="middle">4</text><text x="432" y="216" text-anchor="middle">6</text><text x="546" y="216" text-anchor="middle">8</text><text x="660" y="216" text-anchor="middle">10 年</text>
+        </g>
+        <text x="375" y="236" font-size="10" fill="var(--ink-3)" text-anchor="middle">経過した時間 →　　縦軸: 系が動いている確率 R（破線は 5 年の位置）</text>
+      </svg>
+    </div>
+    <figcaption>4 つの点が、それぞれの並べ方の曲線の上を同じ速さで進みます。<span class="key">並列は初めのうち曲線が平らで（1 台目が壊れても止まらない）、直列は最初から急に落ちる</span>。多数決は、生存率が 0.5 を切ると単体より悪くなる ― 並べ方の値打ちは、使う期間で入れ替わります。</figcaption>
+  </figure>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — 多数決（3 台中 2 台）は、いつも単体より強いわけではない</span>
+    <p>3 台のうち 2 台が動いていれば正しい答えを出す系の生存率は R<sub>系</sub> = 3R² − 2R³ で、<span class="key">R ＞ 0.5 のときだけ単体より大きい</span>。MTTF は 5/(6λ) で、単体の 0.83 倍しかない。MTTF 5 万時間の部品なら、3.96 年（R = 0.5）を過ぎると多数決の系のほうが先に止まる。多数決の値打ちは、1 つの誤りを隠して動き続ける（第3部の誤り訂正と同じ考え）ことと、「1 台が違う答えを出した」ことで壊れた 1 台を見つけて交換する運用とをセットにしたときに出ます。</p>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（18 冗長化）</span>
+    <p><b>問1.</b> MTTF 5 万時間（λ = 2×10⁻⁵ /h）のファンで、5 年後に動いている確率は、単体・2 台並列・2 台直列でそれぞれいくつか。</p>
+    <p><b>解.</b> 単体 e<sup>−0.876</sup> = <b>41.6%</b>、並列 1 − (1 − 0.416)² = <b>65.9%</b>、直列 0.416² = <b>17.3%</b>。MTTF で比べると並列は 1.5 倍・直列は 0.5 倍にすぎないが、5 年で止まる確率は 58.4% ・34.1%・82.7% と大きく開く。</p>
+    <p><b>問2.</b> 同じファンを 2 台並列にし、壊れたら交換する。交換まで 24 時間の場合と 1 週間（168 時間）の場合で、系の MTTF は？</p>
+    <p><b>解.</b> (3λ + μ)/(2λ²) で、24 時間なら μ = 1/24 から <b>5.2×10⁷ 時間</b>、168 時間なら <b>7.5×10⁶ 時間</b>。<span class="key">交換を 7 倍速くすると、系の MTTF もほぼ 7 倍</span>（μ ≫ λ のとき MTTF ≈ μ/(2λ²)）― 監視して早く気づくことが、部品を良くするのと同じくらい効く。</p>
+  </div>
+
+  <div class="pit">
+    <span class="tag">落とし穴 ― 18 で踏みやすいこと</span>
+    <ul>
+      <li><b>冗長化で MTTF が倍になると思う</b> ― 2 台並列は 1.5 倍。効くのは早い時期に止まる確率（5 年で 58.4% → 34.1%）。</li>
+      <li><b>共通原因を無視する</b> ― 同じ電源・同じ温度・同じロットは、両方を同時に止める。</li>
+      <li><b>多数決はいつも単体より強いと思う</b> ― R ＜ 0.5（MTTF 5 万時間の部品で 3.96 年以降）では単体より悪い。</li>
+    </ul>
+  </div>
+  <div class="roles">
+    <div><b>営業・企画</b>冗長の効果は、MTTF ではなく「5 年で止まる確率」で説明する。</div>
+    <div><b>設計・開発</b>電源を分け、型を混ぜて共通原因を断つ。</div>
+    <div><b>研究・製造</b>監視と交換の速さ（MTTR）を系の寿命として管理する（24 h と 168 h で約 7 倍）。</div>
+  </div>
+  <div class="lab-go">
+    <span class="tag">手を動かす — QALab 第6章・第1章</span>
+    <p>修理のある並列で系の MTTF を 2×10⁷ 時間にする交換の速さと、多数決を 0.95 で保つ交換の周期を決める。直列の課題では、並べるほど FIT が足し算で増えることを確かめる。</p>
+    <div class="qs"><a href="QALab/index.html?quest=repair">修理のある並列で 2×10⁷ 時間</a><a href="QALab/index.html?quest=vote">多数決の交換周期</a><span class="lab">第1章</span><a href="QALab/index.html?quest=mttf">系の MTTF を 20 年に</a><a href="QALab/index.html?quest=series">部品を減らして稼ぐ</a></div>
+  </div>
+</section>
 <!-- ================= 理解の確認 ================= -->
 <section class="stage" id="scheck">
   <div class="stage-head"><span class="stage-num">—</span>
-    <h2>理解の確認 ― 16問で報告書を読めるようにする</h2></div>
+    <h2>理解の確認 ― 26問で報告書を読めるようにする</h2></div>
   <p class="lede">営業・設計・品質、どの席でも使う問いだけを並べました。答えを開く前に、どの章の式かを先に言ってみてください。</p>
   <div class="chk">
     <details><summary><span class="qn">Q1 · 01</span>「MTTF 100 万時間」の部品は、1 年でどれくらい壊れるか。</summary><p>λ = 10⁻⁶ /h で、1 年（8,760 h）に約 <b>0.88%</b>。MTTF は寿命ではなく故障率の逆数で、MTTF の時点まで生き残るのは 37%。</p></details>
     <details><summary><span class="qn">Q2 · 01</span>「231 個 × 1,000 時間で 0 故障」から言える FIT は？ 何を仮定しているか。</summary><p>60% 信頼で λ ≤ 0.92/(231,000 × AF)。Ea 0.7 eV・使用 55℃・試験 125℃ の AF 78 を仮定すると <b>51 FIT 以下</b>。仮定（Ea・使用温度）と信頼水準を変えると数字は大きく動く。</p></details>
-    <details><summary><span class="qn">Q3 · 02</span>報告書の Ea が 0.7 eV から 1.0 eV に変わっていたら、何が起きているか。</summary><p>同じ試験データで、主張できる寿命が 3 倍以上に膨らむ。加速したのではなく仮定を変えただけ ― JEP122 の機構別の Ea と突き合わせる。</p></details>
+    <details><summary><span class="qn">Q3 · 02</span>報告書の Ea が 0.7 eV から 1.0 eV に変わっていたら、何が起きているか。</summary><p>同じ試験データで、主張できる寿命が約 6.5 倍（使用 55℃・試験 125℃ の場合）に膨らむ。加速したのではなく仮定を変えただけ ― JEP122 の機構別の Ea と突き合わせる。</p></details>
     <details><summary><span class="qn">Q4 · 02</span>85℃/85%RH・1,000 時間が「湿気の 10 年」と言えるのはどんな仮定のもとか。</summary><p>Peck の式（n ≈ 3、Ea ≈ 0.79 eV）で、使用条件を 40℃/60%RH と置くと AF ≈ 113、10 年 ≈ 778 h。使用条件の仮定が変われば年数も変わる。</p></details>
     <details><summary><span class="qn">Q5 · 03</span>ワイブルの m が 0.6 と出た。バーンインは効くか。m が 3 なら？</summary><p>m &lt; 1 は初期不良型なので、弱い個体を工場で使い切るバーンインが効く。m &gt; 1 の摩耗型にかけると全数の寿命を削るだけで逆効果 ― 設計・材料の変更が要る。</p></details>
     <details><summary><span class="qn">Q6 · 04</span>カタログの θja で実基板の Tj を計算してよいか。</summary><p>比較用には使えるが、θja は JESD51 の標準基板での値なので実基板では変わる。実設計は θjc から積み上げるか熱シミュレーション。パルス駆動なら過渡熱インピーダンス。</p></details>
@@ -1373,6 +2121,16 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <details><summary><span class="qn">Q14 · 12</span>1.55 µm の LiDAR が「アイセーフ」と呼ばれる理由と、それでも注意が要る理由は？ RoHS の 0.1% はどこで判定するか。</summary><p>1.4 µm より長い光は角膜・水晶体で吸収されて網膜に届かないので MPE が大きい。ただし出力が大きければ角膜や皮膚の障害は起き得るので、クラスは規格の手順で決まる。RoHS は部品全体ではなく均質な材料ごとに判定する。</p></details>
       <details><summary><span class="qn">Q15 · 13</span>検量線の傾きを正確に決めるには、測る点をどこに置けばよいか。</summary><p>使う範囲の両端まで広く散らす。傾きの不確かさは σ/√Σ(x − x̄)² で、点を中央に集めると Σ(x − x̄)² が小さくなり悪くなる（0〜4 mW に対し 1.5〜2.5 mW では 4 倍悪い）。</p></details>
     <details><summary><span class="qn">Q16 · 13</span>長く平均しても測定が良くならなくなるのはなぜか。どうやって最適な平均の時間を知るか。</summary><p>白色雑音は 1/√τ で減るが、ドリフトは τ に比例して増えるので、ある時間で最小になる。アラン偏差を測ると、最小になる τ と雑音の種類が分かる。</p></details>
+      <details><summary><span class="qn">Q17 · 14</span>配線の寿命を延ばすとき、幅を広げる（電流密度を下げる）のと冷やすのでは、どちらが効くか。</summary><p>Black の式 J⁻ⁿ·exp(Ea/kT) で比べる。n = 2 なら電流密度を 1/1.2 にすると寿命 1.44 倍、Ea 0.9 eV で 125 → 105 ℃ に冷やすと 4.0 倍。どちらも効くが、どれだけ効くかは機構の Ea と n しだいなので、先に機構と数字（JEP122）を確かめる。</p></details>
+    <details><summary><span class="qn">Q18 · 14</span>ソフトエラーを高温の試験で加速できないのはなぜか。どう数え、どう防ぐか。</summary><p>原因は中性子・α 線がまき散らす電荷で、熱で速くなる反応ではないから。粒子の束（加速器の中性子ビーム・α 線源）を強くして加速し、FIT/Mbit で数える。素子は壊れないので、誤り訂正（ECC）や多重化で防ぐ。</p></details>
+    <details><summary><span class="qn">Q19 · 15</span>OC 曲線の α と β は何か。2 つを両方小さくするにはどうするか。</summary><p>α は良いロットを落とす確率（生産者危険）、β は悪いロットを通す確率（消費者危険）。n = 50・c = 1 では 0.72% のロットで α = 5%、7.6% のロットで β = 10%。曲線を急にするには抜く数 n を増やす。</p></details>
+    <details><summary><span class="qn">Q20 · 15</span>「50 個検査して不良ゼロ」から、ロットの不良率について何が言えるか。</summary><p>(1 − p)⁵⁰ ≥ 0.1 から、90% の信頼で p ≤ 4.5%。「ゼロだったから 0%」とは言えない ― 言えるのは抜いた数で決まる上限だけ（01 の 0 故障試験と同じ）。</p></details>
+    <details><summary><span class="qn">Q21 · 16</span>条件を 1 つずつ変える実験の弱点は？ 要因計画はそれをどう解くか。</summary><p>因子の組み合わせの効き（交互作用）が見えず、効果が足し算で重なると暗に仮定してしまう（例では 48 nm と予測、実際は 62 nm）。要因計画は全部の因子を同時に振り、同じ 4 回で主効果と交互作用を分けて推定する。</p></details>
+    <details><summary><span class="qn">Q22 · 16</span>実験の順番を無作為にするのはなぜか。同じ条件を繰り返すのはなぜか。</summary><p>装置の温まりや材料のドリフトが特定の条件に偏って乗り、効果と取り違えるのを防ぐため。繰り返しは σ を知って、効果が雑音より大きいか（標準誤差 2σ/√N の何倍か）を判定するため。</p></details>
+    <details><summary><span class="qn">Q23 · 17</span>LED の LM-80 を 6,000 時間（試料 20 個以上）行い、指数関数の当てはめで L70 = 86,000 時間と出た。カタログにそう書けるか。</summary><p>IES TM-21 では外挿は試験時間の 6 倍まで（試料 10〜19 個なら 5.5 倍）なので、書けるのは「L70 は 36,000 時間を超える」まで。それより先は式の形（指数関数）の仮定だけで決まる数字で、測定の裏付けがない。</p></details>
+    <details><summary><span class="qn">Q24 · 17</span>LD の寿命を「電流が 20% 増えるまで」で決めて、85 ℃ の試験から 40 ℃ の寿命を言うとき、最大の仮定は何か。</summary><p>アレニウスの E<sub>a</sub>。同じ 85 ℃・20,000 時間から、0.4 eV なら 14.7 年、0.7 eV なら 59 年と 4 倍違う。劣化が直線で進むという仮定と、基準の線（20%）の置き方も寿命を比例して動かす。COD のような突発の故障は別に FIT で数える。</p></details>
+    <details><summary><span class="qn">Q25 · 18</span>同じ部品を 2 つ並列にすると MTTF は何倍か。それでも冗長化が効くと言えるのはなぜか。</summary><p>1.5 倍にすぎない。しかし早い時期に止まる確率は大きく下がる（MTTF 5 万時間なら 1 年で 16.1% → 2.6%）。さらに壊れた 1 台をすぐ交換すれば MTTF<sub>系</sub> ≈ μ/(2λ²) で桁違いに延びる ― ただし共通原因（同じ電源・温度・ロット）がなければ。</p></details>
+    <details><summary><span class="qn">Q26 · 18</span>3 台中 2 台の多数決は、いつも単体より信頼できるか。</summary><p>いいえ。R<sub>系</sub> = 3R² − 2R³ は R ＞ 0.5 のときだけ単体より大きく、MTTF は 5/(6λ) で単体の 0.83 倍。値打ちは誤りを隠して動き続けることと、違う答えを出した 1 台を見つけて交換する運用にある。</p></details>
   </div>
 </section>
 
@@ -1421,6 +2179,26 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>最尤推定</td><td>観測したデータが出る確率を最大にするパラメータを選ぶ推定。少ないカウントのヒストグラムに強い</td><td class="num">寿命 1/√N</td></tr>
           <tr><td>逆畳み込み / 再畳み込み</td><td>装置の応答（PSF・IRF）を取り除く計算と、IRF を畳み込んだモデルを当てはめる方法</td><td class="num">Richardson–Lucy</td></tr>
           <tr><td>アラン偏差</td><td>平均の時間を変えたときのばらつき。白色雑音は下がりドリフトは上がるので、最適な平均の時間が分かる</td><td class="num">最小で最適</td></tr>
+                  <tr><td>エレクトロマイグレーション</td><td>電子の流れが金属の原子を運び、上流にボイド・下流にヒロックを作る配線の摩耗</td><td class="num">MA/cm² 級</td></tr>
+          <tr><td>Black の式</td><td>エレクトロマイグレーションの寿命 MTTF = A·J⁻ⁿ·exp(Ea/kT)。n ≈ 2 がよく使われる</td><td class="num">J 1.5 倍で 1/2.25</td></tr>
+          <tr><td>TDDB</td><td>電界をかけ続けた酸化膜の中に欠陥が増え、ある時点で絶縁が破れる現象</td><td class="num">E・1/E モデル</td></tr>
+          <tr><td>NBTI / HCI</td><td>pMOS の負バイアスと高温で V<sub>th</sub> が動く劣化（一部は回復）と、高い電界で加速されたキャリアが酸化膜を傷める劣化</td><td class="num">ΔV<sub>th</sub> ∝ tⁿ</td></tr>
+          <tr><td>ソフトエラー / SER</td><td>中性子・α 線の電荷でメモリのビットが反転する誤り。素子は壊れず、温度では加速されない</td><td class="num">海面 13 n/cm²·h</td></tr>
+          <tr><td>臨界電荷 Q<sub>crit</sub></td><td>セルのビットが反転するのに要る電荷。セルが小さいほど小さく、ソフトエラーに弱くなる</td><td class="num">ECC で対策</td></tr>
+          <tr><td>OC 曲線</td><td>ロットの不良率に対して、抜き取り検査で合格する確率を描いた曲線（検査特性曲線）</td><td class="num">二項分布</td></tr>
+          <tr><td>AQL / LTPD</td><td>合格させたい不良率の水準と、不合格にしたい不良率。抜き取り表は AQL で引く</td><td class="num">JIS Z 9015-1</td></tr>
+          <tr><td>生産者危険 / 消費者危険</td><td>良いロットを落とす確率 α と、悪いロットを通す確率 β。両方を減らすには抜く数を増やす</td><td class="num">α 5%・β 10%</td></tr>
+          <tr><td>要因計画 / 2<sup>k</sup></td><td>全部の因子を同時に 2 水準で振り、主効果と交互作用を分けて読む実験の組み方</td><td class="num">2² で 4 回</td></tr>
+          <tr><td>交互作用</td><td>ある因子の効きが、別の因子の水準によって変わること。交互作用の図で線が平行でない</td><td class="num">AB</td></tr>
+          <tr><td>一部実施 / 直交表 / 交絡</td><td>組み合わせの一部だけを行って回数を減らす計画。代わりに効果どうしが区別できなくなる</td><td class="num">L8 で最大 7 因子</td></tr>
+          <tr><td>無作為化 / 繰り返し</td><td>試行の順番をでたらめにしてドリフトを散らすことと、同じ条件を複数回行って σ を知ること</td><td class="num">SE = 2σ/√N</td></tr>
+          <tr><td>Norris-Landzberg</td><td>温度の振れ幅に、回す速さと最高温度の補正を加えたはんだ疲労の加速のモデル（SnPb の定数）</td><td class="num">f 8 倍で AF 1/2</td></tr>
+          <tr><td>ndc（有効区分数）</td><td>物差しが部品のばらつきを何区分に見分けられるか。1.41·σ部品/σ測定 を切り捨て</td><td class="num">5 以上で合格</td></tr>
+          <tr><td>応答曲面 / SN 比</td><td>応答を 2 次式で近似して最適条件を探す方法と、ばらつきに鈍い条件を探す品質工学の指標</td><td class="num">田口の方法</td></tr>
+                  <tr><td>光束維持率 / L70（LM-80・TM-21）</td><td>LED の光束が初めの 70% に落ちる時刻。LM-80 で測り、TM-21 の指数関数で外挿する。外挿は試験時間の 6 倍まで（試料 20 個以上）</td><td class="num">6,000 h 試験で 36,000 h まで</td></tr>
+          <tr><td>LD の寿命の判定（APC 電流の増加）</td><td>光出力を一定に保つ駆動電流が、初めから決めた割合（例: 20%）だけ増えた時刻を寿命とする。基準の線と E<sub>a</sub> で寿命が動く</td><td class="num">例: 20% 増</td></tr>
+          <tr><td>冗長化（並列・待機・修理）</td><td>同じ働きの部品を並べて、1 つが壊れても止まらないようにする。MTTF は 1.5 倍でも、早い時期の故障の確率を大きく下げる。修理があれば (3λ+μ)/(2λ²)</td><td class="num">2 台並列で MTTF 1.5 倍</td></tr>
+          <tr><td>多数決（2-out-of-3）/ 共通原因故障</td><td>3 台中 2 台が動けばよい系は R ＞ 0.5 のときだけ単体より強い。複数の系を同時に壊す共通の原因（電源・温度・ロット）は冗長化の効果を削る</td><td class="num">MTTF 5/(6λ)</td></tr>
         </tbody>
       </table>
     </div>
@@ -1486,7 +2264,17 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>寿命の精度と光子の数</td><td>M. Köllner &amp; J. Wolfrum<br>Chem. Phys. Lett. 200, 199 (1992)</td><td>13。寿命を求めるのに要る光子の数。</td></tr>
           <tr><td>アラン偏差</td><td>D. W. Allan<br>Proc. IEEE 54, 221 (1966)</td><td>13。平均の時間ごとのばらつきで雑音の種類を分ける方法。</td></tr>
           <tr><td>逆畳み込み</td><td>W. H. Richardson, J. Opt. Soc. Am. 62, 55 (1972)<br>L. B. Lucy, Astron. J. 79, 745 (1974)</td><td>13。Richardson–Lucy 法の原典。</td></tr>
-        </tbody>
+                  <tr><td>エレクトロマイグレーション</td><td>J. R. Black<br>IEEE Trans. Electron Devices ED-16, 338 (1969)</td><td>14。Black の式の原典。</td></tr>
+          <tr><td>故障の物理の教科書</td><td>M. Ohring &amp; L. Kasprzak『Reliability and Failure of Electronic Materials and Devices』2nd ed., Academic Press (2014)</td><td>14。EM・TDDB・NBTI・HCI・ESD・放射線を物理から扱う教科書。</td></tr>
+          <tr><td>NBTI の総説</td><td>D. K. Schroder &amp; J. A. Babcock<br>J. Appl. Phys. 94, 1 (2003)</td><td>14。NBTI の機構・時間の依存・回復。</td></tr>
+          <tr><td>ソフトエラー</td><td>JEDEC JESD89A (2006)<br>T. C. May &amp; M. H. Woods, IEEE Trans. Electron Devices ED-26, 2 (1979)<br>R. C. Baumann, IEEE Trans. Device Mater. Reliab. 5, 305 (2005)</td><td>14。中性子の基準の束と試験方法、α 線のソフトエラーの最初の報告、微細化とソフトエラーの総説。</td></tr>
+          <tr><td>計数値の抜き取り検査</td><td>ISO 2859-1 / JIS Z 9015-1</td><td>15。AQL で引く抜き取り表と、なみ・きつい・ゆるい検査の切り替え。</td></tr>
+          <tr><td>温度サイクルの加速</td><td>K. C. Norris &amp; A. H. Landzberg<br>IBM J. Res. Dev. 13, 266 (1969)</td><td>02。周波数と最高温度を入れたはんだ疲労の加速式（SnPb の定数）。</td></tr>
+          <tr><td>実験計画法</td><td>D. C. Montgomery『Design and Analysis of Experiments』9th ed., Wiley (2017)</td><td>16。要因計画・一部実施・応答曲面・検出力と回数。</td></tr>
+                <tr><td>LED の寿命の外挿</td><td>Illuminating Engineering Society<br>IES TM-21-11 (2011)・IES LM-80</td><td>17。光束維持率の当てはめの区間と、外挿の上限（試験時間の 6 倍・5.5 倍）。版と細部は原文で確認。</td></tr>
+        <tr><td>光デバイスの信頼性の要求</td><td>Telcordia GR-468-CORE<br>Generic Reliability Assurance Requirements for Optoelectronic Devices</td><td>17。LD・受光素子の認定試験の骨格。試験の条件と判定は最新の版の原文で確認。</td></tr>
+        <tr><td>冗長系の信頼性</td><td>P. D. T. O'Connor &amp; A. Kleyner<br>Practical Reliability Engineering, 5th ed., Wiley (2012)</td><td>18。直列・並列・k-out-of-n・修理のある系の信頼性と、共通原因故障。</td></tr>
+      </tbody>
       </table>
     </div>
     <figcaption><strong>規格番号は原文が正です。</strong>JEDEC の文書は登録すれば無償で読めます ― 社内資料の Ea や試験条件の出典を一次資料で確かめる習慣が、この部のいちばんの持ち帰りです。</figcaption>
@@ -1537,6 +2325,12 @@ if("IntersectionObserver" in window){
     es.forEach(function(e){ if(e.isIntersecting){ mark(e.target.id); } });
   },{rootMargin:"-30% 0px -60% 0px"});
   secs.forEach(function(s){ io.observe(s); });
+}
+/* 動きを減らす設定では、SVG の中の animate / animateMotion も止める（CSS の設定は SMIL に効かないため） */
+if(window.matchMedia){
+  var mq=window.matchMedia("(prefers-reduced-motion: reduce)");
+  var applyMotion=function(){[].forEach.call(document.querySelectorAll("svg"),function(s){ if(!s.pauseAnimations) return; if(mq.matches) s.pauseAnimations(); else s.unpauseAnimations(); });};
+  applyMotion(); if(mq.addEventListener) mq.addEventListener("change", applyMotion);
 }
 })();
 </script>
