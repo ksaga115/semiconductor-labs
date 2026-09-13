@@ -234,6 +234,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
     <li><a href="#spow"><span class="n">—</span><span>パワーデバイス</span></a></li>
     <li class="dom">付録</li>
     <li><a href="#scheck"><span class="n">—</span><span>理解の確認</span></a></li>
+    <li><a href="#sgl"><span class="n">—</span><span>用語表</span></a></li>
     <li><a href="#snum"><span class="n">—</span><span>数字の根拠</span></a></li>
     <li><a href="#smodel"><span class="n">—</span><span>どこまでがモデルか</span></a></li>
     <li><a href="#sref"><span class="n">—</span><span>参考文献</span></a></li>
@@ -1439,6 +1440,51 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
     <details><summary><span class="qn">Q9 · 5章</span>酸化膜を薄くすると、V<sub>th</sub> と S 値はそれぞれどちらへ動くか。</summary><p>C<sub>ox</sub> が大きくなり Q<sub>dep</sub>/C<sub>ox</sub> が縮むので <b>V<sub>th</sub> は下がる</b>。ゲートの分圧 (1 + C<sub>dep</sub>/C<sub>ox</sub>) が 1 に近づくので <b>S 値も下がり、59.5 mV/桁に近づく</b>（下回ることはない）。</p></details>
     <details><summary><span class="qn">Q10 · 通し</span>「電源電圧を下げると消費電力が下がるのに、なぜ 0.3 V まで下げないのか」をこの部の式で説明せよ。</summary><p>オフ電流を 6 桁下げるには、S 値の下限 59.5 mV/桁 でも <b>0.36 V</b> のゲート振幅が要る（5章）。V<sub>th</sub> をそれより下げるとオフ電流が桁で増える。59.5 mV の出どころは V<sub>t</sub>·ln10 ＝ 1章のボルツマン分布そのもので、<b>障壁を熱で越えて流れる素子である限り、室温では材料や構造を変えても破れない</b>（破るには、障壁をトンネルで抜けるなど、熱で越えるのとは別の機構で電流を切り替える必要がある）。</p></details>
   </div>
+</section>
+
+<!-- ================= 用語表 ================= -->
+<section class="stage" id="sgl">
+  <div class="stage-head"><span class="stage-num">—</span><h2>用語表</h2></div>
+  <p class="lede">この部で出てきた言葉を、出てきた順にまとめました。全部の部の用語をまとめて引くときは<a href="付録_物性値と索引.html#s3">付録の統一索引</a>へ。</p>
+  <figure class="full">
+    <div class="scroll-x"><table>
+      <thead><tr><th>用語</th><th>意味</th><th>目安</th></tr></thead>
+      <tbody>
+        <tr><td>バンドギャップ E<sub>g</sub></td><td>結合から外れて伝導帯に上がるのに要るエネルギー。温度で縮む（Varshni の式）</td><td class="num">Si 1.124 eV（300 K）</td></tr>
+        <tr><td>真性キャリア密度 n<sub>i</sub></td><td>不純物のない結晶で熱だけで生まれる電子（＝正孔）の密度。exp(−E<sub>g</sub>/2kT) に乗る</td><td class="num">Si 1.0×10¹⁰ /cm³</td></tr>
+        <tr><td>ドナー / アクセプタ</td><td>電子を 1 個出す不純物（リン・ヒ素）と、正孔を 1 個出す不純物（ホウ素）。n 型・p 型を作る</td><td class="num">10¹⁴〜10²⁰ /cm³</td></tr>
+        <tr><td>質量作用の法則</td><td>熱平衡では n·p = n<sub>i</sub>²。多数キャリアを増やすと少数キャリアは同じ割合で減る</td><td class="num">10¹⁶ で p = 10⁴</td></tr>
+        <tr><td>移動度 µ</td><td>電界あたりの流れる速さ。不純物の総量（正味ではない）と温度で決まる</td><td class="num">電子は正孔の約 3 倍</td></tr>
+        <tr><td>ドリフト / 拡散</td><td>電界に押される流れと、濃度の傾きで薄い側へ広がる流れ。キャリアの動き方はこの 2 つだけ</td><td class="num">J = qnµE + qD∇n</td></tr>
+        <tr><td>アインシュタインの関係</td><td>拡散係数と移動度の比が熱電圧になる: D = µkT/q</td><td class="num">kT/q = 25.85 mV</td></tr>
+        <tr><td>抵抗率 / シート抵抗</td><td>材料の電気の通しにくさと、薄い層の抵抗を「正方形 1 枚あたり」で数えた値。四探針で測る</td><td class="num">Ω·cm / Ω/□</td></tr>
+        <tr><td>ホール効果</td><td>磁場の中を流れるキャリアが横に曲げられて立つ電圧。符号で種類、大きさで濃度が分かる</td><td class="num">R<sub>H</sub> = 1/(qn)</td></tr>
+        <tr><td>van der Pauw 法</td><td>任意の形の薄い試料の四隅の電極で、抵抗率とホール係数を測る方法</td><td class="num">四隅に電極</td></tr>
+        <tr><td>pn 接合 / 空乏層</td><td>p 型と n 型を並べると境目のキャリアが消えて、固定電荷だけの層ができる</td><td class="num">W ∝ √(V<sub>bi</sub>−V)</td></tr>
+        <tr><td>内蔵電位 V<sub>bi</sub></td><td>空乏層の両端に自然に立つ電位差。V<sub>t</sub>·ln(N<sub>a</sub>N<sub>d</sub>/n<sub>i</sub>²)</td><td class="num">約 0.7 V</td></tr>
+        <tr><td>空乏層容量 / 1/C² プロット</td><td>C<sub>j</sub> = ε/W。1/C² を電圧に対して描くと、傾きから薄い側の濃度、切片から V<sub>bi</sub></td><td class="num">C-V 測定</td></tr>
+        <tr><td>ヘテロ接合 / バンドオフセット</td><td>バンドギャップの違う材料の接合と、その境目にできるバンドの段差</td><td class="num">アンダーソン則</td></tr>
+        <tr><td>2DEG / 変調ドーピング</td><td>ヘテロ界面のくぼみに溜まる板状の電子と、ドナーから電子を離して散乱を減らす工夫</td><td class="num">HEMT のチャネル</td></tr>
+        <tr><td>ダイオードの式 / 飽和電流 J<sub>0</sub></td><td>J = J<sub>0</sub>(e<sup>V/nV<sub>t</sub></sup> − 1)。J<sub>0</sub> は n<sub>i</sub>² に比例し、濃度に反比例</td><td class="num">60 mV で 10 倍</td></tr>
+        <tr><td>理想係数 n</td><td>拡散電流なら 1、空乏層の中の再結合電流なら 2。I-V の傾きで支配機構を見分ける</td><td class="num">1〜2</td></tr>
+        <tr><td>生成電流 / 拡散電流</td><td>逆方向の漏れの 2 つの源。前者は n<sub>i</sub> に、後者は n<sub>i</sub>² に比例</td><td class="num">9 ℃ / 5 ℃ で 2 倍</td></tr>
+        <tr><td>降伏（なだれ・ツェナー）</td><td>逆バイアスを深くすると急に流れ出す現象。この部の式と SemiLab には入っていない</td><td class="num">第4部 付録 A</td></tr>
+        <tr><td>BJT / 電流利得 β</td><td>接合を 2 つ背中合わせにしたトランジスタと、ベース電流に対するコレクタ電流の比</td><td class="num">実物で数十〜数百</td></tr>
+        <tr><td>ガンメルプロット</td><td>I<sub>C</sub> と I<sub>B</sub> を V<sub>BE</sub> に対して対数で並べた図。縦の距離が β</td><td class="num">BJT の健康診断</td></tr>
+        <tr><td>アーリー効果</td><td>コレクタ電圧で実効的なベース幅が縮み I<sub>C</sub> が増える現象。MOSFET の λ に相当</td><td class="num">出力抵抗を決める</td></tr>
+        <tr><td>HBT</td><td>エミッタに広いギャップの材料を使ったバイポーラ。SiGe・InP 系</td><td class="num">数十〜数百 GHz</td></tr>
+        <tr><td>吸収係数 / 量子効率</td><td>光が 1/e に弱まる深さの逆数と、入った光子のうち電流になった割合。青は浅く、赤は深く吸われる</td><td class="num">Si は 1107 nm まで</td></tr>
+        <tr><td>開放電圧 V<sub>oc</sub> / 曲線因子 FF</td><td>太陽電池の電流ゼロの電圧 V<sub>t</sub>·ln(J<sub>L</sub>/J<sub>0</sub>) と、最大電力の四角形の埋まり具合</td><td class="num">0.69 V・0.84 の例</td></tr>
+        <tr><td>ショックレー・クワイサー限界</td><td>1 種類の材料の太陽電池の原理的な効率の上限</td><td class="num">1.3〜1.4 eV で約 33%</td></tr>
+        <tr><td>反転 / しきい値 V<sub>th</sub></td><td>ゲート電圧で p 型の表面が n 型になることと、その始まりの電圧 V<sub>FB</sub> + 2φ<sub>F</sub> + Q<sub>dep</sub>/C<sub>ox</sub></td><td class="num">例 0.500 V</td></tr>
+        <tr><td>C<sub>ox</sub></td><td>酸化膜の単位面積あたりの容量 ε<sub>ox</sub>/t<sub>ox</sub></td><td class="num">5 nm で 6.9 fF/µm²</td></tr>
+        <tr><td>S 値（サブスレッショルド・スイング）</td><td>しきい値の下で電流を 1 桁変えるのに要るゲート電圧。室温で 59.5 mV/桁を下回れない</td><td class="num">≥ 59.5 mV/桁</td></tr>
+        <tr><td>ピンチオフ / 飽和</td><td>ドレイン端の反転層が消えて、電流がドレイン電圧でほとんど増えなくなる状態</td><td class="num">V<sub>D</sub> ≥ V<sub>G</sub> − V<sub>th</sub></td></tr>
+        <tr><td>臨界電界 E<sub>c</sub> / バリガ性能指数</td><td>なだれが始まる電界と、同じ耐圧のオン抵抗が E<sub>c</sub>³ に反比例することを表す指数</td><td class="num">Si 0.3・SiC 2.5・GaN 3.3 MV/cm</td></tr>
+        <tr><td>SJ-MOSFET / IGBT</td><td>p と n の柱を交互に並べて耐圧とオン抵抗を両立させる構造と、MOS で駆動するバイポーラのパワー素子</td><td class="num">パワーデバイス</td></tr>
+      </tbody>
+    </table></div>
+  </figure>
 </section>
 
 <!-- ================= 数字の根拠 ================= -->

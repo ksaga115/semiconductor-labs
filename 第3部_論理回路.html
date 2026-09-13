@@ -242,6 +242,7 @@ table.tt td.x{color:var(--ink-3)}
     <li><a href="#smem"><span class="n">—</span><span>メモリの物理</span></a></li>
     <li class="dom">付録</li>
     <li><a href="#scheck"><span class="n">—</span><span>理解の確認</span></a></li>
+    <li><a href="#sgl"><span class="n">—</span><span>用語表</span></a></li>
     <li><a href="#snum"><span class="n">—</span><span>数字の根拠</span></a></li>
     <li><a href="#smodel"><span class="n">—</span><span>どこまでがモデルか</span></a></li>
     <li><a href="#sref"><span class="n">—</span><span>参考文献</span></a></li>
@@ -1105,6 +1106,44 @@ table.tt td.x{color:var(--ink-3)}
     <details><summary><span class="qn">Q9 · 4章</span>外部からのボタン入力を FF で受けるとき、FF を2段にするのはなぜか。</summary><p>1段目は必ずいつか setup を破って準安定になり得る。2段目までの1拍を「落ち着く時間」にすると、失敗の確率が <b>e<sup>−t<sub>r</sub>/τ</sup></b> で指数的に下がる（MTBF の式）。無くすのではなく、実用上起きない確率まで下げる。</p></details>
     <details><summary><span class="qn">Q10 · 通し</span>電源電圧を 1.0 V から 0.8 V にすると動的電力は何倍か。なぜ下げ続けられないのか。</summary><p>αCV²f なので <b>0.64 倍</b>。電圧を下げるとオン電流が減って遅くなり、取り戻すために V<sub>th</sub> を下げるとオフ電流が S 値（≥ 59.5 mV/桁、第2部 5章）の指数で増える。速さ・電圧・漏れの三すくみ。</p></details>
   </div>
+</section>
+
+<!-- ================= 用語表 ================= -->
+<section class="stage" id="sgl">
+  <div class="stage-head"><span class="stage-num">—</span><h2>用語表</h2></div>
+  <p class="lede">この部で出てきた言葉を、出てきた順にまとめました。全部の部の用語をまとめて引くときは<a href="付録_物性値と索引.html#s3">付録の統一索引</a>へ。</p>
+  <figure class="full">
+    <div class="scroll-x"><table>
+      <thead><tr><th>用語</th><th>意味</th><th>目安</th></tr></thead>
+      <tbody>
+        <tr><td>CMOS / インバータ</td><td>pMOS と nMOS を電源と地面の間に置いた論理回路の方式と、その最小形の NOT</td><td class="num">NOT 2 石・NAND 4 石</td></tr>
+        <tr><td>NAND の万能性</td><td>NAND だけでどんな論理でも組めること。AND・OR は単調なので否定が作れない</td><td class="num">NOT = NAND(A,A)</td></tr>
+        <tr><td>雑音余裕</td><td>伝達特性の坂の利得が 1 を超える外側で、入力の揺れが押し戻される幅</td><td class="num">1.28 / 1.04 V（NandLab）</td></tr>
+        <tr><td>動的電力</td><td>切り替えのたびに容量を充放電する電力 αCV²f。電圧の 2 乗で効く</td><td class="num">1.0→0.8 V で 0.64 倍</td></tr>
+        <tr><td>トライステート / 伝送ゲート</td><td>「出さない」状態を持つ出力と、nMOS と pMOS を並列にした増幅しないスイッチ</td><td class="num">バスとセレクタ</td></tr>
+        <tr><td>真理値表 / 積和形</td><td>入力の全組み合わせと出力の表と、出力が 1 の行の AND を OR で束ねた式。NAND 2 段になる</td><td class="num">深さ 3 以内</td></tr>
+        <tr><td>ド・モルガンの法則</td><td>NOT(A かつ B) = NOT A または NOT B。AND と OR を否定で入れ替える</td><td class="num">積和形 → NAND の NAND</td></tr>
+        <tr><td>カルノー図</td><td>表をグレイ順に並べた地図。1 の長方形の島が変数の消えた積項になる</td><td class="num">手で縮める道具</td></tr>
+        <tr><td>グリッチ</td><td>経路ごとの遅延の差で、組合せ回路の出力が一瞬だけ乱れること。同期設計で無視する</td><td class="num">拍の終わりで取る</td></tr>
+        <tr><td>セレクタ（MUX）/ デコーダ</td><td>選択信号でどちらかを出す回路と、番号の出力 1 本だけを 1 にする回路</td><td class="num">2:1 は NAND 4 個</td></tr>
+        <tr><td>パリティ / ハミング符号</td><td>1 の数の偶奇で誤りを見つける符号と、誤りの位置まで分かって 1 ビットを訂正できる符号</td><td class="num">(7,4)</td></tr>
+        <tr><td>半加算器 / 全加算器</td><td>1 桁の足し算（XOR と AND）と、下からの桁上がりも足す 3 入力の足し算</td><td class="num">全加算 13 個（最小 9）</td></tr>
+        <tr><td>リップルキャリー / 桁上げ先読み</td><td>桁上がりを数珠つなぎに待つ加算器と、G・P から全桁の桁上がりを並列に作る加算器（CLA）</td><td class="num">桁数に比例 / 対数</td></tr>
+        <tr><td>2 の補数</td><td>全ビット反転して 1 を足した表し方。加算器がそのまま引き算と負の数を扱える</td><td class="num">4 ビットで −8〜7</td></tr>
+        <tr><td>オーバーフロー</td><td>2 の補数の計算が表せる範囲を超えること。最上位へ入る桁上がりと出る桁上がりの XOR</td><td class="num">7 + 1 = −8</td></tr>
+        <tr><td>SR ラッチ / D ラッチ</td><td>NAND 2 個の互い違いで値を保つ回路と、許可 E の間だけ D を素通しで取り込む回路</td><td class="num">出力を入力へ戻す</td></tr>
+        <tr><td>D フリップフロップ（主従）</td><td>2 つのラッチを交互に開けて、クロックの縁で 1 回だけ取り込む記憶素子</td><td class="num">1 拍で 1 段</td></tr>
+        <tr><td>セットアップ / ホールド</td><td>クロックの縁の前後で入力を止めておくべき時間。最長経路が周波数を、最短経路がホールドを決める</td><td class="num">T ≥ t<sub>cq</sub>+t<sub>max</sub>+t<sub>su</sub></td></tr>
+        <tr><td>準安定 / 2 段同期化</td><td>setup を破った FF が 0 と 1 の間で迷う状態と、2 段目までの 1 拍で落ち着かせる対策</td><td class="num">失敗 ∝ e<sup>−t<sub>r</sub>/τ</sup></td></tr>
+        <tr><td>レジスタ / シフトレジスタ / カウンタ</td><td>値を書き戻し続けて覚える箱、1 拍ごとに隣へ送る列、自分に 1 を足して書き戻す回路</td><td class="num">CPU の部品</td></tr>
+        <tr><td>ALU</td><td>加算・減算・論理演算を選んで出す演算器</td><td class="num">NandLab で 124 NAND</td></tr>
+        <tr><td>パイプライン</td><td>命令の処理を段に分け、各段で別の命令を同時に進めて 1 拍ごとに 1 命令を終える方式</td><td class="num">取り出し→解読→実行→…</td></tr>
+        <tr><td>メモリ階層 / AMAT</td><td>速く小さい記憶から遅く大きい記憶への階段と、平均の待ち時間 ＝ ヒット時間 + ミス率 × ミスの代価</td><td class="num">レジスタ→キャッシュ→DRAM</td></tr>
+        <tr><td>SRAM / DRAM / フラッシュ</td><td>インバータの輪で覚える記憶、容量の電荷で覚える記憶（読み書きで要リフレッシュ）、閉じ込めた電荷で電源なしに覚える記憶</td><td class="num">6T / 1T1C / 浮遊ゲート</td></tr>
+        <tr><td>FPGA / LUT</td><td>回路を後から書き換えられる素子と、その基本部品である k 入力の真理値表の記憶（2<sup>k</sup> ビット）</td><td class="num">表を回路として使う</td></tr>
+      </tbody>
+    </table></div>
+  </figure>
 </section>
 
 <!-- ================= 数字の根拠 ================= -->

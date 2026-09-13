@@ -189,12 +189,12 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
     <div>
       <span class="eyebrow">Labs / 半導体 ― 参考書と実践</span>
       <h1>工程から<span class="lit">像</span>まで、<br>読んで、作って、確かめる</h1>
-      <p class="sub">半導体を、製造工程 → 素子の物理 → 論理回路 → イメージセンサ → 光検出デバイス → アナログ回路 → 光学 → 信頼性と品質の8部で通して学ぶための場所。各部は<b>参考書</b>（読んで理解する）と<b>ラボ</b>（自分の手で作って、機械に採点させる）の二層になっていて、参考書の節から対応するラボの課題へその場で飛べる。</p>
+      <p class="sub">半導体を、足場（第0部）から、製造工程 → 素子の物理 → 論理回路 → イメージセンサ → 光検出デバイス → アナログ回路 → 光学 → 信頼性と品質 → 光源とレーザー（第9部）までの10部と、物性値と索引の付録で通して学ぶための場所。各部は<b>参考書</b>（読んで理解する）と<b>ラボ</b>（自分の手で作って、機械に採点させる）の二層になっていて、参考書の節から対応するラボの課題へその場で飛べる。</p>
       <p class="sub">第1〜第4部は地続き。工程が不純物の分布を作り、不純物が接合を立て、接合が MOSFET とフォトダイオードになり、MOSFET は NAND に、フォトダイオードは画素になる。<b>背骨はイメージセンサ</b> ― 結晶と接合という物理層から、画素・読み出し回路をへて、現像・画像というアプリ層まで、1本の信号がどう登っていくかを全部の部で追いかけられるようにしてある。</p>
     </div>
     <div>
       <dl class="spec">
-        <div><dt>参考書</dt><dd>8<small>部</small></dd></div>
+        <div><dt>参考書</dt><dd>10<small>部＋付録</small></dd></div>
         <div><dt>ラボ</dt><dd>9<small>本</small></dd></div>
         <div><dt>採点つき課題</dt><dd>128<small>問</small></dd></div>
         <div><dt>依存</dt><dd>0<small>ブラウザのみ</small></dd></div>
@@ -222,7 +222,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
 <!-- ================= 00 道のり ================= -->
 <section id="map">
   <div class="sec-head"><span class="sec-num">00</span><h2>道のり ― 中心の4部はこう繋がっている</h2></div>
-  <p class="lede">上の段が「作る」側、下の段が「光を受ける」側。分かれ目は pn 接合で、そこから先はどちらへ進んでもいいし、両方進んでもいい。<b>矢印は依存でもある</b> ― ProcessLab と PixelLab は SemiLab の物理をそのまま読み込んで動く。この幹の外側に、数える検出器（第5部）・アナログ（第6部）・光学（第7部）・信頼性と品質（第8部）が枝としてつく。</p>
+  <p class="lede">上の段が「作る」側、下の段が「光を受ける」側。分かれ目は pn 接合で、そこから先はどちらへ進んでもいいし、両方進んでもいい。<b>矢印は依存でもある</b> ― ProcessLab と PixelLab は SemiLab の物理をそのまま読み込んで動く。この幹の外側に、数える検出器（第5部）・アナログ（第6部）・光学（第7部）・信頼性と品質（第8部）・光をつくる側（第9部）が枝としてつく。全部の部の足元には、数・波・量子・結晶の道具箱（第0部）と、引くための巻末（付録）がある。</p>
 
   <figure>
     <div class="fig-head"><span class="fig-title">MAP — 何が何を作るか</span><span class="fig-title">参考書 ＝ 灰の箱、ラボ ＝ 白の箱</span></div>
@@ -373,6 +373,33 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
 <section id="toc">
   <div class="sec-head"><span class="sec-num">01</span><h2>目次 ― 参考書の章と、実践するラボの課題</h2></div>
   <p class="lede">左が参考書の章、右がその章の内容を自分の手で確かめるラボの課題。<b>章を読んだら右の課題を解く</b>、が基本の進み方。課題名をクリックすると、その課題を選んだ状態でラボが開く。</p>
+
+  <!-- 第0部 -->
+  <article class="part" id="p0">
+    <div class="part-h">
+      <div>
+        <span class="pn">第0部</span>
+        <h3>全部の部の足場 ― 数・波・量子・結晶</h3>
+        <p class="desc">第1〜9部が「知っている前提」で使う道具を、導出の筋道つきで一か所に置いた部。対数と dB、ポアソンと √N、周波数と帯域、光子のエネルギー、結晶とバンド、真性キャリア密度 n<sub>i</sub> がどこから来るか、定数と単位。どの部から読みはじめても、足場が欲しくなったらここへ戻る。</p>
+      </div>
+      <div class="pair">
+        <div><span class="kind read">参考書</span><a href="第0部_基礎.html">基礎 ― 数・波・量子・結晶</a><small>Log → Probability → Wave → Quantum → Crystal → Band · 8章</small></div>
+        <div><span class="kind read">付録</span><a href="付録_物性値と索引.html">物性値と索引</a><small>材料の表・式の索引・全部の部の用語の統一索引</small></div>
+      </div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">01-03</span><div class="ct"><a href="第0部_基礎.html#s1">桁と対数と dB / 確率とばらつき / 波・周波数・フーリエ</a></div><div class="cd">59.5 mV/桁、dB と dBm。ポアソンの分散＝平均と √N。帯域と /√Hz、標本化と折り返し、RC の一次系。</div></div>
+      <div class="do"><span class="lbl">読むだけ</span><span class="none">使う場所は各部のラボ（PixelLab の PTC、PhotonLab の計数、AnalogLab の雑音）</span></div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">04-07</span><div class="ct"><a href="第0部_基礎.html#s4">光子と量子 / 結晶 / 原子からバンドへ / キャリアの数を導く</a></div><div class="cd">E = hν と閉じ込め。格子と面方位。準位が帯になり禁制帯が開く、直接と間接。状態密度×フェルミ分布で n<sub>i</sub> を導き、1.0×10¹⁰ との不一致に決着をつける。</div></div>
+      <div class="do"><span class="lbl">読むだけ</span><span class="none">SemiLab の物理（第2部）の床下にあたる</span></div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">08</span><div class="ct"><a href="第0部_基礎.html#s8">定数と単位</a></div><div class="cd">SI の定義値、kT/q・hc・ε、cm と m の罠。全部の部の計算はこの表の値。</div></div>
+      <div class="do"><span class="lbl">読むだけ</span><span class="none">材料ごとの物性値は付録へ</span></div>
+    </div>
+  </article>
 
   <!-- 第1部 -->
   <article class="part" id="p1">
@@ -698,6 +725,52 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       <div class="do"><span class="lbl">読むだけ</span><span class="none">発光解析の検出器は第5部 07、トレーサビリティは第7部 08</span></div>
     </div>
   </article>
+
+  <!-- 第9部 -->
+  <article class="part" id="p9">
+    <div class="part-h">
+      <div>
+        <span class="pn">第9部</span>
+        <h3>光をつくる側 ― 光源とレーザー</h3>
+        <p class="desc">第4〜7部が受けてきた光を、つくる側から見る。黒体とハロゲン、水銀・重水素・キセノン、LED の幅と効率、反転分布としきい値、レート方程式と T<sub>0</sub>、縦モード、DFB・VCSEL・QCL、固体とファイバ、モード同期と光周波数コム、SHG と多光子。最後に選び方・駆動・安全。</p>
+      </div>
+      <div class="pair">
+        <div><span class="kind read">参考書</span><a href="第9部_光源とレーザー.html">光源とレーザー ― 熱・放電・LED・レーザー</a><small>Heat → Discharge → LED → Laser → Mode → Pulse · 11章</small></div>
+        <div><span class="kind lab">ラボ</span><a href="PhotonLab/index.html">PhotonLab</a><small>専用のラボは無い。受ける側の計算は PhotonLab・OptoLab で</small></div>
+      </div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">01-03</span><div class="ct"><a href="第9部_光源とレーザー.html#s1">熱放射 / 放電のランプ / LED</a></div><div class="cd">2898 µm·K と σT⁴、電球の可視は 6.5%。輝線は波長の物差し。LED の幅 1.8kT、EQE の 3 つの掛け算、白色の 20% のストークス損失。</div></div>
+      <div class="do"><span class="lbl">読むだけ</span><span class="none">色温度は第4部 07、分光器は第7部 11</span></div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">04-07</span><div class="ct"><a href="第9部_光源とレーザー.html#s4">レーザーの原理 / レート方程式 / 縦モード / 単一モード</a></div><div class="cd">F<sub>n</sub>−F<sub>p</sub>＞hν、Γg<sub>th</sub>=α<sub>i</sub>+ln(1/R₁R₂)/2L、N の張り付きとスロープ効率、I<sub>th</sub>∝exp(T/T<sub>0</sub>)。λ²/2n<sub>g</sub>L の櫛、DFB の Λ=λ/2n<sub>eff</sub>、VCSEL の 99.9% の鏡。</div></div>
+      <div class="do"><span class="lbl">読むだけ</span><span class="none">L-I の折れ目の入門は第5部 08、TEC は第8部 05</span></div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">08-11</span><div class="ct"><a href="第9部_光源とレーザー.html#s8">固体・ファイバ・ガス / パルス / 非線形光学 / 選ぶ・駆動する・守る</a></div><div class="cd">量子欠損 24% と 9%。c/2L で 80 MHz、Δν·Δt ≥ 0.441、尖頭値 120 kW。SHG と位相整合、2 光子の 10⁵ 倍。輝度とエテンデュ、APC・COD・アイソレータ。</div></div>
+      <div class="do"><span class="lbl">読むだけ</span><span class="none">TCSPC の 80 MHz は第5部 06、安全のクラスは第8部 12</span></div>
+    </div>
+  </article>
+
+  <!-- 付録 -->
+  <article class="part" id="pA">
+    <div class="part-h">
+      <div>
+        <span class="pn">付録</span>
+        <h3>引くための巻末 ― 物性値と索引</h3>
+        <p class="desc">読み終えた後に「引く」ためのページ。主な半導体と絶縁膜の物性値の表（どの部の数字と同じ値か付き）、各部に散らばった式の索引、そして全部の部の用語表をまとめた統一索引（検索できる）。</p>
+      </div>
+      <div class="pair">
+        <div><span class="kind read">付録</span><a href="付録_物性値と索引.html">物性値と索引</a><small>Materials → Formulas → Index</small></div>
+        <div><span class="kind read">足場</span><a href="第0部_基礎.html">第0部 基礎</a><small>定数と単位は第0部 08</small></div>
+      </div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">01-03</span><div class="ct"><a href="付録_物性値と索引.html#s1">物性値の表 / 式の索引 / 用語の統一索引</a></div><div class="cd">Si・Ge・GaAs・InP・InGaAs・GaN・4H-SiC と SiO₂ などの代表値。部をまたいで使う式の出どころ。全部の部の用語を 1 つの表で。</div></div>
+      <div class="do"><span class="lbl">引く</span><span class="none">読む順は無い。必要なときに開く</span></div>
+    </div>
+  </article>
 </section>
 
 <!-- ================= 02 進み方 ================= -->
@@ -711,6 +784,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       <h3>物理層からアプリ層まで、センサを背骨に登る</h3>
       <p class="for">半導体を「1個の製品を貫く縦の断面」で学ぶ。結晶と接合（物理層）→ 画素という素子（デバイス層）→ 読み出しを支える論理（回路層）→ 現像と画像（アプリ層）→ センサの外の一族（第5部）。全部を、イメージセンサに効く順で通る。</p>
       <ol>
+        <li><b>足場:</b> 第0部 01〜08<span class="r">読む</span><span class="why">dB と √N、周波数と帯域、光子とバンド。先に通してもいいし、つまずいたら戻ってきてもいい</span></li>
         <li><b>物理層:</b> 第2部 2-1・2-2 → SemiLab 第1・2章<span class="r">9問</span><span class="why">不純物がキャリアを決め、接合が空乏層＝「井戸」を立てる。センサの床がここ</span></li>
         <li><b>作り方:</b> 第1部 参考書 01〜05 → ProcessLab 第1〜4章<span class="r">13問</span><span class="why">その接合を工場はどう刻むか。第4章「フォトダイオードを作る」は工程で作った1本を SemiLab に渡して採点する ― 2つの部が繋がる</span></li>
         <li><b>デバイス層:</b> 第2部 2-3・2-4 → SemiLab 第3・4章<span class="r">9問</span><span class="why">暗電流の正体（生成電流）と、波長で決まる量子効率。両方そのまま第4部の性能表になる</span></li>
@@ -721,25 +795,30 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
         <li><b>センサの外へ:</b> 第5部 → PhotonLab<span class="r">12問</span><span class="why">像を結ばず数える一族（PMT・APD・MPPC）と共通の物差し。SNRの「最適な M」を自分で探す</span></li>
         <li><b>読み出しの中身:</b> 第6部 → AnalogLab<span class="r">11問</span><span class="why">列アンプ・TIA・チャージアンプの正体。gm と Vov の九九から差動対と帰還まで</span></li>
         <li><b>光の入り口:</b> 第7部 → OptoLab<span class="r">12問</span><span class="why">センサに届く光を自分で出す。第4部の 0.52%・190光子/px/s の出どころ</span></li>
-        <li><b>出荷まで:</b> 第8部 → QALab<span class="r">12問</span><span class="why">10年もつか・百万個そろうか。FIT・アレニウス・θ・Cpk ― 保証書の中身</span></li>
+        <li><b>光をつくる側:</b> 第9部<span class="r">読む</span><span class="why">照明の LED、dToF の VCSEL、TCSPC のパルス ― センサの相手役の物理</span></li>
+        <li><b>出荷まで:</b> 第8部 → QALab<span class="r">12問</span><span class="why">10年もつか・百万個そろうか。FIT・アレニウス・θ・Cpk・管理図・不確かさ ― 保証書の中身</span></li>
+        <li><b>引く:</b> 付録<span class="r">索引</span><span class="why">物性値の表と、全部の部の用語の統一索引</span></li>
       </ol>
     </div>
 
     <div class="route">
       <span class="tag">CLASSIC — はじめての人・体系順</span>
-      <h3>第1部から第8部まで、下から通す</h3>
-      <p class="for">半導体を教科書の順で一周したい。工程 → 素子 → 論理 → 像 → 数える一族 → アナログ → 光学 → 信頼性の順で、前で作ったものが次の部品になる。</p>
+      <h3>第0部から付録まで、下から積み上げる</h3>
+      <p class="for">半導体を体系の順で一周したい。道具（第0部）→ 作る（第1部）→ 素子（第2部）→ 論理（第3部）→ アナログ（第6部）→ 光（第7部）→ 光をつくる（第9部）→ 光を数える（第5部）→ 全部が集まる製品としてのイメージセンサ（第4部）→ 信頼性と品質（第8部）の順で、前の部で作った道具が次の部の部品になる。</p>
       <ol>
+        <li><b>第0部</b> 参考書 01〜08<span class="r">読む</span><span class="why">対数・確率・波・量子・結晶・バンド。以降の全部の部の足場</span></li>
         <li><b>第1部</b> 参考書 01〜05 → ProcessLab 第1〜3章<span class="r">10問</span><span class="why">酸化・注入・拡散を並べて断面を育てる。接合が「部品」ではなく工程の結果だと分かる</span></li>
         <li><b>第2部</b> 2-1〜2-3 → SemiLab 第1〜3章<span class="r">13問</span><span class="why">不純物を塗った一片を隣に置くと接合が立つ。ポアソン方程式が解いた空乏層を見る</span></li>
         <li><b>第1部に戻って</b> ProcessLab 第4章<span class="r">3問</span><span class="why">工程で作った1本を SemiLab に渡して素子として測る。2本が繋がる</span></li>
-        <li><b>第2部</b> 2-4〜2-5 → SemiLab 第4〜5章<span class="r">9問</span><span class="why">フォトダイオードと MOSFET。最後の課題が「NAND の中身」</span></li>
-        <li><b>第3部</b> NandLab 第1〜5章<span class="r">25問</span><span class="why">NAND だけから NOT・加算器・フリップフロップ・ALU まで</span></li>
-        <li><b>第4部</b> 参考書 00〜07 → PixelLab 第1〜3章<span class="r">12問</span><span class="why">光子→電子→電圧→数値→像。付録 A〜D で床下の物理へ</span></li>
-        <li><b>第5部</b> 参考書 01〜08 → PhotonLab<span class="r">12問</span><span class="why">センサの外へ。PMT から光る半導体まで、検出器の系統樹を一巡</span></li>
-        <li><b>第6部</b> 参考書 01〜11 → AnalogLab<span class="r">11問</span><span class="why">最後にアナログ。読み出し回路の中身を、ラザビーの道順で</span></li>
-        <li><b>第7部</b> 参考書 01〜12 → OptoLab<span class="r">12問</span><span class="why">検出器の相手側。lx と W の換算からファイバとARコートまで</span></li>
-        <li><b>第8部</b> 参考書 01〜12 → QALab<span class="r">12問</span><span class="why">仕上げは信頼性と品質。作った物を10年・百万個の側から見直す</span></li>
+        <li><b>第2部</b> 2-4〜2-5 と後半の節 → SemiLab 第4〜5章・CharLab<span class="r">18問</span><span class="why">フォトダイオードと MOSFET、ホール効果・ヘテロ接合・BJT・太陽電池・パワー。測って当てる側は CharLab</span></li>
+        <li><b>第3部</b> NandLab 第1〜5章<span class="r">25問</span><span class="why">NAND だけから NOT・加算器・フリップフロップ・ALU、そして CPU とメモリ階層まで</span></li>
+        <li><b>第6部</b> 参考書 01〜11 → AnalogLab<span class="r">11問</span><span class="why">同じ MOSFET をアナログの目で。増幅・帰還・雑音・基準から AD 変換・電源・実装まで</span></li>
+        <li><b>第7部</b> 参考書 01〜12 → OptoLab<span class="r">12問</span><span class="why">光の会計。lx と W の換算、結像と回折、ファイバ、偏光・干渉・分光</span></li>
+        <li><b>第9部</b> 参考書 01〜11<span class="r">読む</span><span class="why">光をつくる側。熱・放電・LED・レーザー・パルス・非線形</span></li>
+        <li><b>第5部</b> 参考書 01〜08 → PhotonLab<span class="r">12問</span><span class="why">光を数える一族。PMT・APD・MPPC・SNSPD と、共通の物差し R・NEP・D*</span></li>
+        <li><b>第4部</b> 参考書 00〜07 → PixelLab 第1〜3章<span class="r">12問</span><span class="why">ここまでの全部が 1 つの製品に集まる。光子→電子→電圧→数値→像と、付録 A〜D の床下</span></li>
+        <li><b>第8部</b> 参考書 01〜12 → QALab<span class="r">12問</span><span class="why">仕上げは信頼性と品質。作った物を 10 年・百万個の側から見直す</span></li>
+        <li><b>付録</b> 物性値と索引<span class="r">引く</span><span class="why">材料の表と、全部の部の用語の統一索引</span></li>
       </ol>
     </div>
 
@@ -772,11 +851,11 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       <h3>自分の席から読みはじめる</h3>
       <p class="for">第4部以降の各参考書の冒頭には「読み方（役割別）」の枠があり、営業・企画/設計・開発/研究・製造の3レーンで読む章と所要時間を案内している。部をまたぐ入り口はこの5本。</p>
       <ol>
-        <li><b>研究なら:</b> 第5部（検出器の系統樹）→ 第7部（光学）→ 第2部で物理の床へ<span class="r">PhotonLab / OptoLab</span><span class="why">測る道具の物差し R・NEP・D* と、光を届かせる側の会計から</span></li>
+        <li><b>研究なら:</b> 第5部（検出器の系統樹）→ 第7部（光学）→ 第9部（光源）→ 第0部と第2部で物理の床へ<span class="r">PhotonLab / OptoLab</span><span class="why">測る道具の物差し R・NEP・D* と、光を届かせる側・つくる側の会計から</span></li>
         <li><b>設計・開発（回路）なら:</b> 第6部（ラザビー）→ 第3部（論理）→ 第8部の熱と TEC<span class="r">AnalogLab</span><span class="why">gm/Vov の九九 → 帰還と GBW → 温度は寿命の為替レート</span></li>
         <li><b>設計・開発（デバイス）なら:</b> 第2部 → 第4部 → 第1部で作り方へ<span class="r">SemiLab / PixelLab</span><span class="why">接合と MOSFET → 画素という応用 → それを刻む工程</span></li>
         <li><b>製造なら:</b> 第1部（工程）→ 第8部の Cpk・誤差・バーンイン<span class="r">ProcessLab / QALab</span><span class="why">Deal-Grove やフィックの「なぜその条件か」と、ばらつきの共通言語</span></li>
-        <li><b>営業・企画なら:</b> 第4部00 → 第5部01 → 第7部01-02 → 第8部01-02<span class="r">読む中心</span><span class="why">カタログの QE・F値・FIT・保証年数が、意味の分かる数字になる最短路</span></li>
+        <li><b>営業・企画なら:</b> 第4部00 → 第5部01 → 第7部01-02 → 第9部00・11 → 第8部01-02<span class="r">読む中心</span><span class="why">カタログの QE・F値・FIT・保証年数が、意味の分かる数字になる最短路</span></li>
       </ol>
     </div>
   </div>
