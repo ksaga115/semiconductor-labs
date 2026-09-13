@@ -1,0 +1,1192 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>html{color-scheme:light dark}body{margin:0;font:14px system-ui;background:#fafaf9}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>第0部 基礎 ― 数・波・量子・結晶</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ground:#EDEEF2; --surface:#FFFFFF; --surface-2:#F5F6F9; --surface-3:#E2E5ED;
+  --ink:#14161E; --ink-2:#4A5061; --ink-3:#787F92;
+  --line:#D3D7E1; --line-2:#E5E7EF;
+  --photon:#D98803; --photon-2:#A96504; --photon-soft:#FAEBCD;
+  --electron:#1D74B8; --electron-2:#155A91; --electron-soft:#D6E7F5;
+  --si:#8A8FA3; --si-soft:#DEE0E8;
+  --cfr:#CF4437; --cfg:#33955A; --cfb:#2E6DC4;
+  --volt:#7047B5; --volt-soft:#E7DEF7;
+  --digital:#0F766E; --digital-soft:#D3EAE6;
+  --warn:#B4400C; --ok:#2C7A55;
+  --shadow:0 1px 2px rgba(20,22,30,.06), 0 8px 24px -12px rgba(20,22,30,.18);
+  --mono:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;
+  --sans:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic UI","Yu Gothic",Meiryo,sans-serif;
+  --disp:"Zen Old Mincho","Hiragino Mincho ProN","Yu Mincho",serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#0F1117; --surface:#171A22; --surface-2:#1D212B; --surface-3:#2B3140;
+    --ink:#E8EAF1; --ink-2:#AAB1C3; --ink-3:#7C8397;
+    --line:#2D323F; --line-2:#232833;
+    --photon:#F0B444; --photon-2:#F7C766; --photon-soft:#3A2C10;
+    --electron:#5FB0E8; --electron-2:#8ACAF3; --electron-soft:#12293C;
+    --si:#767C92; --si-soft:#242938;
+    --cfr:#E56E60; --cfg:#57BE80; --cfb:#5F97E2;
+    --volt:#A98AE0; --volt-soft:#2A2140;
+    --digital:#4FBFAE; --digital-soft:#0F2E2B;
+    --warn:#E8875A; --ok:#5CBF8E;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0F1117; --surface:#171A22; --surface-2:#1D212B; --surface-3:#2B3140;
+  --ink:#E8EAF1; --ink-2:#AAB1C3; --ink-3:#7C8397;
+  --line:#2D323F; --line-2:#232833;
+  --photon:#F0B444; --photon-2:#F7C766; --photon-soft:#3A2C10;
+  --electron:#5FB0E8; --electron-2:#8ACAF3; --electron-soft:#12293C;
+  --si:#767C92; --si-soft:#242938;
+  --cfr:#E56E60; --cfg:#57BE80; --cfb:#5F97E2;
+  --volt:#A98AE0; --volt-soft:#2A2140;
+  --digital:#4FBFAE; --digital-soft:#0F2E2B;
+  --warn:#E8875A; --ok:#5CBF8E;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.7);
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font-family:var(--sans);
+  font-size:16px;line-height:1.8;-webkit-font-smoothing:antialiased;
+  font-feature-settings:"palt" 1;}
+h1,h2,h3,h4{margin:0;text-wrap:balance;line-height:1.35}
+p{margin:0}
+a{color:var(--electron)}
+
+.wrap{max-width:1180px;margin:0 auto;padding:0 22px 90px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-3);font-weight:500}
+
+/* hero */
+.hero{padding:52px 0 34px;border-bottom:1px solid var(--line)}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:28px}
+@media(min-width:900px){.hero-grid{grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);gap:48px;align-items:end}}
+.hero h1{font-family:var(--disp);font-weight:700;font-size:clamp(33px,5.2vw,56px);
+  letter-spacing:.02em;line-height:1.2;margin:12px 0 0}
+.hero h1 .lit{color:var(--photon)}
+.hero .sub{margin-top:18px;color:var(--ink-2);font-size:17px;max-width:36em}
+.spec{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--line);
+  border-radius:3px;background:var(--surface);overflow:hidden}
+.spec div{flex:1 1 30%;padding:11px 13px;border-right:1px solid var(--line-2);
+  border-bottom:1px solid var(--line-2)}
+.spec dt{font-size:10px;font-family:var(--mono);letter-spacing:.07em;color:var(--ink-3);margin:0}
+.spec dd{margin:2px 0 0;font-family:var(--mono);font-size:14.5px;font-weight:600;
+  color:var(--ink);font-variant-numeric:tabular-nums}
+.spec dd small{font-size:10.5px;color:var(--ink-3);font-weight:400;margin-left:2px}
+.spec-cap{padding:9px 13px;font-size:11.5px;color:var(--ink-3);flex:1 1 100%;
+  border-right:0;border-bottom:0;background:var(--surface-2)}
+
+.depth{display:inline-flex;border:1px solid var(--line);border-radius:2px;
+  background:var(--surface);overflow:hidden;font-family:var(--mono);font-size:12px}
+.depth button{appearance:none;border:0;background:transparent;color:var(--ink-2);
+  padding:7px 15px;cursor:pointer;font:inherit;letter-spacing:.05em;transition:.15s}
+.depth button[aria-pressed="true"]{background:var(--ink);color:var(--ground)}
+.depth button:focus-visible{outline:2px solid var(--electron);outline-offset:-2px}
+.depth-row{display:flex;align-items:center;gap:13px;flex-wrap:wrap;margin-top:26px}
+.depth-row span{font-size:12.5px;color:var(--ink-3)}
+
+/* condition bar */
+.bar{position:sticky;top:0;z-index:40;background:var(--surface);
+  border-bottom:1px solid var(--line);box-shadow:var(--shadow)}
+.bar-in{max-width:1180px;margin:0 auto;padding:11px 22px;
+  display:grid;grid-template-columns:minmax(0,1fr);gap:13px}
+@media(min-width:940px){.bar-in{grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:28px;align-items:center}}
+.ctrls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.ctrl label{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.07em;
+  color:var(--ink-3);margin-bottom:1px}
+.ctrl .val{font-family:var(--mono);font-size:13.5px;font-weight:600;color:var(--ink);
+  font-variant-numeric:tabular-nums;display:block;margin-bottom:2px;white-space:nowrap}
+.ctrl .val em{font-style:normal;font-size:10.5px;color:var(--ink-3);font-weight:400;margin-left:3px}
+input[type=range]{width:100%;appearance:none;background:transparent;margin:0;height:15px;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:3px;background:var(--surface-3);border-radius:2px}
+input[type=range]::-moz-range-track{height:3px;background:var(--surface-3);border-radius:2px}
+input[type=range]::-webkit-slider-thumb{appearance:none;width:14px;height:14px;border-radius:50%;
+  background:var(--ink);margin-top:-5.5px;border:2px solid var(--surface)}
+input[type=range]::-moz-range-thumb{width:11px;height:11px;border-radius:50%;background:var(--ink);border:2px solid var(--surface)}
+input[type=range]:focus-visible{outline:2px solid var(--electron);outline-offset:3px;border-radius:2px}
+
+.chain{display:flex;align-items:stretch;border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.chain div{flex:1 1 0;padding:6px 9px;border-right:1px solid var(--line-2);min-width:0}
+.chain div:last-child{border-right:0}
+.chain dt{margin:0;font-family:var(--mono);font-size:9px;letter-spacing:.05em;color:var(--ink-3);white-space:nowrap}
+.chain dd{margin:1px 0 0;font-family:var(--mono);font-size:13.5px;font-weight:600;
+  font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chain .c-ph dd{color:var(--photon-2)} .chain .c-e dd{color:var(--electron)}
+.chain .c-v dd{color:var(--volt)} .chain .c-d dd{color:var(--digital)}
+.chain dd small{font-size:9.5px;font-weight:400;color:var(--ink-3);margin-left:2px}
+.flag{font-family:var(--mono);font-size:9px;letter-spacing:.03em;color:var(--warn);
+  display:block;height:12px;line-height:12px}
+
+/* layout */
+.main{display:grid;grid-template-columns:minmax(0,1fr)}
+@media(min-width:1080px){.main{grid-template-columns:180px minmax(0,1fr);gap:46px}}
+.rail{display:none}
+@media(min-width:1080px){.rail{display:block;position:sticky;top:104px;align-self:start;
+  padding-top:58px;
+  /* 節が増えて画面より高くなったので、はみ出したぶんはレールの中でスクロールさせる */
+  max-height:calc(100vh - 118px);overflow-y:auto;overscroll-behavior:contain;
+  scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.rail::-webkit-scrollbar{width:6px}
+.rail::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+.rail::-webkit-scrollbar-track{background:transparent}}
+.rail ol{list-style:none;margin:0;padding:0;border-left:1px solid var(--line)}
+.rail a{display:grid;grid-template-columns:24px 1fr;gap:5px;padding:6px 0 6px 13px;
+  text-decoration:none;color:var(--ink-3);font-size:12.5px;line-height:1.45;
+  border-left:2px solid transparent;margin-left:-1px;transition:.15s}
+.rail a .n{font-family:var(--mono);font-size:10.5px;padding-top:2px}
+.rail a:hover{color:var(--ink-2)}
+.rail a.on{color:var(--ink);border-left-color:var(--photon);font-weight:500}
+.rail a.on .n{color:var(--photon)}
+.rail .dom{font-family:var(--mono);font-size:9px;letter-spacing:.11em;color:var(--ink-3);
+  padding:15px 0 4px 15px;text-transform:uppercase}
+.rail .dom.first{padding-top:2px}
+
+/* stage */
+.stage{padding:58px 0 6px;scroll-margin-top:112px}
+.stage + .stage{border-top:1px solid var(--line)}
+.stage-head{display:flex;gap:15px;align-items:baseline}
+.stage-num{font-family:var(--mono);font-size:11.5px;font-weight:600;color:var(--photon);
+  letter-spacing:.06em;flex:0 0 auto;padding-top:5px}
+.stage h2{font-family:var(--disp);font-weight:700;font-size:clamp(23px,3.1vw,32px);letter-spacing:.02em}
+.lede{color:var(--ink-2);font-size:16.5px;max-width:40em;margin-top:12px}
+.stage h3{font-size:15px;font-weight:700;margin-top:28px;letter-spacing:.02em}
+.stage h3 + p{margin-top:8px}
+.stage p + p{margin-top:14px}
+/* 日本語は1em＝1文字。35字は狭すぎて右に空白が残るので、42字を上限にする */
+.body-col{max-width:42em}
+.two .body-col{max-width:none}
+.two{display:grid;grid-template-columns:minmax(0,1fr);gap:26px;margin-top:26px}
+@media(min-width:880px){.two{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:34px;align-items:start}}
+.two.wide-l{grid-template-columns:minmax(0,1fr)}
+@media(min-width:980px){.two.wide-l{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}}
+.full{margin-top:26px}
+
+/* figure */
+figure{margin:0;background:var(--surface);border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.fig-head{display:flex;justify-content:space-between;align-items:center;gap:12px;
+  padding:8px 13px;border-bottom:1px solid var(--line-2);background:var(--surface-2);flex-wrap:wrap}
+.fig-title{font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;color:var(--ink-2);font-weight:500}
+.fig-body{padding:14px 13px}
+figcaption{padding:10px 13px 12px;border-top:1px solid var(--line-2);
+  font-size:12.5px;line-height:1.65;color:var(--ink-3)}
+canvas{display:block;width:100%;height:auto}
+svg{display:block;max-width:100%;height:auto}
+.scroll-x{overflow-x:auto}
+
+.btns{display:flex;gap:5px;flex-wrap:wrap}
+.btn{appearance:none;font-family:var(--mono);font-size:11px;letter-spacing:.03em;
+  padding:5px 11px;border:1px solid var(--line);background:var(--surface);color:var(--ink-2);
+  border-radius:2px;cursor:pointer;transition:.15s;white-space:nowrap;line-height:1.5}
+.btn:hover{border-color:var(--ink-3);color:var(--ink)}
+.btn[aria-pressed="true"]{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+.btn:focus-visible{outline:2px solid var(--electron);outline-offset:2px}
+.slider-row{display:grid;gap:3px;margin-top:12px}
+.slider-row .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.slider-row .lab{font-family:var(--mono);font-size:10px;letter-spacing:.07em;color:var(--ink-3)}
+.slider-row .num{font-family:var(--mono);font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
+.readouts{display:flex;flex-wrap:wrap;border-top:1px solid var(--line-2)}
+.readouts div{flex:1 1 auto;min-width:92px;padding:8px 12px;border-right:1px solid var(--line-2)}
+.readouts div:last-child{border-right:0}
+.readouts dt{margin:0;font-family:var(--mono);font-size:9px;letter-spacing:.05em;color:var(--ink-3);white-space:nowrap}
+.readouts dd{margin:1px 0 0;font-family:var(--mono);font-size:13.5px;font-weight:600;font-variant-numeric:tabular-nums}
+
+/* deep layer */
+.deep{display:none}
+[data-depth="deep"] .deep{display:block}
+.deep-note{margin-top:20px;border-left:2px solid var(--electron);padding:1px 0 1px 16px;
+  max-width:46em}
+/* 「くわしい」を閉じると片側が空になる2列組みは、1列に戻して
+   本文が理由もなく半分の幅で折り返さないようにする */
+[data-depth="simple"] .two:has(> .deep:nth-child(2):last-child){
+  grid-template-columns:minmax(0,1fr)
+}
+/* 片方だけ deep にした2列組みは、かんたん時に1列へ畳む。
+   deep が左右どちらにあっても、残った側が半分幅で折り返さないようにする */
+[data-depth="simple"] .two:has(> .deep:first-child:not(:last-child)),
+[data-depth="simple"] .two:has(> .deep:last-child:not(:first-child)){
+  grid-template-columns:minmax(0,1fr)
+}
+[data-depth="deep"] .body-col.deep{display:block}
+.deep-note .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;color:var(--electron);
+  display:block;margin-bottom:5px}
+.deep-note p + p{margin-top:12px}
+.eq{font-family:var(--mono);font-size:13px;background:var(--surface-2);border:1px solid var(--line-2);
+  border-radius:2px;padding:10px 13px;margin-top:12px;overflow-x:auto;white-space:nowrap;color:var(--ink)}
+.eq b{color:var(--photon-2);font-weight:600}
+.eq i{font-style:normal;color:var(--electron);font-weight:600}
+.eq u{text-decoration:none;color:var(--volt);font-weight:600}
+
+.tag-inline{font-family:var(--mono);font-size:11px;padding:0 5px;border-radius:2px;
+  border:1px solid currentColor;white-space:nowrap}
+.t-ph{color:var(--photon-2)} .t-e{color:var(--electron)} .t-v{color:var(--volt)} .t-d{color:var(--digital)}
+.key{font-weight:700;background:linear-gradient(transparent 62%, var(--photon-soft) 62%);padding:0 1px}
+code{font-family:var(--mono);font-size:.9em;background:var(--surface-2);padding:1px 5px;
+  border-radius:2px;border:1px solid var(--line-2)}
+.qa{margin-top:26px;border:1px solid var(--line);border-radius:3px;background:var(--surface);overflow:hidden}
+.qa > div{padding:13px 16px;border-bottom:1px solid var(--line-2)}
+.qa > div:last-child{border-bottom:0}
+#imgNote em{font-style:normal;color:var(--ink-3)}
+#imgNote strong{color:var(--ink)}
+.qa h4{font-size:14px;margin-bottom:4px;color:var(--ink)}
+.qa p{font-size:14px;color:var(--ink-2)}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line-2);vertical-align:top}
+th{font-family:var(--mono);font-size:10px;letter-spacing:.07em;color:var(--ink-3);font-weight:500;
+  border-bottom:1px solid var(--line)}
+td:first-child{font-family:var(--mono);font-weight:600;white-space:nowrap;color:var(--ink)}
+td.num{font-variant-numeric:tabular-nums;font-family:var(--mono);text-align:right;white-space:nowrap}
+tbody tr:last-child td{border-bottom:0}
+/* 長い表を主題ごとに区切る見出し行 */
+tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
+  letter-spacing:.09em;color:var(--ink-3);font-weight:500;white-space:normal;
+  padding:9px 12px;border-bottom:1px solid var(--line)}
+.foot{margin-top:54px;padding-top:22px;border-top:1px solid var(--line);
+  font-size:12.5px;color:var(--ink-3);display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+/* 冒頭の読み方の案内 */
+.guide{margin-top:26px;border:1px solid var(--line);border-radius:3px;background:var(--surface);
+  overflow:hidden}
+.guide-h{padding:9px 15px;border-bottom:1px solid var(--line-2);background:var(--surface-2);
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;color:var(--ink-2);
+  display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.guide-b{display:grid;grid-template-columns:minmax(0,1fr);gap:0}
+@media(min-width:760px){.guide-b{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.guide-b > div{padding:12px 15px;border-bottom:1px solid var(--line-2)}
+@media(min-width:760px){.guide-b > div{border-bottom:0;border-right:1px solid var(--line-2)}
+  .guide-b > div:last-child{border-right:0}}
+.guide-b b{display:block;font-size:13px;color:var(--ink);margin-bottom:3px}
+.guide-b span{font-size:12.5px;color:var(--ink-2);line-height:1.65}
+.guide-b em{font-style:normal;font-family:var(--mono);font-size:10.5px;color:var(--ink-3);
+  display:block;margin-top:5px}
+
+/* 狭い画面用の目次。レールが出ない幅で、右下に浮かせる。
+   ページのどこからでも開けて、リストは中でスクロールする */
+.toc{display:none}
+@media(max-width:1079px){.toc{display:block;position:fixed;right:14px;bottom:14px;z-index:60}}
+.toc details{position:relative}
+.toc summary{list-style:none;cursor:pointer;display:flex;align-items:baseline;gap:8px;
+  max-width:min(76vw,300px);padding:9px 15px;border:1px solid var(--line);border-radius:999px;
+  background:var(--surface);box-shadow:var(--shadow);color:var(--ink)}
+.toc summary::-webkit-details-marker{display:none}
+.toc summary .tl{font-family:var(--mono);font-size:10px;letter-spacing:.09em;color:var(--ink-3);flex:0 0 auto}
+.toc summary .tc{font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.toc details[open] summary{border-color:var(--ink-3)}
+.toc .panel{position:absolute;right:0;bottom:calc(100% + 8px);width:min(80vw,320px);
+  max-height:min(64vh,520px);overflow-y:auto;overscroll-behavior:contain;
+  background:var(--surface);border:1px solid var(--line);border-radius:4px;
+  box-shadow:var(--shadow);padding:6px 0 10px;
+  scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.toc .panel::-webkit-scrollbar{width:6px}
+.toc .panel::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+.toc ol{list-style:none;margin:0;padding:0}
+.toc li.dom{font-family:var(--mono);font-size:9px;letter-spacing:.11em;color:var(--ink-3);
+  padding:11px 16px 3px;text-transform:uppercase}
+.toc a{display:grid;grid-template-columns:26px 1fr;gap:6px;padding:7px 16px;
+  text-decoration:none;color:var(--ink-2);font-size:13.5px;line-height:1.4}
+.toc a .n{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);padding-top:2px}
+.toc a:hover,.toc a:focus-visible{background:var(--surface-2);color:var(--ink)}
+.toc a.on{background:var(--surface-2);color:var(--ink);font-weight:500}
+.toc a.on .n{color:var(--photon)}
+
+/* 断定していないことを明示する箱 */
+.caveat{margin-top:18px;border:1px solid var(--line);border-left:2px solid var(--warn);
+  border-radius:2px;background:var(--surface);padding:12px 16px;max-width:46em}
+.caveat .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;color:var(--warn);
+  display:block;margin-bottom:6px}
+.caveat p{font-size:13.5px;color:var(--ink-2);line-height:1.72}
+.caveat p + p{margin-top:10px}
+.ex{margin-top:20px;border:1px solid var(--line);border-left:2px solid var(--photon);border-radius:2px;background:var(--surface);padding:12px 16px;max-width:46em}
+.ex .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;color:var(--photon-2);display:block;margin-bottom:6px}
+.ex p{font-size:14px;line-height:1.8}
+.ex p + p{margin-top:8px}
+.chk{margin-top:18px;max-width:52em}
+.chk details{border-top:1px solid var(--line-2);padding:11px 0}
+.chk details:last-child{border-bottom:1px solid var(--line-2)}
+.chk summary{cursor:pointer;font-weight:700;font-size:14.5px}
+.chk summary .qn{font-family:var(--mono);font-size:10.5px;color:var(--photon-2);margin-right:8px;font-weight:600}
+.chk details p{margin-top:8px;color:var(--ink-2);font-size:14px;line-height:1.75}
+/* 参考書からラボへ渡す箱。読んだことを、隣のラボ（SemiLab / PixelLab）で自分の手で確かめる */
+.lab-go{margin-top:22px;border:1px solid var(--line);border-left:2px solid var(--digital);
+  border-radius:2px;background:var(--surface);padding:12px 16px;max-width:46em}
+.lab-go .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;color:var(--digital);
+  display:block;margin-bottom:6px}
+.lab-go p{font-size:13.5px;color:var(--ink-2);line-height:1.72}
+.lab-go .qs{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px;align-items:center}
+.lab-go .qs a{font-family:var(--mono);font-size:11.5px;padding:4px 10px;border:1px solid var(--line);
+  border-radius:2px;background:var(--surface-2);color:var(--ink);text-decoration:none;white-space:nowrap}
+.lab-go .qs a:hover{border-color:var(--digital);color:var(--digital)}
+.lab-go .qs .lab{font-family:var(--mono);font-size:10px;color:var(--ink-3);letter-spacing:.07em;margin-left:4px}
+.lab-go .qs .lab:first-child{margin-left:0}
+.back{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--ink-3);text-decoration:none;
+  display:inline-block;margin-bottom:14px}
+.back:hover{color:var(--ink)}
+/* 3本スライダの図 */
+.sl3{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;margin-top:14px}
+@media(min-width:760px){.sl3{grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}}
+.sl3 .slider-row{margin-top:0}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+
+/* 印刷。画面用の仕掛け（固定バー・レール・目次）を外し、
+   図が改ページで割れないようにして、「くわしい」の中身も出す */
+@media print{
+  .bar,.rail,.toc,.depth-row,.guide,.lab-go,.back{display:none!important}
+  .main{display:block!important}
+  .wrap{max-width:none;padding:0}
+  body{background:#fff;font-size:10.5pt;line-height:1.65}
+  /* 画面では隠している式や補足も、紙では出す */
+  .deep{display:revert!important}
+  figure,.qa,.qa>div,.caveat,.deep-note,.eq,.foot{break-inside:avoid;page-break-inside:avoid}
+  tr,thead{break-inside:avoid;page-break-inside:avoid}
+  .stage{padding:16pt 0 0;break-before:auto}
+  .stage h2,.stage h3,.stage-head{break-after:avoid;page-break-after:avoid}
+  /* 画面では横スクロールさせている広い図を、紙幅に収める */
+  .scroll-x{overflow:visible!important}
+  canvas{min-width:0!important;max-width:100%!important}
+  svg{max-width:100%!important}
+  a{color:inherit;text-decoration:none}
+  .hero{padding-top:0}
+}
+</style>
+<style>
+/* ===== 共通: 図解アニメーションの共通部品（reduced-motion では自動停止） ===== */
+@keyframes p5flow { to { stroke-dashoffset: -60; } }
+.flow{stroke-dasharray:7 5;animation:p5flow 1.6s linear infinite}
+.flow.slow{animation-duration:3s}
+@keyframes p5blink { 0%,100%{opacity:.15} 50%{opacity:1} }
+.blink{animation:p5blink 1.8s ease-in-out infinite}
+@keyframes p5draw { 0%{stroke-dashoffset:var(--len,600)} 55%{stroke-dashoffset:0} 100%{stroke-dashoffset:0} }
+.draw{stroke-dasharray:var(--len,600);animation:p5draw 4s linear infinite}
+@keyframes p5rise { from{transform:scaleY(.02)} to{transform:scaleY(1)} }
+.rise{transform-origin:bottom;transform-box:fill-box;animation:p5rise .7s ease-out both}
+@keyframes p5step { 0%,19%{transform:translateX(0)} 25%,44%{transform:translateX(52px)} 50%,69%{transform:translateX(104px)} 75%,94%{transform:translateX(156px)} 100%{transform:translateX(156px)} }
+.step{animation:p5step 4s linear infinite}
+@keyframes p5orbit { from{transform:translateX(0)} to{transform:translateX(640px)} }
+.fly{animation:p5orbit 2.6s linear infinite}
+.fig-note{font-size:12px;color:var(--ink-3);margin-top:6px}
+</style>
+<header class="wrap hero">
+  <div class="hero-grid">
+    <div>
+      <a class="back" href="index.html">&larr; Labs / 半導体 ― 第0部 基礎（全部の部の足場）</a><br>
+      <span class="eyebrow">Log &rarr; Probability &rarr; Wave &rarr; Quantum &rarr; Crystal &rarr; Band</span>
+      <h1>全部の部の<span class="lit">足場</span><br>― 数・波・量子・結晶</h1>
+      <p class="sub">第1〜9部は、いくつかの道具を「知っている前提」で使っています。対数と dB、ポアソン分布と √N、周波数と帯域、光子 1 個のエネルギー、結晶とバンド、そして真性キャリア密度 n<sub>i</sub> がどこから来るか。この部はその道具箱を<strong>一か所にまとめて、導出の筋道つきで</strong>置いておく場所です。順番にも意味があります: まず<strong>数の扱い方</strong>（01 桁・02 確率・03 波）、次に<strong>物の成り立ち</strong>（04 量子・05 結晶・06 バンド）、最後に両者を合わせて<strong>キャリアの数を導く</strong>（07）。08 は全部の部が共有する定数と単位の表です。</p>
+      <div class="depth-row">
+        <div class="depth" role="group" aria-label="説明の深さ">
+          <button id="dSimple" aria-pressed="true">かんたん</button>
+          <button id="dDeep" aria-pressed="false">くわしい</button>
+        </div>
+        <span>「くわしい」で式の導出と、教科書どうしの値の違いの由来が開きます</span>
+      </div>
+      <div class="guide">
+        <div class="guide-h"><span>読み方（役割別）</span><span>全部で 40〜90 分</span></div>
+        <div class="guide-b">
+          <div><b>営業・企画なら</b><span>01 の dB と桁 → 02 の √N → 08 の換算表。カタログの dB・dBm・「S/N 何倍」を、その場で数に直せるようになります。</span><em>15 〜 20 分</em></div>
+          <div><b>設計・開発なら</b><span>01〜03 を式ごと → 07 の n<sub>i</sub> の導出。帯域・雑音密度・RC・フーリエと、キャリア濃度の決まり方が一続きになります。</span><em>30 〜 50 分</em></div>
+          <div><b>研究・製造なら</b><span>全章＋「くわしく」全部。状態密度・有効質量・結晶面・欠陥まで。第1部の結晶成長、第2部の n<sub>i</sub> の注記の出どころです。</span><em>60 〜 90 分</em></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <dl class="spec">
+        <div><dt>kT/q (300 K)</dt><dd>25.85<small>mV</small></dd></div>
+        <div><dt>hc</dt><dd>1239.84<small>eV·nm</small></dd></div>
+        <div><dt>V<sub>t</sub>·ln10</dt><dd>59.5<small>mV/桁</small></dd></div>
+        <div><dt>Si 原子密度</dt><dd>5.0×10²²<small>/cm³</small></dd></div>
+        <div><dt>ポアソン</dt><dd>σ = √N</dd></div>
+        <div><dt>RC の帯域</dt><dd>1/(2πRC)</dd></div>
+        <div class="spec-cap">この部の数値はすべて SI の定義値（2019 年改定）と、教科書の標準的な物性値から計算しています。各部の本文と同じ値を使い、違う値が文献にあるときは、その由来を本文に書きました。</div>
+      </dl>
+    </div>
+  </div>
+</header>
+
+<div class="toc"><details>
+<summary><span class="tl">目次</span><span class="tc" id="tocNow">読みはじめ</span></summary>
+<div class="panel">
+<ol>
+    <li><a href="#s0"><span class="n">00</span><span>この部の地図</span></a></li>
+    <li class="dom"><span>数の扱い方</span></li>
+    <li><a href="#s1"><span class="n">01</span><span>桁と対数と dB</span></a></li>
+    <li><a href="#s2"><span class="n">02</span><span>確率とばらつき</span></a></li>
+    <li><a href="#s3"><span class="n">03</span><span>波・周波数・フーリエ</span></a></li>
+    <li class="dom"><span>物の成り立ち</span></li>
+    <li><a href="#s4"><span class="n">04</span><span>光子と量子</span></a></li>
+    <li><a href="#s5"><span class="n">05</span><span>結晶</span></a></li>
+    <li><a href="#s6"><span class="n">06</span><span>原子からバンドへ</span></a></li>
+    <li><a href="#s7"><span class="n">07</span><span>キャリアの数を導く</span></a></li>
+    <li><a href="#s8"><span class="n">08</span><span>定数と単位</span></a></li>
+    <li class="dom"><span>付録</span></li>
+    <li><a href="#scheck"><span class="n">—</span><span>理解の確認</span></a></li>
+    <li><a href="#s9"><span class="n">—</span><span>用語表</span></a></li>
+    <li><a href="#sref"><span class="n">—</span><span>出典</span></a></li>
+  </ol>
+</div>
+</details></div>
+
+<div class="wrap">
+<div class="main">
+
+<nav class="rail" aria-label="ステージ">
+  <ol>
+    <li><a href="#s0"><span class="n">00</span><span>この部の地図</span></a></li>
+    <li class="dom first"><span>数の扱い方</span></li>
+    <li><a href="#s1"><span class="n">01</span><span>桁と対数と dB</span></a></li>
+    <li><a href="#s2"><span class="n">02</span><span>確率とばらつき</span></a></li>
+    <li><a href="#s3"><span class="n">03</span><span>波・周波数</span></a></li>
+    <li class="dom"><span>物の成り立ち</span></li>
+    <li><a href="#s4"><span class="n">04</span><span>光子と量子</span></a></li>
+    <li><a href="#s5"><span class="n">05</span><span>結晶</span></a></li>
+    <li><a href="#s6"><span class="n">06</span><span>原子からバンドへ</span></a></li>
+    <li><a href="#s7"><span class="n">07</span><span>キャリアの数</span></a></li>
+    <li><a href="#s8"><span class="n">08</span><span>定数と単位</span></a></li>
+    <li class="dom"><span>付録</span></li>
+    <li><a href="#scheck"><span class="n">—</span><span>理解の確認</span></a></li>
+    <li><a href="#s9"><span class="n">—</span><span>用語表</span></a></li>
+    <li><a href="#sref"><span class="n">—</span><span>出典</span></a></li>
+  </ol>
+</nav>
+
+<main>
+
+<!-- ================= 00 ================= -->
+<section class="stage" id="s0">
+  <div class="stage-head"><span class="stage-num">00</span>
+    <h2>この部の地図 ― どの道具が、どの部で効いてくるか</h2></div>
+  <p class="lede">この部の8章は、それぞれ別の部のどこかで「黙って」使われています。先に対応表を置いておくので、他の部を読んでいて足場が欲しくなったら、ここから該当の章へ戻ってきてください。</p>
+  <figure class="full">
+    <div class="scroll-x">
+      <table>
+        <thead><tr><th>この部の章</th><th>中身</th><th>効いてくる場所（例）</th></tr></thead>
+        <tbody>
+          <tr><td>01 桁と対数と dB</td><td>指数と対数、デシベル、dBm、「何℃で倍」「何 mV で 10 倍」</td><td>第2部 ダイオードの 59.5 mV/桁、第4部 ダイナミックレンジ 73.6 dB、第5部 NEP、第8部 アレニウス</td></tr>
+          <tr><td>02 確率とばらつき</td><td>二項・ポアソン・正規分布、√N、分散の足し算、指数分布</td><td>第4部 ショットノイズと PTC、第5部 計数の √t、第8部 FIT・ワイブル・Cpk・誤差の合成</td></tr>
+          <tr><td>03 波・周波数・フーリエ</td><td>正弦波と位相、スペクトル、帯域とノイズ密度 /√Hz、標本化、畳み込み、RC 一次系</td><td>第4部 MTF とモアレ、第5部 帯域と NEP、第6部 極と位相余裕・雑音、第7部 ロックイン</td></tr>
+          <tr><td>04 光子と量子</td><td>E = hν、波動関数、閉じ込めのエネルギー、トンネル</td><td>第2部・第4部の光電変換、第4部 付録A トンネル、第9部 量子井戸レーザー</td></tr>
+          <tr><td>05 結晶</td><td>格子と格子定数、原子密度、面方位、欠陥</td><td>第1部 ウェーハと結晶成長・熱酸化の面方位依存、第4部 付録C の欠陥</td></tr>
+          <tr><td>06 原子からバンドへ</td><td>準位の分裂、sp³、E-k と有効質量、直接・間接遷移</td><td>第2部 バンド図、第5部 08 と第9部の発光、第2部 移動度</td></tr>
+          <tr><td>07 キャリアの数を導く</td><td>状態密度、フェルミ・ディラック分布、N<sub>c</sub>・N<sub>v</sub>、n<sub>i</sub></td><td>第2部 n·p = n<sub>i</sub>² と「n<sub>i</sub> の有名な不一致」、暗電流の温度依存（第4部 付録C・第5部）</td></tr>
+          <tr><td>08 定数と単位</td><td>SI の定義値、よく使う換算、接頭辞、cm と m の罠</td><td>全部の部</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </figure>
+</section>
+
+<!-- ================= 01 ================= -->
+<section class="stage" id="s1">
+  <div class="stage-head"><span class="stage-num">01</span>
+    <h2>桁と対数と dB ― 半導体は「何桁か」で考える</h2></div>
+  <p class="lede">半導体の量は、ほとんどが指数関数に乗っています。キャリア濃度は 10⁶ から 10²² まで、光のパワーは fW から W まで、電流は電圧の指数で動く。だから<span class="key">「何倍か」ではなく「何桁か」</span>で考えるのが、この分野の最初の作法です。</p>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">RULER — 濃度の物差し（/cm³、対数目盛り）</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 210" role="img" aria-label="キャリアや不純物の濃度を対数目盛りで並べた物差し。GaAsの真性キャリア密度約2×10⁶から、Siの1×10¹⁰、高抵抗FZの約5×10¹¹、Geの2.4×10¹³、基板の10¹⁵〜10¹⁷、電極下のn+層10¹⁹〜10²⁰、Siの原子密度5×10²²まで、17桁にわたる。" style="min-width:700px;width:100%;display:block">
+        <text x="60" y="24" font-size="11" fill="var(--ink-2)" font-weight="600">濃度の物差し（/cm³） ― 1 目盛り ＝ 1 桁 ＝ 10 倍</text>
+        <line x1="60" y1="110" x2="700" y2="110" stroke="var(--ink-2)" stroke-width="1.6"/>
+        <g stroke="var(--ink-3)" stroke-width="1">
+          <path d="M60 105 V115 M97.6 107 V113 M135.3 107 V113 M172.9 107 V113 M210.6 104 V116 M248.2 107 V113 M285.9 107 V113 M323.5 107 V113 M361.2 107 V113 M398.8 104 V116 M436.5 107 V113 M474.1 107 V113 M511.8 107 V113 M549.4 107 V113 M587.1 104 V116 M624.7 107 V113 M662.4 107 V113 M700 107 V113"/>
+        </g>
+        <g font-size="9.5" fill="var(--ink-3)" text-anchor="middle">
+          <text x="60" y="130">10⁶</text><text x="210.6" y="130">10¹⁰</text><text x="398.8" y="130">10¹⁵</text><text x="587.1" y="130">10²⁰</text>
+        </g>
+        <rect x="398.8" y="106" width="75.1" height="8" fill="var(--electron)" opacity="0.55"/>
+        <rect x="549.2" y="106" width="37.6" height="8" fill="var(--warn)" opacity="0.55"/>
+        <g fill="var(--photon)">
+          <circle cx="72.1" cy="110" r="4"/><circle cx="210.6" cy="110" r="4"/><circle cx="274.5" cy="110" r="4"/><circle cx="337.9" cy="110" r="4"/><circle cx="688.7" cy="110" r="4"/>
+        </g>
+        <g stroke="var(--ink-3)" stroke-width="0.8" stroke-dasharray="2 2">
+          <path d="M72.1 106 V80 M274.5 106 V62 M568 106 V80 M210.6 136 V140 M337.9 134 V162 M436.5 116 V140 M688.7 116 V162"/>
+        </g>
+        <g font-size="10">
+          <text x="64" y="74" fill="var(--ink-2)">GaAs の n<tspan font-size="7" dy="2">i</tspan><tspan dy="-2"> ≈ 2×10⁶</tspan></text>
+          <text x="274.5" y="56" fill="var(--ink-2)" text-anchor="middle">高抵抗 FZ-Si（10 kΩ·cm 級）≈ 5×10¹¹</text>
+          <text x="568" y="74" fill="var(--warn)" text-anchor="middle">電極の下の n⁺ 層 10¹⁹〜10²⁰</text>
+          <text x="210.6" y="150" fill="var(--ink-2)" text-anchor="middle">Si の n<tspan font-size="7" dy="2">i</tspan><tspan dy="-2"> 1.0×10¹⁰</tspan></text>
+          <text x="337.9" y="172" fill="var(--ink-2)" text-anchor="middle">Ge の n<tspan font-size="7" dy="2">i</tspan><tspan dy="-2"> 2.4×10¹³</tspan></text>
+          <text x="436.5" y="150" fill="var(--electron-2)" text-anchor="middle">基板・ウェル 10¹⁵〜10¹⁷</text>
+          <text x="740" y="172" fill="var(--ink-2)" text-anchor="end">Si の原子密度 5×10²² ― ここが天井</text>
+        </g>
+        <text x="380" y="200" font-size="9.5" fill="var(--ink-3)" text-anchor="middle">左端から右端まで 17 桁 ― 線形の目盛りでは、左の 16 桁ぶんが全部ゼロの位置に潰れてしまう</text>
+      </svg>
+    </div>
+    <figcaption>第2部の議論はすべてこの物差しの上で行われます。不純物を 10¹⁵ 入れるとは「原子 5,000 万個に 1 個」、そのたった 1 個で真性の 10 万倍のキャリアが生まれる。<span class="key">比を扱う量は対数目盛りで描く</span>のが、この分野の図の約束です。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>対数の 3 つの規則と、覚えておく 3 つの数</h3>
+      <div class="eq">log(ab) = log a + log b　　log(aⁿ) = n·log a　　log<sub>a</sub>x = ln x / ln a</div>
+      <p>掛け算が足し算に、べき乗が掛け算になる ― それが対数を使う理由のすべてです。覚えておく数は3つだけ: <b>log₁₀2 = 0.301</b>、<b>ln 2 = 0.693</b>、<b>ln 10 = 2.303</b>。たとえば「2 倍になるのに要る時間」は、指数関数 e<sup>t/τ</sup> なら τ·ln2 = <b>0.693τ</b>。第8部の「10℃で寿命半分」、第4部の「9℃で暗電流 2 倍」は、どれもこの ln2 の言い換えです。</p>
+      <h3>指数関数 ― 「一定の割合」で変わるものの形</h3>
+      <p>増える速さが、いまの量に比例する ― dN/dt = N/τ ― なら、答えは必ず N = N₀e<sup>t/τ</sup> です。放射性崩壊、RC の充放電（03）、少数キャリアの再結合（第2部）、光の吸収 I = I₀e<sup>−αx</sup>（第2部04）、アレニウス（第8部）、ボルツマン分布 e<sup>−E/kT</sup>（07） ― 全部同じ形です。<span class="key">「1 単位進むたびに一定の割合で減る」ものは、すべて指数関数</span>で、片対数グラフでは直線になります。</p>
+    </div>
+    <div class="body-col">
+      <h3>デシベル ― 比を足し算で扱う単位</h3>
+      <div class="eq">パワー比: dB = 10·log₁₀(P₁/P₂)　　振幅比（電圧・電流）: dB = 20·log₁₀(V₁/V₂)</div>
+      <p>パワーは振幅の 2 乗なので、同じ比を振幅で言うと係数が 20 になります。<b>「−3 dB」＝パワー半分＝振幅 1/√2</b>。これが帯域の定義（03 の f<sub>c</sub>）に使われる理由です。電子回路の利得 40 dB は電圧で 100 倍、SN 比 60 dB は電力比で 100 万倍（振幅比で 1,000 倍）。</p>
+      <div class="scroll-x" style="margin-top:12px"><table>
+        <thead><tr><th>比</th><th>パワーで</th><th>振幅で</th></tr></thead>
+        <tbody>
+          <tr><td>2 倍</td><td class="num">3.01 dB</td><td class="num">6.02 dB</td></tr>
+          <tr><td>10 倍</td><td class="num">10 dB</td><td class="num">20 dB</td></tr>
+          <tr><td>100 倍</td><td class="num">20 dB</td><td class="num">40 dB</td></tr>
+          <tr><td>1,000 倍</td><td class="num">30 dB</td><td class="num">60 dB</td></tr>
+          <tr><td>1/2</td><td class="num">−3.01 dB</td><td class="num">−6.02 dB</td></tr>
+        </tbody>
+      </table></div>
+      <p style="margin-top:12px"><b>dBm</b> は「1 mW を基準にしたパワーの dB」: 0 dBm = 1 mW、−30 dBm = 1 µW、+30 dBm = 1 W。光通信の受信感度が「−30 dBm」と書かれるのはこれです。dB は比なので単独では意味を持たず、<strong>必ず「何に対して」かを確かめる</strong>のが読み方の作法です。</p>
+    </div>
+  </div>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — 半導体の「〇〇で 10 倍」はどれも同じ式</span>
+    <p>第2部で出た「59.5 mV で電流が 10 倍」、第4部の「S 値 59.5 mV/桁」は、ボルツマン因子 e<sup>qV/kT</sup> を 10 倍にする電圧です: e<sup>qV/kT</sup> = 10 → V = (kT/q)·ln10 = 25.85 mV × 2.303 = <b>59.5 mV</b>。同じ筋で、アレニウス e<sup>−E<sub>a</sub>/kT</sup> を 2 倍にする温度差は ΔT = ln2·kT²/E<sub>a</sub>（第4部「数字の根拠」）。<span class="key">指数関数の中身が何であれ、「〇〇で何倍」は ln（倍率）× 指数の中身の逆数</span>という同じ操作で出てきます。</p>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（01）</span>
+    <p><b>問.</b> 受信感度 −30 dBm の光受信器に、送信 +3 dBm の光を損失 0.2 dB/km のファイバで送る。何 km まで届くか。途中にコネクタ損 1 dB が 2 か所あるとしたら？</p>
+    <p><b>解.</b> 使える損失の予算は 3 − (−30) = <b>33 dB</b>。ファイバだけなら 33/0.2 = <b>165 km</b>。コネクタで 2 dB 引くと 31 dB → <b>155 km</b>。<span class="key">dB は掛け算を足し算にするので、損失の積み上げ（リンクバジェット）が引き算だけで済む</span>。同じ計算を倍率でやると、10<sup>−0.02×165</sup> のような掛け算の連鎖になります。</p>
+  </div>
+</section>
+
+<!-- ================= 02 ================= -->
+<section class="stage" id="s2">
+  <div class="stage-head"><span class="stage-num">02</span>
+    <h2>確率とばらつき ― √N がすべての床を決める</h2></div>
+  <p class="lede">光子の到着、キャリアの生成、部品の故障 ― 半導体の世界の多くは「独立に、ランダムに起きる出来事を数える」問題です。その数え方の法則はたった一つの分布に集約され、そこから<span class="key">「N 個数えれば √N 揺らぐ」</span>が出てきます。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>二項分布からポアソン分布へ</h3>
+      <p>確率 p で起きることを n 回試すと、起きた回数 k は二項分布に従います（平均 np、分散 np(1−p)）。ここで<b>n が非常に大きく p が非常に小さい</b> ― 光子が 1 ps あたりに来る確率、原子 1 個が 1 秒に崩壊する確率 ― という極限を取ると、平均 λ = np だけで決まる<strong>ポアソン分布</strong>になります:</p>
+      <div class="eq">P(k) = λ<sup>k</sup> e<sup>−λ</sup> / k!　　平均 = <b>λ</b>　　分散 = <b>λ</b>　　標準偏差 = <b>√λ</b></div>
+      <p><span class="key">分散が平均に等しい</span> ― 合わせ込む係数がひとつも無いこの性質が、第4部の PTC（ばらつきから電子の数を数える）の足場です。相対的なばらつきは √λ/λ = 1/√λ なので、1 万個数えれば 1%、100 万個で 0.1%。</p>
+    </div>
+    <div class="body-col">
+      <h3>正規分布と、分散の足し算</h3>
+      <p>λ が大きくなると、ポアソン分布は同じ平均・同じ分散の<strong>正規分布</strong>に近づきます（下の図）。そして独立なばらつきどうしを足すときは、<span class="key">標準偏差ではなく分散が足し算になる</span>:</p>
+      <div class="eq">&sigma;<sub>合計</sub>² = &sigma;₁² + &sigma;₂² + …　　（独立なとき）</div>
+      <p>第4部の「全ノイズ = √(信号 + 暗電流 + 読み出し²)」、第6部の雑音の二乗和、第8部の誤差予算は、全部この一行です。正規分布の裾の面積（±1σ に 68.3%、±2σ に 95.4%、±3σ に 99.73%）は、第8部の Cpk→ppm の換算表の出どころです。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">POISSON — 平均が大きくなると、正規分布に近づく</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 260" role="img" aria-label="ポアソン分布の棒グラフ2枚。左は平均3で左右非対称、右は平均30でほぼ左右対称となり、同じ平均と分散を持つ正規分布の曲線とよく重なる。右には標準偏差±√30の幅が示されている。" style="min-width:700px;width:100%;display:block">
+        <text x="200" y="30" font-size="11" fill="var(--ink-2)" text-anchor="middle" font-weight="600">λ = 3（非対称 ― 0 の側が詰まる）</text>
+        <text x="560" y="30" font-size="11" fill="var(--ink-2)" text-anchor="middle" font-weight="600">λ = 30（ほぼ左右対称）</text>
+        <line x1="60" y1="210" x2="340" y2="210" stroke="var(--ink-3)" stroke-width="1"/>
+        <line x1="420" y1="210" x2="700" y2="210" stroke="var(--ink-3)" stroke-width="1"/>
+        <g fill="var(--electron)" opacity="0.75"><rect x="63.055" y="181.01" width="19.35" height="28.99"/><rect x="88.509" y="123.04" width="19.35" height="86.96"/><rect x="113.96" y="79.565" width="19.35" height="130.4"/><rect x="139.42" y="79.565" width="19.35" height="130.4"/><rect x="164.87" y="112.17" width="19.35" height="97.83"/><rect x="190.33" y="151.3" width="19.35" height="58.7"/><rect x="215.78" y="180.65" width="19.35" height="29.35"/><rect x="241.24" y="197.42" width="19.35" height="12.58"/><rect x="266.69" y="205.28" width="19.35" height="4.717"/><rect x="292.15" y="208.43" width="19.35" height="1.572"/><rect x="317.6" y="209.53" width="19.35" height="0.4717"/></g>
+        <g fill="var(--electron)" opacity="0.75"><rect x="420.91" y="209.81" width="5.751" height="0.1864"/><rect x="428.48" y="209.57" width="5.751" height="0.4302"/><rect x="436.04" y="209.08" width="5.751" height="0.9219"/><rect x="443.61" y="208.16" width="5.751" height="1.844"/><rect x="451.18" y="206.54" width="5.751" height="3.457"/><rect x="458.75" y="203.9" width="5.751" height="6.101"/><rect x="466.31" y="199.83" width="5.751" height="10.17"/><rect x="473.88" y="193.94" width="5.751" height="16.06"/><rect x="481.45" y="185.92" width="5.751" height="24.08"/><rect x="489.02" y="175.6" width="5.751" height="34.4"/><rect x="496.58" y="163.08" width="5.751" height="46.92"/><rect x="504.15" y="148.81" width="5.751" height="61.19"/><rect x="511.72" y="133.51" width="5.751" height="76.49"/><rect x="519.29" y="118.21" width="5.751" height="91.79"/><rect x="526.85" y="104.09" width="5.751" height="105.9"/><rect x="534.42" y="92.319" width="5.751" height="117.7"/><rect x="541.99" y="83.913" width="5.751" height="126.1"/><rect x="549.56" y="79.565" width="5.751" height="130.4"/><rect x="557.12" y="79.565" width="5.751" height="130.4"/><rect x="564.69" y="83.773" width="5.751" height="126.2"/><rect x="572.26" y="91.662" width="5.751" height="118.3"/><rect x="579.83" y="102.42" width="5.751" height="107.6"/><rect x="587.39" y="115.08" width="5.751" height="94.92"/><rect x="594.96" y="128.64" width="5.751" height="81.36"/><rect x="602.53" y="142.2" width="5.751" height="67.8"/><rect x="610.1" y="155.02" width="5.751" height="54.98"/><rect x="617.66" y="166.6" width="5.751" height="43.4"/><rect x="625.23" y="176.61" width="5.751" height="33.39"/><rect x="632.8" y="184.96" width="5.751" height="25.04"/><rect x="640.37" y="191.68" width="5.751" height="18.32"/><rect x="647.94" y="196.91" width="5.751" height="13.09"/><rect x="655.5" y="200.87" width="5.751" height="9.13"/><rect x="663.07" y="203.77" width="5.751" height="6.225"/><rect x="670.64" y="205.85" width="5.751" height="4.15"/><rect x="678.21" y="207.29" width="5.751" height="2.707"/><rect x="685.77" y="208.27" width="5.751" height="1.728"/><rect x="693.34" y="208.92" width="5.751" height="1.08"/></g>
+        <polyline class="draw" style="--len:500" fill="none" stroke="var(--warn)" stroke-width="2" points="60,192.59 63.5,189.63 67,186.31 70.5,182.62 74,178.56 77.5,174.12 81,169.31 84.5,164.15 88,158.66 91.5,152.87 95,146.82 98.5,140.58 102,134.2 105.5,127.75 109,121.31 112.5,114.97 116,108.82 119.5,102.95 123,97.444 126.5,92.402 130,87.905 133.5,84.032 137,80.854 140.5,78.426 144,76.796 147.5,75.992 151,76.03 154.5,76.91 158,78.615 161.5,81.112 165,84.357 168.5,88.289 172,92.839 175.5,97.927 179,103.47 182.5,109.37 186,115.54 189.5,121.9 193,128.34 196.5,134.78 200,141.15 203.5,147.38 207,153.4 210.5,159.17 214,164.63 217.5,169.76 221,174.54 224.5,178.94 228,182.97 231.5,186.63 235,189.91 238.5,192.85 242,195.44 245.5,197.72 249,199.71 252.5,201.43 256,202.91 259.5,204.17 263,205.24 266.5,206.13 270,206.88 273.5,207.5 277,208.01 280.5,208.42 284,208.76 287.5,209.03 291,209.25 294.5,209.42 298,209.55 301.5,209.66 305,209.74 308.5,209.81 312,209.85 315.5,209.89 319,209.92 322.5,209.94 326,209.96 329.5,209.97 333,209.98 336.5,209.98 340,209.99"/>
+        <polyline class="draw" style="--len:500" fill="none" stroke="var(--warn)" stroke-width="2" points="420,209.56 423.5,209.42 427,209.24 430.5,209.01 434,208.71 437.5,208.34 441,207.88 444.5,207.31 448,206.6 451.5,205.75 455,204.71 458.5,203.48 462,202.01 465.5,200.28 469,198.25 472.5,195.91 476,193.22 479.5,190.16 483,186.71 486.5,182.85 490,178.57 493.5,173.89 497,168.8 500.5,163.32 504,157.49 507.5,151.35 511,144.97 514.5,138.4 518,131.72 521.5,125.03 525,118.43 528.5,112.01 532,105.89 535.5,100.17 539,94.957 542.5,90.356 546,86.455 549.5,83.333 553,81.054 556.5,79.668 560,79.202 563.5,79.668 567,81.054 570.5,83.333 574,86.455 577.5,90.356 581,94.957 584.5,100.17 588,105.89 591.5,112.01 595,118.43 598.5,125.03 602,131.72 605.5,138.4 609,144.97 612.5,151.35 616,157.49 619.5,163.32 623,168.8 626.5,173.89 630,178.57 633.5,182.85 637,186.71 640.5,190.16 644,193.22 647.5,195.91 651,198.25 654.5,200.28 658,202.01 661.5,203.48 665,204.71 668.5,205.75 672,206.6 675.5,207.31 679,207.88 682.5,208.34 686,208.71 689.5,209.01 693,209.24 696.5,209.42 700,209.56"/>
+        <path d="M518.6 64 H601.4 M518.6 60 V68 M601.4 60 V68" stroke="var(--volt)" stroke-width="1.5" fill="none"/>
+        <text x="560" y="56" font-size="10" fill="var(--volt)" text-anchor="middle">±√30 = ±5.5（相対 18%）</text>
+        <g font-size="9.5" fill="var(--ink-3)" text-anchor="middle">
+          <text x="72.7" y="226">0</text><text x="149.1" y="226">3</text><text x="225.5" y="226">6</text><text x="327.3" y="226">10</text>
+          <text x="446.5" y="226">15</text><text x="560" y="226">30</text><text x="673.5" y="226">45</text>
+        </g>
+        <text x="380" y="250" font-size="10" fill="var(--ink-2)" text-anchor="middle">棒 ＝ ポアソン分布 P(k)　／　線 ＝ 同じ平均・同じ分散（λ）の正規分布</text>
+      </svg>
+    </div>
+    <figcaption>λ = 3 では 0 の側が詰まって左右非対称で、正規分布の近似はずれる。λ = 30 ではほぼ重なる。<span class="key">暗い（数が少ない）測定ほど正規分布の近似が使えなくなる</span> ― 第5部の 1 光子計数や第8部の「0 故障」の信頼限界が、正規分布ではなくポアソン分布そのもので計算される理由です。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>指数分布 ― 「次の 1 回までの待ち時間」</h3>
+      <p>ポアソン過程（平均の速さ r で独立に起きる）で、次の出来事までの待ち時間 t は指数分布 p(t) = r·e<sup>−rt</sup> に従います。平均の待ち時間は 1/r。<span class="key">「すでに t だけ待った」ことが、この先の待ち時間に影響しない</span>（無記憶性） ― 第8部で「偶発故障（m = 1）では故障率が一定」「MTTF の時点で生き残るのは e<sup>−1</sup> = 37%」と言ったのは、この分布の性質そのものです。</p>
+    </div>
+    <div class="body-col">
+      <h3>平均・分散・標準偏差の読み方</h3>
+      <p>n 個の測定値の平均のばらつきは、1 個のばらつきの 1/√n になります（平均の標準誤差 σ/√n）。<b>4 回平均して半分、100 回平均して 1/10</b>。第4部の「複数枚を加算平均するとランダムなノイズは √n で減る」、第7部のロックインの √(B/B)、第5部の計数の √t は、すべてこの 1/√n の別の顔です。そして<strong>固定パターン（毎回同じ値のずれ）は平均しても 1 ミリも減らない</strong> ― 平均で減るのは独立なばらつきだけです。</p>
+    </div>
+  </div>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — ポアソン分布の 0 の確率は、そのまま「見逃し」と「偽の検出」</span>
+    <p>P(0) = e<sup>−λ</sup> は実務でよく使います。平均 λ 個来るはずの窓で <b>1 個も来ない確率</b>。光子計数で平均 3 個の信号なら e<sup>−3</sup> = 5% の確率で「何も来なかった」になる（見逃し）。逆に暗計数が窓あたり平均 0.5 個なら、1 − e<sup>−0.5</sup> = <b>39%</b> の窓で偽のカウントが立つ。第5部の TCSPC で「検出率を 1〜数% に絞る」のも同じ式で、1 周期に 2 個以上来る確率 1 − e<sup>−λ</sup>(1+λ) を小さく保つための作法です。</p>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（02）</span>
+    <p><b>問.</b> 画素に平均 10,000 個の光子が来て、QE 0.5 で電子になる。電子数のばらつき（ショットノイズ）と相対的な揺らぎは？ 読み出しノイズ 20 e⁻ と合わせた全ノイズは？ 揺らぎを 0.1% にするには何個の電子が要るか。</p>
+    <p><b>解.</b> 電子数 5,000 個はポアソンに従い、σ = √5,000 = <b>71 e⁻</b>、相対 <b>1.4%</b>。読み出しノイズと独立なので分散で足して √(5,000 + 20²) = √5,400 = <b>73 e⁻</b> ― 読み出し 20 e⁻ は全体をわずか 4% しか増やさない（大きい項の一人勝ち、第8部 07）。0.1% には 1/0.001² = <b>10⁶ 個</b>。<span class="key">精度を 10 倍にするには、光を 100 倍集めるしかない</span>。</p>
+  </div>
+</section>
+
+<!-- ================= 03 ================= -->
+<section class="stage" id="s3">
+  <div class="stage-head"><span class="stage-num">03</span>
+    <h2>波・周波数・フーリエ ― 時間の話を、周波数の話に翻訳する</h2></div>
+  <p class="lede">回路の速さ、雑音、解像度、ロックイン ― どれも「時間で見るより周波数で見たほうが簡単」な問題です。どんな波形も正弦波の重ね合わせで書ける、というフーリエの考え方を一度通しておくと、第4〜7部の「帯域」「/√Hz」「MTF」が同じ一つの言葉に見えてきます。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>正弦波と位相 ― 複素数は「回転」の記号</h3>
+      <div class="eq">v(t) = A·cos(2πf t + φ) = Re[ A e<sup>i(ωt+φ)</sup> ]　　ω = 2πf</div>
+      <p>振幅 A・周波数 f・位相 φ の 3 つで正弦波は決まります。複素数 e<sup>iωt</sup> は「半径 A の円を角速度 ω で回る点」で、その横の影が cos。こう書くと、<span class="key">微分は iω を掛けるだけ、積分は iω で割るだけ</span>になり、コンデンサのインピーダンス 1/(iωC)、インダクタの iωL が出てきます。第6部の極・位相余裕は、この「回転の遅れ」を数えている話です。</p>
+      <h3>フーリエ変換 ― 波形とスペクトルは同じものの2つの顔</h3>
+      <p>どんな波形も、いろいろな周波数の正弦波の重ね合わせで書けます。どの周波数がどれだけ入っているかを並べたのがスペクトルで、波形とスペクトルは<strong>フーリエ変換</strong>で行き来できる。<b>速く変わる波形ほど高い周波数を含む</b> ― 短いパルスはスペクトルが広く（第9部の超短パルス）、ゆっくりした信号は低い周波数に集まる（第6部の 1/f ノイズの住処）。</p>
+    </div>
+    <div class="body-col">
+      <h3>帯域とノイズ密度 ― なぜ /√Hz なのか</h3>
+      <p>白色雑音（どの周波数にも同じ強さで広がった雑音）のパワーは、見ている周波数の幅＝<b>帯域 B</b> に比例します。振幅はその平方根。だから雑音は「1 Hz あたりの振幅」＝<b>V/√Hz</b> や A/√Hz で書いておき、使う帯域が決まった時点で √B を掛けて実際の値にする。第5部の NEP [W/√Hz]、第6部の 4kTγ/g<sub>m</sub> [V²/Hz]、第7部のロックインの「帯域を絞ると静かになる」は全部この会計です。</p>
+      <h3>標本化定理と畳み込み</h3>
+      <p>連続の信号を間隔 T で標本化すると、<span class="key">1/(2T) より高い周波数は低い周波数に化けて（折り返して）混ざる</span> ― 第4部のモアレと偽色の正体で、画素ピッチ p の格子なら 1/(2p) がナイキスト周波数。もう一つの道具が<strong>畳み込み</strong>で、「ぼかし」は時間（空間）では畳み込み、周波数では単なる<b>掛け算</b>になります。レンズ・画素・処理のそれぞれの MTF を掛けると全体の MTF になる（第4部）のは、この性質のおかげです。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">RC — いちばん単純な「遅れ」を、時間と周波数の両方で見る</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 240" role="img" aria-label="左はRC回路のステップ応答。1−e^(−t/τ)で立ち上がり、t=τで63%に達する。右は同じRC回路の周波数応答。遮断周波数fc=1/2πRCで−3dB、それより上では周波数が10倍になるごとに20dB下がる。" style="min-width:700px;width:100%;display:block">
+        <text x="80" y="34" font-size="11" fill="var(--ink-2)" font-weight="600">① 時間で見る: v = 1 − e<tspan dy="-4" font-size="8">−t/τ</tspan></text>
+        <text x="440" y="34" font-size="11" fill="var(--ink-2)" font-weight="600">② 周波数で見る（ボーデ線図）</text>
+        <g stroke="var(--line)" stroke-width="1"><path d="M80 50 V190 H380"/><path d="M440 60 V190 H720"/></g>
+        <polyline class="draw" style="--len:400" fill="none" stroke="var(--electron)" stroke-width="2.2" points="80,190 85,178.81 90,168.51 95,159.03 100,150.31 105,142.29 110,134.91 115,128.12 120,121.88 125,116.13 130,110.84 135,105.98 140,101.5 145,97.385 150,93.596 155,90.111 160,86.904 165,83.953 170,81.238 175,78.741 180,76.443 185,74.328 190,72.383 195,70.594 200,68.947 205,67.432 210,66.038 215,64.756 220,63.576 225,62.491 230,61.492 235,60.573 240,59.728 245,58.95 250,58.234 255,57.576 260,56.97 265,56.413 270,55.9 275,55.428 280,54.994 285,54.595 290,54.228 295,53.89 300,53.579 305,53.292 310,53.029 315,52.787 320,52.564 325,52.359 330,52.171 335,51.997 340,51.837 345,51.69 350,51.555 355,51.431 360,51.316 365,51.211 370,51.114 375,51.025 380,50.943"/>
+        <path d="M80 101.5 H140 V190" stroke="var(--warn)" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+        <text x="146" y="122" font-size="9.5" fill="var(--warn)">t = τ で 63%</text>
+        <g font-size="9.5" fill="var(--ink-3)" text-anchor="middle">
+          <text x="80" y="204">0</text><text x="140" y="204">τ</text><text x="200" y="204">2τ</text><text x="260" y="204">3τ</text><text x="320" y="204">4τ</text><text x="380" y="204">5τ</text>
+        </g>
+        <text x="230" y="224" font-size="9.5" fill="var(--ink-3)" text-anchor="middle">時間 →　（10→90% の立ち上がり ＝ 2.2τ）</text>
+        <polyline class="draw" style="--len:400;animation-delay:.4s" fill="none" stroke="var(--volt)" stroke-width="2.2" points="440,60.001 447,60.002 454,60.004 461,60.006 468,60.009 475,60.014 482,60.022 489,60.035 496,60.056 503,60.089 510,60.14 517,60.222 524,60.35 531,60.551 538,60.864 545,61.345 552,62.076 559,63.163 566,64.73 573,66.904 580,69.783 587,73.404 594,77.73 601,82.663 608,88.076 615,93.845 622,99.864 629,106.05 636,112.35 643,118.72 650,125.14 657,131.59 664,138.06 671,144.54 678,151.02 685,157.51 692,164.01 699,170.51 706,177 713,183.5 720,190"/>
+        <circle cx="580" cy="69.78" r="3.5" fill="var(--warn)"/>
+        <text x="590" y="58" font-size="9.5" fill="var(--warn)">−3 dB ＠ f<tspan font-size="7" dy="2">c</tspan><tspan dy="-2"> = 1/(2πRC)</tspan></text>
+        <text x="660" y="172" font-size="9.5" fill="var(--volt)" text-anchor="end">10 倍ごとに −20 dB</text>
+        <g font-size="9.5" fill="var(--ink-3)">
+          <text x="434" y="64" text-anchor="end">0 dB</text><text x="434" y="194" text-anchor="end">−40 dB</text>
+          <text x="440" y="206" text-anchor="middle">f<tspan font-size="7" dy="2">c</tspan><tspan dy="-2">/100</tspan></text><text x="580" y="206" text-anchor="middle">f<tspan font-size="7" dy="2">c</tspan></text><text x="720" y="206" text-anchor="middle">100 f<tspan font-size="7" dy="2">c</tspan></text>
+        </g>
+        <text x="580" y="224" font-size="9.5" fill="var(--ink-3)" text-anchor="middle">周波数（対数）→</text>
+      </svg>
+    </div>
+    <figcaption>同じ RC 回路を 2 つの目で。<span class="key">時定数 τ = RC と遮断周波数 f<sub>c</sub> = 1/(2πRC) は同じ情報</span>で、立ち上がり時間 2.2τ = 0.35/f<sub>c</sub>。第5部の「RC 帯域」、第6部の「極」、第4部の「1 行の読み出し時間」は、全部この 1 枚の図の読み替えです。</figcaption>
+  </figure>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — 等価雑音帯域と、kT/C が抵抗によらない理由</span>
+    <p>RC ローパスを通った白色雑音の実効的な帯域は、f<sub>c</sub> そのものではなく (π/2)·f<sub>c</sub> = <b>1/(4RC)</b> です（等価雑音帯域）。第7部のロックインで「帯域 0.1 Hz ↔ 時定数 2.5 s」と書いたのはこの関係。これを使うと、抵抗 R の熱雑音 4kTR [V²/Hz] が RC で帯域制限されたときの全雑音は 4kTR × 1/(4RC) = <b>kT/C</b> ― <span class="key">R が式から消えます</span>。第4部 05 のリセットノイズ √(kT/C)、第6部 07 のスイッチト・キャパシタの kT/C が「容量だけで決まる」理由の、周波数側からの説明です（第4部 付録D はエネルギー等分配からの説明）。</p>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（03）</span>
+    <p><b>問.</b> 1 kΩ と 1 nF の RC ローパス。時定数・遮断周波数・立ち上がり時間は？ 1 kΩ の熱雑音密度は？ この RC を通った後の全雑音（rms）は？</p>
+    <p><b>解.</b> τ = 1 kΩ × 1 nF = <b>1 µs</b>、f<sub>c</sub> = 1/(2π × 1 µs) = <b>159 kHz</b>、立ち上がり 2.2τ = <b>2.2 µs</b>。熱雑音 √(4kTR) = √(4 × 1.381×10⁻²³ × 300 × 1,000) = <b>4.07 nV/√Hz</b>。等価雑音帯域 1/(4RC) = 250 kHz を掛けて 4.07 nV × √250,000 = <b>2.03 µV rms</b>。一方 √(kT/C) = √(4.14×10⁻²¹ / 10⁻⁹) = <b>2.03 µV</b> ― <span class="key">同じ値が抵抗を使わずに出る</span>。R を 10 倍にしても、雑音密度が √10 倍・帯域が 1/10 で打ち消し合う。</p>
+  </div>
+</section>
+
+<!-- ================= 04 ================= -->
+<section class="stage" id="s4">
+  <div class="stage-head"><span class="stage-num">04</span>
+    <h2>光子と量子 ― 粒でもあり、波でもある</h2></div>
+  <p class="lede">光を検出する（第4・5部）、光を出す（第9部）、電子が薄い壁を抜ける（第4部 付録A）― この本の後半は量子力学なしには説明できません。とはいえ使う道具は4つだけです: 光子 1 個のエネルギー、物質波、閉じ込めのエネルギー、そしてトンネル。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>光子 ― エネルギーは周波数だけで決まる</h3>
+      <div class="eq">E = hν = hc/λ　→　E[eV] = <b>1239.84 / λ[nm]</b>　　運動量 p = h/λ</div>
+      <p>光は、エネルギー hν の粒（光子）の流れでもあります。明るさ（パワー）は「光子 1 個のエネルギー × 1 秒あたりの個数」。<span class="key">1 個のエネルギーは色（波長）だけで決まり、明るさを変えても変わらない</span> ― だからシリコンは 1,107 nm より長い光にはどれだけ強く当てても反応しない（第2部 04）。アインシュタインが外部光電効果（第5部 02）で示したのがこの点です。</p>
+      <h3>物質波 ― 電子も波として振る舞う</h3>
+      <p>逆に、電子のような粒子も波長 λ = h/p を持ちます（ド・ブロイ波長）。1 eV の電子で約 <b>1.23 nm</b>。原子の間隔（0.2〜0.3 nm）や最新のトランジスタの寸法（数 nm）と同じ桁になると、電子の波としての性質 ― 閉じ込め・トンネル・干渉 ― が表に出てきます。電子顕微鏡（第8部）が光より細かく見えるのも、電子の波長が短いからです。</p>
+    </div>
+    <div class="body-col">
+      <h3>閉じ込めると、エネルギーは飛び飛びになる</h3>
+      <p>電子を幅 L の箱に閉じ込めると、箱にちょうど収まる波（半波長の整数倍）しか存在できず、エネルギーは飛び飛びの値だけになります:</p>
+      <div class="eq">E<sub>n</sub> = n² h² / (8 m* L²)　　n = 1, 2, 3, …</div>
+      <p>m* は結晶の中の電子の実効的な質量（06 の有効質量）。<span class="key">狭く閉じ込めるほど、軽いほど、準位は高く・間隔は広く</span>なる。GaAs（m* = 0.067 m₀）を 10 nm の層で挟むと E₁ ≈ 56 meV で、室温の熱エネルギー kT = 26 meV より大きい ― 熱で準位が混ざらず、量子効果が室温で使える。これが量子井戸レーザー（第9部）、QCL（第5部 08）、反転層の量子化（第2部 05 の注記）の土台です。</p>
+      <h3>トンネル ― 壁の向こうに染み出す</h3>
+      <p>波は壁に当たっても、壁の中で指数関数的に減衰しながら少しだけ染み込みます。壁が十分に薄ければ、反対側に波が残る ― 古典的には越えられない壁を通り抜ける<strong>トンネル効果</strong>です。抜ける確率は壁の厚みの指数で効くので、酸化膜が 1 nm 薄くなるだけで漏れ電流は桁で増える。詳しい式と、センサの漏れとの関係は<a href="第4部_イメージセンサ.html#sa">第4部 付録A</a>にあります。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">WELL — 箱に閉じ込めた電子の、許されたエネルギーと波の形</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 250" role="img" aria-label="幅Lの無限に深い井戸。n=1、2、3の3つのエネルギー準位が高さ1、4、9の比で並び、それぞれに半波長の1倍、2倍、3倍の定在波が描かれている。右側に準位の式と数値例。" style="min-width:700px;width:100%;display:block">
+        <path d="M120 30 V215 H380 V30" stroke="var(--ink-2)" stroke-width="2.2" fill="none"/>
+        <g stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="4 3">
+          <path d="M120 205 H380"/><path d="M120 175 H380"/><path d="M120 125 H380"/>
+        </g>
+        <polyline fill="none" stroke="var(--electron)" stroke-width="2" points="120,205 146,200.67 172,196.77 198,193.67 224,191.68 250,191 276,191.68 302,193.67 328,196.77 354,200.67 380,205"/>
+        <polyline fill="none" stroke="var(--volt)" stroke-width="2" points="120,175 146,166.77 172,161.69 198,161.69 224,166.77 250,175 276,183.23 302,188.31 328,188.31 354,183.23 380,175"/>
+        <polyline fill="none" stroke="var(--photon)" stroke-width="2" points="120,125 137.3,116.77 154.7,111.68 172,111.68 189.3,116.77 206.7,125 224,133.23 241.3,138.32 258.7,138.32 276,133.23 293.3,125 310.7,116.77 328,111.68 345.3,111.68 362.7,116.77 380,125"/>
+        <g font-size="10" fill="var(--ink-2)">
+          <text x="390" y="209">n = 1　E₁</text>
+          <text x="390" y="179">n = 2　4E₁</text>
+          <text x="390" y="129">n = 3　9E₁</text>
+        </g>
+        <path d="M120 232 H380 M120 227 V237 M380 227 V237" stroke="var(--ink-3)" stroke-width="1" fill="none"/>
+        <text x="250" y="248" font-size="10" fill="var(--ink-3)" text-anchor="middle">幅 L</text>
+        <g font-size="10.5" fill="var(--ink)">
+          <text x="480" y="52" font-weight="600">E<tspan font-size="8" dy="2">n</tspan><tspan dy="-2"> = n²h² / (8m*L²)</tspan></text>
+          <text x="480" y="80" fill="var(--ink-2)">自由電子（m* = m₀）・L = 1 nm: E₁ = 376 meV</text>
+          <text x="480" y="100" fill="var(--ink-2)">同じく L = 10 nm: E₁ = 3.8 meV（kT より小さい）</text>
+          <text x="480" y="120" fill="var(--ink-2)">GaAs（m* = 0.067m₀）・L = 10 nm: 56 meV</text>
+          <text x="480" y="140" fill="var(--ink-2)">GaAs・L = 5 nm: 224 meV（幅半分で 4 倍）</text>
+          <text x="480" y="172" fill="var(--warn)">室温の kT = 26 meV より準位の間隔が</text>
+          <text x="480" y="190" fill="var(--warn)">大きければ、量子効果が室温で効く</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>波が箱に収まる条件（半波長の整数倍）から、エネルギーが n² に比例して飛び飛びになる。実際の量子井戸は壁の高さが有限なので、波は壁に少し染み出し（トンネル）、準位は無限井戸の値より少し低くなります ― 図は理想化した無限井戸です。</figcaption>
+  </figure>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — 不確定性関係と「狭いほど高い」の直感</span>
+    <p>位置の不確かさ Δx と運動量の不確かさ Δp の積は ħ/2 より小さくできません（Δx·Δp ≥ ħ/2）。電子を幅 L に閉じ込めると Δx ≈ L なので、運動量は少なくとも ħ/(2L) 程度ばらつき、運動エネルギー p²/2m* は L² に反比例して下がれなくなる ― 無限井戸の E ∝ 1/(m*L²) の形は、この関係から桁が予想できます。<span class="key">小さく閉じ込めるほど電子は「じっとしていられない」</span>。量子ドット（数 nm の粒）の発光色が粒の大きさで変わる（小さいほど青い）のも同じ理由です。</p>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（04）</span>
+    <p><b>問.</b> 550 nm の光子 1 個のエネルギーは何 eV・何 J か。1 µW の 550 nm 光は毎秒何個の光子か。同じ 1 µW でも 1,550 nm なら何個か。</p>
+    <p><b>解.</b> 1239.84/550 = <b>2.25 eV</b> = 2.25 × 1.602×10⁻¹⁹ = <b>3.61×10⁻¹⁹ J</b>。1 µW ÷ 3.61×10⁻¹⁹ J = <b>2.8×10¹² 個/秒</b>。1,550 nm では 1 個 0.80 eV なので <b>7.8×10¹² 個/秒</b>。<span class="key">同じワットでも、長い波長ほど光子の数は多い</span> ― 第5部の「感度 A/W は波長に比例する」の出どころです。</p>
+  </div>
+</section>
+
+<!-- ================= 05 ================= -->
+<section class="stage" id="s5">
+  <div class="stage-head"><span class="stage-num">05</span>
+    <h2>結晶 ― 原子がそろって並ぶことの意味</h2></div>
+  <p class="lede">半導体の性質のほとんどは「原子が完全にそろって並んでいる」ことから来ています。電子の波が結晶全体に広がれるのも、バンド（06）ができるのも、並びがそろっているから。逆に、そろっていない場所（欠陥）が暗電流や寿命の敵になる（第4部 付録C、第8部）。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>ダイヤモンド構造と閃亜鉛鉱構造</h3>
+      <p>シリコンとゲルマニウムは<strong>ダイヤモンド構造</strong>です。各原子が 4 本の手（共有結合）を正四面体の方向に伸ばし、隣の 4 原子とつながる。一辺 a の立方体（単位格子）の中に<b>原子が 8 個</b>入る並び方で、Si の格子定数は a = <b>0.5431 nm</b>。GaAs や InP は同じ並びで 2 種類の原子が交互に座る<strong>閃亜鉛鉱構造</strong>、GaN と SiC（4H）は<strong>六方晶</strong>の並び方をとります。</p>
+      <div class="eq">原子密度 = 8 / a³ = 8 / (0.5431×10⁻⁷ cm)³ = <b>4.99×10²² /cm³</b></div>
+      <p>第2部の「原子 5×10²² 個に…」はこの計算です。同じ式で GaAs（a = 0.5653 nm）は 4.43×10²²、InP（0.5869 nm）は 3.96×10²²。</p>
+    </div>
+    <div class="body-col">
+      <h3>面方位 ― (100) と (111)</h3>
+      <p>結晶は向きによって原子の並びが違い、それを<strong>ミラー指数</strong>（100）（110）（111）で呼びます。MOS デバイスのウェーハがほぼ例外なく <b>(100)</b> なのは、酸化膜との界面にできる準位（界面準位）が (111) より少ないからです。熱酸化の速さも面方位で違い、(111) のほうが速く酸化する ― ProcessLab が線形係数 B/A を (111) の 1/1.68 にしているのはこの差です（<a href="第1部_製造プロセス.html#phys">第1部 08</a>）。</p>
+      <p>結晶は特定の面で割れやすく（<strong>劈開</strong>）、Si は {111}、GaAs は {110} で割れます。GaAs や InP の半導体レーザーの端面（光を反射する鏡）は、この劈開面をそのまま使っています（第9部）。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="scroll-x">
+      <table>
+        <thead><tr><th>材料</th><th>結晶構造</th><th>格子定数</th><th>原子密度 /cm³</th><th>主な用途（この本での登場）</th></tr></thead>
+        <tbody>
+          <tr><td>Si</td><td>ダイヤモンド</td><td class="num">0.5431 nm</td><td class="num">4.99×10²²</td><td>集積回路・イメージセンサ・PD・APD・MPPC（第1〜6部）</td></tr>
+          <tr><td>Ge</td><td>ダイヤモンド</td><td class="num">0.5658 nm</td><td class="num">4.42×10²²</td><td>近赤外 PD（〜1.9 µm、第5部 05）</td></tr>
+          <tr><td>GaAs</td><td>閃亜鉛鉱</td><td class="num">0.5653 nm</td><td class="num">4.43×10²²</td><td>LED・LD・高周波・光電面（第5部・第9部）</td></tr>
+          <tr><td>InP</td><td>閃亜鉛鉱</td><td class="num">0.5869 nm</td><td class="num">3.96×10²²</td><td>光通信の LD と PD の基板（InGaAs を格子整合で載せる）</td></tr>
+          <tr><td>GaN</td><td>六方晶（ウルツ鉱）</td><td class="num">a 0.319 / c 0.519 nm</td><td class="num">—</td><td>青色 LED・LD、パワー（HEMT）（第2部・第9部）</td></tr>
+          <tr><td>4H-SiC</td><td>六方晶</td><td class="num">a 0.307 / c 1.005 nm</td><td class="num">—</td><td>パワーデバイス（第2部）</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <figcaption>格子定数は 300 K の代表値（Sze & Ng、Ioffe 物性データベースの値）。六方晶は a と c の 2 つで決まるので、立方晶の「8/a³」は使えません（原子密度は付録の物性表を参照）。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>欠陥 ― そろっていない場所</h3>
+      <p>完全な結晶は存在せず、欠陥は次元で分類されます。<b>点欠陥</b>: 原子の抜けた穴（空孔）、隙間に入り込んだ原子（格子間原子）、別の種類の原子（不純物 ― ドーパントもこの一種で、わざと入れる点欠陥）。<b>線欠陥</b>: 原子の列がずれた転位。<b>面欠陥</b>: 積層の順序が狂った積層欠陥や、結晶の向きが違う領域の境目（粒界）。<span class="key">欠陥は禁制帯の中に準位を作り、そこが熱生成と再結合の踏み台になる</span> ― 第4部 付録C の暗電流、第2部の寿命 τ、第8部の酸化膜の劣化の出発点がここです。</p>
+    </div>
+    <div class="body-col">
+      <h3>ドーパントの間隔 ― 「薄い」の感覚</h3>
+      <p>濃度 N の不純物の平均間隔はおよそ N<sup>−1/3</sup>。10¹⁶ /cm³ なら (10¹⁶)<sup>−1/3</sup> = 4.6×10⁻⁶ cm = <b>46 nm</b>、原子の間隔（0.235 nm）の約 200 倍です。10¹⁹ でも 4.6 nm。ドーパントは結晶の中の「ごく薄い混ぜ物」で、だから結晶の並びはほとんど乱されず、バンドの形もそのまま使える ― <strong>ただし 10¹⁹ を超えると</strong>、ドーパントの準位どうしが重なって帯になり（不純物バンド）、バンドの端がにじみはじめる（バンドギャップ狭窄）。第2部が 10¹⁹ を超える領域を「モデルの外」としている理由です。</p>
+    </div>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（05）</span>
+    <p><b>問.</b> Si にホウ素を 1×10¹⁵ /cm³ 入れた。シリコン原子何個に 1 個か。ホウ素原子どうしの平均間隔は？ 同じ 1×10¹⁵ のホウ素を入れた厚さ 1 µm・一辺 1 µm の立方体には、何個のホウ素が入っているか。</p>
+    <p><b>解.</b> 4.99×10²² / 10¹⁵ = <b>5,000 万個に 1 個</b>。間隔 (10¹⁵)<sup>−1/3</sup> = 10⁻⁵ cm = <b>100 nm</b>。1 µm³ = 10⁻¹² cm³ なので <b>1,000 個</b>。第4部 付録B の「チャネル下の不純物は約 100 個 ― 統計のゆらぎ 10%」は、この小ささから来ます。<span class="key">微細なトランジスタでは、ドーパントは「濃度」ではなく「数」になる</span>。</p>
+  </div>
+</section>
+
+<!-- ================= 06 ================= -->
+<section class="stage" id="s6">
+  <div class="stage-head"><span class="stage-num">06</span>
+    <h2>原子からバンドへ ― 禁制帯はどこから来るのか</h2></div>
+  <p class="lede">第2部はバンドギャップを「1.12 eV という測った値」として出発しました。ここではその中身 ― 1 個の原子の飛び飛びの準位が、原子を並べると幅を持った帯（バンド）になり、その間に電子のいられない隙間（禁制帯）が開く ― を、図 1 枚でたどります。</p>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">BANDS — 孤立原子の準位が、結晶ではバンドになる（模式図）</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 250" role="img" aria-label="3段の模式図。左は孤立したシリコン原子で、3sと3pの2本の準位。中央は原子が近づいた状態で、それぞれの準位が幅を持って広がり重なる。右は結晶で、sp3混成により価電子帯と伝導帯の2つのバンドに分かれ、その間に禁制帯が開く。価電子帯は電子で満ち、伝導帯は空。" style="min-width:700px;width:100%;display:block">
+        <g font-size="11" fill="var(--ink-2)" font-weight="600" text-anchor="middle">
+          <text x="140" y="26">① 孤立した原子</text>
+          <text x="380" y="26">② 原子が近づく</text>
+          <text x="620" y="26">③ 結晶（原子間隔 a）</text>
+        </g>
+        <g stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="3 3"><path d="M260 36 V220 M500 36 V220"/></g>
+        <path d="M62 86 H148" stroke="var(--photon)" stroke-width="3"/>
+        <path d="M62 150 H148" stroke="var(--electron)" stroke-width="3"/>
+        <text x="156" y="90" font-size="10.5" fill="var(--photon-2)">3p（6 席・2 個）</text>
+        <text x="156" y="154" font-size="10.5" fill="var(--electron-2)">3s（2 席・2 個）</text>
+        <rect x="330" y="66" width="100" height="44" fill="var(--photon)" opacity="0.28"/>
+        <rect x="330" y="124" width="100" height="44" fill="var(--electron)" opacity="0.28"/>
+        <text x="380" y="200" font-size="10" fill="var(--ink-3)" text-anchor="middle">準位が幅を持って広がる</text>
+        <text x="380" y="216" font-size="10" fill="var(--ink-3)" text-anchor="middle">（隣の原子の波と混ざる）</text>
+        <rect x="570" y="46" width="100" height="50" fill="var(--surface-2)" stroke="var(--photon)"/>
+        <rect x="570" y="140" width="100" height="56" fill="var(--electron)" opacity="0.55"/>
+        <path d="M562 96 V140" stroke="var(--warn)" stroke-width="1.6"/>
+        <path d="M558 100 L562 94 L566 100 M558 136 L562 142 L566 136" stroke="var(--warn)" stroke-width="1.6" fill="none"/>
+        <text x="556" y="122" font-size="10.5" fill="var(--warn)" text-anchor="end">禁制帯 E<tspan font-size="8" dy="2">g</tspan></text>
+        <text x="680" y="68" font-size="10" fill="var(--ink-2)">伝導帯</text>
+        <text x="680" y="82" font-size="9.5" fill="var(--ink-3)">4 席/原子・空</text>
+        <text x="680" y="164" font-size="10" fill="var(--electron-2)">価電子帯</text>
+        <text x="680" y="178" font-size="9.5" fill="var(--ink-3)">4 席/原子・満</text>
+        <text x="620" y="226" font-size="10" fill="var(--ink-3)" text-anchor="middle">sp³ 混成 ― 結合と反結合に分かれる</text>
+        <text x="40" y="130" font-size="10" fill="var(--ink-3)" text-anchor="middle" transform="rotate(-90 40 130)">電子のエネルギー</text>
+      </svg>
+    </div>
+    <figcaption>Si の最外殻は 3s に 2 個・3p に 2 個の計 4 個の電子（席は 3s に 2・3p に 6 の計 8）。結晶の中では s と p が混ざって（sp³ 混成）<span class="key">結合に使う下の帯（4 席/原子）と、反結合の上の帯（4 席/原子）</span>に分かれ、4 個の電子がちょうど下の帯を埋める。満ちた帯と空の帯のあいだの隙間が禁制帯です。準位の位置と幅は模式で、実際の値は計算と測定で決まります。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>金属・半導体・絶縁体は「隙間」の大きさで決まる</h3>
+      <p>電気が流れるには、電子が少しだけエネルギーをもらって別の状態に移れる必要があります。帯が途中まで埋まっていれば（金属）いくらでも移れる。満ちた帯の上に隙間があれば、隙間を越えないと移れない。<span class="key">隙間が室温の熱 kT（26 meV）の数十倍なら半導体、さらに大きければ絶縁体</span>。境目は連続的で、Si（1.12 eV）・GaAs（1.42 eV）は半導体、SiC（3.26 eV）や GaN（3.4 eV）は「ワイドギャップ半導体」、SiO₂（約 9 eV）は絶縁体です。</p>
+      <h3>正孔 ― 満ちた帯の「空席」を粒子として扱う</h3>
+      <p>満ちた価電子帯から電子が 1 個抜けると、そこに空席ができます。周りの電子がその空席を詰めていく動きは、<strong>正の電荷を持った粒子が逆向きに動く</strong>のと同じに見える。これが正孔で、何十億個の電子の複雑な動きを、1 個の正の粒子の動きに置き換える会計上の工夫です（第2部 01）。</p>
+    </div>
+    <div class="body-col">
+      <h3>E-k と有効質量 ― 結晶の中の電子の「重さ」</h3>
+      <p>結晶の中の電子のエネルギー E は、波数 k（結晶運動量）の関数として帯ごとに決まった形を持ちます（<strong>E-k 図</strong>、バンド構造）。伝導帯の底の近くでは E ≈ E<sub>c</sub> + ħ²k²/(2m*) という放物線で近似でき、その曲がり具合から決まる m* が<strong>有効質量</strong> ― 結晶の周期的な力を全部まとめて「重さ」に押し込んだ量です。</p>
+      <div class="eq">1/m* = (1/ħ²)·d²E/dk²　　曲がりが急 ＝ 軽い ＝ 電界で加速されやすい</div>
+      <p>移動度は µ = qτ/m*（τ は散乱までの平均時間）なので、<span class="key">軽い電子ほど動きやすい</span>。GaAs の電子（0.067 m₀）が Si（伝導率有効質量 0.26 m₀）より速いのはこのためです。伝導帯の底と価電子帯の頂上が同じ k にあるかどうかが直接遷移・間接遷移の区別で、光るか光らないかを分けます（<a href="第5部_光検出デバイス.html#s8">第5部 08</a>、第9部）。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">E-k — 放物線の曲がり具合が「重さ」を決める</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 230" role="img" aria-label="E-k図。k=0を中心に伝導帯の放物線が2本、曲がりの急な軽い電子と緩やかな重い電子。下に下向きの価電子帯。EcとEvのあいだが禁制帯Eg。右に材料ごとの電子の有効質量の表。" style="min-width:700px;width:100%;display:block">
+        <path d="M110 40 C 180 110, 220 120, 250 120 C 280 120, 320 110, 390 40" stroke="var(--electron)" stroke-width="2.2" fill="none"/>
+        <path d="M110 95 C 180 118, 220 120, 250 120 C 280 120, 320 118, 390 95" stroke="var(--volt)" stroke-width="2.2" fill="none"/>
+        <path d="M110 205 C 180 168, 220 160, 250 160 C 280 160, 320 168, 390 205" stroke="var(--warn)" stroke-width="2.2" fill="none"/>
+        <path d="M236 124 V156" stroke="var(--ink-3)" stroke-width="1.4"/>
+        <path d="M232 128 L236 122 L240 128 M232 152 L236 158 L240 152" stroke="var(--ink-3)" stroke-width="1.4" fill="none"/>
+        <text x="228" y="144" font-size="10" fill="var(--ink-2)" text-anchor="end">E<tspan font-size="7" dy="2">g</tspan></text>
+        <text x="258" y="138" font-size="10" fill="var(--ink-2)">E<tspan font-size="7" dy="2">c</tspan></text>
+        <text x="258" y="180" font-size="10" fill="var(--ink-2)">E<tspan font-size="7" dy="2">v</tspan></text>
+        <text x="390" y="222" font-size="9.5" fill="var(--ink-3)" text-anchor="end">波数 k →</text>
+        <g font-size="10">
+          <path d="M440 44 h20" stroke="var(--electron)" stroke-width="2.4"/><text x="466" y="48" fill="var(--electron-2)">急な放物線 ＝ 軽い電子（動きやすい）</text>
+          <path d="M440 64 h20" stroke="var(--volt)" stroke-width="2.4"/><text x="466" y="68" fill="var(--volt)">緩い放物線 ＝ 重い電子</text>
+          <path d="M440 84 h20" stroke="var(--warn)" stroke-width="2.4"/><text x="466" y="88" fill="var(--warn)">価電子帯（下に凸 ― 正孔の世界）</text>
+        </g>
+        <g font-size="10" fill="var(--ink-2)">
+          <text x="440" y="122" font-weight="600">電子の有効質量（伝導率の m*/m₀）</text>
+          <text x="440" y="142">InGaAs（InP に格子整合）　約 0.04</text>
+          <text x="440" y="160">GaAs　0.067</text>
+          <text x="440" y="178">Ge　0.12</text>
+          <text x="440" y="196">GaN　約 0.2</text>
+          <text x="440" y="214">Si　0.26</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>有効質量の値は代表値（温度・方向・定義で少し動く。Si は谷が 6 つあり方向で重さが違うため、電気伝導に効く平均を「伝導率有効質量」と呼ぶ）。<span class="key">軽い材料ほど高移動度で高周波に強い</span> ― 光通信の受光器や高速トランジスタが InGaAs・GaAs を使う理由の一つです。</figcaption>
+  </figure>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（06）</span>
+    <p><b>問.</b> 散乱までの平均時間 τ が同じだとすると、GaAs と Si の電子の移動度の比は有効質量からいくつと見積もれるか。実測の比（約 8,500 対 1,400）と比べるとどうか。</p>
+    <p><b>解.</b> µ = qτ/m* なので比は 0.26/0.067 = <b>3.9 倍</b>。実測は 8,500/1,400 ≈ <b>6 倍</b>で、残りの約 1.6 倍は τ の違いです（GaAs の伝導帯の底は谷が 1 つで、Si で起きる「谷どうしを渡る散乱」が無いことなどが効きます）。<span class="key">移動度は「重さ」と「ぶつかりやすさ」の 2 つの掛け算</span>で、有効質量だけでは決まらない ― 第2部の「移動度は散乱で決まる」とこの章の「軽いほど速い」は、同じ式の 2 つの因子です。</p>
+  </div>
+</section>
+
+<!-- ================= 07 ================= -->
+<section class="stage" id="s7">
+  <div class="stage-head"><span class="stage-num">07</span>
+    <h2>キャリアの数を導く ― 状態密度 × 占有確率</h2></div>
+  <p class="lede">第2部は n<sub>i</sub> = 1.0×10¹⁰ /cm³ から始め、「教科書の式に定数を入れると 6.9×10⁹ になり合わない」という注記を付けていました。この章でその式を最初から組み立て、<span class="key">なぜ合わないのか、どうすれば合うのか</span>まで決着をつけます。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>2 つの材料: 席の数と、座っている確率</h3>
+      <p>伝導帯の電子の数 = 「エネルギー E の席がいくつあるか」×「その席に電子が座っている確率」を全部の E で足したもの。席の数を<strong>状態密度</strong> g(E)、座っている確率を<strong>フェルミ・ディラック分布</strong> f(E) と呼びます:</p>
+      <div class="eq">g(E) ∝ (m*)<sup>3/2</sup>·√(E − E<sub>c</sub>)　　f(E) = 1 / [ 1 + e<sup>(E−E<sub>F</sub>)/kT</sup> ]</div>
+      <p>f(E) は、E<sub>F</sub>（フェルミ準位）でちょうど 1/2、それより数 kT 上ではほぼ 0、下ではほぼ 1。E − E<sub>F</sub> が 3kT を超えると f ≈ e<sup>−(E−E<sub>F</sub>)/kT</sup>（ボルツマン分布）で近似でき、誤差は 5% 以下になります。半導体の伝導帯は普通 E<sub>F</sub> から十分上にあるので、この近似が使える ― 第2部の n = n<sub>i</sub>e<sup>ψ/V<sub>t</sub></sup> はここから来ています。</p>
+    </div>
+    <div class="body-col">
+      <h3>積分すると N<sub>c</sub> が出てくる</h3>
+      <p>g(E)·f(E) を伝導帯の底から上まで積分すると、ボルツマン近似のもとで答えはきれいな形になります:</p>
+      <div class="eq">n = <b>N<sub>c</sub></b>·e<sup>−(E<sub>c</sub>−E<sub>F</sub>)/kT</sup>　　N<sub>c</sub> = 2·(2π m* kT / h²)<sup>3/2</sup></div>
+      <p>N<sub>c</sub>（伝導帯の有効状態密度）は、「伝導帯の全部の席を、E<sub>c</sub> の 1 か所に集めたら何席ぶんか」という量です。m* = m₀ なら 300 K で <b>2.51×10¹⁹ /cm³</b>。価電子帯も同じ形で p = N<sub>v</sub>e<sup>−(E<sub>F</sub>−E<sub>v</sub>)/kT</sup>。この 2 つを掛けると E<sub>F</sub> が消えて:</p>
+      <div class="eq">n·p = N<sub>c</sub>N<sub>v</sub>·e<sup>−E<sub>g</sub>/kT</sup> ≡ <b>n<sub>i</sub>²</b>　→　n<sub>i</sub> = √(N<sub>c</sub>N<sub>v</sub>)·e<sup>−E<sub>g</sub>/2kT</sup></div>
+      <p>第2部の質量作用の法則 n·p = n<sub>i</sub>² が、ドーピングによらない（E<sub>F</sub> が消える）理由がこの計算です。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">OCCUPANCY — フェルミ・ディラック分布は温度で肩が丸くなる</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 240" role="img" aria-label="フェルミ・ディラック分布f(E)の3本の曲線。77K、300K、600K。いずれもE=EFで1/2を通り、温度が低いほど段差が急で、高いほど肩がなだらかになる。" style="min-width:700px;width:100%;display:block">
+        <g stroke="var(--line)" stroke-width="1"><path d="M80 40 V200 H680"/><path d="M80 120 H680" stroke-dasharray="2 4"/></g>
+        <path d="M380 40 V200" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="4 3"/>
+        <text x="388" y="34" font-size="10" fill="var(--ink-2)">E = E<tspan font-size="7" dy="2">F</tspan><tspan dy="-2">（f = 1/2）</tspan></text>
+        <polyline fill="none" stroke="var(--electron)" stroke-width="2" points="80,40 200,40 260,40 290,40.002 302,40.009 314,40.04 326,40.181 338,40.815 344,41.721 350,43.613 356,47.486 362,55.11 368,69.02 374,91.208 380,120 386,148.79 392,170.98 398,184.89 404,192.51 410,196.39 416,198.28 422,199.19 434,199.82 452,199.98 500,200 680,200"/>
+        <polyline fill="none" stroke="var(--volt)" stroke-width="2" points="80,40.01 104,40.022 128,40.047 152,40.103 176,40.223 200,40.482 224,41.041 248,42.239 272,44.776 290,48.336 302,51.978 314,57.032 326,63.876 338,72.838 350,84.075 362,97.421 374,112.29 380,120 386,127.71 398,142.58 410,155.92 422,167.16 434,176.12 446,182.97 458,188.02 470,191.66 482,194.24 494,196.04 506,197.29 530,198.74 560,199.52 600,199.88 640,199.97 680,199.99"/>
+        <polyline fill="none" stroke="var(--warn)" stroke-width="2" points="80,41.261 104,41.85 128,42.709 152,43.957 176,45.758 200,48.336 224,51.978 248,57.032 272,63.876 296,72.838 320,84.075 344,97.421 368,112.29 380,120 392,127.71 416,142.58 440,155.92 464,167.16 488,176.12 512,182.97 536,188.02 560,191.66 584,194.24 608,196.04 632,197.29 656,198.15 680,198.74"/>
+        <g font-size="10">
+          <path d="M470 56 h20" stroke="var(--electron)" stroke-width="2.4"/><text x="496" y="60" fill="var(--electron-2)">77 K（液体窒素 ― ほぼ段差）</text>
+          <path d="M470 76 h20" stroke="var(--volt)" stroke-width="2.4"/><text x="496" y="80" fill="var(--volt)">300 K（室温 ― kT = 26 meV）</text>
+          <path d="M470 96 h20" stroke="var(--warn)" stroke-width="2.4"/><text x="496" y="100" fill="var(--warn)">600 K（肩がなだらか）</text>
+        </g>
+        <g font-size="9.5" fill="var(--ink-3)">
+          <text x="74" y="44" text-anchor="end">1</text><text x="74" y="124" text-anchor="end">1/2</text><text x="74" y="204" text-anchor="end">0</text>
+          <text x="140" y="216" text-anchor="middle">−0.2 eV</text><text x="380" y="216" text-anchor="middle">0</text><text x="620" y="216" text-anchor="middle">+0.2 eV</text>
+        </g>
+        <text x="380" y="234" font-size="9.5" fill="var(--ink-3)" text-anchor="middle">E − E<tspan font-size="7" dy="2">F</tspan></text>
+      </svg>
+    </div>
+    <figcaption>E<sub>F</sub> より数 kT 上の席はほとんど空。半導体の伝導帯は E<sub>F</sub> から 0.1〜0.5 eV 上にあるので、席に座っている確率は e<sup>−(E−E<sub>F</sub>)/kT</sup> の尻尾で決まる ― <span class="key">温度が上がると尻尾が太り、伝導帯の電子が指数関数的に増える</span>。暗電流が温度で桁違いに増える理由の、最も根元の図です。</figcaption>
+  </figure>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">PRODUCT — 席の数 × 座る確率 ＝ 電子のいる場所</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 250" role="img" aria-label="伝導帯の底からのエネルギーを横軸に、状態密度g(E)∝√E（上に伸びる曲線）、ボルツマン分布f(E)（急に減る曲線）、その積n(E)（kT/2に山を持つ曲線）の3本。電子は伝導帯の底からkT程度の狭い範囲に集まる。" style="min-width:700px;width:100%;display:block">
+        <g stroke="var(--line)" stroke-width="1"><path d="M80 50 V200 H560"/></g>
+        <g transform="translate(16 0) scale(0.8 1)">
+          <polyline fill="none" stroke="var(--electron)" stroke-width="2" vector-effect="non-scaling-stroke" points="80,200 86,185 92,178.79 98,174.02 104,170 110,166.46 122,160.31 134,155 146,150.25 158,145.92 170,141.91 182,138.15 194,134.62 206,131.26 218,128.06 230,125 254,119.22 278,113.83 302,108.76 326,103.95 350,99.377 374,95 398,90.798 422,86.752 446,82.846 470,79.066 494,75.401 518,71.84 542,68.376 566,65 590,61.707 614,58.49 638,55.345 662,52.267 680,50"/>
+          <polyline fill="none" stroke="var(--volt)" stroke-width="2" vector-effect="non-scaling-stroke" points="80,50 86,63.826 92,76.378 98,87.773 104,98.118 110,107.51 116,116.03 122,123.77 128,130.8 134,137.18 140,142.97 146,148.23 152,153 158,157.33 164,161.26 170,164.83 176,168.08 182,171.02 188,173.69 194,176.11 200,178.32 212,182.13 224,185.27 236,187.86 248,190 260,191.76 272,193.21 290,194.92 314,196.55 338,197.65 368,198.55 404,199.19 446,199.59 500,199.83 560,199.93 620,199.98 680,199.99"/>
+          <polyline fill="none" stroke="var(--photon)" stroke-width="2.4" vector-effect="non-scaling-stroke" points="80,200 86,101.24 92,73.201 98,59.018 104,52.214 110,50 116,50.829 122,53.729 128,58.043 134,63.311 140,69.198 146,75.459 152,81.911 158,88.418 164,94.88 170,101.22 176,107.38 182,113.33 188,119.04 194,124.49 200,129.67 212,139.21 224,147.67 236,155.11 248,161.61 260,167.25 272,172.12 290,178.19 314,184.36 338,188.85 368,192.73 404,195.69 446,197.67 500,198.95 560,199.58 620,199.83 680,199.93"/>
+        </g>
+        <path d="M104.8 200 V48" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="3 3"/>
+        <g font-size="9.5" fill="var(--ink-3)" text-anchor="middle">
+          <text x="80" y="216">0</text><text x="272" y="216">0.1 eV</text><text x="464" y="216">0.2 eV</text>
+          <text x="112" y="232">↑ 山は kT/2（13 meV）</text>
+        </g>
+        <text x="400" y="244" font-size="9.5" fill="var(--ink-3)" text-anchor="middle">伝導帯の底からのエネルギー E − E<tspan font-size="7" dy="2">c</tspan> →</text>
+        <g font-size="10">
+          <path d="M580 64 h20" stroke="var(--electron)" stroke-width="2.4"/><text x="606" y="68" fill="var(--electron-2)">席の数 g(E) ∝ √(E−E<tspan font-size="7" dy="2">c</tspan><tspan dy="-2">)</tspan></text>
+          <path d="M580 90 h20" stroke="var(--volt)" stroke-width="2.4"/><text x="606" y="94" fill="var(--volt)">座る確率 f(E)</text>
+          <path d="M580 116 h20" stroke="var(--photon)" stroke-width="2.4"/><text x="606" y="120" fill="var(--photon-2)">積 ＝ 電子の分布</text>
+          <text x="580" y="152" fill="var(--ink-3)" font-size="9.5">縦軸は3本とも</text>
+          <text x="580" y="166" fill="var(--ink-3)" font-size="9.5">最大値で規格化</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>n 型 10¹⁶ /cm³（E<sub>c</sub> − E<sub>F</sub> = 0.206 eV）の室温の例。席は上に行くほど増え、座る確率は上に行くほど指数的に減るので、<span class="key">電子は伝導帯の底から kT 程度の薄い層に集まる</span>（平均の運動エネルギーは 3kT/2 = 39 meV）。「電子は E<sub>c</sub> にいる」とバンド図で描いてよいのは、この層が薄いからです。</figcaption>
+  </figure>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>「有名な不一致」の種明かし</h3>
+      <p>第2部の注記: 教科書の N<sub>c</sub> = 2.8×10¹⁹、N<sub>v</sub> = 1.04×10¹⁹、E<sub>g</sub> = 1.12 eV を式に入れると n<sub>i</sub> = <b>6.9×10⁹</b> になり、実測の 1.0×10¹⁰ と合わない。原因は <b>N<sub>v</sub></b> です。価電子帯には重い正孔・軽い正孔・スピン軌道分裂の 3 つの帯が重なっていて、その合計の有効質量の見積もりが古い値では小さすぎた。Green（1990）の再評価では 300 K で <b>N<sub>c</sub> = 2.86×10¹⁹、N<sub>v</sub> = 3.10×10¹⁹</b> で、これと E<sub>g</sub> = 1.124 eV から</p>
+      <div class="eq">n<sub>i</sub> = √(2.86×10¹⁹ × 3.10×10¹⁹) × e<sup>−1.124/(2×0.02585)</sup> = <b>1.07×10¹⁰ /cm³</b></div>
+      <p>実測の 1.0×10¹⁰（Sproul & Green 1991）とほぼ一致します。<span class="key">式が間違っていたのではなく、入れる定数が古かった</span>。この本と各ラボは実測の 1.0×10¹⁰ を採り、N<sub>c</sub>・N<sub>v</sub> はバンド図の E<sub>F</sub> の位置を描くのに使っています（第2部の注記と同じ方針）。</p>
+    </div>
+    <div class="body-col">
+      <h3>ボルツマン近似が破れるところ ― 縮退</h3>
+      <p>ドーピングを濃くすると E<sub>F</sub> が E<sub>c</sub> に近づきます。n 型 10¹⁶ で E<sub>c</sub> − E<sub>F</sub> = 0.206 eV（8kT）、10¹⁸ で 0.087 eV（3.4kT）。<b>E<sub>F</sub> が E<sub>c</sub> の 3kT 以内</b>（n ≳ 1.4×10¹⁸）に入るとボルツマン近似の誤差が 5% を超えはじめ、n が N<sub>c</sub>（約 3×10¹⁹）に届くと E<sub>F</sub> がバンドの中に入る ― これが<strong>縮退</strong>です。第2部と SemiLab が 10¹⁹ を超える領域を「モデルの外」とし、SemiLab が 5×10¹⁹ で警告を出すのはこの境目の手前で線を引いているからです。</p>
+      <h3>温度依存 ― T<sup>3/2</sup> と指数</h3>
+      <p>N<sub>c</sub>N<sub>v</sub> は T³ に比例するので、n<sub>i</sub> ∝ T<sup>3/2</sup>·e<sup>−E<sub>g</sub>/2kT</sup>。指数の部分が圧倒的に効き、300 K 付近では 9 ℃ で約 2 倍。前指数の T<sup>3/2</sup> のぶん、アレニウスプロットの傾きは E<sub>g</sub>/2 より少し大きく出る（第4部 付録C の「0.56 ではなく 0.60 前後」）― どれもこの 1 本の式の読み方です。</p>
+    </div>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（07）</span>
+    <p><b>問.</b> m* = m₀ のとき N<sub>c</sub> = 2.51×10¹⁹ /cm³（300 K）。GaAs の伝導帯（m* = 0.067 m₀）の N<sub>c</sub> は？ Si の N<sub>c</sub> = 2.86×10¹⁹ から逆算すると、状態密度の有効質量はいくつか。</p>
+    <p><b>解.</b> N<sub>c</sub> ∝ m*<sup>3/2</sup> なので GaAs は 2.51×10¹⁹ × 0.067<sup>1.5</sup> = <b>4.4×10¹⁷ /cm³</b> ― Si の約 1/65。Si は (2.86/2.51)<sup>2/3</sup> = <b>1.09 m₀</b>（6 つの谷の席を全部数えた「状態密度の有効質量」で、06 の伝導率有効質量 0.26 m₀ とは別の平均）。<span class="key">GaAs は席が少ないので、同じドーピングでも E<sub>F</sub> がすぐ伝導帯に入る</span>（縮退しやすい）― 軽い電子の裏の顔です。</p>
+  </div>
+</section>
+
+<!-- ================= 08 ================= -->
+<section class="stage" id="s8">
+  <div class="stage-head"><span class="stage-num">08</span>
+    <h2>定数と単位 ― 全部の部が共有する数</h2></div>
+  <p class="lede">2019 年の SI 改定で、プランク定数・電気素量・ボルツマン定数・光速などは「測る量」から「定義する量」になりました。この本の計算はすべてこの表の値を使っています。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>SI の定義値（誤差ゼロ）</h3>
+      <div class="scroll-x"><table>
+        <thead><tr><th>定数</th><th>値</th></tr></thead>
+        <tbody>
+          <tr><td>光速 c</td><td class="num">299 792 458 m/s</td></tr>
+          <tr><td>プランク定数 h</td><td class="num">6.626 070 15×10⁻³⁴ J·s</td></tr>
+          <tr><td>電気素量 q（e）</td><td class="num">1.602 176 634×10⁻¹⁹ C</td></tr>
+          <tr><td>ボルツマン定数 k</td><td class="num">1.380 649×10⁻²³ J/K</td></tr>
+          <tr><td>アボガドロ定数 N<sub>A</sub></td><td class="num">6.022 140 76×10²³ /mol</td></tr>
+          <tr><td>視感効果度 K<sub>cd</sub></td><td class="num">683 lm/W（540 THz）</td></tr>
+        </tbody>
+      </table></div>
+      <p style="font-size:12.5px;color:var(--ink-3);margin-top:8px">真空の誘電率 ε₀ = 8.8542×10⁻¹² F/m と電子の質量 m₀ = 9.1094×10⁻³¹ kg は、改定後は測定で決まる量です（有効数字 5 桁で表示。CODATA の推奨値）。</p>
+    </div>
+    <div class="body-col">
+      <h3>この本でよく使う換算</h3>
+      <div class="scroll-x"><table>
+        <thead><tr><th>量</th><th>値</th><th>使う場所</th></tr></thead>
+        <tbody>
+          <tr><td>kT/q（300 K）</td><td class="num">25.85 mV</td><td>全部</td></tr>
+          <tr><td>(kT/q)·ln10</td><td class="num">59.5 mV</td><td>ダイオード・S 値</td></tr>
+          <tr><td>hc</td><td class="num">1239.84 eV·nm</td><td>光子のエネルギー</td></tr>
+          <tr><td>1 eV</td><td class="num">1.602×10⁻¹⁹ J</td><td>エネルギーの換算</td></tr>
+          <tr><td>ε<sub>Si</sub> = 11.7ε₀</td><td class="num">1.036×10⁻¹² F/cm</td><td>空乏層・容量</td></tr>
+          <tr><td>ε<sub>SiO₂</sub> = 3.9ε₀</td><td class="num">3.45×10⁻¹³ F/cm</td><td>MOS の C<sub>ox</sub></td></tr>
+          <tr><td>√(4kT·1 kΩ)</td><td class="num">4.07 nV/√Hz</td><td>熱雑音</td></tr>
+          <tr><td>1 lx（555 nm）</td><td class="num">1.464 mW/m²</td><td>第4部・第7部</td></tr>
+          <tr><td>1 年</td><td class="num">8,760 時間</td><td>第8部 FIT</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+
+  <div class="caveat">
+    <span class="tag">単位の罠 ― cm と m</span>
+    <p><strong>半導体の分野は長さに cm を使う習慣があります</strong>（濃度 /cm³、移動度 cm²/V·s、誘電率 F/cm、電界 V/cm）。SI の m で書かれた式に cm の値を混ぜると、10² や 10⁶ の桁で間違えます。第2部と SemiLab は内部を cm で統一し、表示するときだけ µm・nm に直しています。<strong>式を使う前に、全部の量を同じ長さの単位にそろえる</strong> ― それだけで計算間違いの大半は防げます。</p>
+    <p><strong>温度は必ず絶対温度（K）で指数に入れます。</strong>アレニウスやボルツマン因子に ℃ のまま入れると、答えは全く違う値になります（第8部 02 の注意と同じ）。</p>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（08）</span>
+    <p><b>問.</b> 酸化膜 5 nm の MOS の単位面積あたりの容量 C<sub>ox</sub> を、F/cm² と fF/µm² で。電界 10 MV/cm は V/m でいくつか。</p>
+    <p><b>解.</b> C<sub>ox</sub> = ε<sub>SiO₂</sub>/t = 3.45×10⁻¹³ F/cm ÷ 5×10⁻⁷ cm = <b>6.9×10⁻⁷ F/cm²</b>。1 µm² = 10⁻⁸ cm² なので <b>6.9 fF/µm²</b>（第2部の値と一致）。10 MV/cm = 10⁷ V/cm = <b>10⁹ V/m</b>。<span class="key">cm と m の換算は長さの次元の数だけ 10² が掛かる</span>（面積 10⁴、体積 10⁶）。</p>
+  </div>
+</section>
+
+<!-- ================= 理解の確認 ================= -->
+<section class="stage" id="scheck">
+  <div class="stage-head"><span class="stage-num">—</span>
+    <h2>理解の確認 ― 10問で道具箱を点検する</h2></div>
+  <p class="lede">どの問いも、他の部のどこかで実際に使う計算です。答えを開く前に、どの章の道具を使うかを先に言ってみてください。</p>
+  <div class="chk">
+    <details><summary><span class="qn">Q1 · 01</span>SN 比 40 dB は、電力比と振幅比でそれぞれ何倍か。</summary><p>電力比 10⁴ 倍、振幅比 100 倍。電力は振幅の 2 乗なので、同じ dB でも係数が 10 と 20 で違う。</p></details>
+    <details><summary><span class="qn">Q2 · 01</span>ボルツマン因子 e<sup>qV/kT</sup> を 10 倍にする電圧は、室温でいくらか。</summary><p>(kT/q)·ln10 = 25.85 mV × 2.303 = 59.5 mV。ダイオードの「60 mV で 10 倍」と S 値の下限は同じ数。</p></details>
+    <details><summary><span class="qn">Q3 · 02</span>平均 100 個の光子を数えたときの揺らぎは何%か。1% にするには何個要るか。</summary><p>√100/100 = 10%。1% には 1/0.01² = 10⁴ 個。精度を 10 倍にするには 100 倍の数が要る。</p></details>
+    <details><summary><span class="qn">Q4 · 02</span>独立なノイズ 3 と 4 を合わせるといくつか。なぜ 7 ではないのか。</summary><p>分散が足し算になるので √(9 + 16) = 5。独立なノイズは符号が揃わず、打ち消し合う分があるから。</p></details>
+    <details><summary><span class="qn">Q5 · 03</span>時定数 10 ns の RC の遮断周波数と立ち上がり時間は？</summary><p>f<sub>c</sub> = 1/(2π × 10 ns) = 15.9 MHz、10→90% の立ち上がり 2.2τ = 22 ns（= 0.35/f<sub>c</sub>）。</p></details>
+    <details><summary><span class="qn">Q6 · 03</span>画素ピッチ 3 µm のセンサで、正しく写せる縞の細かさの上限は？ それより細かい縞はどうなるか。</summary><p>ナイキスト周波数 1/(2p) = 167 本/mm。それより細かい縞は消えずに低い周波数に折り返して、モアレや偽色になる。</p></details>
+    <details><summary><span class="qn">Q7 · 04</span>シリコンに 1,200 nm の強い光を当てても電子ができないのはなぜか。</summary><p>光子 1 個のエネルギー 1239.84/1,200 = 1.03 eV がバンドギャップ 1.12 eV に届かないから。明るさを上げても光子 1 個のエネルギーは変わらない。</p></details>
+    <details><summary><span class="qn">Q8 · 05</span>MOS デバイスのウェーハに (100) 面を使うのはなぜか。</summary><p>酸化膜との界面にできる界面準位が (111) より少ないから。界面準位はしきい値のずれや 1/f ノイズの原因になる。</p></details>
+    <details><summary><span class="qn">Q9 · 06</span>移動度が有効質量だけで決まらないのはなぜか。</summary><p>µ = qτ/m* で、散乱までの平均時間 τ も効くから。GaAs と Si の移動度の比は、有効質量の比（3.9 倍）より大きい（約 6 倍）。</p></details>
+    <details><summary><span class="qn">Q10 · 07</span>教科書の N<sub>c</sub>・N<sub>v</sub> で n<sub>i</sub> を計算すると実測と合わないのはなぜか。</summary><p>古い N<sub>v</sub>（1.04×10¹⁹）が小さすぎたから。価電子帯の 3 つの帯を正しく数えた Green（1990）の値（N<sub>v</sub> = 3.10×10¹⁹）を使うと 1.07×10¹⁰ となり、実測の 1.0×10¹⁰ にほぼ一致する。</p></details>
+  </div>
+</section>
+
+<!-- ================= 用語表 ================= -->
+<section class="stage" id="s9">
+  <div class="stage-head"><span class="stage-num">—</span>
+    <h2>用語表</h2></div>
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">TERMS — この部の言葉</span></div>
+    <div class="scroll-x">
+      <table>
+        <thead><tr><th>用語</th><th>意味</th><th>目安</th></tr></thead>
+        <tbody>
+          <tr><td>デシベル（dB）</td><td>比の対数。パワー比は 10log、振幅比は 20log。−3 dB はパワー半分</td><td class="num">10 倍 = 10/20 dB</td></tr>
+          <tr><td>dBm</td><td>1 mW を基準にしたパワーの dB。光通信・高周波で使う</td><td class="num">0 dBm = 1 mW</td></tr>
+          <tr><td>ポアソン分布</td><td>独立でまれな出来事の回数の分布。分散＝平均</td><td class="num">σ = √λ</td></tr>
+          <tr><td>正規分布</td><td>平均と分散で決まる釣鐘形。多数の独立なばらつきの和はこれに近づく</td><td class="num">±3σ に 99.73%</td></tr>
+          <tr><td>指数分布</td><td>ポアソン過程の待ち時間の分布。無記憶性を持つ</td><td class="num">平均 1/r</td></tr>
+          <tr><td>帯域 / ノイズ密度</td><td>見ている周波数の幅と、1 Hz あたりの雑音の振幅。実際の雑音は密度×√帯域</td><td class="num">V/√Hz</td></tr>
+          <tr><td>標本化定理 / ナイキスト周波数</td><td>間隔 T で標本化すると 1/(2T) より高い成分は折り返す</td><td class="num">1/(2p)</td></tr>
+          <tr><td>畳み込み / 伝達関数</td><td>ぼかしの演算。周波数では掛け算になり、MTF を掛け合わせられる</td><td class="num">全体 = 積</td></tr>
+          <tr><td>時定数 / 遮断周波数</td><td>RC 一次系の τ = RC と f<sub>c</sub> = 1/(2πRC)。立ち上がり 2.2τ</td><td class="num">0.35/f<sub>c</sub></td></tr>
+          <tr><td>光子 / ド・ブロイ波長</td><td>光のエネルギーの粒 hν と、粒子の波長 h/p</td><td class="num">1239.84/λ eV</td></tr>
+          <tr><td>量子閉じ込め</td><td>狭い領域に閉じ込めた電子のエネルギーが飛び飛びになること。E ∝ n²/(m*L²)</td><td class="num">GaAs 10 nm で 56 meV</td></tr>
+          <tr><td>格子定数 / 単位格子</td><td>結晶の繰り返しの単位の寸法。ダイヤモンド構造の立方体には原子 8 個</td><td class="num">Si 0.5431 nm</td></tr>
+          <tr><td>ミラー指数 / 劈開</td><td>結晶面の向きの呼び方と、特定の面で割れる性質</td><td class="num">MOS は (100)</td></tr>
+          <tr><td>点・線・面欠陥</td><td>空孔・格子間原子・不純物／転位／積層欠陥・粒界。禁制帯に準位を作る</td><td class="num">暗電流の源</td></tr>
+          <tr><td>バンド / 禁制帯</td><td>結晶中で電子の取れるエネルギーの帯と、その間の取れない隙間</td><td class="num">Si 1.12 eV</td></tr>
+          <tr><td>E-k 図 / 有効質量</td><td>波数とエネルギーの関係と、その曲率から決まる結晶中の電子の「重さ」</td><td class="num">GaAs 0.067 m₀</td></tr>
+          <tr><td>状態密度 / 有効状態密度</td><td>エネルギーあたりの席の数 g(E) と、それをバンド端に集めた量 N<sub>c</sub>・N<sub>v</sub></td><td class="num">Si N<sub>c</sub> 2.86×10¹⁹</td></tr>
+          <tr><td>フェルミ・ディラック分布</td><td>エネルギー E の席に電子が座る確率。E<sub>F</sub> で 1/2</td><td class="num">3kT 上でボルツマン</td></tr>
+          <tr><td>縮退</td><td>E<sub>F</sub> がバンド端に近づき・入り込んで、ボルツマン近似が使えなくなる状態</td><td class="num">n ≳ 10¹⁸〜10¹⁹</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </figure>
+</section>
+
+<!-- ================= 出典 ================= -->
+<section class="stage" id="sref">
+  <div class="stage-head"><span class="stage-num">—</span>
+    <h2>出典 ― もっと先へ</h2></div>
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">BOOKS &amp; PAPERS — この部の出発点</span></div>
+    <div class="scroll-x">
+      <table>
+        <thead><tr><th>何の話か</th><th>資料</th><th>この部のどこ</th></tr></thead>
+        <tbody>
+          <tr><td>固体物理の標準教科書</td><td>C. Kittel『Introduction to Solid State Physics』8th ed., Wiley (2005)</td><td>05・06。結晶構造、バンドの成り立ち、有効質量、状態密度。</td></tr>
+          <tr><td>固体物理（上級）</td><td>N. W. Ashcroft &amp; N. D. Mermin『Solid State Physics』Holt, Rinehart and Winston (1976)</td><td>06・07。E-k とバンド構造、半導体の統計の厳密な導出。</td></tr>
+          <tr><td>半導体デバイスの物理</td><td>S. M. Sze &amp; K. K. Ng『Physics of Semiconductor Devices』3rd ed., Wiley (2007)</td><td>05〜07。格子定数・有効質量・N<sub>c</sub>・N<sub>v</sub> の表と、キャリア統計。</td></tr>
+          <tr><td>入門の導出</td><td>R. F. Pierret『Semiconductor Device Fundamentals』Addison-Wesley (1996)</td><td>07。状態密度とフェルミ分布から n<sub>i</sub> までを最も丁寧に導く入門書。</td></tr>
+          <tr><td>Si の有効状態密度</td><td>M. A. Green, J. Appl. Phys. 67, 2944 (1990)</td><td>07。N<sub>c</sub> = 2.86×10¹⁹・N<sub>v</sub> = 3.10×10¹⁹（300 K）の再評価。</td></tr>
+          <tr><td>Si の真性キャリア密度</td><td>A. B. Sproul &amp; M. A. Green, J. Appl. Phys. 70, 846 (1991)</td><td>07。n<sub>i</sub> = 1.00×10¹⁰（300 K）の実測。</td></tr>
+          <tr><td>量子力学の入門</td><td>D. J. Griffiths &amp; D. F. Schroeter『Introduction to Quantum Mechanics』3rd ed., Cambridge (2018)</td><td>04。無限井戸、不確定性関係、トンネル。</td></tr>
+          <tr><td>フーリエ変換</td><td>R. N. Bracewell『The Fourier Transform and Its Applications』3rd ed., McGraw-Hill (2000)</td><td>03。畳み込み・標本化・伝達関数。</td></tr>
+          <tr><td>SI の定義</td><td>BIPM『The International System of Units (SI)』9th ed. (2019)</td><td>08。2019 年改定の定義値。</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <figcaption>論文は巻・先頭頁・年まで、書籍は版と年まで記しました。数値の出典として引用するときは、原典の該当箇所で確認してください。</figcaption>
+  </figure>
+
+  <div class="foot">
+    <span>この部は他の全部の部の足場です。数値は SI の定義値と教科書の標準値から計算しています。</span>
+    <span><a href="index.html">学びの地図へ戻る</a> · 次に読むなら <a href="第1部_製造プロセス.html">第1部 製造プロセス</a> か <a href="第2部_デバイスの基礎.html">第2部 デバイスの基礎</a></span>
+    <span style="font-family:var(--mono)">Log → Probability → Wave → Quantum → Crystal → Band</span>
+  </div>
+</section>
+
+</main>
+</div>
+</div>
+
+<script>
+(function(){
+"use strict";
+var root=document.documentElement;
+var KEY="part0.depth";
+var bS=document.getElementById("dSimple"), bD=document.getElementById("dDeep");
+function setDepth(deep){
+  root.setAttribute("data-depth", deep?"deep":"simple");
+  bS.setAttribute("aria-pressed", deep?"false":"true");
+  bD.setAttribute("aria-pressed", deep?"true":"false");
+  try{ localStorage.setItem(KEY, deep?"deep":"simple"); }catch(e){}
+}
+bS.addEventListener("click", function(){ setDepth(false); });
+bD.addEventListener("click", function(){ setDepth(true); });
+var saved=null; try{ saved=localStorage.getItem(KEY); }catch(e){}
+setDepth(saved==="deep");
+
+/* 目次・レールの現在地ハイライト */
+var secs=[].slice.call(document.querySelectorAll("section.stage[id]"));
+var railLinks={}, tocLinks={};
+[].forEach.call(document.querySelectorAll('.rail a[href^="#"]'), function(a){ railLinks[a.getAttribute("href").slice(1)]=a; });
+[].forEach.call(document.querySelectorAll('.toc a[href^="#"]'), function(a){ tocLinks[a.getAttribute("href").slice(1)]=a; });
+var tocNow=document.getElementById("tocNow");
+function mark(id){
+  for(var k in railLinks) railLinks[k].classList.toggle("on", k===id);
+  if(tocNow && tocLinks[id]){
+    var sp=tocLinks[id].querySelectorAll("span");
+    tocNow.textContent=(sp[1]?sp[1].textContent:id);
+  }
+}
+if("IntersectionObserver" in window){
+  var current=null;
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ current=e.target.id; mark(current); } });
+  },{rootMargin:"-30% 0px -60% 0px"});
+  secs.forEach(function(s){ io.observe(s); });
+}
+})();
+</script>
+</body>
+</html>

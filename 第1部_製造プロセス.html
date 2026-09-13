@@ -360,11 +360,11 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
       <div class="hs"><b>1,350 億ドル</b><span>2025年 世界半導体製造装置市場（SEMI）</span></div>
     </div>
     <div class="guide">
-      <div class="guide-h"><span>読み方（役割別）</span><span>全部で 60〜110 分</span></div>
+      <div class="guide-h"><span>読み方（役割別）</span><span>全部で 80〜150 分</span></div>
       <div class="guide-b">
-        <div><b>営業・企画なら</b><span>01 なぜ1000工程 → 03 産業地図 → 05 各工程の「誰が握っているか」 → 12 早見表。業界ニュースの登場人物と、そのシェアの読み方が入ります。</span><em>20 〜 30 分</em></div>
-        <div><b>設計・開発なら</b><span>04 リソ・サイクル → 06 工程を式で読む → 07 トランジスタ構造 → 11 歩留まり。「なぜその寸法・温度・時間なのか」が式で分かります。</span><em>40 〜 60 分</em></div>
-        <div><b>研究・製造なら</b><span>05 の全カード → 06 の例題を自分で解く → 08〜10 後工程と先端パッケージ。ProcessLab を並走させると数字が手に入ります。</span><em>60 〜 110 分</em></div>
+        <div><b>営業・企画なら</b><span>01 なぜ1000工程 → 03 産業地図と光半導体の用途地図 → 07 各工程の「誰が握っているか」 → 15 早見表。業界ニュースの登場人物と、そのシェアの読み方が入ります。</span><em>25 〜 35 分</em></div>
+        <div><b>設計・開発なら</b><span>05 設計からマスクまで → 06 リソ・サイクル → 08 工程を式で読む → 09 トランジスタ構造 → 14 歩留まり。「なぜその寸法・温度・時間なのか」が式で分かります。</span><em>50 〜 70 分</em></div>
+        <div><b>研究・製造なら</b><span>04 材料と結晶成長 → 07 の全カード → 08 の例題 → 10〜13 後工程・先端パッケージ・MEMS／化合物／センサの工程。ProcessLab を並走させると数字が手に入ります。</span><em>80 〜 150 分</em></div>
       </div>
     </div>
   </div>
@@ -379,6 +379,9 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
     <li><a href="#why" class="on">なぜ1000工程も要るのか</a></li>
     <li><a href="#scale">寸法の感覚をつかむ</a></li>
     <li><a href="#map">産業の全体地図</a></li>
+    <li class="g">材料と設計 / Before fab</li>
+    <li><a href="#mat">材料と結晶成長</a></li>
+    <li><a href="#design">設計からマスクまで</a></li>
     <li class="g">前工程 / Front-end</li>
     <li><a href="#litho">リソグラフィ・サイクル</a></li>
     <li><a href="#fe">前工程の各工程</a></li>
@@ -388,6 +391,7 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
     <li><a href="#beflow">後工程フロー</a></li>
     <li><a href="#be">後工程の各工程</a></li>
     <li><a href="#adv">先端パッケージ</a></li>
+    <li><a href="#special">MEMS・化合物・センサ</a></li>
     <li class="g">Reference</li>
     <li><a href="#yield">歩留まりとコスト</a></li>
     <li><a href="#table">工程別シェア早見表</a></li>
@@ -511,11 +515,274 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
     </div>
     <p class="src">TrendForce「4Q25 DRAM Revenue」2026年2月26日発表。DRAM総額535.8億ドル、Samsungは売上193.0億ドル・シェアを3.4ポイント伸ばして36.0%とし首位を奪回（SK hynix 172.2億ドル、Micron 119.8億ドル）。／「4Q25 NAND Flash」2026年3月3日発表（上位5社合計211.7億ドル）。<span class="mono">[R3]</span></p>
   </div>
+
+  <h3 style="margin-top:40px">光半導体の用途地図 ― この本の後半が働いている場所</h3>
+  <div class="prose">
+    <p>上の地図はロジックとメモリ ― 「計算する半導体」 ― が中心でした。この本の後半（第4・5・7・9部）が扱う<b>光半導体</b>は、同じ前工程・後工程の技術で作られながら、まったく別の顔ぶれの市場で使われています。<b>どの分野で、どの光源とどの検出器が組になっているか</b>を1枚にまとめておきます。市場規模の数字は調査会社ごとの定義差が大きいので、ここでは載せず、組み合わせの地図に絞りました。</p>
+  </div>
+  <div class="tw">
+    <table class="ftab">
+      <thead><tr><th>分野</th><th>代表的な用途</th><th>検出側</th><th>光源側</th><th>この本</th></tr></thead>
+      <tbody>
+        <tr><td>医療・バイオ</td><td>PET、X線撮影、蛍光顕微鏡・FLIM、血液分析、パルスオキシメータ</td><td>シンチレータ＋PMT／MPPC、X線 FPD、PMT・SPAD・sCMOS、PD</td><td>LED（赤・近赤外）、レーザー、ランプ</td><td>第5部 05・06、第9部</td></tr>
+        <tr><td>分析・計測</td><td>分光光度計、ガス分析、ラマン分光、質量分析のイオン検出</td><td>PD アレイ・PMT・冷却 CCD、InGaAs・MCT、MCP</td><td>重水素・ハロゲン・キセノンランプ、QCL、レーザー</td><td>第5部 07、第7部、第9部</td></tr>
+        <tr><td>産業・検査</td><td>外観検査、レーザー加工、変位計、半導体の故障解析</td><td>ラインセンサ・TDI、PSD、InGaAs カメラ（EMMI）</td><td>ファイバ・固体レーザー、LD、照明 LED</td><td>第5部 07、第8部、第9部</td></tr>
+        <tr><td>通信</td><td>光ファイバ通信、データセンターの光接続</td><td>InGaAs PIN／APD ＋ TIA</td><td>DFB-LD、VCSEL</td><td>第5部 07、第6部、第7部 06、第9部</td></tr>
+        <tr><td>車載・モビリティ</td><td>LiDAR、車載カメラ、車内センシング</td><td>SPAD・SiPM・APD、HDR CMOS センサ</td><td>905 nm／1550 nm 帯のパルス LD、VCSEL</td><td>第4部、第5部 03、第9部</td></tr>
+        <tr><td>科学・宇宙</td><td>ニュートリノ・素粒子実験、天文観測、放射光</td><td>大口径 PMT、SiPM、CCD／CMOS・赤外アレイ</td><td>（観測対象そのものが光源）</td><td>第5部 02・05、第4部</td></tr>
+        <tr><td>民生</td><td>スマートフォンのカメラ・3D センシング、照明、光ディスク</td><td>CMOS イメージセンサ、SPAD／iToF センサ</td><td>白色 LED、VCSEL、LD</td><td>第4部、第9部</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note" style="margin-top:18px"><b>ロジックとの違いは「最先端の微細化を必ずしも使わない」こと。</b>光半導体の性能を決めるのは、トランジスタの細かさよりも<b>材料（何 eV のバンドギャップか）・結晶の質（欠陥が暗電流を作る）・厚みや面積</b>です。だから、化合物半導体の結晶成長（04）、MEMS や裏面照射のような特殊な工程（13）の比重が大きく、少し前の世代の製造ラインで高付加価値の製品を作る、という産業の形になります。</div>
 </section>
 
 <!-- ============================================================ 4 -->
+<section id="mat">
+  <div class="sec-h"><span class="sec-n">04</span><h2>材料と結晶成長 ― ウェーハの前にあるもの</h2></div>
+  <p class="sec-sub">06 以降の工程はすべて「完全に近い単結晶の円盤」から始まります。その円盤がどう作られ、なぜその材料なのか ― シリコンの精製から、化合物半導体・ワイドギャップ材料の結晶成長まで ― をここで押さえます。第0部 05 の結晶の話の、製造側の続きです。</p>
+
+  <figure class="fig">
+    <div class="fig-h"><h3>砂からウェーハまで</h3><span class="k">Silicon supply chain</span></div>
+    <div class="stage">
+      <svg viewBox="0 0 760 170" role="img" aria-label="シリコンの原料からウェーハまでの流れ。珪石、金属シリコン（純度98〜99%）、トリクロロシランに変えて蒸留、多結晶シリコン（11N、シーメンス法）、単結晶化（CZ法またはFZ法）、ウェーハ（切断・研磨・エピ）の6段。" style="max-height:none">
+        <g fill="var(--surface)" stroke="var(--rule-2)">
+          <rect x="10" y="40" width="104" height="70" rx="6"/><rect x="136" y="40" width="104" height="70" rx="6"/><rect x="262" y="40" width="104" height="70" rx="6"/>
+          <rect x="388" y="40" width="104" height="70" rx="6"/><rect x="514" y="40" width="104" height="70" rx="6"/><rect x="640" y="40" width="104" height="70" rx="6" stroke="var(--si-2)"/>
+        </g>
+        <g font-size="11" font-weight="700" fill="var(--ink)" text-anchor="middle">
+          <text x="62" y="68">珪石</text><text x="188" y="68">金属シリコン</text><text x="314" y="68">SiHCl₃ に変換</text>
+          <text x="440" y="68">多結晶 Si</text><text x="566" y="68">単結晶化</text><text x="692" y="68">ウェーハ</text>
+        </g>
+        <g font-size="9.5" fill="var(--ink-2)" text-anchor="middle">
+          <text x="62" y="88">SiO₂（石英）</text><text x="188" y="88">純度 98〜99%</text><text x="314" y="88">蒸留で精製</text>
+          <text x="440" y="88">11N・シーメンス法</text><text x="566" y="88">CZ 法 ／ FZ 法</text><text x="692" y="88">切断・研磨・エピ</text>
+        </g>
+        <g stroke="var(--ink-2)" stroke-width="1.4" fill="none">
+          <path d="M114 75 H134"/><path d="M240 75 H260"/><path d="M366 75 H386"/><path d="M492 75 H512"/><path d="M618 75 H638"/>
+        </g>
+        <g fill="var(--ink-2)">
+          <path d="M129 71 L135 75 L129 79 Z"/><path d="M255 71 L261 75 L255 79 Z"/><path d="M381 71 L387 75 L381 79 Z"/><path d="M507 71 L513 75 L507 79 Z"/><path d="M633 71 L639 75 L633 79 Z"/>
+        </g>
+        <text x="62" y="30" font-size="9.5" fill="var(--muted)" text-anchor="middle">アーク炉で還元</text>
+        <text x="314" y="30" font-size="9.5" fill="var(--muted)" text-anchor="middle">化学で不純物を分ける</text>
+        <text x="566" y="30" font-size="9.5" fill="var(--muted)" text-anchor="middle">原子の並びをそろえる</text>
+        <text x="380" y="140" font-size="10" fill="var(--amber)" text-anchor="middle">純度 98% → 99.999999999%（11N） ― 不純物を 1,000 億分の 1 以下へ</text>
+        <text x="380" y="158" font-size="9.5" fill="var(--muted)" text-anchor="middle">「純度」を決めるのは化学（蒸留）、「並び」を決めるのは結晶成長</text>
+      </svg>
+    </div>
+    <p class="cap"><span class="cd">精製と結晶化は別の仕事です。<span class="key">不純物を減らすのは SiHCl₃（トリクロロシラン）という液体の蒸留</span>で、そのあと加熱したシリコン棒の上で水素と反応させて高純度の多結晶を析出させる（シーメンス法、約 1,100 ℃）。結晶の向きをそろえるのは次の CZ／FZ 法の仕事です。</span></p>
+  </figure>
+
+  <div class="step-b">
+    <div class="blk">
+      <h4>CZ 法 ― るつぼから引き上げる</h4>
+      <p>多結晶シリコンを石英るつぼで溶かし（約 1,420 ℃）、種結晶を浸して回転させながら引き上げる（07 のカード 00 と同じ方法）。最初に種を細く絞る<b>ネッキング</b>で、種を浸したときにできた転位を結晶の外へ逃がすのが、無転位の単結晶を得る鍵です（Dash の方法）。300 mm のインゴットは長さ 2 m 級になります。</p>
+      <p>CZ 法には、石英るつぼ（SiO₂）から<b>酸素が溶け込む</b>という宿命があります。結晶中の格子間酸素は 10¹⁷〜10¹⁸ /cm³ 級。これには功罪があり、<span class="key">析出した酸素の塊が金属不純物を捕まえてくれる（内部ゲッタリング）・結晶を機械的に強くする</span>一方、450 ℃ 付近の熱処理で電子を出す「サーマルドナー」になって抵抗率を狂わせる。融液に磁場をかけて対流を抑え、酸素の取り込みを制御するのが <b>MCZ 法</b>です。</p>
+    </div>
+    <div class="blk">
+      <h4>FZ 法 ― るつぼを使わない</h4>
+      <p>多結晶シリコンの棒の一部を高周波コイルで溶かし、その<b>溶けた帯を棒に沿って動かして</b>単結晶にする。るつぼに触れないので酸素は 10¹⁶ /cm³ 未満と少なく、帯を何度も通すと不純物が融液側に掃き出されるので、<span class="key">数 kΩ·cm を超える高抵抗の結晶</span>が作れます。直径は 200 mm が上限で、CZ より高価。</p>
+      <p>用途は、厚い空乏層が要る <b>PIN フォトダイオード・X 線や粒子の検出器</b>（第5部）と、高耐圧の<b>パワーデバイス</b>（第2部）。パワー向けには、中性子を当てて ³⁰Si を ³¹P に変える<b>中性子照射ドーピング（NTD）</b>で、ほかの方法では出せない均一なリン添加を行います（³¹Si の半減期 2.6 時間で ³¹P へ）。</p>
+    </div>
+  </div>
+
+  <figure class="fig">
+    <div class="fig-h"><h3>偏析 ― インゴットの上と下で濃度が違う</h3><span class="k">Scheil の式 C = kC₀(1−g)^(k−1)</span></div>
+    <div class="stage">
+      <svg viewBox="0 0 760 240" role="img" aria-label="CZ法インゴットの固化率gに対する不純物濃度（融液の初期濃度に対する比、対数）。ホウ素（偏析係数0.8）はほぼ一定、リン（0.35）は下へ行くほど増え、アンチモン（0.023）は大きく増える。" style="max-height:none">
+        <g stroke="var(--rule)" stroke-width="1"><path d="M80 40 V200 H620"/><path d="M80 72 H620 M80 136 H620" stroke-dasharray="2 4"/></g>
+        <g font-size="9.5" fill="var(--muted)">
+          <text x="74" y="76" text-anchor="end">1</text><text x="74" y="140" text-anchor="end">0.1</text><text x="74" y="204" text-anchor="end">0.01</text>
+          <text x="80" y="216" text-anchor="middle">0（上端）</text><text x="364.2" y="216" text-anchor="middle">0.5</text><text x="591.6" y="216" text-anchor="middle">0.9</text>
+        </g>
+        <text x="350" y="234" font-size="9.5" fill="var(--muted)" text-anchor="middle">固まった割合 g（インゴットの上から下へ）→</text>
+        <text x="30" y="120" font-size="9.5" fill="var(--muted)" text-anchor="middle" transform="rotate(-90 30 120)">結晶中の濃度 / 融液の初期濃度</text>
+        <polyline class="p1draw" style="--len:600" fill="none" stroke="var(--si-2)" stroke-width="2.2" points="80,78.202 136.84,77.617 193.68,76.962 250.53,76.219 307.37,75.363 364.21,74.349 421.05,73.109 477.89,71.509 534.74,69.255 563.16,67.656 591.58,65.402 620,61.549"/>
+        <polyline class="p1draw" style="--len:600;animation-delay:.3s" fill="none" stroke="var(--amber-2)" stroke-width="2.2" points="80,101.18 136.84,99.276 193.68,97.148 250.53,94.736 307.37,91.951 364.21,88.657 421.05,84.625 477.89,79.428 506.32,76.134 534.74,72.102 563.16,66.905 591.58,59.58 605.79,54.382 620,47.057"/>
+        <polyline class="p1draw" style="--len:600;animation-delay:.6s" fill="none" stroke="var(--d-metal)" stroke-width="2.2" points="80,176.85 136.84,173.99 193.68,170.79 250.53,167.16 307.37,162.98 364.21,158.03 421.05,151.97 477.89,144.15 506.32,139.2 534.74,133.14 563.16,125.33 591.58,114.32 605.79,106.51 620,95.499"/>
+        <g font-size="10">
+          <path d="M640 60 h18" stroke="var(--si-2)" stroke-width="2.4"/><text x="662" y="64" fill="var(--si)">B  k = 0.8</text>
+          <path d="M640 84 h18" stroke="var(--amber-2)" stroke-width="2.4"/><text x="662" y="88" fill="var(--amber)">P  k = 0.35</text>
+          <path d="M640 108 h18" stroke="var(--d-metal)" stroke-width="2.4"/><text x="662" y="112" fill="var(--ink-2)">Sb  k = 0.023</text>
+          <text x="640" y="144" fill="var(--muted)" font-size="9.5">k = 結晶中 ÷ 融液中</text>
+          <text x="640" y="160" fill="var(--muted)" font-size="9.5">（Trumbore 1960）</text>
+        </g>
+      </svg>
+    </div>
+    <p class="cap"><span class="cd">不純物は固まるとき融液側に残りやすい（偏析係数 k &lt; 1）ので、引き上げが進むほど融液が濃くなり、インゴットの下ほど濃くなる。90% 固まった位置の濃度は上端の、ホウ素で 1.6 倍、リンで 4.5 倍、アンチモンで 9.5 倍。<span class="key">k が 1 に近いホウ素は長さ方向にそろいやすい</span> ― p 型の CZ 基板が扱いやすい理由の一つで、リン添加のインゴットは抵抗率ごとにウェーハを選別して出荷します（混ざりきった融液を仮定した理想式。実際は融液の流れで少し変わります）。</span></p>
+  </figure>
+
+  <div class="step-b">
+    <div class="blk">
+      <h4>ウェーハの仕様書に書いてあること</h4>
+      <p>直径（300 mm）と厚さ（775 µm）、<b>面方位</b>（MOS 用はほぼ (100) ― 界面準位が少ないから、第0部 05）、<b>導電型と抵抗率</b>（ドーパントの種類と濃度、第2部 01）、<b>酸素濃度</b>、結晶の向きを示す切り欠き（300 mm はノッチ）、表面の平坦度と粒子数。<span class="key">抵抗率と酸素濃度の範囲が、同じ「シリコンウェーハ」をデバイスごとに別の製品にしている</span>のです。</p>
+      <p>酸化膜を挟んだ 3 層構造の <b>SOI ウェーハ</b>もあります。水素を注入した面で薄く割って別のウェーハに貼る「スマートカット」法で作られ、素子の下が絶縁体になるので寄生容量とリークが減る。高速ロジック・高耐圧・MEMS、そしてシリコンフォトニクスの光導波路の土台です。</p>
+    </div>
+    <div class="blk">
+      <h4>エピタキシャル成長 ― 下地の並びを引き継ぐ膜</h4>
+      <p>加熱したウェーハの上に SiH₄・SiH₂Cl₂・SiHCl₃ などを水素で運んで熱分解させると、<b>下地の結晶の向きをそのまま引き継いだ</b>単結晶の層が育ちます（温度は原料によって 600〜1,200 ℃ 程度）。基板とは違う濃度の層を、欠陥の少ない状態で積めるのが価値です。</p>
+      <p>使い方の定番は3つ: ①濃い基板の上に薄い濃度の層を載せ、CMOS のラッチアップ（寄生サイリスタの暴走）を防ぐ。②イメージセンサの画素を作る<b>高抵抗エピ層</b>（第4部 03 の「空乏層を深く広く」）。③パワーデバイスの<b>耐圧を受け持つドリフト層</b>（第2部 パワー）。同じ材料の上に積むホモエピに対し、違う材料を積むのが次のヘテロエピです。</p>
+    </div>
+  </div>
+
+  <figure class="fig">
+    <div class="fig-h"><h3>格子定数とバンドギャップ ― ヘテロ構造の設計図</h3><span class="k">300 K の代表値</span></div>
+    <div class="stage">
+      <svg viewBox="0 0 790 240" role="img" aria-label="横軸に格子定数、縦軸にバンドギャップをとった図。Si、GaP、Ge、GaAs、AlAs、InP、InAsの点。GaAsとAlAsはほぼ同じ格子定数で縦に並ぶ。GaAsからInAsへ向かうInGaAsの曲線が、InPの格子定数の縦線と交わる点がIn0.53Ga0.47As（約0.75eV）。右の軸は受光の端の波長。" style="max-height:none">
+        <g stroke="var(--rule)" stroke-width="1"><path d="M80 40 V200 H700"/><path d="M80 66.67 H700 M80 133.3 H700" stroke-dasharray="2 4"/></g>
+        <path d="M495.4 200 V40" stroke="var(--amber)" stroke-width="1" stroke-dasharray="4 3"/>
+        <text x="499" y="50" font-size="9.5" fill="var(--amber)">InP の格子定数</text>
+        <polyline fill="none" stroke="var(--si-2)" stroke-width="2" points="304.09,105 322.02,109.93 339.96,114.72 357.89,119.36 375.83,123.85 393.76,128.2 411.7,132.4 429.64,136.46 447.57,140.38 465.51,144.14 483.44,147.77 501.38,151.24 519.31,154.58 537.25,157.76 555.19,160.8 573.12,163.7 591.06,166.45 608.99,169.06 626.93,171.52 644.86,173.83 662.8,176"/>
+        <path d="M304.09 105.07 L311.17 56" stroke="var(--d-metal)" stroke-width="2"/>
+        <g stroke="var(--ink-2)" stroke-width="1.6">
+          <circle cx="107.46" cy="125.33" r="5" fill="var(--surface)"/>
+          <circle cx="125.17" cy="49.33" r="5" fill="var(--surface)"/>
+          <circle cx="308.51" cy="156" r="5" fill="var(--surface)"/>
+          <circle cx="311.17" cy="56" r="5" fill="var(--surface)"/>
+          <circle cx="304.09" cy="105.07" r="5" fill="var(--ink-2)"/>
+          <circle cx="495.4" cy="110.4" r="5" fill="var(--ink-2)"/>
+          <circle cx="662.8" cy="176.4" r="5" fill="var(--ink-2)"/>
+        </g>
+        <circle cx="495.4" cy="150.08" r="5" fill="var(--amber-2)"/>
+        <g font-size="10" fill="var(--ink)">
+          <text x="116" y="129">Si</text>
+          <text x="134" y="53">GaP</text>
+          <text x="300" y="168" text-anchor="end">Ge</text>
+          <text x="296" y="109" text-anchor="end">GaAs</text>
+          <text x="320" y="60">AlAs</text>
+          <text x="504" y="106">InP</text>
+          <text x="672" y="180">InAs</text>
+        </g>
+        <text x="320" y="84" font-size="9.5" fill="var(--ink-2)">AlGaAs（格子定数がほぼ同じ）</text>
+        <text x="504" y="138" font-size="9.5" fill="var(--amber)">In₀.₅₃Ga₀.₄₇As ≈ 0.75 eV</text>
+        <text x="560" y="196" font-size="9.5" fill="var(--si)">InGaAs</text>
+        <g font-size="9.5" fill="var(--muted)">
+          <text x="74" y="204" text-anchor="end">0</text><text x="74" y="137" text-anchor="end">1.0</text><text x="74" y="70" text-anchor="end">2.0 eV</text>
+          <text x="80" y="216" text-anchor="middle">0.540</text><text x="257" y="216" text-anchor="middle">0.560</text><text x="434" y="216" text-anchor="middle">0.580</text><text x="611" y="216" text-anchor="middle">0.600 nm</text>
+          <text x="706" y="70">620 nm</text><text x="706" y="137">1.24 µm</text><text x="706" y="170">2.48 µm</text>
+        </g>
+        <text x="390" y="234" font-size="9.5" fill="var(--muted)" text-anchor="middle">格子定数 →　　（右の目盛りは λ = 1240/E<tspan font-size="7" dy="2">g</tspan><tspan dy="-2"> の受光の端）　　● 直接遷移　○ 間接遷移</tspan></text>
+      </svg>
+    </div>
+    <p class="cap"><span class="cd">縦に並んだ点どうし（GaAs と AlAs、InP と In₀.₅₃Ga₀.₄₇As）は格子定数がそろっているので、<span class="key">欠陥を作らずに積める</span>。バンドギャップだけを変えて積めるので、電子や光を閉じ込める構造（第2部 ヘテロ接合、第9部 レーザー）が作れる。InP に載る InGaAs が光通信の 1.3／1.55 µm 帯の受光材料になっているのはこの図の交点のおかげです（組成の読み方はベガード則の線形近似、バンドギャップは曲がりを含む近似式）。</span></p>
+  </figure>
+
+  <div class="step-b">
+    <div class="blk">
+      <h4>格子不整合と臨界膜厚</h4>
+      <p>格子定数の違う結晶を積むと、上の層は下の並びに合わせて<b>縮んだり伸びたり（歪み）</b>しながら育ちます。薄いうちは歪みで持ちこたえますが、ある厚さ（<b>臨界膜厚</b>、Matthews–Blakeslee）を超えると界面に転位が入って歪みが緩和し、その転位が暗電流や寿命低下の原因になる。不整合の目安は Ge on Si で 4.2%、GaAs on Si で 4.1%、InAs on InP で 3.2%。</p>
+      <p>逆に歪みを味方にする技術もあります。SiGe の上に薄い Si を載せて伸ばす<b>歪みシリコン</b>は電子の移動度を上げ、ロジックの性能向上に使われてきました。<span class="key">格子の不一致は「避けるもの」であり「使うもの」</span>でもあります。</p>
+    </div>
+    <div class="blk">
+      <h4>化合物半導体の結晶と、2 つのエピ装置</h4>
+      <p>GaAs・InP のバルク結晶は、ヒ素やリンが蒸発しないよう融液の表面を酸化ホウ素（B₂O₃）で封じて引き上げる <b>LEC 法</b>や、るつぼごとゆっくり冷やす <b>VGF 法</b>で作ります。基板の直径は Si の 300 mm に対して、GaAs で 150 mm 級、InP で 100 mm 級が中心です。</p>
+      <p>その上の機能層は 2 種類の装置で積みます。<b>MOCVD</b>（有機金属気相成長）はトリメチルガリウム・トリメチルインジウムなどの有機金属と AsH₃・PH₃・NH₃ を流して熱分解させる方式で、LED・LD・VCSEL・HEMT の量産の主力。<b>MBE</b>（分子線エピタキシー）は 10⁻⁸ Pa 級の超高真空で原料を分子線にして当てる方式で、成長しながら電子線の回折（RHEED）で原子層を1層ずつ数えられる。1 秒に 1 原子層（GaAs で 0.28 nm）なら <b>約 1 µm/時</b>。原子層単位の精度が要る構造（QCL など）の研究と生産に使われます。</p>
+    </div>
+  </div>
+
+  <div class="step-b">
+    <div class="blk">
+      <h4>SiC ― 溶かせない結晶</h4>
+      <p>SiC は常圧では融けずに分解・昇華するので、CZ 法が使えません。2,000 ℃ を超える温度で原料の粉末を昇華させ、少し低温の種結晶の上に再結晶させる<b>昇華法（改良レーリー法）</b>で育てます。成長は遅く、基板は 150 mm が主流で 200 mm が立ち上がりつつあります（07 のカード 00 の注記と同じ）。結晶に残る<b>マイクロパイプ</b>や<b>基底面転位</b>は、パワーデバイスの信頼性（通電で欠陥が広がる劣化）に直結するので、欠陥密度が製品の格を決めます。</p>
+    </div>
+    <div class="blk">
+      <h4>GaN ― 他人の基板の上に育てる</h4>
+      <p>GaN は良質なバルク基板が高価なため、多くは<b>サファイア・SiC・Si の上にヘテロエピ</b>で育てます（LED はサファイア、高周波 HEMT は SiC、パワー HEMT は Si が代表）。サファイアとの格子不整合は約 16% と大きく、長く良質な膜ができませんでしたが、<span class="key">低温で薄い AlN の緩衝層を挟む方法（天野ら 1986）</span>が突破口になり、青色 LED（2014 年ノーベル物理学賞）へつながりました。今も GaN の膜には多くの転位が残っていて、それでも光る・動くのが GaN の不思議な強さです。</p>
+    </div>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（04）</span>
+    <p><b>問1.</b> リン添加の CZ インゴットで、上端の抵抗率が 10 Ω·cm だった。90% 固まった位置の抵抗率はおよそいくつか（移動度の濃度依存は無視できる濃度域とする）。</p>
+    <p><b>解.</b> Scheil の式で濃度は (1−0.9)<sup>k−1</sup> = 0.1<sup>−0.65</sup> = <b>4.5 倍</b>、抵抗率はその逆数で <b>約 2.2 Ω·cm</b>。1 本のインゴットから抵抗率の違うウェーハがとれるので、仕様の範囲ごとに切り分けて出荷します。ホウ素なら 0.1<sup>−0.2</sup> = 1.6 倍で済む。</p>
+    <p><b>問2.</b> 厚さ 300 µm の PIN フォトダイオード（X 線・粒子検出器）を全部空乏させる電圧を、n 型の抵抗率 10 kΩ·cm（FZ）・1 kΩ·cm・10 Ω·cm（普通の CZ）で比べよ（片側接合、V ≈ qN d²/(2ε)、移動度 1,350 cm²/V·s）。</p>
+    <p><b>解.</b> N = 1/(qµρ) で 4.6×10¹¹・4.6×10¹²・4.6×10¹⁴ /cm³、全空乏電圧は <b>32 V・322 V・約 32,000 V</b>。<span class="key">厚い検出器が作れるかどうかは、結晶の純度（抵抗率）でほぼ決まる</span> ― X 線や粒子の検出器が FZ の高抵抗シリコンを使う理由がこの桁の違いです（第0部 01 の濃度の物差しの「高抵抗 FZ」がこれ）。</p>
+  </div>
+
+  <div class="note w" style="margin-top:22px"><b>この章の数値は代表値です。</b>偏析係数・酸素濃度・成長温度・基板の直径は、方式と世代で幅があります。格子定数とバンドギャップは 300 K の教科書値（Sze & Ng、Ioffe 物性データベース）で、混晶の値は線形の近似です。</div>
+</section>
+
+<!-- ============================================================ 5 -->
+<section id="design">
+  <div class="sec-h"><span class="sec-n">05</span><h2>設計からマスクまで ― 工場に渡すのは「図形のデータ」</h2></div>
+  <p class="sec-sub">工場（ファウンドリ）が受け取るのは、回路図でも仕様書でもなく、各層の<b>図形データ</b>です。第3部の論理回路と第6部のアナログ回路が、どういう手順でその図形に落とされ、マスクになって 06 の露光に届くのかをたどります。</p>
+
+  <figure class="fig">
+    <div class="fig-h"><h3>2 本の道が、1 つの図形データに合流する</h3><span class="k">Design flow</span></div>
+    <div class="stage">
+      <svg viewBox="0 0 760 240" role="img" aria-label="設計の流れ。上段のデジタルはRTL記述、論理合成、配置配線、タイミング検証。下段のアナログは回路図、SPICEシミュレーション、手でのレイアウト、寄生抽出と再検証。両方がDRCとLVSの物理検証に合流し、GDSIIのテープアウトを経て、下の段のOPC、マスク描画、マスク検査、露光へ進む。" style="max-height:none">
+        <g font-size="10" fill="var(--muted)" font-weight="600">
+          <text x="10" y="54">デジタル</text><text x="10" y="134">アナログ</text>
+        </g>
+        <g fill="var(--surface)" stroke="var(--si-2)">
+          <rect x="70" y="30" width="92" height="46" rx="5"/><rect x="176" y="30" width="92" height="46" rx="5"/><rect x="282" y="30" width="92" height="46" rx="5"/><rect x="388" y="30" width="92" height="46" rx="5"/>
+        </g>
+        <g fill="var(--surface)" stroke="var(--amber-2)">
+          <rect x="70" y="110" width="92" height="46" rx="5"/><rect x="176" y="110" width="92" height="46" rx="5"/><rect x="282" y="110" width="92" height="46" rx="5"/><rect x="388" y="110" width="92" height="46" rx="5"/>
+        </g>
+        <g fill="var(--surface-2)" stroke="var(--ink-2)">
+          <rect x="516" y="70" width="100" height="46" rx="5"/><rect x="636" y="70" width="104" height="46" rx="5"/>
+        </g>
+        <g font-size="10.5" font-weight="700" fill="var(--ink)" text-anchor="middle">
+          <text x="116" y="50">RTL 記述</text><text x="222" y="50">論理合成</text><text x="328" y="50">配置配線</text><text x="434" y="50">タイミング</text>
+          <text x="116" y="130">回路図</text><text x="222" y="130">SPICE</text><text x="328" y="130">手で配置</text><text x="434" y="130">寄生抽出</text>
+          <text x="566" y="90">DRC / LVS</text><text x="688" y="90">GDSII</text>
+        </g>
+        <g font-size="9" fill="var(--ink-2)" text-anchor="middle">
+          <text x="116" y="66">Verilog など</text><text x="222" y="66">セルに置き換え</text><text x="328" y="66">P&amp;R</text><text x="434" y="66">検証（STA）</text>
+          <text x="116" y="146">トランジスタ</text><text x="222" y="146">BSIM・PDK</text><text x="328" y="146">レイアウト</text><text x="434" y="146">・再検証</text>
+          <text x="566" y="106">物理検証</text><text x="688" y="106">テープアウト</text>
+        </g>
+        <g stroke="var(--ink-2)" stroke-width="1.3" fill="none">
+          <path d="M162 53 H174 M268 53 H280 M374 53 H386"/><path d="M162 133 H174 M268 133 H280 M374 133 H386"/>
+          <path d="M480 53 H498 V86 H514"/><path d="M480 133 H498 V100 H514"/><path d="M616 93 H634"/>
+          <path d="M688 116 V180 H632"/>
+        </g>
+        <rect x="120" y="172" width="510" height="40" rx="5" fill="var(--surface)" stroke="var(--rule-2)"/>
+        <text x="375" y="190" font-size="10.5" fill="var(--ink)" text-anchor="middle" font-weight="700">OPC（光の歪みを先回りで補正） → マスク描画（電子線） → マスク検査</text>
+        <text x="375" y="205" font-size="9.5" fill="var(--ink-2)" text-anchor="middle">→ 06 の露光でウェーハへ（4 倍の原版を 1/4 に縮小投影）</text>
+        <text x="740" y="230" font-size="9" fill="var(--muted)" text-anchor="end">どちらの道も、ファウンドリが配る PDK（デザインルール・モデル・セル）を前提に進む</text>
+      </svg>
+    </div>
+    <p class="cap"><span class="cd">デジタルは「言葉で書いて機械に並べさせる」、アナログは「人がトランジスタを 1 個ずつ置く」。流儀は正反対でも、最後は同じ図形データ（GDSII／OASIS）に合流し、同じ検証を通って工場へ渡る。<span class="key">この合流点（テープアウト）より後は、図形を 1 本直すのにもマスクの作り直しが要る</span> ― だから検証に時間をかけます。</span></p>
+  </figure>
+
+  <div class="step-b">
+    <div class="blk">
+      <h4>デジタルの道 ― 言葉から図形へ</h4>
+      <p>回路の振る舞いを <b>Verilog・VHDL</b> などのハードウェア記述言語で書き（RTL）、シミュレーションで機能を確かめる。<b>論理合成</b>ツールが、その記述を工場が用意した部品（スタンダードセル: NAND・フリップフロップなど、第3部で組んだものの実物）の接続に置き換え、<b>配置配線（P&amp;R）</b>ツールが何億個ものセルをチップの上に並べて配線します。</p>
+      <p>最後に<b>静的タイミング解析（STA）</b>で、全部の経路が 1 拍に収まるかを確かめる ― 第3部 04 の「1拍の予算」を、全経路について機械で数える作業です。消費電力（第3部 01 の αCV²f）と、電源配線の電圧降下も同じ段階で詰めます。</p>
+    </div>
+    <div class="blk">
+      <h4>アナログの道 ― 人がトランジスタを置く</h4>
+      <p>アンプや基準電圧（第6部）は、トランジスタ単位の回路図を描き、<b>SPICE</b> で電圧・電流を数値計算して設計します。SPICE の中のトランジスタは、第2部の物理を実測に合うよう何百ものパラメータで表した<b>コンパクトモデル</b>（業界標準は <b>BSIM</b>）で、ファウンドリが自社の工程に合わせて提供します。</p>
+      <p>レイアウトは人が描きます。差動対やミラーの精度（第6部 03・04 のミスマッチ）は「同じ向き・同じ周囲・共通重心」という描き方で決まるからです。描いた図形から配線の寄生容量・抵抗を抽出して、もう一度 SPICE で確かめる（ポストレイアウト検証）。</p>
+    </div>
+  </div>
+
+  <div class="step-b">
+    <div class="blk">
+      <h4>PDK と TCAD ― 工場と設計者の約束</h4>
+      <p><b>PDK</b>（プロセス・デザイン・キット）は、ファウンドリが設計者に渡す「この工場で作れるもの」の定義一式です: 図形の最小幅や間隔の規則（デザインルール）、SPICE モデル、スタンダードセル、入出力回路。設計者は工場の中身を知らなくても、PDK を守れば作れる ― これが 03 の水平分業を成り立たせている仕組みです。</p>
+      <p>PDK のモデルを作る側で使うのが <b>TCAD</b>（工程とデバイスの物理シミュレーション）です。注入・拡散・酸化を解いて断面を作り（プロセスシミュレーション）、その断面でポアソン方程式と電流の式を解く（デバイスシミュレーション）。<span class="key">ProcessLab と SemiLab は、この TCAD を最小限に切り出した教材版</span>です。</p>
+    </div>
+    <div class="blk">
+      <h4>物理検証とマスク</h4>
+      <p><b>DRC</b>（デザインルールチェック）は図形が規則を守っているか、<b>LVS</b>（レイアウト対回路図）は図形から読み取った回路が意図した回路図と一致するかを、全図形について確かめます。通ったデータがテープアウトされ、マスク工場で<b>OPC</b>（光の回折で角が丸まる・線が細るのを見越して、図形をあらかじめ歪めておく補正）をかけられ、電子線でマスクに描かれ、欠陥検査を経て露光機に届きます。先端ロジックでは 1 製品あたり数十枚のマスクが要り、マルチパターニングを使う層ではさらに増えます（07 のカード 04 の注記）。</p>
+    </div>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（05）</span>
+    <p><b>問.</b> 露光機はマスクの像を 1/4 に縮小して焼き付け、1 回に露光できる範囲（フィールド）はウェーハ上で 26 mm × 33 mm。マスク上ではどの大きさか。ウェーハ上で幅 20 nm の線は、マスク上で何 nm か。</p>
+    <p><b>解.</b> 4 倍して <b>104 mm × 132 mm</b> ― 一辺 152 mm（6 インチ）の石英のマスクにちょうど収まる寸法です。20 nm の線はマスク上で <b>80 nm</b>。<span class="key">4 倍の原版にしておくと、マスク上の欠陥や寸法誤差もウェーハ上では 1/4 になる</span> ― 縮小投影の大きな利点です。それでも OPC の補正図形はさらに細かく、マスク描画は電子線で数時間〜十数時間かかります。</p>
+  </div>
+</section>
+
+<!-- ============================================================ 6 -->
 <section id="litho">
-  <div class="sec-h"><span class="sec-n">04</span><h2>前工程の心臓部 ― リソグラフィ・サイクル</h2></div>
+  <div class="sec-h"><span class="sec-n">06</span><h2>前工程の心臓部 ― リソグラフィ・サイクル</h2></div>
   <p class="sec-sub">前工程は、下の8ステップを配線層の数だけ繰り返す構造になっています。まずこのサイクルを断面で見てください。次章で扱う工程の多くは、この図のどこかに対応します。</p>
 
   <figure class="fig">
@@ -630,8 +897,8 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
 
 <!-- ============================================================ 5 -->
 <section id="fe">
-  <div class="sec-h"><span class="sec-n">05</span><h2>前工程 ― 各工程の詳細</h2></div>
-  <p class="sec-sub">ここからは工程ごとに「なんのために／なにをして／誰が装置と材料を握っているか」を順に見ます。<a href="#litho">04のアニメーション</a>の8ステップは、このうち <b>02 成膜 → 03 レジスト塗布 → 04 露光 → 05 現像 → 06 エッチング → 09 洗浄</b> に対応します。数値の性格については <a href="#table">工程別シェア早見表</a> の冒頭注記を参照してください。</p>
+  <div class="sec-h"><span class="sec-n">07</span><h2>前工程 ― 各工程の詳細</h2></div>
+  <p class="sec-sub">ここからは工程ごとに「なんのために／なにをして／誰が装置と材料を握っているか」を順に見ます。<a href="#litho">06のアニメーション</a>の8ステップは、このうち <b>02 成膜 → 03 レジスト塗布 → 04 露光 → 05 現像 → 06 エッチング → 09 洗浄</b> に対応します。数値の性格については <a href="#table">工程別シェア早見表</a> の冒頭注記を参照してください。</p>
 
   <div class="steps">
 
@@ -1174,11 +1441,11 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
 @media (prefers-reduced-motion: reduce){.p1draw,.p1rise,.p1flow{animation:none}}
 </style>
 <section id="phys">
-  <div class="sec-h"><span class="sec-n">06</span><h2>工程を式で読む ― 6本の式で「なぜその条件か」が分かる</h2></div>
-  <p class="sec-sub">05では各工程を「なんのために／なにをして／誰が握っているか」で見ました。ここでは同じ工程を、<b>数を決めている式</b>で読み直します。式は6本だけで、どれも教科書の標準式、そして <a href="ProcessLab/index.html">ProcessLab</a> が実際に計算している式です。この章の数値はすべて ProcessLab の実装そのもので計算した値なので、ラボの画面と一致します。</p>
+  <div class="sec-h"><span class="sec-n">08</span><h2>工程を式で読む ― 6本の式で「なぜその条件か」が分かる</h2></div>
+  <p class="sec-sub">07では各工程を「なんのために／なにをして／誰が握っているか」で見ました。ここでは同じ工程を、<b>数を決めている式</b>で読み直します。式は6本だけで、どれも教科書の標準式、そして <a href="ProcessLab/index.html">ProcessLab</a> が実際に計算している式です。この章の数値はすべて ProcessLab の実装そのもので計算した値なので、ラボの画面と一致します。</p>
 
   <div class="prose">
-    <p>読む順番には意味があります。<b>①露光</b>が「どこに」を決め、<b>②酸化・⑥成膜</b>が「何を・どれだけの厚みで」置き、<b>③注入</b>が「どの深さに・どれだけ」不純物を入れ、<b>④熱</b>がそれを広げ、<b>⑤CMP</b>が次の層のために平らに戻す ― 04 のサイクルを一周する順です。式を知ると、レシピに並んだ「1000℃・30分」「80 keV・10¹³」といった数字が、なぜその値なのかが読めるようになります。</p>
+    <p>読む順番には意味があります。<b>①露光</b>が「どこに」を決め、<b>②酸化・⑥成膜</b>が「何を・どれだけの厚みで」置き、<b>③注入</b>が「どの深さに・どれだけ」不純物を入れ、<b>④熱</b>がそれを広げ、<b>⑤CMP</b>が次の層のために平らに戻す ― 06 のサイクルを一周する順です。式を知ると、レシピに並んだ「1000℃・30分」「80 keV・10¹³」といった数字が、なぜその値なのかが読めるようになります。</p>
   </div>
 
   <div class="tw" style="margin-top:18px;overflow-x:auto">
@@ -1253,7 +1520,7 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
   <div class="ex">
     <span class="exh">例題 ― 手で一度解く</span>
     <p><b>問.</b> ArF 液浸（λ=193nm、NA=1.35）で、1回露光の理論下限 k₁=0.25 のとき描ける最小ハーフピッチは？ EUV（13.5nm、NA 0.33）で k₁=0.30 ならどうか。</p>
-    <p><b>解.</b> ArF液浸: 0.25×193/1.35 = <b>35.7 nm</b>。EUV: 0.30×13.5/0.33 = <b>12.3 nm</b>。つまり ArF 液浸は理論下限でも 36nm を切れず、それより細い層は2〜4回に分けて描く（マルチパターニング、05 露光の注）しかない。EUV なら1回で 12nm 級に届く ― <b>EUV の経済的価値は「工程数の削減」</b>だ、という 05 の記述の数値的な裏付けです。</p>
+    <p><b>解.</b> ArF液浸: 0.25×193/1.35 = <b>35.7 nm</b>。EUV: 0.30×13.5/0.33 = <b>12.3 nm</b>。つまり ArF 液浸は理論下限でも 36nm を切れず、それより細い層は2〜4回に分けて描く（マルチパターニング、07 露光の注）しかない。EUV なら1回で 12nm 級に届く ― <b>EUV の経済的価値は「工程数の削減」</b>だ、という 07 の記述の数値的な裏付けです。</p>
   </div>
 
   <!-- ② 熱酸化 -->
@@ -1359,7 +1626,7 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
     </div>
     <div class="blk">
       <h4>「熱くするが短時間」の数値的な意味</h4>
-      <p>注入後のアニールは、結晶を直し不純物を格子位置に入れる（活性化する）ために高温が要る。でも拡散はさせたくない。D が温度の指数で、広がりが √t であることを使うと、<b>温度を少し上げて時間を桁で縮める</b>のが得だと分かります ― 05 のスパイクアニール・レーザーアニールの理屈です。</p>
+      <p>注入後のアニールは、結晶を直し不純物を格子位置に入れる（活性化する）ために高温が要る。でも拡散はさせたくない。D が温度の指数で、広がりが √t であることを使うと、<b>温度を少し上げて時間を桁で縮める</b>のが得だと分かります ― 07 のスパイクアニール・レーザーアニールの理屈です。</p>
     </div>
   </div>
 
@@ -1424,7 +1691,7 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
     </div>
     <div class="blk">
       <h4>なぜ深い穴の底まで均一なのか</h4>
-      <p>自己停止反応は「来た分だけ積もる」のではなく「表面が埋まったら止まる」ので、原料を十分待てば、<b>ガスが届きにくい深い穴の底も入口と同じ厚み</b>になります（コンフォーマル）。3D NAND のメモリホール、DRAM のキャパシタ、GAA のシート間の隙間 ― 05 と 07 の立体構造は、どれも ALD 抜きには作れません。代償は遅さで、1サイクル数秒×数十サイクル。成膜装置の中で ALD の比率が急上昇したのは、この遅さを払ってでも「数える」精度が要るようになったからです。</p>
+      <p>自己停止反応は「来た分だけ積もる」のではなく「表面が埋まったら止まる」ので、原料を十分待てば、<b>ガスが届きにくい深い穴の底も入口と同じ厚み</b>になります（コンフォーマル）。3D NAND のメモリホール、DRAM のキャパシタ、GAA のシート間の隙間 ― 07 と 09 の立体構造は、どれも ALD 抜きには作れません。代償は遅さで、1サイクル数秒×数十サイクル。成膜装置の中で ALD の比率が急上昇したのは、この遅さを払ってでも「数える」精度が要るようになったからです。</p>
     </div>
   </div>
 
@@ -1470,7 +1737,7 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
 
 <!-- ============================================================ 7 -->
 <section id="tr">
-  <div class="sec-h"><span class="sec-n">07</span><h2>トランジスタ構造の進化</h2></div>
+  <div class="sec-h"><span class="sec-n">09</span><h2>トランジスタ構造の進化</h2></div>
   <p class="sec-sub">微細化が進むと、ゲートが薄い膜1枚では電流を止めきれなくなります。この20年の構造変化は、すべて「ゲートがチャネルを何面から掴めるか」という一点の改良です。</p>
 
   <figure class="fig">
@@ -1554,7 +1821,7 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
 
 <!-- ============================================================ 7 -->
 <section id="beflow">
-  <div class="sec-h"><span class="sec-n">08</span><h2>後工程 ― ウェーハを「部品」にする</h2></div>
+  <div class="sec-h"><span class="sec-n">10</span><h2>後工程 ― ウェーハを「部品」にする</h2></div>
   <p class="sec-sub">後工程の目的は3つに集約されます。①切り分ける、②電気をチップの外へ引き出す、③壊れないよう守る。かつては地味な仕上げ工程でしたが、微細化が鈍った今は<b>性能を伸ばす主戦場</b>になりました。</p>
 
   <figure class="fig">
@@ -1692,7 +1959,7 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
 
 <!-- ============================================================ 8 -->
 <section id="be">
-  <div class="sec-h"><span class="sec-n">09</span><h2>後工程 ― 各工程の詳細</h2></div>
+  <div class="sec-h"><span class="sec-n">11</span><h2>後工程 ― 各工程の詳細</h2></div>
   <p class="sec-sub">前工程は「作り込む」ため装置も材料も欧米・日本の寡占ですが、後工程は労働集約性が高く、台湾・中国・東南アジアの受託企業（OSAT）が担う構図です。ただし先端パッケージだけは例外で、ファウンドリが自ら握りにきています。</p>
 
   <div class="steps">
@@ -1899,7 +2166,7 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
 
 <!-- ============================================================ 9 -->
 <section id="adv">
-  <div class="sec-h"><span class="sec-n">10</span><h2>先端パッケージ ― 後工程が主役になった理由</h2></div>
+  <div class="sec-h"><span class="sec-n">12</span><h2>先端パッケージ ― 後工程が主役になった理由</h2></div>
   <p class="sec-sub">微細化の効きが鈍り、AI向けチップは1個のダイに収まらなくなりました。そこで「小さくする」代わりに「複数のチップを極限まで近づけて束ねる」方向へ舵が切られています。</p>
 
   <div class="prose">
@@ -1985,9 +2252,81 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
   </div>
 </section>
 
-<!-- ============================================================ 10 -->
+<!-- ============================================================ 13 -->
+<section id="special">
+  <div class="sec-h"><span class="sec-n">13</span><h2>MEMS・化合物・センサ ― ロジックとは違う作り方</h2></div>
+  <p class="sec-sub">ここまでの工程はロジックとメモリの王道でした。光半導体とセンサ（03 の用途地図）は、同じ道具を使いながら、<b>厚く彫る・材料を変える・裏から光を入れる</b>という別の工夫で作られます。3 つの系統を順に見ます。</p>
+
+  <figure class="fig">
+    <div class="fig-h"><h3>シリコンを深く彫る 2 つの方法</h3><span class="k">Bulk micromachining</span></div>
+    <div class="stage">
+      <svg viewBox="0 0 760 230" role="img" aria-label="左はKOHによる異方性ウェットエッチング。(100)シリコンのマスク開口の下に、{111}面で止まる54.7度の斜面を持つ台形の穴ができる。右はボッシュ法の深掘りドライエッチング。SF6による短いエッチングとC4F8による側壁保護を交互に繰り返し、側壁に細かい波（スキャロップ）を残しながら垂直で深い溝ができる。" style="max-height:none">
+        <text x="190" y="24" font-size="11" font-weight="700" fill="var(--ink)" text-anchor="middle">① KOH（異方性ウェットエッチ）</text>
+        <text x="570" y="24" font-size="11" font-weight="700" fill="var(--ink)" text-anchor="middle">② ボッシュ法（深掘りドライエッチ）</text>
+        <rect x="40" y="60" width="300" height="130" fill="var(--d-si)"/>
+        <rect x="40" y="52" width="90" height="8" fill="var(--d-film)"/><rect x="250" y="52" width="90" height="8" fill="var(--d-film)"/>
+        <polygon points="130,60 179.5,130 200.5,130 250,60" fill="var(--surface)" stroke="var(--ink-2)" stroke-width="1.2"/>
+        <rect x="420" y="60" width="300" height="130" fill="var(--d-si)"/>
+        <rect x="420" y="52" width="120" height="8" fill="var(--d-film)"/><rect x="600" y="52" width="120" height="8" fill="var(--d-film)"/>
+        <rect x="546" y="60" width="48" height="110" fill="var(--surface)"/>
+        <polyline fill="none" stroke="var(--ink-2)" stroke-width="1.2" points="540,60 546,65 540,70 546,75 540,80 546,85 540,90 546,95 540,100 546,105 540,110 546,115 540,120 546,125 540,130 546,135 540,140 546,145 540,150 546,155 540,160 546,165 540,170"/>
+        <polyline fill="none" stroke="var(--ink-2)" stroke-width="1.2" points="600,60 594,65 600,70 594,75 600,80 594,85 600,90 594,95 600,100 594,105 600,110 594,115 600,120 594,125 600,130 594,135 600,140 594,145 600,150 594,155 600,160 594,165 600,170"/>
+        <path d="M540 170 H600" stroke="var(--ink-2)" stroke-width="1.2"/>
+        <path d="M148 86 A 22 22 0 0 1 170 86" stroke="var(--amber)" stroke-width="1.2" fill="none"/>
+        <g font-size="10">
+          <text x="190" y="46" fill="var(--ink-2)" text-anchor="middle">SiN マスクの開口</text>
+          <text x="190" y="84" fill="var(--amber)" text-anchor="middle">54.7°</text>
+          <text x="190" y="150" fill="var(--ink)" text-anchor="middle">{111} 面で止まる斜面</text>
+          <text x="190" y="166" fill="var(--ink-2)" text-anchor="middle">(100) Si ・ 速さの比は数百対 1</text>
+          <text x="570" y="46" fill="var(--ink-2)" text-anchor="middle">マスクの開口</text>
+          <text x="660" y="100" fill="var(--ink)" text-anchor="middle">垂直・深い溝</text>
+          <text x="660" y="116" fill="var(--ink-2)" text-anchor="middle">アスペクト比</text>
+          <text x="660" y="132" fill="var(--ink-2)" text-anchor="middle">数十対 1</text>
+          <text x="480" y="100" fill="var(--ink-2)" text-anchor="middle">側壁の</text>
+          <text x="480" y="116" fill="var(--ink-2)" text-anchor="middle">細かい波</text>
+        </g>
+        <text x="570" y="210" font-size="9.5" fill="var(--muted)" text-anchor="middle">SF₆ で少し削る ⇄ C₄F₈ で壁を覆う、を数百回繰り返す</text>
+        <text x="190" y="210" font-size="9.5" fill="var(--muted)" text-anchor="middle">結晶の向きで削れる速さが違うことを使う</text>
+      </svg>
+    </div>
+    <p class="cap"><span class="cd">KOH は結晶面で止まるので、形が結晶で決まる（斜面は必ず 54.7°）。ボッシュ法は結晶によらず垂直に彫れるので、細かい深い構造を密に並べられる。<span class="key">加速度センサ・ジャイロ・圧力センサ・マイクロミラー（MEMS）の可動部は、この 2 つの「深く彫る」技術で作られます</span>（寸法は模式）。</span></p>
+  </figure>
+
+  <div class="step-b">
+    <div class="blk">
+      <h4>MEMS ― 動く構造をシリコンで作る</h4>
+      <p>MEMS（微小電気機械システム）は、半導体の工程でばねやおもり、薄い膜を作り込む技術です。上の2つでウェーハを彫る<b>バルクマイクロマシニング</b>のほかに、薄膜を積んで下の<b>犠牲層</b>（多くは SiO₂）をフッ酸で溶かし、浮いた構造を残す<b>表面マイクロマシニング</b>があります。乾かすとき水の表面張力で構造が基板に貼りつく「スティクション」が定番の難所で、07 のカード 09 の「パターン倒れ」と同じ物理です。</p>
+      <p>可動部は封じる必要があるので、ウェーハどうしを貼り合わせて蓋をします（ガラスと Si を電圧と熱でつなぐ<b>陽極接合</b>、Si どうしを直接つなぐ<b>フュージョン接合</b>）。動きは容量の変化やピエゾ抵抗で読みます: 加速度センサ（おもりのずれ）、ジャイロ（コリオリ力）、圧力センサ（ダイアフラムのたわみ）。第5部のマイクロボロメータ（断熱の橋）も MEMS です。切り分けには、水も切りくずも出さないステルスダイシング（11 のカード 13）が向いています。</p>
+    </div>
+    <div class="blk">
+      <h4>化合物半導体の工程 ― 同じ道具、違う流儀</h4>
+      <p>GaAs・InP のウェーハは小さく（04）、割れやすく、ヒ素・リンの化合物は毒性があるので、専用のラインで扱います。工程の流儀も少し違います。金は削りにくいので、先にレジストで型を作ってから金属を蒸着し、レジストごと不要部を剥がす<b>リフトオフ</b>で電極を作る。n 型 GaAs のオーミック電極は AuGeNi を熱で合金化して作る。素子を分けるのは、エッチングで島を切り出す<b>メサ</b>構造が多い。</p>
+      <p>光デバイスならではの工程もあります。端面発光レーザーは、結晶を<b>劈開</b>して鏡にし（第0部 05 の劈開面）、端面に反射率を調整する膜をつける。VCSEL は、AlAs に近い層を横から水蒸気で酸化して絶縁体に変え、電流の通り道を µm 級に絞る（<b>選択酸化</b>）。どちらも第9部の光源の構造そのものです。</p>
+    </div>
+  </div>
+
+  <div class="step-b">
+    <div class="blk">
+      <h4>イメージセンサの工程 ― 裏から光を入れる</h4>
+      <p>裏面照射型（BSI）センサは、表側に配線まで作ったウェーハを支持ウェーハに貼り合わせ、元の基板を<b>数 µm まで削って</b>裏返します。光は配線に遮られずに裏から入る（第4部 01）。薄くした裏面には欠陥の多い界面ができるので、高濃度の p⁺ 層（レーザーアニールで活性化）で電子を内側へ押し戻す（第4部 02 の「青の対策」）。画素どうしの間には深いトレンチを掘って絶縁物を埋め（DTI）、斜めに入った光と電子が隣へ漏れるのを防ぐ。</p>
+      <p>最後に、画素ごとのカラーフィルタとマイクロレンズを、有機材料のリソグラフィでウェーハの上に作ります（オンチップ）。暗電流を増やす金属汚染を避けるため、ゲッタリング（04 の酸素析出など）と低温の工程が重視されます（第4部 付録C）。</p>
+    </div>
+    <div class="blk">
+      <h4>光半導体のパッケージ ― 光を通し、湿気を通さない</h4>
+      <p>光デバイスのパッケージには、光を通す<b>窓</b>が要ります。可視・近赤外はガラスや石英、紫外は紫外を通す石英やサファイア、赤外は Ge や Si などの赤外を通す材料（第7部 07 の反射防止膜が窓にもつく）。PMT のような真空管や、冷却型の検出器は<b>気密封止</b>で中の真空や乾燥した気体を保ち、TEC（第8部 05）を内蔵して素子だけを冷やす。LD・PD はファイバと µm 級で位置を合わせて固定する（第7部 06 のモード結合）。<span class="key">「電気の部品」ではなく「光の部品」としての組み立て</span>が、光半導体の後工程の核心です。</p>
+    </div>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（13）</span>
+    <p><b>問.</b> 厚さ 400 µm の (100) Si ウェーハを KOH で裏から貫通させ、表側に一辺 100 µm の四角い穴を開けたい。裏側のマスクの開口は一辺何 µm にするか。</p>
+    <p><b>解.</b> 斜面は 54.7° なので、深さ 400 µm を彫る間に片側 400/tan 54.7° = 283 µm ずつ内側へ寄る。開口は 100 + 2 × 283 = <b>約 666 µm</b>。穴 1 つに 0.67 mm 角の面積を使うので、並べられる数は限られる。<span class="key">ボッシュ法なら開口はほぼ 100 µm のままで済む</span> ― 深い構造を密に並べる MEMS やシリコン貫通電極（TSV）がドライの深掘りに移った理由です。</p>
+  </div>
+</section>
+
+<!-- ============================================================ 14 -->
 <section id="yield">
-  <div class="sec-h"><span class="sec-n">11</span><h2>歩留まり ― なぜ大きいチップは高いのか</h2></div>
+  <div class="sec-h"><span class="sec-n">14</span><h2>歩留まり ― なぜ大きいチップは高いのか</h2></div>
   <p class="sec-sub">半導体の経済性は、ほぼこの一点で説明できます。数字を動かして確かめてください。ウェーハ1枚のコストは一定なので、良品が何個取れるかが単価を決めます。</p>
 
   <div class="fig" style="margin-top:22px">
@@ -2037,7 +2376,7 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
 
 <!-- ============================================================ 11 -->
 <section id="table">
-  <div class="sec-h"><span class="sec-n">12</span><h2>工程別シェア早見表</h2></div>
+  <div class="sec-h"><span class="sec-n">15</span><h2>工程別シェア早見表</h2></div>
   <p class="sec-sub"><b>数値の性格について。</b>半導体のシェアは、調査会社・集計年・対象範囲（金額／台数、先端のみ／全世代）で数値が変わります。ここでは各社の公表値と主要調査会社の数字を優先し、確定値のないものは概数で示しました。ページ内のバーで斜線になっているものは、単一の公表値ではなく複数の業界集計からの概算であることを表します。</p>
   <div class="tw">
     <table>
@@ -2076,7 +2415,7 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
 
 <!-- ============================================================ 12 -->
 <section id="glossary">
-  <div class="sec-h"><span class="sec-n">13</span><h2>用語集</h2></div>
+  <div class="sec-h"><span class="sec-n">16</span><h2>用語集</h2></div>
   <p class="sec-sub">本文中で注釈を付けた語をまとめました。読み返すときの索引としてお使いください。</p>
   <div class="gl">
     <div><b>前工程 <small>Front-end</small></b><p>ウェーハに回路を作り込む工程群。成膜からウェーハテストまで。期間・コストの大半を占める。</p></div>
@@ -2121,12 +2460,38 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
     <div><b>チップレット</b><p>機能ごとに分割した小型ダイ。歩留まりが良く、部分ごとに最適な製造世代を選べる。接続規格はUCIe。</p></div>
     <div><b>ハイブリッドボンディング</b><p>はんだバンプを介さず銅同士を直接接合する技術。接続ピッチを1桁縮められる。</p></div>
     <div><b>ISOクラス1〜3</b><p>クリーンルームの清浄度規格。クラス1は1m³中に0.1µm以上の粒子が10個以下。</p></div>
+    <div><b>シーメンス法</b><p>精製したトリクロロシランを加熱したシリコン棒の上で水素と反応させ、高純度の多結晶シリコンを析出させる方法。</p></div>
+    <div><b>偏析係数</b><p>結晶中と融液中の不純物濃度の比 k。1 より小さいとインゴットの下ほど濃くなる（Scheil の式）。</p></div>
+    <div><b>FZ法 <small>Floating Zone</small></b><p>るつぼを使わず、棒の一部を溶かした帯を動かして単結晶にする方法。酸素が少なく高抵抗。PIN・検出器・パワー向け。</p></div>
+    <div><b>MCZ法</b><p>融液に磁場をかけて対流を抑え、酸素の取り込みを制御する CZ 法。</p></div>
+    <div><b>NTD <small>中性子照射ドーピング</small></b><p>中性子で ³⁰Si を ³¹P に変える、極めて均一なリン添加。高耐圧パワー向け。</p></div>
+    <div><b>SOI / スマートカット</b><p>酸化膜を挟んだ貼り合わせウェーハと、水素注入面で薄く割ってその上層を作る方法。</p></div>
+    <div><b>ヘテロエピ / 格子整合</b><p>違う材料を結晶として積むこと。格子定数がそろっていれば欠陥を作らずに積める（InP 上の In₀.₅₃Ga₀.₄₇As など）。</p></div>
+    <div><b>臨界膜厚</b><p>格子の違う層を歪ませたまま積める厚さの上限。超えると転位が入って緩和する。</p></div>
+    <div><b>MOCVD</b><p>有機金属と水素化物のガスを熱分解して化合物半導体の層を積む方法。LED・LD の量産の主力。</p></div>
+    <div><b>MBE</b><p>超高真空で原料を分子線にして当て、原子層単位で積む方法。RHEED で層を数えられる。</p></div>
+    <div><b>昇華法（改良レーリー法）</b><p>SiC の原料を 2,000 ℃超で昇華させ、種結晶の上に再結晶させる方法。</p></div>
+    <div><b>RTL / 論理合成</b><p>回路の振る舞いを記述言語で書いたもの（RTL）と、それをスタンダードセルの接続に変換する工程。</p></div>
+    <div><b>配置配線（P&amp;R）</b><p>何億個ものセルをチップ上に並べ、配線でつなぐ工程。</p></div>
+    <div><b>STA</b><p>静的タイミング解析。全部の経路が 1 拍に収まるかを計算で確かめる。</p></div>
+    <div><b>DRC / LVS</b><p>図形がデザインルールを守っているかの検査と、図形から読んだ回路が回路図と一致するかの検査。</p></div>
+    <div><b>OPC</b><p>光の回折による形の崩れを見越して、マスクの図形をあらかじめ歪めておく補正。</p></div>
+    <div><b>PDK</b><p>ファウンドリが設計者に渡す、デザインルール・デバイスモデル・セルなどの一式。</p></div>
+    <div><b>SPICE / BSIM</b><p>回路を数値計算するシミュレータと、その中で使う業界標準のトランジスタのモデル。</p></div>
+    <div><b>TCAD</b><p>工程とデバイスの物理を解くシミュレーション。ProcessLab・SemiLab はその教材版。</p></div>
+    <div><b>MEMS</b><p>半導体の工程で可動構造（ばね・おもり・膜）を作り込む技術。加速度・圧力センサ、ジャイロ、マイクロミラー。</p></div>
+    <div><b>ボッシュ法（DRIE）</b><p>エッチングと側壁保護を交互に繰り返し、垂直で深い溝を彫るドライエッチング。</p></div>
+    <div><b>犠牲層 / スティクション</b><p>溶かして構造を浮かせるための層と、乾燥時に構造が基板へ貼りつく不具合。</p></div>
+    <div><b>陽極接合</b><p>ガラスとシリコンを電圧と熱で貼り合わせる接合。MEMS の封止に使う。</p></div>
+    <div><b>リフトオフ</b><p>レジストの型の上に金属をつけ、レジストごと不要部を剥がして電極を作る方法。化合物プロセスで多用。</p></div>
+    <div><b>選択酸化（VCSEL）</b><p>AlAs に近い層を横から酸化して絶縁体にし、電流の通り道を絞る工程。</p></div>
+    <div><b>DTI</b><p>画素の間に深い溝を掘って絶縁物を埋める分離構造。光と電子の漏れ（混色）を防ぐ。</p></div>
   </div>
 </section>
 
 <!-- ============================================================ 13 -->
 <section id="refs">
-  <div class="sec-h"><span class="sec-n">14</span><h2>出典</h2></div>
+  <div class="sec-h"><span class="sec-n">17</span><h2>出典</h2></div>
   <p class="sec-sub">2026年9月時点で参照できた一次発表・調査会社リリース・業界集計です。市場データは発表時点を併記しました。</p>
   <ol class="refs">
     <li><span class="rn">R1</span><span>吉田SKT「半導体製造装置のシェアと最新の市場動向」<a href="https://www.y-skt.co.jp/magazine/knowledge/semiconductor_equipment_market/">y-skt.co.jp</a></span></li>
@@ -2161,6 +2526,19 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
     <li><span class="rn">R30</span><span>C. A. Mack『Fundamental Principles of Optical Lithography』Wiley, 2007（解像度・焦点深度・k₁ の物理）</span></li>
     <li><span class="rn">R31</span><span>B. T. Murphy「Cost-Size Optima of Monolithic Integrated Circuits」Proc. IEEE 52, 1537 (1964)（マーフィーの歩留まりモデルの原典）</span></li>
     <li><span class="rn">R32</span><span>H. Z. Massoud, J. D. Plummer, E. A. Irene「Thermal Oxidation of Silicon in Dry Oxygen: Growth-Rate Enhancement in the Thin Regime」J. Electrochem. Soc. 132, 2685 (1985)（ドライ酸化の薄膜領域の補正。ProcessLab が採用）</span></li>
+    <li><span class="rn">R33</span><span>F. A. Trumbore「Solid Solubilities of Impurity Elements in Germanium and Silicon」Bell Syst. Tech. J. 39, 205 (1960)（Si 中の不純物の偏析係数。04 の図の k の値）</span></li>
+    <li><span class="rn">R34</span><span>W. Zulehner「Czochralski Growth of Silicon」J. Cryst. Growth 65, 189 (1983)（CZ 法の総説。酸素の取り込みと引き上げの物理）</span></li>
+    <li><span class="rn">R35</span><span>W. C. Dash「Growth of Silicon Crystals Free from Dislocations」J. Appl. Phys. 30, 459 (1959)（ネッキングによる無転位結晶の原典）</span></li>
+    <li><span class="rn">R36</span><span>M. Bruel「Silicon on Insulator Material Technology」Electron. Lett. 31, 1201 (1995)（スマートカット法による SOI の原典）</span></li>
+    <li><span class="rn">R37</span><span>J. W. Matthews, A. E. Blakeslee「Defects in Epitaxial Multilayers: I. Misfit Dislocations」J. Cryst. Growth 27, 118 (1974)（臨界膜厚の原典）</span></li>
+    <li><span class="rn">R38</span><span>G. B. Stringfellow『Organometallic Vapor-Phase Epitaxy: Theory and Practice』2nd ed., Academic Press (1999)（MOCVD の標準教科書）</span></li>
+    <li><span class="rn">R39</span><span>A. Y. Cho, J. R. Arthur「Molecular Beam Epitaxy」Prog. Solid State Chem. 10, 157 (1975)（MBE の古典的な総説）</span></li>
+    <li><span class="rn">R40</span><span>Yu. M. Tairov, V. F. Tsvetkov「Investigation of Growth Processes of Ingots of Silicon Carbide Single Crystals」J. Cryst. Growth 43, 209 (1978)（SiC の改良レーリー法（昇華法）の原典）</span></li>
+    <li><span class="rn">R41</span><span>H. Amano, N. Sawaki, I. Akasaki, Y. Toyoda「Metalorganic Vapor Phase Epitaxial Growth of a High Quality GaN Film Using an AlN Buffer Layer」Appl. Phys. Lett. 48, 353 (1986)（低温 AlN 緩衝層）</span></li>
+    <li><span class="rn">R42</span><span>N. H. E. Weste, D. M. Harris『CMOS VLSI Design: A Circuits and Systems Perspective』4th ed., Addison-Wesley (2010)（設計の流れ・スタンダードセル・タイミング・物理検証）</span></li>
+    <li><span class="rn">R43</span><span>Y. Cheng, C. Hu『MOSFET Modeling &amp; BSIM3 User's Guide』Kluwer (1999)（コンパクトモデル BSIM の解説）</span></li>
+    <li><span class="rn">R44</span><span>K. E. Petersen「Silicon as a Mechanical Material」Proc. IEEE 70, 420 (1982)（MEMS の古典的な総説。異方性エッチングと (111) 面）</span></li>
+    <li><span class="rn">R45</span><span>F. Laermer, A. Schilp（Robert Bosch GmbH）米国特許 5,501,893 (1996)（ボッシュ法の深掘りドライエッチング）</span></li>
   </ol>
   <p class="foot">この資料は公開情報をもとに、半導体製造プロセスの全体像を初学者が体系的につかむことを目的に整理したものです。市場シェアは調査会社・集計年・対象範囲によって数値が異なるため、投資判断や事業判断に用いる際は必ず一次資料をあたってください。数値は2026年9月時点で参照できたものを採用しています。</p>
   <p class="foot" style="margin-top:14px;padding-top:14px"><a href="index.html">学びの地図へ戻る</a> · この資料が「どう作るか」を説明する側で、<a href="ProcessLab/index.html">ProcessLab</a> が自分で工程を並べて断面を育て、何ができたかを計算で確かめる側です。各工程の末尾の「手を動かす」の箱から、対応する課題へ飛べます。</p>

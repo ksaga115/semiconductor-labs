@@ -383,7 +383,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
         <p class="desc">1枚のシリコン円盤に、原子数十個ぶんの幅の回路を1000工程かけて刻む。「全面に膜をつけて、場所を指定して消す」の2手で1層、という骨格を押さえ、各工程が何のためにあるかを順にたどる。</p>
       </div>
       <div class="pair">
-        <div><span class="kind read">参考書</span><a href="第1部_製造プロセス.html">半導体製造プロセス体系マップ</a><small>ウェーハからチップまで · 14節</small></div>
+        <div><span class="kind read">参考書</span><a href="第1部_製造プロセス.html">半導体製造プロセス体系マップ</a><small>ウェーハからチップまで · 17節</small></div>
         <div><span class="kind lab">ラボ</span><a href="ProcessLab/index.html">ProcessLab</a><small>原始部品 ＝ 工程 · 4章 13問 · <a href="ProcessLab/README.md">README</a></small></div>
       </div>
     </div>
@@ -392,27 +392,35 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       <div class="do"><span class="lbl">読むだけ</span><span class="none">全体の見取り図。ここは手を動かす所が無い</span></div>
     </div>
     <div class="chap">
-      <div><span class="cn">04</span><div class="ct"><a href="第1部_製造プロセス.html#litho">リソグラフィ・サイクル</a></div><div class="cd">成膜 → レジスト → 露光 → 現像 → エッチ → 剥離。1層ぶんの8ステップ。</div></div>
+      <div><span class="cn">04</span><div class="ct"><a href="第1部_製造プロセス.html#mat">材料と結晶成長</a></div><div class="cd">砂から 11N の多結晶、CZ と FZ、偏析、エピ。InP に載る InGaAs、MOCVD と MBE、SiC と GaN。</div></div>
+      <div class="do"><span class="lbl">読むだけ</span><span class="none">結晶成長のラボは無い。数字は章内の例題で</span></div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">05</span><div class="ct"><a href="第1部_製造プロセス.html#design">設計からマスクまで</a></div><div class="cd">RTL → 論理合成 → 配置配線 → STA、SPICE と BSIM、PDK と TCAD、DRC・LVS・OPC。</div></div>
+      <div class="do"><span class="lbl">読むだけ</span><span class="none">論理の中身は第3部・NandLab、アナログは第6部・AnalogLab</span></div>
+    </div>
+    <div class="chap">
+      <div><span class="cn">06</span><div class="ct"><a href="第1部_製造プロセス.html#litho">リソグラフィ・サイクル</a></div><div class="cd">成膜 → レジスト → 露光 → 現像 → エッチ → 剥離。1層ぶんの8ステップ。</div></div>
       <div class="do"><span class="lbl">ProcessLab 第2章 · 第1章</span><a class="q" href="ProcessLab/index.html?quest=open">開けた所にだけ打つ</a><a class="q" href="ProcessLab/index.html?quest=locos">選んだ所だけ酸化する（LOCOS）</a></div>
     </div>
     <div class="chap">
-      <div><span class="cn">05-02</span><div class="ct"><a href="第1部_製造プロセス.html#s02">成膜（熱酸化）</a></div><div class="cd">シリコンの表面そのものを SiO₂ に変える。最も緻密な絶縁膜。</div></div>
+      <div><span class="cn">07-02</span><div class="ct"><a href="第1部_製造プロセス.html#s02">成膜（熱酸化）</a></div><div class="cd">シリコンの表面そのものを SiO₂ に変える。最も緻密な絶縁膜。</div></div>
       <div class="do"><span class="lbl">ProcessLab 第1章</span><a class="q" href="ProcessLab/index.html?quest=dryox">ゲート酸化膜を育てる</a><a class="q" href="ProcessLab/index.html?quest=wetox">厚い酸化膜を急いで</a></div>
     </div>
     <div class="chap">
-      <div><span class="cn">05-07</span><div class="ct"><a href="第1部_製造プロセス.html#s07">イオン注入と熱処理</a></div><div class="cd">加速電圧で深さ、ビーム電流で濃度。熱で広がるから、熱くするが短時間で焼く。</div></div>
+      <div><span class="cn">07-07</span><div class="ct"><a href="第1部_製造プロセス.html#s07">イオン注入と熱処理</a></div><div class="cd">加速電圧で深さ、ビーム電流で濃度。熱で広がるから、熱くするが短時間で焼く。</div></div>
       <div class="do"><span class="lbl">ProcessLab 第2章 · 第3章</span><a class="q" href="ProcessLab/index.html?quest=peak">深さを狙う</a><a class="q" href="ProcessLab/index.html?quest=guard">盾を厚くする</a><a class="q" href="ProcessLab/index.html?quest=xj">接合の深さ</a><a class="q" href="ProcessLab/index.html?quest=sheet">抵抗を下げる</a><a class="q" href="ProcessLab/index.html?quest=shallow">浅く低抵抗に</a><a class="q" href="ProcessLab/index.html?quest=well">ウェルを掘る</a></div>
     </div>
     <div class="chap">
-      <div><span class="cn">06</span><div class="ct"><a href="第1部_製造プロセス.html#phys">工程を式で読む</a></div><div class="cd">解像度と焦点深度、Deal-Grove、注入のガウス分布、2√(Dt)、Preston、ALD。6本の式と手で解く例題。</div></div>
+      <div><span class="cn">08</span><div class="ct"><a href="第1部_製造プロセス.html#phys">工程を式で読む</a></div><div class="cd">解像度と焦点深度、Deal-Grove、注入のガウス分布、2√(Dt)、Preston、ALD。6本の式と手で解く例題。</div></div>
       <div class="do"><span class="lbl">ProcessLab 第1〜3章</span><a class="q" href="ProcessLab/index.html?quest=dryox">ゲート酸化膜を育てる</a><a class="q" href="ProcessLab/index.html?quest=peak">深さを狙う</a><a class="q" href="ProcessLab/index.html?quest=shallow">浅く低抵抗に</a></div>
     </div>
     <div class="chap">
-      <div><span class="cn">07</span><div class="ct"><a href="第1部_製造プロセス.html#tr">トランジスタ構造の進化</a></div><div class="cd">ゲートが薄い膜1枚では電流を止めきれなくなる。planar → FinFET → GAA。</div></div>
+      <div><span class="cn">09</span><div class="ct"><a href="第1部_製造プロセス.html#tr">トランジスタ構造の進化</a></div><div class="cd">ゲートが薄い膜1枚では電流を止めきれなくなる。planar → FinFET → GAA。</div></div>
       <div class="do"><span class="lbl">ProcessLab 第4章（SemiLab で採点）</span><a class="q" href="ProcessLab/index.html?quest=pd">フォトダイオードを作る</a><a class="q" href="ProcessLab/index.html?quest=mos">MOS のしきい値を合わせる</a><a class="q" href="ProcessLab/index.html?quest=cmos">CMOS の土台</a></div>
     </div>
     <div class="chap">
-      <div><span class="cn">08–14</span><div class="ct"><a href="第1部_製造プロセス.html#beflow">後工程 / 先端パッケージ / 歩留まり / 用語集 / 出典</a></div><div class="cd">ウェーハを部品にする。大きいチップが高い理由。</div></div>
+      <div><span class="cn">10–17</span><div class="ct"><a href="第1部_製造プロセス.html#beflow">後工程 / 先端パッケージ / MEMS・化合物・センサ / 歩留まり / 用語集 / 出典</a></div><div class="cd">ウェーハを部品にする。KOH とボッシュ法、リフトオフと劈開、裏面照射の薄化。大きいチップが高い理由。</div></div>
       <div class="do"><span class="lbl">読むだけ</span><span class="none">歩留まりのラボは「ここから先」（ProcessLab README）</span></div>
     </div>
   </article>
