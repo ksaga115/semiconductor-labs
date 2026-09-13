@@ -604,6 +604,13 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
     <p><b>n<sub>i</sub> の 1.0×10¹⁰ と、教科書の N<sub>c</sub>・N<sub>v</sub> から出る 6.9×10⁹ を同じ計算の中で混ぜない</b>（上の「断定していないこと」）。</p>
   </div>
 
+  <div class="caveat">
+    <span class="tag">持ち帰る一言 ― 役割別（第1章）</span>
+    <p><b>営業・企画：</b>「抵抗率 ρ（Ω·cm）」はウェーハの仕様書の数字で、濃度とは移動度を介して結びつく ― 10 倍濃くしても抵抗率は 1/10 にならない。</p>
+    <p><b>設計・開発：</b>不純物 10¹⁵ でキャリアは 10¹⁰ から 10 万倍。少数キャリアは n·p = n<sub>i</sub>² からいつでも計算で出る。</p>
+    <p><b>研究・製造：</b>打ち消し（補償）で正味の濃度が同じでも、移動度は不純物の総量で落ちる ― 測った抵抗率から濃度を逆算するときは補償を疑う。</p>
+  </div>
+
   <div class="lab-go">
     <span class="tag">手を動かす — SemiLab 第1章</span>
     <p>一片を1枚置いて N<sub>d</sub> の摘みを動かすと、キャリア濃度の段で電子の線が上下する。採点は「電子濃度をこの範囲に」としか言わない ― N<sub>d</sub> をいくつにするかは自分で決める。「打ち消す」では移動度が総量で落ちることを、「抵抗率をあわせる」では µ が濃度で変わるせいで比例で合わないことを踏む。</p>
@@ -661,11 +668,26 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
     </div>
   </div>
 
+  <div class="deep-note">
+    <span class="tag">くわしく — 形を選ばずに測る（ファン・デル・パウ法）と、2 種類のキャリアが混ざるとき</span>
+    <p>厚さ t が一様で穴の無い薄い試料なら、形は任意でよい。周に小さな接点 A・B・C・D を付け、隣り合う 2 つに電流を流して残りの 2 つの電圧を測った抵抗 R<sub>AB,CD</sub> と、90° 回した R<sub>BC,DA</sub> から、シート抵抗 R<sub>s</sub> が次の式で決まります（van der Pauw, 1958）:</p>
+    <div class="eq">exp(−π R<sub>AB,CD</sub>/R<sub>s</sub>) + exp(−π R<sub>BC,DA</sub>/R<sub>s</sub>) = 1　　2 つが等しいとき R<sub>s</sub> = (π/ln2)·R = 4.532 R</div>
+    <p>例: n 型 10¹⁶ の Si（µ<sub>n</sub> = 1164 cm²/V·s、ρ = 0.536 Ω·cm）の厚さ 1 µm のエピ層なら R<sub>s</sub> = ρ/t = 5362 Ω/□ で、対称な試料で読める R は 1183 Ω。ρ は R<sub>s</sub>·t で戻ります。ホール電圧は対角の接点で測り、磁場を反転させた 2 回の差でオフセットを消す。接点が周から離れていたり大きかったりすると誤差になるので、<b>接点は小さく、縁に置く</b>のが条件です。</p>
+    <p><b>電子と正孔が両方効く試料</b>（真性に近い高温の試料や、補償の強い試料）では、弱い磁場のホール係数は R<sub>H</sub> = (pµ<sub>p</sub>² − nµ<sub>n</sub>²) / (q(pµ<sub>p</sub> + nµ<sub>n</sub>)²) になり、1 種類のキャリアの式は使えません。符号は多数キャリアではなく「濃度 × 移動度の二乗」の大きい側で決まるので、p 型でも電子の移動度が大きい材料（InSb など）では、温度を上げると符号が反転することがあります。<span class="key">1/(qR<sub>H</sub>) で濃度を出してよいのは、1 種類のキャリアが支配しているときだけ</span>です。</p>
+  </div>
+
   <div class="ex">
     <span class="tag">例題 ― 手で一度解く（ホール効果）</span>
     <p><b>問.</b> n 型 10¹⁶ /cm³ の Si に電流 1 mA を流し、0.1 T の磁場をかける。厚さ 500 µm のウェーハのままと、厚さ 1 µm のエピ層とで、ホール電圧はいくつか。</p>
     <p><b>解.</b> V<sub>H</sub> = IB/(qnt)。単位を SI にそろえて（n = 10²² /m³）、500 µm では 10⁻³ × 0.1 / (1.602×10⁻¹⁹ × 10²² × 5×10⁻⁴) = <b>0.125 mV</b>、1 µm では <b>62 mV</b>。<span class="key">薄い層ほど大きく出る</span>ので、ホール素子は薄膜で作ります。逆に、厚いウェーハで小さな V<sub>H</sub> を正確に読むには、接点の位置のずれによる電圧（オフセット）を、磁場を反転させた 2 回の測定の差で消すのが定石です（第0部 02 と同じ「引き算で消す」）。</p>
   </div>
+  <div class="caveat">
+    <span class="tag">持ち帰る一言 ― 役割別（ホール効果）</span>
+    <p><b>営業・企画：</b>ホール素子は薄く、移動度が高いほど感度が高い（InSb・GaAs の薄膜）。モーターの位置・電流センサ・電子コンパスの中身。</p>
+    <p><b>設計・開発：</b>同じ 1 mA・0.1 T でも、500 µm のウェーハは 0.125 mV、1 µm のエピ層は 62 mV。</p>
+    <p><b>研究・製造：</b>n と µ を別々に測れる受け入れ検査。ファン・デル・パウ法と磁場の反転でオフセットを消す。</p>
+  </div>
+
 </section>
 
 <!-- ================= 02 ================= -->
@@ -678,8 +700,8 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
       <h3>何が起きるか ― 4段で止まる</h3>
       <p>① 境目をはさんで、左は正孔が 10¹⁶、右は正孔が 10⁴。12桁の濃度差があるので、正孔は右へ、電子は左へ<b>拡散</b>します。② 出て行ったあとには、動けないイオン（左に負のアクセプタ、右に正のドナー）が<b>裸で残る</b>。③ 残った電荷は右から左へ向く<b>電界</b>を作り、それは拡散と逆向きにキャリアを押し戻す。④ 押し戻す力と拡散する力が釣り合ったところで止まる。</p>
       <p>止まったときの電位差が<b>ビルトイン電位 V<sub>bi</sub></b>、キャリアが抜けた層が<b>空乏層</b>です。電子の分布は n = n<sub>i</sub>·exp(ψ/V<sub>t</sub>) に従うので、両側の n の比から電位差が決まります:</p>
-      <div class="eq">V<sub>bi</sub> = V<sub>t</sub> &middot; ln( <i>N<sub>a</sub></i> <b>N<sub>d</sub></b> / n<sub>i</sub>² )　　V<sub>t</sub> = kT/q = 25.9 mV</div>
-      <p>N<sub>a</sub> = N<sub>d</sub> = 10¹⁶ なら V<sub>t</sub>·ln(10¹²) = 0.0259 × 27.6 = <b>0.714 V</b>。<b>対数なので、片方を10倍にしても 60 mV しか上がりません。</b>両方 10¹⁸ でも 0.95 V。バンドギャップ 1.12 V が上限で、そこへは決して届かない。</p>
+      <div class="eq">V<sub>bi</sub> = V<sub>t</sub> &middot; ln( <i>N<sub>a</sub></i> <b>N<sub>d</sub></b> / n<sub>i</sub>² )　　V<sub>t</sub> = kT/q = 25.85 mV（300 K）</div>
+      <p>N<sub>a</sub> = N<sub>d</sub> = 10¹⁶ なら V<sub>t</sub>·ln(10¹²) = 0.02585 × 27.63 = <b>0.714 V</b>。<b>対数なので、片方を10倍にしても 60 mV しか上がりません。</b>両方 10¹⁸ でも 0.95 V。バンドギャップ 1.12 V が上限で、そこへは決して届かない。</p>
     </div>
     <div class="body-col">
       <h3>ポアソン方程式 ― 曲がりと電荷の釣り合い</h3>
@@ -796,6 +818,13 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
     <p><b>逆バイアスを 10 倍にしても、空乏層は 10 倍にならない。</b>W ∝ √(V<sub>bi</sub> − V) なので −10 V で 0 V の約 3.7〜4 倍。</p>
   </div>
 
+  <div class="caveat">
+    <span class="tag">持ち帰る一言 ― 役割別（第2章）</span>
+    <p><b>営業・企画：</b>「空乏層」と「0.7 V」は部品ではなく、濃度の違う 2 枚を並べれば必ず出る。</p>
+    <p><b>設計・開発：</b>逆バイアスを 10 倍にしても空乏層は約 3.7 倍（平方根）、容量は約 1/3.7 ― 拾える範囲と速さを同時に買う。</p>
+    <p><b>研究・製造：</b>C-V の 1/C² の傾きで濃度が読める。切片は片側が濃い接合で 0.17 V ほど低く出る。</p>
+  </div>
+
   <div class="lab-go">
     <span class="tag">手を動かす — SemiLab 第2章</span>
     <p>「シリコン」を2回押して、片方の N<sub>a</sub>、もう片方の N<sub>d</sub> を上げる。その瞬間、断面図に空乏層が現れ、バンド図が曲がり、下のバーに V<sub>bi</sub> が出る。上の「左」の電圧を −5 V にすると伸びる。この参考書の図は空乏近似だが、SemiLab は本当に解いている ― 両者の差（数%）を自分の目で確かめられる。</p>
@@ -864,10 +893,23 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
     </div>
   </div>
 
+  <div class="deep-note">
+    <span class="tag">くわしく — アンダーソンの規則が外れる理由</span>
+    <p>電子親和力の差で段差を決めるアンダーソンの規則（Anderson, 1962）で GaAs / Al<sub>0.3</sub>Ga<sub>0.7</sub>As を見積もると、χ(GaAs) = 4.07 eV と χ(Al<sub>x</sub>Ga<sub>1−x</sub>As) ≈ 4.07 − 1.1x eV（x &lt; 0.45）から <b>ΔE<sub>c</sub> ≈ 0.33 eV</b> ― E<sub>g</sub> の差 0.374 eV の 88% になり、実測の 6〜6.5 割（≈0.24 eV）より大きく出ます。</p>
+    <p>ずれの主な理由は、χ が<b>自由な表面</b>で測った量だということです。表面には結合が切れたことによる電気双極子の層があり、χ にはその寄与が入っている。2 つの結晶をつないだ界面には、表面の双極子の代わりに、境目の結合をまたいで電荷が少し移ってできる<b>界面の双極子</b>があり、段差をその分ずらします（Tersoff, 1984 の電荷中性準位の考え方）。だから段差は、X 線光電子分光（XPS）で内殻の準位の位置を比べる、C-V や内部光電子放出で障壁を測る、といった<b>界面そのものの測定</b>で決めます。<span class="key">材料の表の χ の引き算は第一近似で、設計には実測の配分を使う</span> ― 下の「断定していないこと」はこのためです。</p>
+  </div>
+
   <div class="caveat">
     <span class="tag">断定していないこと</span>
     <p><strong>ΔE<sub>c</sub> と ΔE<sub>v</sub> の配分は実測値の代表値です。</strong>AlGaAs/GaAs の伝導帯側の割合は文献で 6 割〜6.5 割程度の幅があり、アンダーソンの規則（電子親和力の差）は目安にしかなりません。SemiLab はホモ接合（Si だけ）を解くソルバで、ヘテロ接合は扱いません。</p>
   </div>
+  <div class="caveat">
+    <span class="tag">持ち帰る一言 ― 役割別（ヘテロ接合）</span>
+    <p><b>営業・企画：</b>レーザー・HEMT・SAM 型 APD は「材料で役割を分ける」ヘテロ接合の製品。</p>
+    <p><b>設計・開発：</b>GaAs/Al<sub>0.3</sub>Ga<sub>0.7</sub>As の段差は ΔE<sub>c</sub> ≈ 0.24 eV・ΔE<sub>v</sub> ≈ 0.13 eV。電子と光の閉じ込めはこの段差で決まる。</p>
+    <p><b>研究・製造：</b>段差の配分は実測で決める（アンダーソンの規則は第一近似）。格子定数のそろう組み合わせを選ぶ。</p>
+  </div>
+
 </section>
 
 <!-- ================= 03 ================= -->
@@ -895,7 +937,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
   <div class="deep-note">
     <span class="tag">くわしく — D と µ はひとつのもの（アインシュタインの関係）</span>
     <p>第1章の末尾で「D = µ·kT/q」とだけ書いた関係の導出です。平衡の接合の中では、拡散流とドリフト流が場所ごとにぴったり打ち消し合っています。n = n<sub>i</sub>e<sup>ψ/V<sub>t</sub></sup> をその釣り合いの式 qµnE + qD·dn/dx = 0 に入れると、n も E も消えて係数だけが残る:</p>
-    <div class="eq">D = µ &middot; kT/q = µ &middot; V<sub>t</sub>　　（電子: 1164 × 0.0259 ≈ 30 cm²/s、正孔: 386 × 0.0259 ≈ 10 cm²/s @10¹⁶）</div>
+    <div class="eq">D = µ &middot; kT/q = µ &middot; V<sub>t</sub>　　（電子: 1164 × 0.02585 ≈ 30.1 cm²/s、正孔: 386 × 0.02585 ≈ 10.0 cm²/s @10¹⁶）</div>
     <p>散乱されながら流される速さ（µ）と、散乱されながら広がる速さ（D）は、<span class="key">同じ「ぶつかりやすさ」の2つの顔</span>なので、比が熱電圧という普遍定数になる ― これがアインシュタインの関係です。SemiLab の <code>dev.js</code> も D を持たず、µ から毎回この式で作っています。</p>
   </div>
 
@@ -918,6 +960,40 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
       <div><dt>L<sub>p</sub></dt><dd id="rILp">—</dd></div>
     </dl>
     <figcaption>青の実線が全電流。細い線は内訳 ― 拡散電流（傾き 59.5 mV/桁）と、空乏層の生成・再結合電流（傾き 119 mV/桁、逆方向では W とともにゆっくり増える）。<b>濃度を上げると J<sub>0</sub> は下がるが、寿命 τ も短くなるので生成電流はむしろ増える</b>（10¹⁹ どうしで J<sub>0</sub> = 2×10⁻¹⁴、J<sub>gen</sub> は 3×10⁻⁸）。温度を上げると逆電流が桁で増える ― 生成は n<sub>i</sub> に、拡散は n<sub>i</sub>² に比例して。中性領域を拡散長より薄くすると J<sub>0</sub> が増える（下記）。この図は SemiLab の <code>dev.js</code> と同じ式で、直列抵抗は入れていない。</figcaption>
+  </figure>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">DIFFUSION — 注入された少数キャリアが、拡散長で減っていく</span><span class="fig-title">p⁺ / n 10¹⁷ · 300 K · SemiLab の phys.js から計算</span></div>
+    <div class="fig-body scroll-x">
+      <svg class="smil" viewBox="0 0 1100 300" role="img" aria-label="n 側に注入された正孔の過剰な濃度が、深さとともに e のマイナス x 割る Lp 乗で減る曲線。拡散長 Lp は 50 マイクロメートルで、ここで 1/e。上の帯では正孔の点が注入されては消えていく。右の表は順電圧 0.4、0.5、0.6 V での境目の濃度と電流を順に照らし、0.1 V ごとに 47.9 倍になる。破線は n 側が 20 マイクロメートルしかない場合で勾配が 2.65 倍。" style="min-width:900px;width:100%;display:block">
+        <rect x="40" y="20" width="30" height="30" fill="var(--hole-soft)" stroke="var(--hole)"/>
+        <rect x="70" y="20" width="620" height="30" fill="var(--electron-soft)" stroke="var(--electron)"/>
+        <circle cx="72" cy="28" r="2.8" fill="var(--hole)"><animate attributeName="cx" values="72;78.3;78.3" keyTimes="0;0.85;1" dur="3.6s" begin="0.0s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;1;0" keyTimes="0;0.85;1" dur="3.6s" begin="0.0s" repeatCount="indefinite"/></circle><circle cx="72" cy="35" r="2.8" fill="var(--hole)"><animate attributeName="cx" values="72;96.0;96.0" keyTimes="0;0.85;1" dur="3.6s" begin="0.3s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;1;0" keyTimes="0;0.85;1" dur="3.6s" begin="0.3s" repeatCount="indefinite"/></circle><circle cx="72" cy="42" r="2.8" fill="var(--hole)"><animate attributeName="cx" values="72;115.6;115.6" keyTimes="0;0.85;1" dur="3.6s" begin="0.6s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;1;0" keyTimes="0;0.85;1" dur="3.6s" begin="0.6s" repeatCount="indefinite"/></circle><circle cx="72" cy="28" r="2.8" fill="var(--hole)"><animate attributeName="cx" values="72;137.3;137.3" keyTimes="0;0.85;1" dur="3.6s" begin="0.9s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;1;0" keyTimes="0;0.85;1" dur="3.6s" begin="0.9s" repeatCount="indefinite"/></circle><circle cx="72" cy="35" r="2.8" fill="var(--hole)"><animate attributeName="cx" values="72;161.7;161.7" keyTimes="0;0.85;1" dur="3.6s" begin="1.2s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;1;0" keyTimes="0;0.85;1" dur="3.6s" begin="1.2s" repeatCount="indefinite"/></circle><circle cx="72" cy="42" r="2.8" fill="var(--hole)"><animate attributeName="cx" values="72;189.6;189.6" keyTimes="0;0.85;1" dur="3.6s" begin="1.5s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;1;0" keyTimes="0;0.85;1" dur="3.6s" begin="1.5s" repeatCount="indefinite"/></circle><circle cx="72" cy="28" r="2.8" fill="var(--hole)"><animate attributeName="cx" values="72;222.1;222.1" keyTimes="0;0.85;1" dur="3.6s" begin="1.8s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;1;0" keyTimes="0;0.85;1" dur="3.6s" begin="1.8s" repeatCount="indefinite"/></circle><circle cx="72" cy="35" r="2.8" fill="var(--hole)"><animate attributeName="cx" values="72;261.3;261.3" keyTimes="0;0.85;1" dur="3.6s" begin="2.1s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;1;0" keyTimes="0;0.85;1" dur="3.6s" begin="2.1s" repeatCount="indefinite"/></circle><circle cx="72" cy="42" r="2.8" fill="var(--hole)"><animate attributeName="cx" values="72;310.3;310.3" keyTimes="0;0.85;1" dur="3.6s" begin="2.4s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;1;0" keyTimes="0;0.85;1" dur="3.6s" begin="2.4s" repeatCount="indefinite"/></circle><circle cx="72" cy="28" r="2.8" fill="var(--hole)"><animate attributeName="cx" values="72;375.9;375.9" keyTimes="0;0.85;1" dur="3.6s" begin="2.7s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;1;0" keyTimes="0;0.85;1" dur="3.6s" begin="2.7s" repeatCount="indefinite"/></circle><circle cx="72" cy="35" r="2.8" fill="var(--hole)"><animate attributeName="cx" values="72;475.5;475.5" keyTimes="0;0.85;1" dur="3.6s" begin="3.0s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;1;0" keyTimes="0;0.85;1" dur="3.6s" begin="3.0s" repeatCount="indefinite"/></circle><circle cx="72" cy="42" r="2.8" fill="var(--hole)"><animate attributeName="cx" values="72;689.8;689.8" keyTimes="0;0.85;1" dur="3.6s" begin="3.3s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;1;0" keyTimes="0;0.85;1" dur="3.6s" begin="3.3s" repeatCount="indefinite"/></circle>
+        <g stroke="var(--line)" stroke-width="1" fill="none"><path d="M70 80 V250 H690"/></g>
+        <g stroke="var(--ink-3)" stroke-width="1" fill="none"><path d="M70 250 V255 M225 250 V255 M380 250 V255 M535 250 V255 M690 250 V255 M66 80 H70 M66 165 H70"/></g>
+        <polyline points="70.0,80.0 77.8,86.6 85.5,93.0 93.3,99.1 101.0,105.0 108.8,110.6 116.5,116.1 124.3,121.3 132.0,126.3 139.8,131.1 147.5,135.7 155.3,140.2 163.0,144.5 170.8,148.6 178.5,152.5 186.3,156.3 194.0,160.0 201.8,163.5 209.5,166.9 217.3,170.1 225.0,173.2 232.8,176.2 240.5,179.1 248.3,181.8 256.0,184.5 263.8,187.1 271.5,189.5 279.3,191.9 287.0,194.1 294.8,196.3 302.5,198.4 310.3,200.4 318.0,202.3 325.8,204.2 333.5,206.0 341.3,207.7 349.0,209.3 356.8,210.9 364.5,212.4 372.3,213.9 380.0,215.3 387.8,216.7 395.5,218.0 403.3,219.2 411.0,220.4 418.8,221.6 426.5,222.7 434.3,223.7 442.0,224.8 449.8,225.7 457.5,226.7 465.3,227.6 473.0,228.5 480.8,229.3 488.5,230.1 496.3,230.9 504.0,231.6 511.8,232.4 519.5,233.0 527.3,233.7 535.0,234.3 542.8,234.9 550.5,235.5 558.3,236.1 566.0,236.6 573.8,237.2 581.5,237.7 589.3,238.1 597.0,238.6 604.8,239.0 612.5,239.5 620.3,239.9 628.0,240.3 635.8,240.7 643.5,241.0 651.3,241.4 659.0,241.7 666.8,242.0 674.5,242.3 682.3,242.6 690.0,242.9" fill="none" stroke="var(--hole)" stroke-width="2.2"/>
+        <polyline points="70.0,80.0 73.9,88.9 77.8,97.8 81.6,106.5 85.5,115.3 89.4,123.9 93.3,132.6 97.1,141.2 101.0,149.7 104.9,158.2 108.8,166.7 112.6,175.1 116.5,183.5 120.4,191.9 124.3,200.2 128.1,208.5 132.0,216.8 135.9,225.1 139.8,233.4 143.6,241.7 147.5,250.0" fill="none" stroke="var(--hole)" stroke-width="1.6" stroke-dasharray="5 4"/>
+        <path d="M70 187.5 H265.0 V250" fill="none" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="3 3"/>
+        <path d="M430 108 H458" stroke="var(--hole)" stroke-width="2.2" fill="none"/>
+        <path d="M430 128 H458" stroke="var(--hole)" stroke-width="1.6" stroke-dasharray="5 4" fill="none"/>
+        <rect x="742" y="117" width="330" height="22" fill="var(--hole-soft)" opacity=".7"><animate attributeName="y" values="117;143;169" keyTimes="0;0.3333;0.6667" dur="6s" repeatCount="indefinite" calcMode="discrete"/></rect>
+        <g font-family="var(--mono)" font-size="10" fill="var(--ink-2)" text-anchor="middle"><text x="55" y="39">p⁺</text></g>
+        <g font-family="var(--mono)" font-size="10" fill="var(--electron-2)"><text x="696" y="39">n 10¹⁷</text></g>
+        <g font-family="var(--mono)" font-size="9.5" fill="var(--ink-3)" text-anchor="middle"><text x="70" y="266">0</text><text x="225" y="266">40</text><text x="380" y="266">80</text><text x="535" y="266">120</text><text x="690" y="266">160</text></g>
+        <g font-family="var(--mono)" font-size="9.5" fill="var(--ink-3)" text-anchor="end"><text x="62" y="84">1</text><text x="62" y="169">0.5</text><text x="62" y="254">0</text></g>
+        <text x="78" y="70" font-size="11" fill="var(--ink-2)">過剰な正孔 p′(x) / p′(0)</text>
+        <text x="380" y="288" font-size="10.5" fill="var(--ink-3)" text-anchor="middle">n 側の中性領域の深さ x（µm、空乏層の端から）</text>
+        <text x="272.0" y="176" font-family="var(--mono)" font-size="11" fill="var(--ink-2)">L<tspan font-size="8" baseline-shift="sub">p</tspan> = 50.3 µm（1/e）</text>
+        <text x="466" y="112" font-size="10.5" fill="var(--ink-2)">長い n 側: e<tspan font-size="8" baseline-shift="super">−x/L</tspan></text>
+        <text x="466" y="132" font-size="10.5" fill="var(--ink-2)">n 側 20 µm（裏が電極）: 勾配 ×2.65</text>
+        <text x="750" y="80" font-size="11" fill="var(--ink)">高さ p′(0) だけが 0.1 V ごとに ×47.9</text>
+        <g font-family="var(--mono)" font-size="10.5" fill="var(--ink-3)"><text x="750" y="106">V</text><text x="810" y="106">p′(0) [cm⁻³]</text><text x="950" y="106">J [A/cm²]</text></g>
+        <g font-family="var(--mono)" font-size="11" fill="var(--ink-2)"><text x="750" y="132">0.4 V</text><text x="810" y="132">5.2×10⁹</text><text x="950" y="132">1.27×10⁻⁶</text><text x="750" y="158">0.5 V</text><text x="810" y="158">2.5×10¹¹</text><text x="950" y="158">6.07×10⁻⁵</text><text x="750" y="184">0.6 V</text><text x="810" y="184">1.2×10¹³</text><text x="950" y="184">2.91×10⁻³</text></g>
+        <text x="750" y="216" font-size="10.5" fill="var(--ink-3)">J は n 側へ注入された正孔の拡散だけ</text>
+        <text x="750" y="234" font-size="10.5" fill="var(--ink-3)">D<tspan font-size="8" baseline-shift="sub">p</tspan> 7.60 cm²/s・τ<tspan font-size="8" baseline-shift="sub">p</tspan> 3.33 µs</text>
+      </svg>
+    </div>
+    <figcaption>濃い p⁺ から n 側（10¹⁷）へ注入された正孔の、過剰な濃度の深さ分布（空乏層の端を 1 に規格化）。形は e<sup>−x/L<sub>p</sub></sup> で、拡散長 L<sub>p</sub> = √(D<sub>p</sub>τ<sub>p</sub>) = √(7.60 cm²/s × 3.33 µs) = <b>50.3 µm</b> で 1/e に減る。<b>形は電圧によらず</b>、順電圧が 0.1 V 上がるごとに高さ p′(0) = (n<sub>i</sub>²/N<sub>d</sub>)(e<sup>V/V<sub>t</sub></sup> − 1) だけが 47.9 倍になり、電流 J = qD<sub>p</sub>p′(0)/L<sub>p</sub> も同じ倍率で増える（右の表を 2 秒ごとに照らす）。上の帯の点は注入された正孔の一例で、消える深さを指数分布の分位点で 12 個並べた決定的な例（動く速さは模式）。破線は n 側が 20 µm しかなく裏の電極で吸われる場合で、勾配が coth(20/50.3) = 2.65 倍になる ― 本文の「薄くすると電流が増える」の中身。数値は SemiLab の <code>phys.js</code>（移動度と寿命の当てはめ）から。</figcaption>
   </figure>
 
   <div class="two">
@@ -944,7 +1020,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
         </tbody>
       </table></div>
       <p style="font-size:12.5px;color:var(--ink-3);margin-top:8px">単位 A/cm²。SemiLab「暗電流を減らす」のお手本の構造。</p>
-      <p><b>9 ℃で 2.06 倍。</b>これは決め打ちではなく、生成電流が n<sub>i</sub> ∝ exp(−E<sub>g</sub>/2kT) に比例することから出ています（見かけの活性化エネルギー 0.6 eV）。拡散電流が支配すれば n<sub>i</sub>² で <b>約 4.2 ℃で倍</b>（300 K 付近）になる。「何℃で倍か」を測ると、どちらが支配しているか分かる ― 第4部 付録 C がこれを診断に使います。PixelLab の暗電流の温度依存も、同じ n<sub>i</sub>(T) を呼んでいます。</p>
+      <p><b>9 ℃で 2.06 倍。</b>これは決め打ちではなく、生成電流が n<sub>i</sub> ∝ exp(−E<sub>g</sub>/2kT) に比例することから出ています（見かけの活性化エネルギー 0.6 eV）。拡散電流が支配すれば n<sub>i</sub>² で <b>約 4.3 ℃で倍</b>になる（300 K から実際に 2 倍になる幅。300 K での微分で数えると 4.2 K。生成電流の n<sub>i</sub> なら同じ数え方で 8.6 K、微分で 8.4 K）。「何℃で倍か」を測ると、どちらが支配しているか分かる ― 第4部 付録 C がこれを診断に使います。PixelLab の暗電流の温度依存も、同じ n<sub>i</sub>(T) を呼んでいます。</p>
       <p>暗電流を減らす手は、W を狭くする（濃くする）か、τ を伸ばす（欠陥を減らす）か、冷やすか。<b>感度のために空乏層を広げると暗電流も増える</b> ― センサ設計の綱引きはここにあります。</p>
     </div>
   </div>
@@ -989,7 +1065,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
 
   <div class="deep-note">
     <span class="tag">くわしく — 温度を振って E<sub>g</sub> を読む（そして T³ を忘れない）</span>
-    <p>拡散電流の飽和電流は n<sub>i</sub>² に比例し、n<sub>i</sub>² ∝ T³·exp(−E<sub>g</sub>(T)/kT)。だから ln(I<sub>s</sub>/T³) を 1/T に対して描けば直線になり、その傾きから E<sub>g</sub> が読める ― はずですが、読める値は <b>1.203 eV</b> で、300 K の E<sub>g</sub> 1.1245 eV とは合いません。E<sub>g</sub> 自体が温度で縮む（Varshni、300 K で −2.55×10⁻⁴ eV/K）ので、傾きが教えるのは<span class="key">測った温度（ここでは 325 K 付近）の E<sub>g</sub>(T) の接線を 0 K まで延ばした値</span>で、計算すると 1.204 eV ― ぴったり一致します。T³ で割り忘れると、さらに約 3kT（0.08 eV）大きく出る。同じ理由で、300 K 付近で I<sub>s</sub> が 2 倍になる温度幅は、E<sub>g</sub> を固定した見積もりの 4.5 K ではなく <b>4.2 K</b> です。</p>
+    <p>拡散電流の飽和電流は n<sub>i</sub>² に比例し、n<sub>i</sub>² ∝ T³·exp(−E<sub>g</sub>(T)/kT)。だから ln(I<sub>s</sub>/T³) を 1/T に対して描けば直線になり、その傾きから E<sub>g</sub> が読める ― はずですが、読める値は <b>1.203 eV</b> で、300 K の E<sub>g</sub> 1.1245 eV とは合いません。E<sub>g</sub> 自体が温度で縮む（Varshni、300 K で −2.55×10⁻⁴ eV/K）ので、傾きが教えるのは<span class="key">測った温度（ここでは 325 K 付近）の E<sub>g</sub>(T) の接線を 0 K まで延ばした値</span>で、計算すると 1.204 eV ― ぴったり一致します。T³ で割り忘れると、さらに約 3kT（0.08 eV）大きく出る。同じ理由で、300 K から I<sub>s</sub> が実際に 2 倍になる温度幅は、E<sub>g</sub> を固定した見積もりの 4.5 K ではなく <b>4.3 K</b> です（300 K での微分で数えると 4.2 K）。</p>
   </div>
 
   <div class="deep-note">
@@ -1003,6 +1079,13 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
     <p><b>「濃くすれば漏れが減る」とは限らない。</b>両側 10¹⁷ → 10¹⁹ で J<sub>0</sub> は 1/29 になるが、寿命 τ が縮むので −1 V の逆電流は 5.2 → 37 nA/cm² に増える。</p>
     <p><b>高電流で I-V の傾きが寝るのを、理想係数が大きいせいと取り違えない。</b>多くは直列抵抗の電圧降下で、SemiLab の「測る」の I-V でも高電流側の 1.5 超えはこれ。</p>
     <p><b>中性領域を薄くすると J<sub>0</sub> は増える。</b>拡散長より薄い n 側では coth(W/L) 倍になり、p⁺ 10¹⁹ / n 10¹⁶ で n 側 2 µm なら約 54 倍（SemiLab の解）。</p>
+  </div>
+
+  <div class="caveat">
+    <span class="tag">持ち帰る一言 ― 役割別（第3章）</span>
+    <p><b>営業・企画：</b>60 mV で電流 10 倍、逆は百万分の一 ― 整流は接合の指数関数そのもの。</p>
+    <p><b>設計・開発：</b>暗電流の見積もりは J<sub>0</sub> ではなく空乏層の生成電流で（室温の Si では約 7,000 倍大きい）。</p>
+    <p><b>研究・製造：</b>「何 ℃ で 2 倍か」で支配項が分かる ― 生成なら約 9 ℃、拡散なら約 4〜5 ℃。</p>
   </div>
 
   <div class="lab-go">
@@ -1159,6 +1242,13 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
     <p><b>局所の電界だけで α を決めています。</b>実際のキャリアは電離できるエネルギーまで加速されるのに距離が要る（デッドスペース）ので、数百 nm より薄い増倍層では、この計算より BV が高く、雑音が小さく出ます。温度は 300 K 固定で、イオン化係数の温度依存は入れていません。<b>SemiLab は降伏を解きません</b> ― 最大電界が SemiLab の目安を超えると「降伏」の帯を出し、「測る」の I-V に目安の BV と Miller の経験式 M = 1/(1 − (V/BV)ⁿ)（指数 n は 2〜6 で実測に合わせる量）の破線が表示だけ重なります。</p>
   </div>
 
+  <div class="caveat">
+    <span class="tag">持ち帰る一言 ― 役割別（降伏）</span>
+    <p><b>営業・企画：</b>降伏は壊れる現象ではなく増える現象 ― APD・SPAD の増倍とパワー素子の耐圧は同じ物理。</p>
+    <p><b>設計・開発：</b>耐圧は薄い側の濃度で決まる: 片側階段接合で 10¹⁵ なら 251 V、10¹⁶ なら 51.6 V（イオン化積分）。</p>
+    <p><b>研究・製造：</b>実物の耐圧は接合の端（曲がった所）で先に落ちる ― ガードリングで平らな部分の耐圧に近づける。</p>
+  </div>
+
   <div class="lab-go">
     <span class="tag">手を動かす — SemiLab 第2・3章</span>
     <p>「逆バイアス」のお手本（p⁺ 10¹⁸ / n 10¹⁵）に −5 V をかけてから、左の電圧をさらに深くしていくと、最大電界が目安を超えたところで赤い帯が出る。そこで「測る」の I-V を開くと、逆方向の電流に目安の BV（この表の「SemiLab の目安」の列の考え方）と増倍の破線が重なる。n 側を 10¹⁶ にすると帯が出る電圧が 1/5 ほどになるのを確かめてください。</p>
@@ -1231,6 +1321,13 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
     <p><b>問.</b> I<sub>S</sub> = 10⁻¹⁶ A の npn で I<sub>C</sub> = 1 mA を流す V<sub>BE</sub> は？ そのときの g<sub>m</sub> は？ 同じ 1 mA で V<sub>ov</sub> = 0.2 V の MOSFET の g<sub>m</sub> と比べよ。</p>
     <p><b>解.</b> V<sub>BE</sub> = V<sub>t</sub>·ln(I<sub>C</sub>/I<sub>S</sub>) = 0.02585 × ln(10¹³) = <b>0.774 V</b>。g<sub>m</sub> = 1 mA / 25.85 mV = <b>38.7 mS</b>。MOSFET は 2 × 1 mA / 0.2 V = <b>10 mS</b> ― BJT は約 3.9 倍。電流を 10 倍にすると V<sub>BE</sub> は 59.5 mV しか上がらない ― <span class="key">BJT の V<sub>BE</sub> がどんな電流でもほぼ 0.6〜0.8 V に収まる</span>のは、指数関数の対数という第0部 01 の算数そのものです。</p>
   </div>
+  <div class="caveat">
+    <span class="tag">持ち帰る一言 ― 役割別（バイポーラ）</span>
+    <p><b>営業・企画：</b>BJT はアナログ・高周波・フォトトランジスタで今も主役。</p>
+    <p><b>設計・開発：</b>β はエミッタを濃く・ベースを薄くするほど大きい: β ≈ (D<sub>n</sub>/D<sub>p</sub>)(N<sub>E</sub>/N<sub>B</sub>)(L<sub>p</sub>/W<sub>B</sub>)。</p>
+    <p><b>研究・製造：</b>ガンメルプロットの 2 本の平行線の間隔が β。低電流の浮きは再結合、高電流の寝は大注入。</p>
+  </div>
+
 </section>
 
 <!-- ================= 04 ================= -->
@@ -1337,6 +1434,13 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
     <p><b>赤外の QE を逆バイアスで上げようとしない。</b>空乏層は √ で数 µm しか伸びず、1000 nm の吸収長は 156 µm ― 必要なのは厚み。</p>
   </div>
 
+  <div class="caveat">
+    <span class="tag">持ち帰る一言 ― 役割別（第4章）</span>
+    <p><b>営業・企画：</b>量子効率は波長の関数で、両端で違う理由で落ちる ― 短波長は表面、長波長は厚み。</p>
+    <p><b>設計・開発：</b>反射防止膜（Si₃N₄ 75 nm）で 600 nm の量子効率は 61% → 95%。λ/4 は 1 つの波長でしか効かない。</p>
+    <p><b>研究・製造：</b>1000 nm の吸収長は約 156 µm ― 近赤外の感度は受光層の厚みで買う。</p>
+  </div>
+
   <div class="lab-go">
     <span class="tag">手を動かす — SemiLab 第4章 / PixelLab 第3章</span>
     <p>「光」を入れて波長を動かすと、下の段に光の生成の分布が出て、「測る」で量子効率の曲線が出る。採点の内訳「空乏層 / 手前 / 奥」がこの章の3つの運命そのもの。青を上げるには手前を薄く、赤を上げるには全体を厚く、両方やれば「広く拾う」が通る。</p>
@@ -1399,6 +1503,13 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
     <p><b>問.</b> J<sub>L</sub> = 40 mA/cm²、J<sub>0</sub> = 10⁻¹³ A/cm² のセル。V<sub>oc</sub>・FF・効率はいくつか。J<sub>0</sub> を 10⁻¹⁴ にすると V<sub>oc</sub> はどうなるか。</p>
     <p><b>解.</b> V<sub>oc</sub> = 0.02585 × ln(0.040/10⁻¹³) = <b>0.691 V</b>。数値で最大電力点を探すと 0.61 V・38.2 mA/cm² で <b>23.3 mW/cm²</b>、FF = 23.3/(0.691 × 40) = <b>0.84</b>、効率 <b>23.3%</b>。J<sub>0</sub> を 1/10 にすると V<sub>oc</sub> は <b>0.750 V</b>（+59.5 mV）。<span class="key">電流（光の拾い方）と電圧（飽和電流の小ささ）は別々に磨ける</span> ― 前者は第4章、後者は第3章の話で、太陽電池の開発はこの 2 つの章の総力戦です。表面を不活性化する膜（PERC・TOPCon）や、アモルファス Si の薄層で結晶の表面を包むヘテロ接合型（HJT、前の節）は、どれも J<sub>0</sub> を下げて V<sub>oc</sub> を上げる工夫です。</p>
   </div>
+  <div class="caveat">
+    <span class="tag">持ち帰る一言 ― 役割別（太陽電池）</span>
+    <p><b>営業・企画：</b>太陽電池の効率は、開放電圧・短絡電流・曲線因子の 3 つの掛け算で決まる。</p>
+    <p><b>設計・開発：</b>上の図の素子は V<sub>oc</sub> ≈ 0.69 V、最大出力点 0.61 V、曲線因子 0.84。</p>
+    <p><b>研究・製造：</b>V<sub>oc</sub> = V<sub>t</sub>·ln(J<sub>L</sub>/J<sub>0</sub> + 1) ― 再結合を減らして J<sub>0</sub> を下げるほど V<sub>oc</sub> が上がる。</p>
+  </div>
+
 </section>
 
 <!-- ================= 05 ================= -->
@@ -1501,6 +1612,36 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
     <figcaption>左: 反転層の電子面密度をゲート電圧に対して対数で。V<sub>th</sub> より下（弱反転）は直線 ― 1桁動かすのに S 値ぶんの電圧が要る。上（強反転）は C<sub>ox</sub>(V<sub>G</sub>−V<sub>th</sub>)/q で線形に増える。右: V<sub>th</sub> の3つの内訳。<b>酸化膜を薄くすると Q<sub>dep</sub>/C<sub>ox</sub> が縮んで V<sub>th</sub> が下がり、同時に S 値も下限へ近づく。</b>基板を 10¹⁶ にすると V<sub>th</sub> は負になり、ゲートが 0 V でもオン（デプレッション型）。数式は教科書の解析式（SemiLab の <code>vthAnalytic</code>）で、ポアソンの解とは 5 mV 以内で一致する。</figcaption>
   </figure>
 
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">INVERSION — ゲート電圧で、反転層が立ち上がる</span><span class="fig-title">n⁺ ポリ · p 10¹⁷ · t<sub>ox</sub> 13.4 nm · SemiLab がポアソンで解いた値</span></div>
+    <div class="fig-body scroll-x">
+      <svg class="smil" viewBox="0 0 1100 300" role="img" aria-label="ゲート電圧をマイナス 0.4 V から 2.0 V まで上げたときの、反転層の電子の面密度の対数グラフ。しきい値 0.50 V までは 1 桁あたり 82.6 ミリボルトで指数的に増え、その先は直線的に増える。点が曲線の上を進み、右の断面では空乏層が表面の電位の平方根で伸びて 0.10 マイクロメートルほどで止まり、表面に電子の層が現れる。" style="min-width:900px;width:100%;display:block">
+        <g stroke="var(--line)" stroke-width="1" fill="none"><path d="M70 40 V250 H640"/></g>
+        <g stroke="var(--ink-3)" stroke-width="1" fill="none"><path d="M165 250 V255 M283.8 250 V255 M402.5 250 V255 M521.3 250 V255 M640 250 V255 M66 250 H70 M66 185.4 H70 M66 120.8 H70 M66 56.2 H70"/></g>
+        <path d="M283.9 40 V205" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="4 3" fill="none"/>
+        <polyline points="70.0,239.1 81.9,231.8 93.8,224.3 105.6,216.5 117.5,208.5 129.4,200.3 141.3,191.9 153.1,183.5 165.0,174.8 176.9,166.1 188.8,157.2 200.6,148.3 212.5,139.2 224.4,130.1 236.3,120.8 248.1,111.5 260.0,102.2 271.9,93.2 283.8,85.0 295.6,78.5 307.5,73.7 319.4,70.3 331.3,67.7 343.1,65.7 355.0,64.1 366.9,62.8 378.8,61.6 390.6,60.6 402.5,59.7 414.4,58.9 426.3,58.2 438.1,57.5 450.0,56.9 461.9,56.3 473.8,55.8 485.6,55.3 497.5,54.9 509.4,54.4 521.3,54.0 533.1,53.6 545.0,53.3 556.9,52.9 568.8,52.6 580.6,52.3 592.5,52.0 604.4,51.7 616.3,51.4 628.1,51.1 640.0,50.9" fill="none" stroke="var(--electron)" stroke-width="2.2"/>
+        <circle cx="70.0" cy="239.1" r="5" fill="var(--electron)"><animate attributeName="cx" values="70.0;93.8;117.5;141.3;165.0;188.8;212.5;236.3;260.0;283.8;307.5;331.3;355.0;378.8;402.5;426.3;450.0;473.8;497.5;521.3;545.0;568.8;592.5;616.3;640.0;640.0" keyTimes="0.0000;0.0354;0.0708;0.1062;0.1417;0.1771;0.2125;0.2479;0.2833;0.3187;0.3542;0.3896;0.4250;0.4604;0.4958;0.5313;0.5667;0.6021;0.6375;0.6729;0.7083;0.7438;0.7792;0.8146;0.8500;1" dur="9s" repeatCount="indefinite"/><animate attributeName="cy" values="239.1;224.3;208.5;191.9;174.8;157.2;139.2;120.8;102.2;85.0;73.7;67.7;64.1;61.6;59.7;58.2;56.9;55.8;54.9;54.0;53.3;52.6;52.0;51.4;50.9;50.9" keyTimes="0.0000;0.0354;0.0708;0.1062;0.1417;0.1771;0.2125;0.2479;0.2833;0.3187;0.3542;0.3896;0.4250;0.4604;0.4958;0.5313;0.5667;0.6021;0.6375;0.6729;0.7083;0.7438;0.7792;0.8146;0.8500;1" dur="9s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;0" keyTimes="0;0.95" calcMode="discrete" dur="9s" repeatCount="indefinite"/></circle>
+        <rect x="720" y="74" width="340" height="186" fill="var(--hole-soft)"/>
+        <rect x="760" y="74" width="260" height="73.4" fill="var(--surface-3)"><animate attributeName="height" values="73.4;81.6;89.4;96.9;104.0;110.7;117.3;123.6;129.6;134.9;138.4;140.2;141.4;142.2;142.9;143.4;143.9;144.3;144.6;144.9;145.2;145.5;145.8;146.0;146.2;146.2" keyTimes="0.0000;0.0354;0.0708;0.1062;0.1417;0.1771;0.2125;0.2479;0.2833;0.3187;0.3542;0.3896;0.4250;0.4604;0.4958;0.5313;0.5667;0.6021;0.6375;0.6729;0.7083;0.7438;0.7792;0.8146;0.8500;1" dur="9s" repeatCount="indefinite"/></rect>
+        <rect x="760" y="74" width="260" height="5" fill="var(--electron)" opacity="0.000"><animate attributeName="opacity" values="0.000;0.000;0.000;0.000;0.000;0.000;0.000;0.000;0.045;0.368;0.580;0.692;0.760;0.807;0.843;0.871;0.895;0.916;0.933;0.949;0.963;0.976;0.988;0.999;1.000;1.000" keyTimes="0.0000;0.0354;0.0708;0.1062;0.1417;0.1771;0.2125;0.2479;0.2833;0.3187;0.3542;0.3896;0.4250;0.4604;0.4958;0.5313;0.5667;0.6021;0.6375;0.6729;0.7083;0.7438;0.7792;0.8146;0.8500;1" dur="9s" repeatCount="indefinite"/></rect>
+        <rect x="760" y="40" width="260" height="24" fill="var(--metal, #8E95A4)"/>
+        <rect x="760" y="64" width="260" height="10" fill="var(--ox-soft)" stroke="var(--ox)"/>
+        <text x="890" y="57" font-family="var(--mono)" font-size="11" fill="var(--surface)" text-anchor="middle">ゲート（n⁺ ポリ）</text>
+        <g font-family="var(--mono)" font-size="9.5" fill="var(--ink-3)" text-anchor="middle"><text x="165" y="266">0</text><text x="283.8" y="266">0.5</text><text x="402.5" y="266">1.0</text><text x="521.3" y="266">1.5</text><text x="640" y="266">2.0</text></g>
+        <g font-family="var(--mono)" font-size="9.5" fill="var(--ink-3)" text-anchor="end"><text x="62" y="254">10⁰</text><text x="62" y="189">10⁴</text><text x="62" y="125">10⁸</text><text x="62" y="60">10¹²</text></g>
+        <text x="78" y="30" font-size="11" fill="var(--ink-2)">反転層の電子 n<tspan font-size="8" baseline-shift="sub">s</tspan>（cm⁻²、対数）</text>
+        <text x="355" y="288" font-size="10.5" fill="var(--ink-3)" text-anchor="middle">ゲート電圧 V<tspan font-size="8" baseline-shift="sub">G</tspan>（V）</text>
+        <text x="289.9" y="46" font-family="var(--mono)" font-size="10.5" fill="var(--ink-2)">V<tspan font-size="8" baseline-shift="sub">th</tspan> = 0.50 V</text>
+        <text x="140" y="226" font-size="10.5" fill="var(--ink-2)">弱反転: 82.6 mV で 1 桁（S 値）</text>
+        <text x="420" y="150" font-size="10.5" fill="var(--ink-2)">強反転: C<tspan font-size="8" baseline-shift="sub">ox</tspan>(V<tspan font-size="8" baseline-shift="sub">G</tspan> − V<tspan font-size="8" baseline-shift="sub">th</tspan>) に沿って増える</text>
+        <g font-size="10.5" fill="var(--ink-2)"><text x="1026" y="82">← 反転層</text><text x="1026" y="124">← 空乏層</text></g>
+        <text x="890" y="252" font-family="var(--mono)" font-size="10.5" fill="var(--hole)" text-anchor="middle">p 基板 10¹⁷</text>
+        <text x="720" y="288" font-size="10" fill="var(--ink-3)">空乏層の深さは実寸の比（1 µm ＝ 1300 px）。酸化膜は誇張</text>
+      </svg>
+    </div>
+    <figcaption>n⁺ ポリのゲート・p 基板 10¹⁷・酸化膜 13.4 nm の MOS で、ゲート電圧を −0.4 → 2.0 V と上げたときの反転層の電子の面密度（左、対数）と、断面の空乏層・反転層（右）。どちらも SemiLab がゲート電圧 0.05 V ごとにポアソン方程式を解いた値。<b>V<sub>th</sub> = 0.50 V までは電子が S = 82.6 mV/桁で指数的に増え</b>（弱反転）、空乏層は表面の電位 ψ<sub>s</sub> の平方根で伸びる。V<sub>th</sub> を越えると ψ<sub>s</sub> は 2φ<sub>F</sub> = 0.83 V の近くに留まり、空乏層の伸びは止まって（W<sub>max</sub> = 0.104 µm、2.0 V でも 0.112 µm）、増えたゲートの電荷は電子が引き受ける。1.5 V の電子は 1.36×10¹² cm⁻² で、直線の式 C<sub>ox</sub>(V<sub>G</sub> − V<sub>th</sub>)/q = 1.61×10¹² より 16% 少ない ― ψ<sub>s</sub> が 2φ<sub>F</sub> からまだ 0.13 V 上がるぶんです。電子の層の濃さは n<sub>s</sub> の対数を 10⁹〜2×10¹² cm⁻² で 0〜1 に写した表示。</figcaption>
+  </figure>
+
   <div class="two">
     <div class="body-col">
       <h3>S 値 ― 熱が決める 59.5 mV/桁 の壁</h3>
@@ -1561,6 +1702,13 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
     <p><b>高周波の C-V の反転側を C<sub>ox</sub> と読まない。</b>1 MHz では反転層が追いつかず、容量は下がったまま（C<sub>min</sub>）。C<sub>ox</sub> は蓄積側で読む。</p>
     <p><b>S 値の 59.5 mV/桁は材料の限界ではなく温度の限界。</b>V<sub>t</sub>·ln10 なので、冷やせば下がり（77 K で約 15 mV/桁）、酸化膜を工夫しても室温では割れない。</p>
     <p><b>nMOS と同じ n⁺ ポリのゲートで pMOS を作らない。</b>V<sub>th</sub> が −1.22 V（10¹⁷・5 nm）と深すぎる（pMOS と CMOS の節）。</p>
+  </div>
+
+  <div class="caveat">
+    <span class="tag">持ち帰る一言 ― 役割別（第5章）</span>
+    <p><b>営業・企画：</b>MOS は電流を流さずに、電界だけで表面の型を切り替える ― NAND の 4 石の中身。</p>
+    <p><b>設計・開発：</b>V<sub>th</sub> = V<sub>FB</sub> + 2φ<sub>F</sub> + Q<sub>dep</sub>/C<sub>ox</sub>。同じ基板でも酸化膜 5 → 13.4 nm で 0.095 → 0.500 V。</p>
+    <p><b>研究・製造：</b>S 値は室温で 59.5 mV/桁を割れない ― 温度の限界。高周波の C-V の反転側を C<sub>ox</sub> と読まない。</p>
   </div>
 
   <div class="lab-go">
@@ -1703,6 +1851,13 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
     <p><b>伝達特性は長いチャネルの二乗則です。</b>チャネル長変調 λ = 0.05 /V は形を見せるための仮定で、実物の λ はチャネル長と電圧で大きく変わります。短いチャネルでは速度飽和（次の節）で電流が V<sub>G</sub> − V<sub>th</sub> の1乗に近づき、V<sub>M</sub> の式も変わります。<b>基板バイアス効果</b>（ソースと基板の電位差で V<sub>th</sub> が動く）も入れていません。V<sub>DD</sub> = 1.8 V は 180 nm 世代ころの代表値として置いた例です。</p>
   </div>
 
+  <div class="caveat">
+    <span class="tag">持ち帰る一言 ― 役割別（pMOS と CMOS）</span>
+    <p><b>営業・企画：</b>CMOS は切り替えの瞬間以外は電流が流れない ― 集積回路の標準になった理由。</p>
+    <p><b>設計・開発：</b>正孔は電子より動きにくいので、同じ電流には pMOS の幅を約 2〜3 倍に取る（µ<sub>n</sub>/µ<sub>p</sub> は 10¹⁶ で 3.01、2.5×10¹⁷ で 2.26）。ゲートは p⁺ ポリ。</p>
+    <p><b>研究・製造：</b>ラッチアップ（寄生の pnpn）に注意。n⁺ ポリのままの pMOS は V<sub>th</sub> が −1.22 V と深すぎる。</p>
+  </div>
+
   <div class="lab-go">
     <span class="tag">手を動かす — SemiLab 第5章</span>
     <p>「ゲートの材料」を n⁺ ポリから p⁺ ポリに切り替えると、同じ基板のまま V<sub>th</sub> が 1.12 V 動く。基板を n 型にすると下のバーに「pMOS」と出て、「測る」の C-V は左右が鏡写しに、Id-Vd は負の側に描かれる。「pMOS を作る」は n⁺ ポリのままでは窓に入らない ― なぜかをこの節の式で説明できれば合格です。</p>
@@ -1720,7 +1875,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
       <h3>速さと電界 ― Canali の式</h3>
       <p>電界が弱いうちは v = µE。強くなると、加速されたキャリアが格子振動（光学フォノン）を次々に叩き出してエネルギーを捨てるようになり、速さは<b>飽和速度 v<sub>sat</sub></b> に張り付きます。その間をなめらかにつなぐ実測の当てはめが次の式です:</p>
       <div class="eq">v = µE / [ 1 + (µE/v<sub>sat</sub>)<sup>β</sup> ]<sup>1/β</sup>　　電子 v<sub>sat</sub> = 1.07×10⁷ cm/s, β = 1.11 ／ 正孔 8.37×10⁶, β = 1.21</div>
-      <p>300 K の値（Canali ほか 1975）。低濃度（µ<sub>n</sub> 1266・µ<sub>p</sub> 407 cm²/V·s）で計算すると:</p>
+      <p>300 K の値（Canali ほか 1975）。低濃度（10¹⁴、Caughey–Thomas で µ<sub>n</sub> 1266・µ<sub>p</sub> 407 cm²/V·s）で計算すると:</p>
       <div class="scroll-x" style="margin-top:12px"><table>
         <thead><tr><th>電界</th><th>電子の速さ</th><th>正孔の速さ</th><th>µE のままなら（電子）</th></tr></thead>
         <tbody>
@@ -1833,6 +1988,13 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
     <p><b>Canali の式はバルクの当てはめです。</b>反転層の中は表面の散乱で遅く、実効移動度 400 cm²/V·s は仮定の代表値です。<b>速度のオーバーシュート</b>（数十 nm のチャネルでは、電子が散乱されるより先に走り抜けて一時的に v<sub>sat</sub> を超える）は入れていません。I<sub>Dsat</sub> の式は Taur &amp; Ning の 1 次元の近似で、上で書いた 2 次元の効果（ロールオフ・DIBL）は含みません。SemiLab の Id-Vd も速度飽和を入れていない長いチャネルの極限です。</p>
   </div>
 
+  <div class="caveat">
+    <span class="tag">持ち帰る一言 ― 役割別（高電界）</span>
+    <p><b>営業・企画：</b>チャネルを 1/10 に短くしても、電流は 10 倍にならない ― 速度飽和。</p>
+    <p><b>設計・開発：</b>0.1 µm のチャネルでは、飽和電流は二乗則の約 35%（この節の表）。</p>
+    <p><b>研究・製造：</b>短チャネル効果（DIBL）とホットキャリアの劣化は、LDD とチャネルの設計で抑える。</p>
+  </div>
+
   <div class="lab-go">
     <span class="tag">手を動かす — SemiLab 第5章</span>
     <p>SemiLab の「測る」の Id-Vd は、チャネル電位ごとにポアソンを解いて反転電荷を積んだ<b>長いチャネルの極限</b>です。W/L = 1 の電流に、この節の表の比（L = 0.1 µm で 35%）を掛けると、短いチャネルでどれだけ減るかの目安になる。「切れ味を上げる」で酸化膜を薄くすると C<sub>ox</sub> が上がり、S 値だけでなく、速度飽和の電流の上限 W C<sub>ox</sub> v<sub>sat</sub>(V<sub>G</sub>−V<sub>th</sub>) も上がることを、式で確かめてください。</p>
@@ -1911,7 +2073,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
           <tr><td>GaN</td><td class="num">9.0</td><td class="num">1,000</td><td class="num">3.3</td><td class="num">0.05</td></tr>
         </tbody>
       </table></div>
-      <p style="font-size:12.5px;color:var(--ink-3);margin-top:8px">移動度・臨界電界は代表値で、文献によって幅があります（そのため Si に対する倍率は数百〜千倍の幅で語られます）。これは<strong>ドリフト層だけの理想の下限</strong>で、実物の SiC MOSFET ではチャネルや基板の抵抗が効いて数 mΩ·cm² 程度になります。</p>
+      <p style="font-size:12.5px;color:var(--ink-3);margin-top:8px">移動度・臨界電界は代表値で、文献によって幅があります（そのため Si に対する倍率は数百〜千倍の幅で語られます）。Si の 1,400 は教科書の代表値で、この部の Caughey–Thomas の当てはめ（濃度 0 の極限 1268、10¹⁴ で 1266）とは端数が違います。これは<strong>ドリフト層だけの理想の下限</strong>で、実物の SiC MOSFET ではチャネルや基板の抵抗が効いて数 mΩ·cm² 程度になります。</p>
     </div>
     <div class="body-col">
       <h3>Si の限界を破る ― スーパージャンクション</h3>
@@ -1937,6 +2099,13 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
     <p><strong>R<sub>on</sub>∝BV²/E<sub>c</sub>³ は1次元の理想（単極・均一ドリフト層）です。</strong>実物はスーパージャンクション（p/n柱の埋め込みでこの限界線自体を破る）、トレンチゲート、電界緩和構造などで大きく改善されています。E<sub>c</sub> は濃度依存もある代表値です。</p>
     <p><strong>SemiLab は降伏を解かない</strong>ので、この節の BV はこの部の中では「赤い帯が出る手前まで」の話として読んでください（切り分けの目安は第4部 付録A）。</p>
   </div>
+  <div class="caveat">
+    <span class="tag">持ち帰る一言 ― 役割別（パワーデバイス）</span>
+    <p><b>営業・企画：</b>パワー素子は「耐圧とオン抵抗の綱引き」という一本の軸で並べて読める（Si → SiC・GaN）。</p>
+    <p><b>設計・開発：</b>耐圧を上げるには、ドリフト層を薄い濃度で厚くするが、そのぶんオン抵抗が増える。臨界電界の大きい材料ほど同じ耐圧でオン抵抗が桁で小さい。</p>
+    <p><b>研究・製造：</b>片側接合の空乏層（第2章）と注入（第3章）だけで読める ― 新しい物理はほとんど要らない。</p>
+  </div>
+
 </section>
 
 <!-- ================= 理解の確認 ================= -->
@@ -1950,7 +2119,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
     <details><summary><span class="qn">Q4 · 2章</span>片側の濃度を 10 倍にすると V<sub>bi</sub> はどれだけ上がるか。</summary><p>V<sub>bi</sub> = V<sub>t</sub> ln(N<sub>a</sub>N<sub>d</sub>/n<sub>i</sub>²) なので <b>V<sub>t</sub> ln10 = 59.5 mV</b>。対数なので桁を動かしても少ししか動かず、E<sub>g</sub>/q には届かない。</p></details>
     <details><summary><span class="qn">Q5 · 2章</span>空乏層を2倍に広げたい。(V<sub>bi</sub> − V) を何倍にすればよいか。容量はどうなるか。</summary><p>W ∝ √(V<sub>bi</sub> − V) なので <b>4 倍</b>。容量 C<sub>j</sub> = ε/W は <b>1/2</b> になる。10 V 掛けても 0 V の約 3.7 倍にしかならない（p⁺/n 10¹⁵ の表）。</p></details>
     <details><summary><span class="qn">Q6 · 2章</span>1/C² を V に対してプロットした直線の、傾きと切片から何が分かるか。</summary><p>傾きから<b>薄い側の濃度</b>、切片から <b>V<sub>bi</sub></b>（厳密には補正が要り、片側が非常に濃い接合では 2kT/q の補正だけでは合わない ― 2章の「断定していないこと」）。</p></details>
-    <details><summary><span class="qn">Q7 · 3章</span>暗電流が 9 ℃ で 2 倍になった。何が支配しているか。4〜5 ℃で 2 倍なら？</summary><p>9 ℃で 2 倍は n<sub>i</sub> に比例 ＝ <b>空乏層の生成電流</b>（SRH、見かけの活性化エネルギー ≈ E<sub>g</sub>/2）。約 4〜5 ℃で 2 倍（300 K 付近、計算では 4.2 K）は n<sub>i</sub>² に比例 ＝ <b>拡散電流</b>（≈ E<sub>g</sub>）。温度係数だけで支配機構を切り分けられる（第4部 付録 C・第5部）。</p></details>
+    <details><summary><span class="qn">Q7 · 3章</span>暗電流が 9 ℃ で 2 倍になった。何が支配しているか。4〜5 ℃で 2 倍なら？</summary><p>9 ℃で 2 倍は n<sub>i</sub> に比例 ＝ <b>空乏層の生成電流</b>（SRH、見かけの活性化エネルギー ≈ E<sub>g</sub>/2）。約 4〜5 ℃で 2 倍（300 K から 2 倍になる幅は計算で 4.3 K）は n<sub>i</sub>² に比例 ＝ <b>拡散電流</b>（≈ E<sub>g</sub>）。温度係数だけで支配機構を切り分けられる（第4部 付録 C・第5部）。</p></details>
     <details><summary><span class="qn">Q8 · 4章</span>青の QE と赤の QE は、それぞれ何で落ちるか。対策は？</summary><p>青は<b>表面近く</b>で吸われるので、手前の中性層と表面再結合に食われる → 手前を薄く、表面をパッシベーション、反射防止膜。赤は<b>深く潜る</b>ので素通りする → 全体を厚く。原因が別だから両立できる。</p></details>
     <details><summary><span class="qn">Q9 · 5章</span>酸化膜を薄くすると、V<sub>th</sub> と S 値はそれぞれどちらへ動くか。</summary><p>C<sub>ox</sub> が大きくなり Q<sub>dep</sub>/C<sub>ox</sub> が縮むので <b>V<sub>th</sub> は下がる</b>。ゲートの分圧 (1 + C<sub>dep</sub>/C<sub>ox</sub>) が 1 に近づくので <b>S 値も下がり、59.5 mV/桁に近づく</b>（下回ることはない）。</p></details>
     <details><summary><span class="qn">Q10 · 通し</span>「電源電圧を下げると消費電力が下がるのに、なぜ 0.3 V まで下げないのか」をこの部の式で説明せよ。</summary><p>オフ電流を 6 桁下げるには、S 値の下限 59.5 mV/桁 でも <b>0.36 V</b> のゲート振幅が要る（5章）。V<sub>th</sub> をそれより下げるとオフ電流が桁で増える。59.5 mV の出どころは V<sub>t</sub>·ln10 ＝ 1章のボルツマン分布そのもので、<b>障壁を熱で越えて流れる素子である限り、室温では材料や構造を変えても破れない</b>（破るには、障壁をトンネルで抜けるなど、熱で越えるのとは別の機構で電流を切り替える必要がある）。</p></details>
@@ -2034,14 +2203,14 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
         <tr><td>E<sub>g</sub></td><td class="num">1.124 eV (300 K)</td><td>Varshni の式 E<sub>g</sub>(T) = 1.170 − 4.73×10⁻⁴·T²/(T+636)。0 K で 1.170、300 K で 1.124。</td></tr>
         <tr><td>n<sub>i</sub></td><td class="num">1.0×10¹⁰ /cm³</td><td>300 K の実測側の値。温度は T<sup>1.5</sup>·exp(−E<sub>g</sub>(T)/2kT) で動かす（形は物理、目盛りは実測）。</td></tr>
         <tr><td>ε<sub>Si</sub>, ε<sub>ox</sub></td><td class="num">11.7ε₀, 3.9ε₀</td><td>ε₀ = 8.854×10⁻¹⁴ F/cm。ε<sub>Si</sub> = 1.036×10⁻¹² F/cm。</td></tr>
-        <tr><td>移動度 µ</td><td class="num">Caughey-Thomas</td><td>µ = µ<sub>min</sub> + (µ<sub>max</sub>−µ<sub>min</sub>)/(1+(N/N<sub>ref</sub>)<sup>a</sup>)。電子: 92, 1268, 1.3×10¹⁷, 0.91。正孔: 54.3, 406.9, 2.35×10¹⁷, 0.88。N は不純物の総量。</td></tr>
+        <tr><td>移動度 µ</td><td class="num">Caughey-Thomas</td><td>µ = µ<sub>min</sub> + (µ<sub>max</sub>−µ<sub>min</sub>)/(1+(N/N<sub>ref</sub>)<sup>a</sup>)。電子: 92, 1268, 1.3×10¹⁷, 0.91。正孔: 54.3, 406.9, 2.35×10¹⁷, 0.88。N は不純物の総量。1268・406.9 は濃度 0 の極限（µ<sub>max</sub>）で、10¹⁴ では 1266・407、10¹⁶ では 1164・386。</td></tr>
         <tr><td>寿命 τ</td><td class="num">10 µs / (1 + N/5×10¹⁶)</td><td>SRH。低濃度で 10 µs、10¹⁷ で 3.3 µs、10¹⁹ で 50 ns。</td></tr>
         <tr><td>吸収係数 α</td><td class="num">実測表</td><td>Green & Keevers (1995)。50 nm 刻みの表を対数で内挿。表の外は端の値で止める。</td></tr>
         <tr class="grp"><td colspan="3">第1章</td></tr>
         <tr><td>kT/q</td><td class="num">25.85 mV</td><td>8.617×10⁻⁵ eV/K × 300 K。</td></tr>
         <tr><td>5兆個に1個</td><td class="num">5×10²² / 10¹⁰</td><td>シリコンの原子密度 5×10²² /cm³ を n<sub>i</sub> で割った。</td></tr>
         <tr><td>1 Ω·cm の n 型</td><td class="num">5.2×10¹⁵</td><td>1/(q·N·µ<sub>n</sub>(N)) = 1 を解いた。µ<sub>n</sub>(5.2×10¹⁵) = 1208。p 型なら 1.66×10¹⁶（µ<sub>p</sub> = 376）。</td></tr>
-        <tr><td>9 ℃で 2.06 倍</td><td class="num">n<sub>i</sub>(309)/n<sub>i</sub>(300)</td><td>上の n<sub>i</sub>(T) をそのまま。d(ln n<sub>i</sub>)/dT = 1.5/T + E<sub>g</sub>/2kT² − (dE<sub>g</sub>/dT)/2kT = 0.0050 + 0.0725 + 0.0049 = 0.0824 /K → ln2/0.0824 = 8.4 K（E<sub>g</sub> が温度で縮むぶんも入れた値）。</td></tr>
+        <tr><td>9 ℃で 2.06 倍</td><td class="num">n<sub>i</sub>(309)/n<sub>i</sub>(300)</td><td>上の n<sub>i</sub>(T) をそのまま。d(ln n<sub>i</sub>)/dT = 1.5/T + E<sub>g</sub>/2kT² − (dE<sub>g</sub>/dT)/2kT = 0.0050 + 0.0725 + 0.0049 = 0.0824 /K → ln2/0.0824 = 8.4 K（300 K での微分）。300 K から実際に 2 倍になる幅は <b>8.6 K</b>（E<sub>g</sub> が温度で縮むぶんも入れた値。この本の「温度で 2 倍になる幅」はこちらの数え方で書く）。</td></tr>
         <tr><td>四探針の係数</td><td class="num">π/ln2 = 4.532</td><td>無限に広い薄層で、針から放射状に広がる電流を鏡像で足し合わせた幾何の因子（Valdes 1954）。試料の端や厚みが効く場合は補正係数を掛ける。</td></tr>
         <tr><td>D = µV<sub>t</sub></td><td class="num">30.1 / 9.99 cm²/s</td><td>10¹⁶ で µₙ = 1164、µₚ = 386 に V<sub>t</sub> = 0.02585 を掛けた（アインシュタインの関係）。</td></tr>
         <tr><td>拡散長 L</td><td class="num">91 µm / 158 µm</td><td>√(Dτ)、τ(10¹⁶) = 10 µs/(1+0.2) = 8.33 µs。n 型 10¹⁶ の正孔 √(9.99 × 8.33×10⁻⁶) = 9.1×10⁻³ cm、p 型 10¹⁶ の電子 1.58×10⁻² cm。</td></tr>
@@ -2058,7 +2227,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
         <tr><td>J<sub>0</sub> (10¹⁷/10¹⁷)</td><td class="num">6.3×10⁻¹³ A/cm²</td><td>q n<sub>i</sub>² (D<sub>p</sub>/(L<sub>p</sub>N<sub>d</sub>) + D<sub>n</sub>/(L<sub>n</sub>N<sub>a</sub>))。D = µV<sub>t</sub>（アインシュタイン）、L = √(Dτ)。D<sub>p</sub> = 7.6, L<sub>p</sub> = 50 µm, D<sub>n</sub> = 19.4, L<sub>n</sub> = 80 µm。両側 1 µm の SemiLab のお手本では coth(1/50)+coth(1/80) の短基底補正で 4.7×10⁻¹¹。</td></tr>
         <tr><td>170 万倍</td><td class="num">7.7×10⁻³ / 4.6×10⁻⁹</td><td>+0.6 V は J<sub>0</sub>·exp(0.6/0.02585) = 6.3×10⁻¹³ × 1.2×10¹⁰ ≈ 7.6×10⁻³（再結合の項と直列抵抗まで入れた SemiLab の解は 7.7×10⁻³）。−0.6 V は生成電流 q n<sub>i</sub> W/2τ が支配。両側 1 µm なら 0.54 / 4.7×10⁻⁹ = 1.2×10⁸。</td></tr>
         <tr><td>短基底 ≈ 45 倍</td><td class="num">L<sub>p</sub>/W<sub>n</sub></td><td>coth(2/91) ≈ 45.6。n 側 10¹⁶ で L<sub>p</sub> = 91 µm、中性領域 2 µm。SemiLab の解は約 54 倍（p⁺ 10¹⁹ / n 10¹⁶ で、n 側 2 µm と 300 µm の J<sub>0</sub> の比）（p⁺ 側の寄与と W の分だけずれる）。</td></tr>
-        <tr><td>4.2 ℃で倍</td><td class="num">拡散支配</td><td>I<sub>s</sub> ∝ n<sub>i</sub>² ∝ T³·exp(−E<sub>g</sub>(T)/kT)。d(ln)/dT = 3/T + E<sub>g</sub>/kT² − (dE<sub>g</sub>/dT)/kT = 0.0100 + 0.1450 + 0.0098 = 0.165 /K → ln2/0.165 = 4.2 K。E<sub>g</sub> を固定すると 4.5 K で、縮むぶん（Varshni、dE<sub>g</sub>/dT = −2.55×10⁻⁴ eV/K）速くなる。</td></tr>
+        <tr><td>4.3 ℃で倍</td><td class="num">拡散支配</td><td>I<sub>s</sub> ∝ n<sub>i</sub>² ∝ T³·exp(−E<sub>g</sub>(T)/kT)。d(ln)/dT = 3/T + E<sub>g</sub>/kT² − (dE<sub>g</sub>/dT)/kT = 0.0100 + 0.1450 + 0.0098 = 0.165 /K → ln2/0.165 = 4.2 K（300 K での微分）。300 K から実際に 2 倍になる幅は <b>4.3 K</b>（この本はこちらで書く）。E<sub>g</sub> を固定すると 4.5 K で、縮むぶん（Varshni、dE<sub>g</sub>/dT = −2.55×10⁻⁴ eV/K）速くなる。</td></tr>
         <tr class="grp"><td colspan="3">第4章</td></tr>
         <tr><td>1107 nm</td><td class="num">1240 / 1.12</td><td>hc = 1239.84 eV·nm。E<sub>g</sub> = 1.124 なら 1103 nm。</td></tr>
         <tr><td>裸の反射 35%</td><td class="num">((n−1)/(n+1))²</td><td>600 nm で n = 3.95 → 0.355。400 nm は n = 5.57 で 0.484。</td></tr>
@@ -2088,7 +2257,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
         <tr><td>µ<sub>n</sub>/µ<sub>p</sub></td><td class="num">2.26（2.5×10¹⁷）</td><td>Caughey-Thomas で 510 / 226 cm²/V·s。10¹⁷ では 750/294 = 2.55。</td></tr>
         <tr><td>V<sub>M</sub></td><td class="num">0.898 / 0.803 V</td><td>(V<sub>DD</sub> + V<sub>thp</sub> + V<sub>thn</sub>√r)/(1 + √r)、V<sub>DD</sub> 1.8・V<sub>thn</sub> 0.427・V<sub>thp</sub> −0.431、r = 1 と 2.26。λ = 0.05 /V を入れて数値で解くと 0.900 / 0.810。</td></tr>
         <tr><td>動的電力の例</td><td class="num">3.2 µW</td><td>α = 0.1 × 10 fF × (1.8 V)² × 100 MHz。</td></tr>
-        <tr><td>v（電子、100 kV/cm）</td><td class="num">1.01×10⁷ cm/s</td><td>Canali の式、µ = 1266、v<sub>sat</sub> = 1.07×10⁷、β = 1.109。v<sub>sat</sub> = 1.53×10⁹·T<sup>−0.87</sup>、β = 2.57×10⁻²·T<sup>0.66</sup> を 300 K で。</td></tr>
+        <tr><td>v（電子、100 kV/cm）</td><td class="num">1.01×10⁷ cm/s</td><td>Canali の式、µ = 1266（10¹⁴ の低電界の移動度）、v<sub>sat</sub> = 1.07×10⁷、β = 1.109。v<sub>sat</sub> = 1.53×10⁹·T<sup>−0.87</sup>、β = 2.57×10⁻²·T<sup>0.66</sup> を 300 K で。</td></tr>
         <tr><td>I<sub>Dsat</sub>（L = 0.1 µm）</td><td class="num">0.481 mA/µm</td><td>C<sub>ox</sub> 6.906×10⁻⁷ × v<sub>sat</sub> 1.07×10⁷ × 1² / (1 + 5.35 × 0.1)。ℰ<sub>sat</sub> = 2 × 1.07×10⁷ / 400 = 5.35×10⁴ V/cm。</td></tr>
         <tr><td>λ/4 の窒化膜（600 nm）</td><td class="num">75 nm・0.005 %</td><td>d = 600/(4 × 2.00)。R<sub>min</sub> = ((3.95 − 4.00)/(3.95 + 4.00))² = 4×10⁻⁵（実数の n の式）、SemiLab の値は 0.005 %。SiO₂（n 1.458、102.9 nm）なら ((3.95 − 2.126)/(3.95 + 2.126))² = 0.090。</td></tr>
 </tbody>
@@ -2164,6 +2333,8 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;let
         <tr><td>Fundamentals of Power<br>Semiconductor Devices</td><td>B. J. Baliga<br>Springer</td><td>降伏の節。BV = 5.34×10¹³ N<sup>−3/4</sup> の近似と、端の電界をならす構造。</td></tr>
         <tr><td>Electron and hole drift velocity<br>measurements in silicon and their<br>empirical relation to electric field<br>and temperature</td><td>C. Canali, G. Majni, R. Minder, G. Ottaviani<br>IEEE Trans. Electron Devices 22, 1045 (1975)</td><td>高電界の節。v<sub>sat</sub> と β の温度の式。</td></tr>
         <tr><td>Nanowatt logic using field-effect<br>metal-oxide semiconductor triodes</td><td>F. M. Wanlass &amp; C. T. Sah<br>ISSCC Digest, 32 (1963)</td><td>pMOS と CMOS の節。CMOS の原典。</td></tr>
+        <tr><td>A Method of Measuring Specific Resistivity<br>and Hall Effect of Discs of Arbitrary Shape</td><td>L. J. van der Pauw<br>Philips Research Reports 13, 1 (1958)</td><td>ホール効果。ファン・デル・パウ法の原典。</td></tr>
+        <tr><td>Theory of Semiconductor Heterojunctions:<br>The Role of Quantum Dipoles</td><td>J. Tersoff<br>Phys. Rev. B 30, 4874 (1984)</td><td>ヘテロ接合。界面の双極子と段差（アンダーソンの規則が外れる理由）。</td></tr>
 </tbody>
     </table></div>
   </figure>
