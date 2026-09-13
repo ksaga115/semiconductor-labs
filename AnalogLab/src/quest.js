@@ -16,7 +16,8 @@
     { id: 1, name: '第1章　バイアスを置く', lead: 'W/L と電流で Vov と gm が決まる。アナログ設計の九九。' },
     { id: 2, name: '第2章　一段で増やす', lead: '利得・帯域・スイングは同じ場所を取り合う。ラザビーの最初の山。' },
     { id: 3, name: '第3章　受光の後段', lead: 'TIA・チャージアンプ・差動対・低雑音。第5部の検出器がここに繋がる。' },
-    { id: 4, name: '第4章　変換と電源', lead: 'AD 変換の kT/C と、降圧 DC-DC のコイル。第6部 09・10。' }
+    { id: 4, name: '第4章　変換と電源', lead: 'AD 変換の kT/C と、降圧 DC-DC のコイル。第6部 09・10。' },
+    { id: 5, name: '第5章　写す・基準・受ける', lead: 'カレントミラーの誤差、バンドギャップの傾き、TIA の帰還容量。第6部 03・08・16。' }
   ];
 
   var LIST = [
@@ -276,6 +277,78 @@
             row('コイル電流の三角波 ΔI', f(ev.dIbuck, 3) + ' A（D = ' + f(ev.duty, 3) + '）', '0.300 以下', okI),
             row('コイル', f(d.luh, 1) + ' µH', '22.0 以下', okL),
             row('条件固定', lock ? '守っている（12→3.3 V・1 MHz）' : '課題の条件に戻す', '', lock)
+          ]
+        };
+      }
+    },
+    /* ===== 第5章 ===== */
+    {
+      id: 'mirror', ch: 5, kind: 'design',
+      name: 'ミラーの誤差を 0.1% に',
+      desc: '基準 **50 µA**・W/L の比 **1:2**・λ **0.1 /V** のミラーで、出力のドレインが基準より **0.5 V** 高くても、コピーの誤差を **0.1% 以下**にする。'
+          + '出力に要る電圧（飽和に留まるための下の余裕）は **0.35 V 以下**、出力側の石の W/L は **200 まで**（面積の上限、仮定）。',
+      why: 'ミラーの品質は出力抵抗 ― 単純なミラーは r<sub>o</sub> しかなく、ドレインが ΔV 動くと二乗則に (1 + λΔV) が掛かって **5%** 狂う（第6部 03 の例題）。'
+         + 'カスコードにすると出力抵抗が g<sub>m</sub>r<sub>o</sub> 倍になり、誤差は λΔV/(g<sub>m</sub>r<sub>o</sub>) に縮む。代金は **V<sub>ov</sub> 1 個ぶんのヘッドルーム**。'
+         + 'g<sub>m</sub>r<sub>o</sub> = 2/(λV<sub>ov</sub>) なので、V<sub>ov</sub> を下げる（W/L を太らせる）と誤差とヘッドルームが同時に良くなるが、面積が上限を決める ― 窓。',
+      hint: '単純なミラー（種類 0）は 5% で届かない。カスコード（種類 1）の出力に要る電圧は 2Vov ≤ 0.35 V → Vov ≤ 0.175 V → W/L ≥ 32.7（100 µA）。既定の W/L 20 では 0.447 V で落ちる。',
+      check: function (ev, d) {
+        var lock = near(d.mref, 50) && near(d.mratio, 2) && near(d.mdvds, 0.5) && near(d.lam, 0.1);
+        var okE = ev.mErr <= 0.001, okH = ev.mHead <= 0.35, lim = d.wl <= 200;
+        return {
+          ok: lock && okE && okH && lim,
+          rows: [
+            row('コピーの誤差', f(ev.mErr * 100, 4) + ' %（' + (d.mcasc ? 'カスコード' : '単純') + '）', '0.1000 以下', okE),
+            row('出力に要る電圧', f(ev.mHead, 3) + ' V（Vov ' + f(ev.mVov, 3) + ' V）', '0.350 以下', okH),
+            row('出力抵抗 / gm·ro', f(ev.mRout / 1e6, 2) + ' MΩ / ' + f(ev.mgmro, 1), '', true),
+            row('出力側の W/L', f(d.wl, 1), '200 まで', lim),
+            row('条件固定', lock ? '守っている（50 µA・1:2・0.5 V・λ 0.1）' : '課題の条件に戻す', '', lock)
+          ]
+        };
+      }
+    },
+    {
+      id: 'bgr', ch: 5, kind: 'design',
+      name: 'バンドギャップの傾きを消す',
+      desc: 'V<sub>BE</sub> **0.65 V**・その温度係数 **−2 mV/K** のまま、面積比 n（**24 まで**・整数）と倍率 m（**10 まで**・抵抗比の上限、仮定）で、'
+          + '基準電圧の温度係数を **±0.05 mV/K 以内**にする。',
+      why: 'V<sub>BE</sub> は温度で下がり（CTAT）、面積の違う 2 本の差 ΔV<sub>BE</sub> = V<sub>T</sub> ln n は上がる（PTAT、(k/q)·ln n = 86.2 µV/K × ln n）。'
+         + 'm 倍して足すと傾きが消える（第6部 08）。n = 8 なら m = 11.2 が要る ― **m に上限があれば、n を大きくして ln n で稼ぐ**しかない。'
+         + '打ち消した先の電圧は約 1.25 V で、シリコンのバンドギャップ（0 K へ外挿して約 1.2 V）の近くに落ちる。',
+      hint: 'm = 2000 / (86.17 × ln n)。n = 8 は m 11.16 で上限 10 を超える。n = 16 なら m 8.16〜8.58（中心 8.37）。',
+      check: function (ev, d) {
+        var lock = near(d.vbe0, 0.65) && near(d.dvbe, -2);
+        var lim = d.bgn >= 2 && d.bgn <= 24 && d.bgm <= 10;
+        var okT = Math.abs(ev.bgTC) <= 0.05;
+        return {
+          ok: lock && lim && okT,
+          rows: [
+            row('基準電圧の温度係数', f(ev.bgTC, 4) + ' mV/K（−40〜125 ℃ で ' + f(ev.bgDrift, 1) + ' mV）', '±0.0500 以内', okT),
+            row('基準電圧（300 K）', f(ev.bgV, 4) + ' V', '', true),
+            row('面積比 n / 倍率 m', f(d.bgn, 0) + ' / ' + f(d.bgm, 3) + '（傾きが消える m ' + f(ev.bgMzero, 3) + '）', 'n 24・m 10 まで', lim),
+            row('条件固定', lock ? '守っている（V_BE 0.65 V・−2 mV/K）' : '課題の条件に戻す', '', lock)
+          ]
+        };
+      }
+    },
+    {
+      id: 'tiacf', ch: 5, kind: 'design',
+      name: '帰還容量で鳴きを止める',
+      desc: 'R<sub>f</sub> **1 MΩ**（1000 kΩ）・入力の容量（PD＋増幅器）**10 pF**・増幅器の GBW **100 MHz** の TIA で、帰還容量 C<sub>f</sub> を選び、'
+          + '周波数特性の山を **5% 以下**（1.05 倍）に抑えたまま、帯域を **1.2 MHz 以上**にする。',
+      why: 'C<sub>f</sub> が無いと、R<sub>f</sub> と入力の容量の極が帰還の輪の中に入り、2 次系の減衰 ζ が 0.0063 まで落ちて、周波数特性に **79 倍**の山が立つ（実物は発振。第6部 16）。'
+         + 'C<sub>f</sub> を足すと ζ = (1 + ω<sub>t</sub>R<sub>f</sub>C<sub>f</sub>)/(2√(ω<sub>t</sub>R<sub>f</sub>C<sub>T</sub>)) が上がって山は消えるが、大きすぎると R<sub>f</sub>C<sub>f</sub> で帯域が落ちる ― '
+         + '最大平坦（ζ = 0.707）の 178 fF で 1.25 MHz。**帯域を 1/(2πR<sub>f</sub>C<sub>f</sub>) で見積もると外れる**（2 次系なので 0.89 MHz ではなく 1.25 MHz）。',
+      hint: '山 ≤ 5% は Cf ≥ 148 fF、帯域 ≥ 1.2 MHz は Cf ≤ 186 fF。窓は 148〜186 fF。',
+      check: function (ev, d) {
+        var lock = near(d.rfk, 1000) && near(d.tcinpf, 10) && near(d.tgbwmhz, 100);
+        var okP = ev.tpeak <= 1.05, okB = ev.tbw >= 1.2e6;
+        return {
+          ok: lock && okP && okB,
+          rows: [
+            row('周波数特性の山', f(ev.tpeak, 3) + ' 倍（ζ ' + f(ev.tzeta, 3) + '）', '1.050 以下', okP),
+            row('帯域（−3 dB）', f(ev.tbw / 1e6, 3) + ' MHz', '1.200 以上', okB),
+            row('帰還容量 Cf', f(d.tcffF, 1) + ' fF', '', true),
+            row('条件固定', lock ? '守っている（1 MΩ・10 pF・100 MHz）' : '課題の条件に戻す', '', lock)
           ]
         };
       }

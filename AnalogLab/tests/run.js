@@ -116,4 +116,36 @@ T('AD 変換と DC-DC ― 第6部 09・10 の数字', () => {
   within('ΔI = 0.239 A（第6部 10 の例題）', b.dIbuck, 0.239, 1.002);
 });
 
+T('第5章 ― ミラー・バンドギャップ・TIA の帰還容量（第6部 03・08・16 の数字）', () => {
+  /* 03 の例題: 基準 50 µA・1:2・ΔV 0.5 V・λ 0.1 */
+  const m0 = evalWith({ mcasc: 0 }).ev, m1 = evalWith({ mcasc: 1 }).ev;
+  near('ミラーの出力 = 50 µA × 2', m0.mIout, 100e-6, 1e-15);
+  near('単純なミラーの誤差 λΔV = 5%', m0.mErr, 0.05, 1e-12);
+  within('gm·ro ≈ 89（W/L 20・100 µA）', m1.mgmro, 89.44, 1.001);
+  within('カスコードの出力抵抗 8.9 MΩ', m1.mRout, 8.944e6, 1.001);
+  within('カスコードの誤差 0.056%（0.5 V / 8.9 MΩ = 56 nA）', m1.mErr, 5.59e-4, 1.002);
+  near('カスコードは Vov 2 個ぶんの電圧が要る', m1.mHead, 2 * m0.mHead, 1e-12);
+
+  /* 08 の例題: n = 8 で (k/q)·ln 8 = 179 µV/K、m = 11.2、Vref = 1.25 V */
+  within('PTAT の係数 (k/q)·ln 8 = 179 µV/K', evalWith({ bgn: 8, bgm: 1 }).ev.bgTC + 2, 0.1792, 1.001);
+  const b = evalWith({ bgn: 8, bgm: 11.2 }).ev;
+  within('傾きが消える m = 11.2', b.bgMzero, 11.16, 1.002);
+  within('Vref = 0.65 + 11.2 × 0.02585 × 2.08 = 1.25 V', b.bgV, 1.252, 1.001);
+  ok('m = 11.2 で傾きはほぼ 0（|傾き| < 0.01 mV/K）', Math.abs(b.bgTC) < 0.01);
+  near('−40〜125 ℃ の変化 = |傾き| × 165 K', evalWith({ bgn: 8, bgm: 5 }).ev.bgDrift, Math.abs(evalWith({ bgn: 8, bgm: 5 }).ev.bgTC) * 165, 1e-9);
+
+  /* 16: Rf 1 MΩ・Cin 10 pF・GBW 100 MHz */
+  const t = (cf) => evalWith({ rfk: 1000, tcinpf: 10, tgbwmhz: 100, tcffF: cf }).ev;
+  const z0 = t(0).tzeta;
+  within('Cf 0 で ζ = 0.0063', z0, 0.006308, 1.002);
+  within('Cf 0 の山は 2 次系の 1/(2ζ√(1−ζ²)) ― 79.3 倍', t(0).tpeak, 1 / (2 * z0 * Math.sqrt(1 - z0 * z0)), 1.0005);
+  within('Cf 125 fF（ζ 0.5）の山 15.7%', t(125).tpeak, 1.157, 1.002);
+  within('Cf 125 fF の帯域 1.60 MHz', t(125).tbw, 1.597e6, 1.002);
+  within('Cf 178 fF（最大平坦）の帯域 1.25 MHz', t(178).tbw, 1.253e6, 1.002);
+  ok('Cf 178 fF は山がない（1.0005 倍未満）', t(178).tpeak < 1.0005);
+  within('Cf 0.5 pF の帯域 0.34 MHz', t(500).tbw, 0.340e6, 1.003);
+  near('帯域の目安 √(GBW/(2πRf·CT)) と一致', t(178).tbw, Math.sqrt(1e8 / (2 * Math.PI * 1e6 * 10.178e-12)), 0.02e6);
+  ok('Cf を大きくすると帯域は下がる', t(250).tbw < t(178).tbw && t(500).tbw < t(250).tbw);
+});
+
 report();

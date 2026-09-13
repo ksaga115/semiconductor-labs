@@ -36,7 +36,18 @@
     ['vin', 'DC-DC の入力', 'V', 1, 60],
     ['vout', 'DC-DC の出力', 'V', 0.5, 60],
     ['fswmhz', 'スイッチの周波数', 'MHz', 0.01, 10],
-    ['luh', 'コイル', 'µH', 0.1, 1000]
+    ['luh', 'コイル', 'µH', 0.1, 1000],
+    ['tcinpf', 'TIA の入力の容量 Cin', 'pF', 0.1, 100],
+    ['tgbwmhz', '増幅器の GBW', 'MHz', 0.1, 10000],
+    ['tcffF', 'TIA の帰還容量 Cf', 'fF', 0, 10000],
+    ['mref', 'ミラーの基準電流', 'µA', 1, 1000],
+    ['mratio', 'ミラーの W/L の比', '倍', 0.1, 20],
+    ['mdvds', 'ドレイン電圧の差', 'V', 0, 3],
+    ['mcasc', 'ミラーの種類', '0 単純 / 1 カスコード', 0, 1, true],
+    ['bgn', 'バンドギャップの面積比 n', '', 2, 64, true],
+    ['bgm', 'PTAT の倍率 m', '', 0, 50],
+    ['vbe0', 'V_BE（300 K）', 'V', 0.3, 1.0],
+    ['dvbe', 'V_BE の温度係数', 'mV/K', -3, -0.5]
   ];
 
   function num(t) {
@@ -80,9 +91,17 @@
 
     var gap = 16, Lm = 56, Rm = 10, top = 22, bottom = 40;
     var colW = (w - gap) / 2;
-    var pw = Math.max(80, colW - Lm - Rm), ph = Math.max(60, h - top - bottom);
+    var pw = Math.max(80, colW - Lm - Rm);
+    /* 高さがあれば 2 段: 上に利得と GBW、下に第5章の TIA の周波数特性とバンドギャップ */
+    var rows = h >= 380 ? 2 : 1, rowH = (h - (rows - 1) * 8) / rows;
+    var ph = Math.max(60, rowH - top - bottom);
     drawGainR({ x: Lm, y: top, w: pw, h: ph });
     drawGbwP({ x: colW + gap + Lm, y: top, w: pw, h: ph });
+    if (rows === 2) {
+      var y2 = rowH + 8 + top;
+      drawTia({ x: Lm, y: y2, w: pw, h: ph });
+      drawBg({ x: colW + gap + Lm, y: y2, w: pw, h: ph });
+    }
     updateStatus();
   }
 
@@ -139,6 +158,54 @@
     label(b.x + b.w - 6, b.y + 14, '電力4倍 → 帯域2倍（√）・白 = 今の設計', COL.fg3, 'right', '10px', b.w - 12);
   }
 
+  function drawTia(b) {
+    frameBox(b, 'TIA の |Z|/Rf ― Cf が小さいと山が立つ（第6部 16）');
+    var pts = A.tiaSweep(S.design, 160), ev = A.evaluate(S.design);
+    var Ax = axes(b, [1e4, 1e8], [0.01, 100], '周波数 [Hz]', '|Z| / Rf');
+    ctx.save(); ctx.beginPath(); ctx.rect(b.x, b.y, b.w, b.h); ctx.clip();
+    ctx.strokeStyle = COL.wall; ctx.setLineDash([4, 4]);
+    line(b.x, Ax.Y(Math.SQRT1_2), b.x + b.w, Ax.Y(Math.SQRT1_2)); ctx.setLineDash([]);
+    ctx.strokeStyle = COL.light; ctx.beginPath();
+    pts.forEach(function (p, i) {
+      var y = Ax.Y(Math.max(0.01, Math.min(100, p.h)));
+      if (i === 0) ctx.moveTo(Ax.X(p.f), y); else ctx.lineTo(Ax.X(p.f), y);
+    });
+    ctx.stroke();
+    if (isFinite(ev.tbw) && ev.tbw >= 1e4 && ev.tbw <= 1e8) dot(Ax.X(ev.tbw), Ax.Y(Math.SQRT1_2), COL.now, 3.5);
+    ctx.restore();
+    label(b.x + b.w - 6, b.y + 14, '橙 = −3 dB・白 = 帯域 ' + (isFinite(ev.tbw) ? (ev.tbw / 1e6).toFixed(2) + ' MHz' : '―') + '・山 ' + ev.tpeak.toFixed(2) + ' 倍', COL.fg3, 'right', '10px', b.w - 12);
+  }
+
+  /* 線形の目盛り（バンドギャップの図の用） */
+  function linAxes(b, xr, yr, xl, yl, nx, ny) {
+    var X = function (v) { return b.x + b.w * (v - xr[0]) / (xr[1] - xr[0] || 1); };
+    var Y = function (v) { return b.y + b.h * (1 - (v - yr[0]) / (yr[1] - yr[0] || 1)); };
+    ctx.strokeStyle = COL.line; ctx.globalAlpha = 0.6;
+    var i, v;
+    for (i = 0; i <= nx; i++) { v = xr[0] + (xr[1] - xr[0]) * i / nx; line(X(v), b.y, X(v), b.y + b.h); label(X(v), b.y + b.h + 12, v.toFixed(0), COL.fg3, 'center', '9px'); }
+    for (i = 0; i <= ny; i++) { v = yr[0] + (yr[1] - yr[0]) * i / ny; line(b.x, Y(v), b.x + b.w, Y(v)); label(b.x - 4, Y(v) + 3, v.toFixed(2), COL.fg3, 'right', '9px'); }
+    ctx.globalAlpha = 1;
+    label(b.x + b.w / 2, b.y + b.h + 26, xl, COL.fg3, 'center', '10px');
+    ctx.save(); ctx.translate(b.x - 44, b.y + b.h / 2); ctx.rotate(-Math.PI / 2); label(0, 0, yl, COL.fg3, 'center', '10px'); ctx.restore();
+    return { X: X, Y: Y };
+  }
+
+  function drawBg(b) {
+    frameBox(b, 'バンドギャップ ― V_BE（橙）＋ m·V_T·ln n（青）＝ 和（白）');
+    var pts = A.bgSweep(S.design, 60), ev = A.evaluate(S.design), ys = [];
+    pts.forEach(function (p) { ys.push(p.vbe, p.ptat, p.v); });
+    var y0 = Math.min.apply(null, ys), y1 = Math.max.apply(null, ys), pad = (y1 - y0) * 0.12 || 0.1;
+    var Ax = linAxes(b, [-40, 125], [y0 - pad, y1 + pad], '温度 [℃]', '電圧 [V]', 5, 4);
+    ctx.save(); ctx.beginPath(); ctx.rect(b.x, b.y, b.w, b.h); ctx.clip();
+    [['vbe', COL.wall], ['ptat', COL.light], ['v', COL.now]].forEach(function (s) {
+      ctx.strokeStyle = s[1]; ctx.beginPath();
+      pts.forEach(function (p, i) { if (i === 0) ctx.moveTo(Ax.X(p.tc), Ax.Y(p[s[0]])); else ctx.lineTo(Ax.X(p.tc), Ax.Y(p[s[0]])); });
+      ctx.stroke();
+    });
+    ctx.restore();
+    label(b.x + b.w - 6, b.y + b.h - 8, '和の傾き ' + ev.bgTC.toFixed(3) + ' mV/K・Vref ' + ev.bgV.toFixed(3) + ' V', COL.fg3, 'right', '10px', b.w - 12);
+  }
+
   function dot(x, y, col, r) { ctx.fillStyle = col; ctx.beginPath(); ctx.arc(x, y, r || 2.4, 0, Math.PI * 2); ctx.fill(); }
   function line(x0, y0, x1, y1) { ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke(); }
   function label(x, y, t, col, align, size, maxW) {
@@ -151,7 +218,7 @@
     ctx.fillStyle = col; ctx.textAlign = align || 'left'; ctx.fillText(t, x, y); ctx.textAlign = 'left';
   }
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
-  function md(s) { return esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>'); }
+  function md(s) { return esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/&lt;(\/?)(b|sub|sup)&gt;/g, '<$1$2>'); }
 
   function updateStatus() {
     var ev = A.evaluate(S.design);
@@ -206,7 +273,10 @@
       ['SC: 等価抵抗 1/(fC)', (ev.reqsc / 1e6).toFixed(2) + ' MΩ（√(kT/C) ' + (ev.vktcsc * 1e6).toFixed(1) + ' µV）'],
       ['2段OTA: GBW / PM', (ev.gbw2 / 1e6).toFixed(1) + ' MHz / ' + ev.pm.toFixed(1) + '°（全体 ' + (ev.ptot * 1000).toFixed(2) + ' mW）', ev.pm < 45],
       ['ADC: 量子化 / kT/C', (ev.vqadc * 1e6).toFixed(1) + ' / ' + (ev.vktcadc * 1e6).toFixed(1) + ' µV（ENOB ' + ev.enob.toFixed(2) + '）', ev.vktcadc > ev.vqadc],
-      ['DC-DC: D / ΔI', ev.duty.toFixed(3) + ' / ' + ev.dIbuck.toFixed(3) + ' A']
+      ['DC-DC: D / ΔI', ev.duty.toFixed(3) + ' / ' + ev.dIbuck.toFixed(3) + ' A'],
+      ['TIA: ζ / 山 / 帯域', ev.tzeta.toFixed(3) + ' / ' + ev.tpeak.toFixed(2) + ' 倍 / ' + (isFinite(ev.tbw) ? (ev.tbw / 1e6).toFixed(3) + ' MHz' : '―') + '（Rf ' + S.design.rfk + ' kΩ）', ev.tpeak > 1.05],
+      ['ミラー: 誤差 / 出力に要る電圧', (ev.mErr * 100).toFixed(3) + ' % / ' + ev.mHead.toFixed(3) + ' V（' + (S.design.mcasc ? 'カスコード' : '単純') + '・gm·ro ' + ev.mgmro.toFixed(0) + '）'],
+      ['バンドギャップ: 傾き / Vref', ev.bgTC.toFixed(3) + ' mV/K / ' + ev.bgV.toFixed(3) + ' V（傾きが消える m ' + ev.bgMzero.toFixed(2) + '）', Math.abs(ev.bgTC) > 0.05]
     ];
     document.getElementById('derived').innerHTML = '<div class="dv">' + rows.map(function (r) {
       return '<span class="k">' + esc(r[0]) + '</span><span class="v' + (r[2] ? ' warn' : '') + '">' + esc(r[1]) + '</span>';

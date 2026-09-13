@@ -196,11 +196,11 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       <dl class="spec">
         <div><dt>参考書</dt><dd>11<small>部＋付録</small></dd></div>
         <div><dt>ラボ</dt><dd>11<small>本</small></dd></div>
-        <div><dt>採点つき課題</dt><dd>183<small>問</small></dd></div>
+        <div><dt>採点つき課題</dt><dd>186<small>問</small></dd></div>
         <div><dt>依存</dt><dd>0<small>ブラウザのみ</small></dd></div>
         <div><dt>通信</dt><dd>0<small>手元で完結</small></dd></div>
-        <div><dt>自動検査</dt><dd>5,036<small>件 (Node)</small></dd></div>
-        <div class="spec-cap">課題数は ProcessLab 13 ＋ SemiLab 26 ＋ CharLab 13 ＋ NandLab 31 ＋ PixelLab 16 ＋ PhotonLab 15 ＋ AnalogLab 13 ＋ OptoLab 15 ＋ QALab 17 ＋ LaserLab 12 ＋ DesignLab 12。検査は11本の <code>node tests/all.js</code> の合計（2026-09-13 時点）。</div>
+        <div><dt>自動検査</dt><dd>5,110<small>件 (Node)</small></dd></div>
+        <div class="spec-cap">課題数は ProcessLab 13 ＋ SemiLab 26 ＋ CharLab 13 ＋ NandLab 31 ＋ PixelLab 16 ＋ PhotonLab 15 ＋ AnalogLab 16 ＋ OptoLab 15 ＋ QALab 17 ＋ LaserLab 12 ＋ DesignLab 12。検査は11本の <code>node tests/all.js</code> の合計（2026-09-13 時点）。</div>
       </dl>
     </div>
   </div>
@@ -650,8 +650,8 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
         <p class="desc">デジタルが捨てた「坂」に住む設計。第2部のMOSFETを増幅器として読み直し、gm と ro からソース接地・ミラー・差動対・帰還・OTA・雑音・バンドギャップまで、ラザビーの道順で登る。第5部の検出器の後段（TIA・チャージアンプ）がこの部の出口。</p>
       </div>
       <div class="pair">
-        <div><span class="kind read">参考書</span><a href="第6部_アナログ回路.html">アナログ回路 ― 坂に住む設計</a><small>Vov → gm → Gain → Feedback → ADC → 電源 → 出口 · 12章</small></div>
-        <div><span class="kind lab">ラボ</span><a href="AnalogLab/index.html">AnalogLab</a><small>原始部品 ＝ 二乗則のMOS 1個 · 4章 13問 · <a href="AnalogLab/README.md">README</a></small></div>
+        <div><span class="kind read">参考書</span><a href="第6部_アナログ回路.html">アナログ回路 ― 坂に住む設計</a><small>Vov → gm → Gain → Feedback → ADC → 電源 → 出口 → 電荷 → TIA · 16章</small></div>
+        <div><span class="kind lab">ラボ</span><a href="AnalogLab/index.html">AnalogLab</a><small>原始部品 ＝ 二乗則のMOS 1個 · 5章 16問 · <a href="AnalogLab/README.md">README</a></small></div>
       </div>
     </div>
     <div class="chap">
@@ -665,6 +665,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
     <div class="chap">
       <div><span class="cn">07-08</span><div class="ct"><a href="第6部_アナログ回路.html#s7">雑音 / 基準を作る</a></div><div class="cd">√(4kTγ/gm)と1/f、チョッパとCDS、kT/C。CTATとPTATを足して1.2V ― バンドギャップ。</div></div>
       <div class="do"><span class="lbl">AnalogLab 第3章</span><a class="q" href="AnalogLab/index.html?quest=tia">TIAのRfを選ぶ</a><a class="q" href="AnalogLab/index.html?quest=charge">チャージアンプ</a><a class="q" href="AnalogLab/index.html?quest=lownoise">2nV/√Hzの初段</a><a class="q" href="AnalogLab/index.html?quest=sc">抵抗を時間で作る</a></div>
+      <div class="do"><span class="lbl">AnalogLab 第5章</span><a class="q" href="AnalogLab/index.html?quest=mirror">カレントミラーを 0.1% に</a><a class="q" href="AnalogLab/index.html?quest=bgr">温度で動かない基準</a><a class="q" href="AnalogLab/index.html?quest=tiacf">TIA の帰還容量</a></div>
     </div>
     <div class="chap">
       <div><span class="cn">09-11</span><div class="ct"><a href="第6部_アナログ回路.html#s10">AD 変換の方式 / 電源 / 実装と EMC</a></div><div class="cd">SQNR=6.02N+1.76dB と ENOB、フラッシュ・SAR・パイプライン・ΔΣ。LDO と降圧 DC-DC、コッククロフト・ウォルトン。グラウンド・デカップリング・伝送線路・ガードリング。</div></div>
@@ -685,7 +686,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
         <p class="desc">lx と W と光子の換算（683）、逆二乗、カメラ方程式 ρET/4N²（第4部の0.52%の出どころ）、回折の限界、ガウスビームの集光、ファイバの2重の門、フレネル反射とλ/4コート、積分球とロックイン。営業でもカタログの光学の数字が読めるように、読み方ガイドは役割別。</p>
       </div>
       <div class="pair">
-        <div><span class="kind read">参考書</span><a href="第7部_光学.html">光学 ― 検出器の相手側</a><small>Lux → Watt → Photon → Image → Spectrum → Imaging · 13章</small></div>
+        <div><span class="kind read">参考書</span><a href="第7部_光学.html">光学 ― 検出器の相手側</a><small>Lux → Watt → Photon → Image → Spectrum → Imaging → MTF → Window · 18章</small></div>
         <div><span class="kind lab">ラボ</span><a href="OptoLab/index.html">OptoLab</a><small>原始部品 ＝ 光線とその会計 · 4章 15問 · <a href="OptoLab/README.md">README</a></small></div>
       </div>
     </div>
@@ -846,7 +847,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
         <li><b>センサ本体:</b> 第4部 00〜07 → PixelLab 第1〜3章<span class="r">12問</span><span class="why">光子→電子→電圧→数値→像の一本道。謎のカメラを測って当て、自分の画素を設計する</span></li>
         <li><b>床下:</b> 第4部 付録 A〜D とむすび<span class="r">読む</span><span class="why">トンネル・短チャネル・暗電流・ノイズ。すべて同じ欠陥と電界に戻る</span></li>
         <li><b>センサの外へ:</b> 第5部 → PhotonLab<span class="r">15問</span><span class="why">像を結ばず数える一族（PMT・APD・MPPC）と共通の物差し。SNRの「最適な M」を自分で探す</span></li>
-        <li><b>読み出しの中身:</b> 第6部 → AnalogLab<span class="r">13問</span><span class="why">列アンプ・TIA・チャージアンプの正体。gm と Vov の九九から差動対と帰還まで</span></li>
+        <li><b>読み出しの中身:</b> 第6部 → AnalogLab<span class="r">16問</span><span class="why">列アンプ・TIA・チャージアンプの正体。gm と Vov の九九から差動対と帰還まで</span></li>
         <li><b>光の入り口:</b> 第7部 → OptoLab<span class="r">15問</span><span class="why">センサに届く光を自分で出す。第4部の 0.52%・190光子/px/s の出どころ</span></li>
         <li><b>光をつくる側:</b> 第9部 → LaserLab<span class="r">12問</span><span class="why">照明の LED、dToF の VCSEL、TCSPC のパルス ― センサの相手役の物理</span></li>
         <li><b>出荷まで:</b> 第8部 → QALab<span class="r">17問</span><span class="why">10年もつか・百万個そろうか。FIT・アレニウス・θ・Cpk・管理図・不確かさ ― 保証書の中身</span></li>
@@ -866,7 +867,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
         <li><b>第1部に戻って</b> ProcessLab 第4章<span class="r">3問</span><span class="why">工程で作った1本を SemiLab に渡して素子として測る。2本が繋がる</span></li>
         <li><b>第2部</b> 2-4〜2-5 と後半の節 → SemiLab 第4〜5章・CharLab<span class="r">18問</span><span class="why">フォトダイオードと MOSFET、ホール効果・ヘテロ接合・BJT・太陽電池・パワー。測って当てる側は CharLab</span></li>
         <li><b>第3部</b> NandLab 第1〜6章<span class="r">31問</span><span class="why">NAND だけから NOT・加算器・フリップフロップ・ALU、そして CPU とメモリ階層まで</span></li>
-        <li><b>第6部</b> 参考書 01〜12 → AnalogLab<span class="r">13問</span><span class="why">同じ MOSFET をアナログの目で。増幅・帰還・雑音・基準から AD 変換・電源・実装まで</span></li>
+        <li><b>第6部</b> 参考書 01〜16 → AnalogLab<span class="r">16問</span><span class="why">同じ MOSFET をアナログの目で。増幅・帰還・雑音・基準から AD 変換・電源・実装まで</span></li>
         <li><b>第7部</b> 参考書 01〜13 → OptoLab<span class="r">15問</span><span class="why">光の会計。lx と W の換算、結像と回折、ファイバ、偏光・干渉・分光</span></li>
         <li><b>第9部</b> 参考書 01〜11 → LaserLab<span class="r">12問</span><span class="why">光をつくる側。熱・放電・LED・レーザー・パルス・非線形</span></li>
         <li><b>第5部</b> 参考書 01〜10 → PhotonLab<span class="r">15問</span><span class="why">光を数える一族。PMT・APD・MPPC・SNSPD と、共通の物差し R・NEP・D*</span></li>
@@ -940,7 +941,7 @@ node CharLab\tests\all.js      281 件
 node NandLab\tests\all.js      725 件
 node PixelLab\tests\all.js     372 件
 node PhotonLab\tests\all.js    333 件
-node AnalogLab\tests\all.js    260 件
+node AnalogLab\tests\all.js    334 件
 node OptoLab\tests\all.js      301 件
 node QALab\tests\all.js        358 件
 node LaserLab\tests\all.js     272 件

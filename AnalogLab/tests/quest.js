@@ -95,4 +95,32 @@ T('落ちるべきもの', () => {
   ok('buck: 周波数を上げて逃げるのは反則', !Q.grade('buck', { design: b3 }).ok);
 });
 
+T('第5章 ― 窓の両側と反則', () => {
+  const g = (id, patch) => Q.grade(id, { design: Object.assign({}, A.get(id).design(), patch) }).ok;
+  /* mirror */
+  ok('mirror: 単純なミラーは 5% で落ちる', !g('mirror', { mcasc: 0 }));
+  ok('mirror: W/L 20 のカスコードはヘッドルーム 0.447 V で落ちる', !g('mirror', { wl: 20 }));
+  ok('mirror: W/L 33 は通る（窓の下端 32.7）', g('mirror', { wl: 33 }));
+  ok('mirror: W/L 250 は面積の上限破り', !g('mirror', { wl: 250 }));
+  ok('mirror: λ を下げて逃げるのは反則', !g('mirror', { mcasc: 0, lam: 0.001 }));
+  ok('mirror: ドレイン電圧の差を小さくするのは反則', !g('mirror', { mcasc: 0, mdvds: 0.005 }));
+  /* bgr */
+  ok('bgr: n 8 は m の上限 10 で届かない', !g('bgr', { bgn: 8, bgm: 10 }));
+  ok('bgr: n 8・m 11.2 は抵抗比の上限破り', !g('bgr', { bgn: 8, bgm: 11.2 }));
+  ok('bgr: n 16・m 8.1 は傾きが残る', !g('bgr', { bgm: 8.1 }));
+  ok('bgr: n 16・m 8.65 は行き過ぎる', !g('bgr', { bgm: 8.65 }));
+  ok('bgr: n 11・m 9.68 も通る（道は1本ではない）', g('bgr', { bgn: 11, bgm: 9.68 }));
+  ok('bgr: n 32 は面積の上限破り', !g('bgr', { bgn: 32, bgm: 5.8 }));
+  ok('bgr: V_BE の温度係数を変えるのは反則', !g('bgr', { dvbe: -1.5, bgn: 8, bgm: 8.4 }));
+  /* tiacf */
+  ok('tiacf: Cf 0 は 79 倍の山で落ちる', !g('tiacf', { tcffF: 0 }));
+  ok('tiacf: Cf 140 fF は山が 5% を超えて落ちる', !g('tiacf', { tcffF: 140 }));
+  ok('tiacf: Cf 150 fF は通る（窓の下端 148）', g('tiacf', { tcffF: 150 }));
+  ok('tiacf: Cf 185 fF は通る（窓の上端 186）', g('tiacf', { tcffF: 185 }));
+  ok('tiacf: Cf 190 fF は帯域 1.2 MHz を割って落ちる', !g('tiacf', { tcffF: 190 }));
+  ok('tiacf: 入力の容量を小さくするのは反則', !g('tiacf', { tcinpf: 5, tcffF: 120 }));
+  ok('tiacf: GBW を上げるのは反則', !g('tiacf', { tgbwmhz: 300, tcffF: 110 }));
+  ok('tiacf: Rf を下げるのは反則', !g('tiacf', { rfk: 100, tcffF: 564 }));
+});
+
 report();

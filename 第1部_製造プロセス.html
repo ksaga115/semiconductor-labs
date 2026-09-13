@@ -155,6 +155,7 @@ h4{font-size:12.5px;letter-spacing:.05em;color:var(--muted);font-weight:700;marg
   padding:9px 12px;border-radius:5px;box-shadow:var(--shadow-m);
   opacity:0;visibility:hidden;transition:.16s;z-index:60;pointer-events:none;text-align:left;
 }
+html{overflow-x:clip}   /* 隠れている吹き出しがページの幅を押し広げない */
 .tm:hover>i,.tm:focus>i,.tm:focus-within>i{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
 
 /* ============ step cards ============ */
@@ -251,8 +252,12 @@ text{font-family:"IBM Plex Mono","Noto Sans JP",monospace}
 .mcard.b{background:var(--amber-soft);border-color:color-mix(in srgb,var(--amber-2) 34%,var(--rule))}
 
 /* ============ table ============ */
-.tw{overflow-x:auto;border:1px solid var(--rule);border-radius:8px;background:var(--surface);margin-top:20px;box-shadow:var(--shadow-s)}
+.tw{width:0;min-width:100%;   /* 幅 0 ＋ min-width 100%: 900px の表が外側の段組みを押し広げない（中で横に送る） */
+  overflow-x:auto;border:1px solid var(--rule);border-radius:8px;background:var(--surface);margin-top:20px;box-shadow:var(--shadow-s)}
 table{border-collapse:collapse;width:100%;min-width:900px;font-size:13px}
+/* 列を細くしすぎない ― 日本語が 1〜3 文字ずつ縦に積まれるのを防ぐ。入りきらない表は外側の .scroll-x の中で横に送る */
+th,td{min-width:6.5em}
+th{white-space:nowrap}
 th,td{text-align:left;padding:9px 13px;border-bottom:1px solid var(--rule);vertical-align:top;line-height:1.6}
 thead th{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:500;background:var(--surface-2);position:sticky;top:0;white-space:nowrap}
 tbody tr:last-child td{border-bottom:0}
@@ -362,9 +367,9 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
     <div class="guide">
       <div class="guide-h"><span>読み方（役割別）</span><span>全部で 80〜150 分</span></div>
       <div class="guide-b">
-        <div><b>営業・企画なら</b><span>01 なぜ1000工程 → 03 産業地図と光半導体の用途地図 → 07 各工程の「誰が握っているか」 → 15 早見表。業界ニュースの登場人物と、そのシェアの読み方が入ります。</span><em>25 〜 35 分</em></div>
-        <div><b>設計・開発なら</b><span>05 設計からマスクまで → 06 リソ・サイクル → 08 工程を式で読む → 09 トランジスタ構造 → 14 歩留まり。「なぜその寸法・温度・時間なのか」が式で分かります。</span><em>50 〜 70 分</em></div>
-        <div><b>研究・製造なら</b><span>04 材料と結晶成長 → 07 の全カード → 08 の例題 → 10〜13 後工程・先端パッケージ・MEMS／化合物／センサの工程。ProcessLab を並走させると数字が手に入ります。</span><em>80 〜 150 分</em></div>
+        <div><b>営業・企画なら</b><span>01 なぜ1000工程 → 03 産業地図と光半導体の用途地図 → 07 各工程の「誰が握っているか」 → 17 早見表。業界ニュースの登場人物と、そのシェアの読み方が入ります。</span><em>25 〜 35 分</em></div>
+        <div><b>設計・開発なら</b><span>05 設計からマスクまで → 06 リソ・サイクル → 08 工程を式で読む → 09 トランジスタ構造 → 16 歩留まり。「なぜその寸法・温度・時間なのか」が式で分かります。</span><em>50 〜 70 分</em></div>
+        <div><b>研究・製造なら</b><span>04 材料と結晶成長 → 07 の全カード → 08 の例題 → 10〜13 後工程・先端パッケージ・MEMS／化合物／センサの工程 → 14・15 EUV とクリーンルーム。ProcessLab を並走させると数字が手に入ります。</span><em>80 〜 150 分</em></div>
       </div>
     </div>
   </div>
@@ -392,9 +397,13 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
     <li><a href="#be">後工程の各工程</a></li>
     <li><a href="#adv">先端パッケージ</a></li>
     <li><a href="#special">MEMS・化合物・センサ</a></li>
+    <li class="g">深掘り / Deep dive</li>
+    <li><a href="#euv">EUV の光と鏡</a></li>
+    <li><a href="#clean">クリーンルームと汚染</a></li>
     <li class="g">Reference</li>
     <li><a href="#yield">歩留まりとコスト</a></li>
     <li><a href="#table">工程別シェア早見表</a></li>
+    <li><a href="#check">理解の確認</a></li>
     <li><a href="#glossary">用語集</a></li>
     <li><a href="#refs">出典</a></li>
   </ol>
@@ -1096,7 +1105,7 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
       </ol>
       <p class="src"><b>読み方の注意：</b>金額ベースではASMLが8〜9割ですが、<b>出荷台数ベースではキヤノンが3割前後</b>を占めます。EUV1台の価格が旧世代機の10倍以上あるため、同じ市場でも指標により順位の見え方が大きく変わります。EUV露光装置はASMLの独占（100%）。<span class="mono">[R5][R14]</span></p>
     </div>
-    <div class="note"><b>なぜ 13.5nm なのか。</b>波長をここまで短くすると、<b>あらゆる物質が光を吸収する</b>ためレンズ（屈折光学）が成立しません。残された手は多層膜ミラーの干渉反射だけで、モリブデンとシリコンを数nmずつ数十層重ねた Mo/Si 多層膜が高い反射率（理論上限で7割強）を出せる帯が、ちょうど 13.5nm 付近にあります。スズのプラズマがこの帯で強く発光することと合わせて、この波長が選ばれました。ただし反射率7割のミラーを照明系と投影系で10枚前後経由するので、<b>ウェーハに届くのは光源の数%</b>。EUVが「光量との戦い」になり、数百W級の光源と高感度の化学増幅型レジスト（05 現像の注）が要るのはこのためです。<span class="mono">[R24]</span>
+    <div class="note"><b>なぜ 13.5nm なのか。</b>波長をここまで短くすると、<b>あらゆる物質が光を吸収する</b>ためレンズ（屈折光学）が成立しません。残された手は多層膜ミラーの干渉反射だけで、モリブデンとシリコンを数nmずつ数十層重ねた Mo/Si 多層膜が高い反射率（理論上限で7割強）を出せる帯が、ちょうど 13.5nm 付近にあります。スズのプラズマがこの帯で強く発光することと合わせて、この波長が選ばれました。ただし反射率7割のミラーを照明系と投影系で10枚前後経由するので、<b>ウェーハに届くのは光源の数%</b>。EUVが「光量との戦い」になり、数百W級の光源と高感度の化学増幅型レジスト（05 現像の注）が要るのはこのためです。<span class="mono">[R24]</span></div>
     <div style="margin-top:12px;overflow-x:auto">
       <svg viewBox="0 0 780 230" role="img" aria-label="EUVミラーの原理図。屈折レンズは吸収で使えない。モリブデンとシリコンを数nm周期で重ねた多層膜の各界面からの弱い反射が、位相を揃えて足し合わさり、1枚の鏡として働く。" style="min-width:620px;display:block">
         <!-- レンズは使えない -->
@@ -1439,6 +1448,19 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
 @keyframes p1flow{to{stroke-dashoffset:-60}}
 .p1flow{stroke-dasharray:7 5;animation:p1flow 2.4s linear infinite}
 @media (prefers-reduced-motion: reduce){.p1draw,.p1rise,.p1flow{animation:none}}
+/* ============ 深掘りの章（14 EUV・15 クリーンルーム・16 歩留まり）と ALD の溝の動く図 ============ */
+.key{font-weight:700;color:var(--ink);background:linear-gradient(transparent 64%,color-mix(in srgb,var(--amber-2) 26%,transparent) 64%)}
+@keyframes p1fall{0%{transform:translateY(-150px);opacity:0}12%{opacity:1}62%{transform:translateY(0)}100%{transform:translateY(0);opacity:1}}
+@keyframes p1kill{0%,64%{fill:var(--d-si-dark)}70%,100%{fill:var(--amber-2)}}
+.p1fall{animation:p1fall 5.2s cubic-bezier(.45,0,.85,.6) infinite}
+.p1fall.p1kill{animation:p1fall 5.2s cubic-bezier(.45,0,.85,.6) infinite,p1kill 5.2s linear infinite}
+@keyframes p1pulse{0%,100%{opacity:.25}50%{opacity:1}}
+.p1pulse{animation:p1pulse 2.2s ease-in-out infinite}
+@media (prefers-reduced-motion: reduce){.p1fall,.p1fall.p1kill,.p1pulse{animation:none}}
+.p1ctr{display:grid;grid-template-columns:minmax(0,1fr);gap:6px 22px;padding:10px 18px 0;font-size:12.5px;color:var(--ink-2)}
+@media (min-width:700px){.p1ctr{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.p1nt thead th{text-transform:none;letter-spacing:.04em}   /* µm・α を大文字にしない */
+.p1ctr b{font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--ink)}
 </style>
 <section id="phys">
   <div class="sec-h"><span class="sec-n">08</span><h2>工程を式で読む ― 6本の式で「なぜその条件か」が分かる</h2></div>
@@ -1720,6 +1742,29 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
     </div>
   </figure>
 
+  <figure class="fig">
+    <div class="fig-h"><h3>深い溝に積む ― ALD と CVD の違い</h3><span class="k">膜厚 ＝ 0.1 nm × サイクル数 / 図の 1 目盛り ＝ 1 nm（模式）</span></div>
+    <div class="stage">
+      <svg id="svg-ald" viewBox="0 0 760 262" role="img" aria-label="幅44nm・深さ160nmの溝に膜を積む模式図。左のALDは表面が埋まると反応が止まるので、溝の口・壁・底が同じ厚みで育つ。右のCVDの例は口ほど早く積もり、底は口の35パーセントしか付かないと仮定している。サイクル数が0から140まで増え、ALDの膜は14nmまで一様に育つ。" style="max-height:none">
+        <text x="200" y="24" font-size="11" font-weight="700" fill="var(--si)" text-anchor="middle">ALD ― 表面が埋まると止まる</text>
+        <text x="560" y="24" font-size="11" font-weight="700" fill="var(--amber)" text-anchor="middle">CVD の一例 ― 口ほど早く積もる</text>
+        <path id="p1ald-c" d="M90 60 H178 V220 H222 V60 H310" fill="none" stroke="var(--d-film)" stroke-width="28" stroke-linejoin="miter"/>
+        <path d="M90 60 H178 V220 H222 V60 H310 V240 H90 Z" fill="var(--d-si)"/>
+        <path d="M450 60 H538 V220 H582 V60 H670 V240 H450 Z" fill="var(--d-si)"/>
+        <g fill="var(--d-film)">
+          <rect id="p1cvd-tl" x="450" y="46" width="88" height="14"/>
+          <rect id="p1cvd-tr" x="582" y="46" width="88" height="14"/>
+          <polygon id="p1cvd-wl" points="538,60 552,60 542.9,220 538,220"/>
+          <polygon id="p1cvd-wr" points="582,60 568,60 577.1,220 582,220"/>
+          <rect id="p1cvd-b" x="538" y="215.1" width="44" height="4.9"/>
+        </g>
+        <text x="200" y="256" font-size="10.5" fill="var(--ink-2)" text-anchor="middle">底も壁も口も同じ厚み（段差被覆 ≈ 100%）</text>
+        <text x="560" y="256" font-size="10.5" fill="var(--ink-2)" text-anchor="middle">底は口の 35%（この図の仮定）</text>
+      </svg>
+    </div>
+    <p class="cap"><span class="cd"><b id="p1ald-n">140 サイクル ・ 14.0 nm</b> ― ALD は 1 サイクルで表面を 1 回埋めたら止まるので、ガスが届きにくい溝の底でも口と同じだけ積もる。CVD は原料が届いた先から反応するので、口の角が先に厚くなり、溝をふさいで中に空洞（ボイド）を残すことがある。CVD の段差被覆は条件で大きく変わる（この図の 35% は模式のための仮定）。<span class="key">アスペクト比が 10 を超える穴の中を均一に覆えるのは、自己停止する ALD だけ</span> ― 3D NAND・DRAM・GAA が ALD を必要とする理由です。</span></p>
+  </figure>
+
   <div class="ex">
     <span class="exh">例題 ― 手で一度解く</span>
     <p><b>問.</b> GPC 0.1 nm/サイクル、1サイクル 4 秒の ALD で、ゲート絶縁膜 2 nm を積むには？ 同じ装置で 20 nm の膜を積むと？</p>
@@ -1727,6 +1772,16 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
   </div>
 
   <div class="note w" style="margin-top:26px"><b>この章が単純化していること。</b>①の k₁ は固定値で比較しており、実際の量産 k₁ は層ごとに違う。②の係数は Deal & Grove の原典値に ProcessLab の薄膜補正を重ねたもの、③はチャネリングと注入損傷を無視したガウス近似、④は低濃度の真性拡散（高濃度では電界効果や点欠陥で速くなる）、⑤⑥は比例則までで、スラリー化学や原料の反応機構には踏み込みません。<b>「桁と方向」を当てるための式</b>として使い、実工程の条件はプロセスシミュレータと実測で決めます。</div>
+  <div class="note" style="margin-top:14px"><b>落とし穴 ― 6本の式で、よく取り違えること。</b>
+    <ul style="margin:6px 0 0;padding-left:1.2em;line-height:1.8">
+      <li><b>①「k₁ を下げれば、いくらでも細く描ける」</b> ― 1回の露光では k₁ = 0.25 が下限。NA で稼ぐと焦点深度は 1/NA² で削られる。</li>
+      <li><b>②「酸化膜の厚み ＝ 削れたシリコンの厚み」</b> ― シリコンが食われるのは酸化膜の 0.44 倍。残りは上に盛り上がる。段差の見積もりで間違えやすい。</li>
+      <li><b>③「接合の深さ ＝ Rp」</b> ― ③ の例題では Rp 98 nm に対して接合は約 203 nm。接合は分布の裾が基板の濃度に下がる所で決まる。</li>
+      <li><b>④「熱処理の時間を半分にすれば、広がりも半分」</b> ― 広がりは √t なので 0.71 倍にしかならない。効くのは温度で、50℃ 上げるだけで D は 3.3 倍。</li>
+      <li><b>⑤「CMP は全面を同じ速さで削る」</b> ― 削れる速さは局所の圧力で決まる。粗密の差がディッシングやエロージョンになる。</li>
+      <li><b>⑥「ALD はいつでも最良の成膜」</b> ― 1 サイクル数秒なので、20 nm で 10 分を超える。厚い膜は CVD、薄く精密な膜だけ ALD。</li>
+    </ul>
+  </div>
 
   <div class="lab-go">
     <span class="tag">手を動かす — ProcessLab 第1〜3章</span>
@@ -2175,7 +2230,7 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
       <li><b>レチクル限界。</b>露光機が1回に焼ける最大面積は約858mm²。これ以上大きいチップは物理的に作れません。</li>
       <li><b>歩留まりの壁。</b>後述のとおり、面積が大きいほど不良を踏む確率が上がり、コストが非線形に跳ね上がります。</li>
     </ul>
-    <p>解は「大きな1個」をやめ、<b>小さな良品チップ（<span class="tm">チップレット<i>機能ごとに分割した小型ダイ。CPUコア、I/O、キャッシュなどを別々に作り、パッケージ内で接続する。歩留まりが良く、部分ごとに最適な製造世代を選べる。接続規格としてUCIeが標準化されている。</i></span>）を並べて束ねる」こと。ただし、束ねた瞬間にチップ間の配線が性能を決めるようになり、その配線を作るのが後工程になった、という構図です。</p>
+    <p>解は「大きな1個」をやめ、<b>小さな良品チップ（<span class="tm">チップレット<i>機能ごとに分割した小型ダイ。CPUコア、I/O、キャッシュなどを別々に作り、パッケージ内で接続する。歩留まりが良く、部分ごとに最適な製造世代を選べる。接続規格としてUCIeが標準化されている。</i></span>）を並べて束ねる</b>」こと。ただし、束ねた瞬間にチップ間の配線が性能を決めるようになり、その配線を作るのが後工程になった、という構図です。</p>
   </div>
 
   <figure class="fig">
@@ -2324,9 +2379,200 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
   </div>
 </section>
 
+<!-- ============================================================ 14: EUV の光と鏡 -->
+<section id="euv">
+  <div class="sec-h"><span class="sec-n">14</span><h2>EUV の光と鏡 ― 13.5 nm の光は、鏡で 7 割ずつしか返らない</h2></div>
+  <p class="sec-sub">07 の露光カードと 08 ① で、EUV が 1 回の露光で 12 nm 級に届くことを見ました。ここではその光が<b>どう作られ、どう運ばれるか</b>を数で追います。13.5 nm の光は空気にもガラスにも吸われるので、光路は真空の中で、レンズの代わりに<b>鏡だけ</b>で組みます。すべては「1 枚の鏡が何 % 返すか」の掛け算です。</p>
+
+  <div class="step-b">
+    <div class="blk">
+      <h4>光を作る ― スズのプラズマ</h4>
+      <p>13.5 nm の光子 1 個は 1239.84/13.5 = <b>91.8 eV</b>（ArF の 6.42 eV の 14 倍）。これを出すのは、直径数十 µm の<b>スズの液滴</b>に CO₂ レーザー（波長 10.6 µm）を当てて作る数十 eV の高温プラズマです（<span class="tm">LPP<i>Laser-Produced Plasma。レーザーで作ったプラズマから光を出させる方式。EUV では毎秒約 5 万個のスズの液滴を撃つ。</i></span>）。弱いパルスで液滴を薄く広げてから本パルスを当てると、レーザーの電力のうち 13.5 nm 付近（幅 2%）に変わる割合 ― 変換効率 ― は <b>5〜6% 程度</b>まで上がりました <span class="mono">[R48]</span>。量産機の光源は、集光ミラーの先の中間集光点で <b>250 W 級</b> <span class="mono">[R24][R48]</span>。残りの 9 割以上は熱と、ミラーを汚すスズの破片の処理に回ります。</p>
+    </div>
+    <div class="blk">
+      <h4>光を返す ― なぜ多層膜で、なぜ 13.5 nm か</h4>
+      <p>この波長では、どの物質も屈折率が 1 にごく近く（Mo で 0.924、Si で 0.999 <span class="mono">[R46]</span>）、1 つの面で返る光は 1% に満たない。そこで、屈折率の違う Mo と Si を<b>周期 d で数十回</b>積み、各界面の弱い反射を<b>位相をそろえて</b>足し合わせます。条件は X 線のブラッグ反射と同じ mλ = 2d cos θ で、入射 6° なら d ≈ 13.5/(2 cos 6°) = 6.79 nm、屈折の補正で約 2% 長い 6.95 nm が最適になります。Si は約 100 eV（12.4 nm）の吸収端のすぐ長波長側でよく光を通すので、<span class="key">「Si が透けて、Mo が反射を作る」組み合わせが最もよく働く波長が 13.5 nm</span>です。</p>
+    </div>
+  </div>
+
+  <figure class="fig">
+    <div class="fig-h"><h3>多層膜が 13.5 nm だけを返す</h3><span class="k">Mo/Si 40 周期・d 6.95 nm・Mo の割合 0.4・入射 6° を特性行列で計算</span></div>
+    <div class="stage">
+      <svg viewBox="0 0 760 250" role="img" aria-label="左は Mo と Si を交互に積んだ多層膜の模式図。入射した13.5ナノメートルの光が各界面で少しずつ反射し、反射波が位相をそろえて出ていく。右は計算した反射率のスペクトルで、13.5ナノメートルにピーク約73パーセント、半値幅約0.7ナノメートルの山がある。" style="max-height:none">
+        <text x="210" y="22" font-size="11" font-weight="700" fill="var(--ink)" text-anchor="middle">各界面の反射が、位相をそろえて足し合う</text>
+        <g>
+          <rect x="120" y="120" width="250" height="5" fill="var(--d-mask)"/><rect x="120" y="125" width="250" height="7" fill="var(--d-si)"/>
+          <rect x="120" y="132" width="250" height="5" fill="var(--d-mask)"/><rect x="120" y="137" width="250" height="7" fill="var(--d-si)"/>
+          <rect x="120" y="144" width="250" height="5" fill="var(--d-mask)"/><rect x="120" y="149" width="250" height="7" fill="var(--d-si)"/>
+          <rect x="120" y="156" width="250" height="5" fill="var(--d-mask)"/><rect x="120" y="161" width="250" height="7" fill="var(--d-si)"/>
+          <rect x="120" y="168" width="250" height="5" fill="var(--d-mask)"/><rect x="120" y="173" width="250" height="7" fill="var(--d-si)"/>
+          <rect x="120" y="180" width="250" height="5" fill="var(--d-mask)"/><rect x="120" y="185" width="250" height="7" fill="var(--d-si)"/>
+          <rect x="120" y="192" width="250" height="5" fill="var(--d-mask)"/><rect x="120" y="197" width="250" height="7" fill="var(--d-si)"/>
+          <rect x="120" y="204" width="250" height="12" fill="var(--d-si-dark)"/>
+        </g>
+        <path class="ray" d="M60 44 L180 120" fill="none" stroke="var(--d-light)" stroke-width="2"/>
+        <path d="M180 120 L230 204" fill="none" stroke="var(--d-light)" stroke-width="1.2" stroke-dasharray="3 3"/>
+        <g fill="none" stroke="var(--d-light)" stroke-width="1.6">
+          <path class="p1flow" d="M180 120 L300 44"/>
+          <path class="p1flow" d="M187 132 L319 48"/>
+          <path class="p1flow" d="M194 144 L338 52"/>
+          <path class="p1flow" d="M201 156 L357 56"/>
+          <path class="p1flow" d="M208 168 L376 60"/>
+        </g>
+        <g font-size="10" fill="var(--ink-2)">
+          <text x="58" y="38">入射 13.5 nm</text>
+          <text x="112" y="129" text-anchor="end">Mo</text>
+          <text x="112" y="141" text-anchor="end">Si</text>
+          <text x="245" y="234" text-anchor="middle">周期 d ≈ 6.95 nm を 40 回（図は 7 周期ぶん）</text>
+        </g>
+        <text x="585" y="22" font-size="11" font-weight="700" fill="var(--ink)" text-anchor="middle">反射率のスペクトル（理想の膜）</text>
+        <path d="M450 46 V196 H720" fill="none" stroke="var(--rule-2)" stroke-width="1"/>
+        <path d="M450 121 H720" fill="none" stroke="var(--rule)" stroke-width="1" stroke-dasharray="3 4"/>
+        <polyline class="p1draw" style="--len:900" fill="none" stroke="var(--si-2)" stroke-width="2.2" points="450.0,174.4 454.5,176.3 459.0,176.9 463.5,174.8 468.0,169.4 472.5,160.9 477.0,150.4 481.5,139.4 486.0,128.7 490.5,118.9 495.0,110.3 499.5,102.9 504.0,96.5 508.5,91.1 513.0,86.4 517.5,82.3 522.0,78.8 526.5,75.7 531.0,73.1 535.5,70.7 540.0,68.7 544.5,66.9 549.0,65.3 553.5,64.0 558.0,62.8 562.5,61.8 567.0,60.9 571.5,60.3 576.0,59.8 580.5,59.5 585.0,59.4 589.5,59.5 594.0,59.8 598.5,60.5 603.0,61.5 607.5,63.0 612.0,65.0 616.5,67.7 621.0,71.4 625.5,76.3 630.0,82.7 634.5,91.3 639.0,102.3 643.5,116.3 648.0,132.8 652.5,150.7 657.0,167.1 661.5,179.1 666.0,184.6 670.5,184.3 675.0,180.6 679.5,175.7 684.0,171.3 688.5,168.4 693.0,167.2 697.5,167.7 702.0,169.7 706.5,172.9 711.0,176.9 715.5,181.3 720.0,185.4"/>
+        <path d="M486.4 127.7 H646.6" fill="none" stroke="var(--amber)" stroke-width="1.2"/>
+        <circle class="p1pulse" cx="585" cy="59.4" r="4" fill="var(--amber-2)"/>
+        <g font-size="10" fill="var(--muted)">
+          <text x="444" y="199" text-anchor="end">0</text><text x="444" y="124" text-anchor="end">40%</text><text x="444" y="49" text-anchor="end">80%</text>
+          <text x="472.5" y="212" text-anchor="middle">13.0</text><text x="585" y="212" text-anchor="middle">13.5</text><text x="697.5" y="212" text-anchor="middle">14.0 nm</text>
+        </g>
+        <text x="596" y="50" font-size="10.5" fill="var(--amber)">ピーク 約 73%</text>
+        <text x="566" y="146" font-size="10" fill="var(--amber)" text-anchor="middle">半値幅 約 0.7 nm</text>
+        <text x="585" y="234" font-size="10.5" fill="var(--ink-2)" text-anchor="middle">波長 →</text>
+      </svg>
+    </div>
+    <p class="cap"><span class="cd">右の曲線は CXRO の光学定数 <span class="mono">[R46]</span>（Mo 0.9238+0.0064i、Si 0.9990+0.0018i）で、界面が理想的に鋭いとして計算した値。周期を増やすと反射率は 10 周期で約 3 割、20 周期で約 6 割、30 周期で約 7 割と上がり、40 周期の約 73% から先はほとんど伸びない（深い層まで届く前に吸われるから。60 周期でも 72〜76%）。いちばん上の層を Mo にするか Si にするか、s 偏光か p 偏光かで、この値は数ポイント動く。実物は Mo と Si が界面で混ざるので、<span class="key">量産の鏡の反射率はおよそ 70%</span> <span class="mono">[R47]</span>。幅約 0.7 nm しか返さないので、光源にも「13.5 nm の 2% 幅」だけが役に立ちます。</span></p>
+  </figure>
+
+  <figure class="fig">
+    <div class="fig-h"><h3>光が鏡で返るたびに 0.7 倍</h3><span class="k">1 回の反射 70% と仮定 / 棒の高さは線形</span></div>
+    <div class="stage">
+      <svg viewBox="0 0 760 222" role="img" aria-label="反射の回数に対する残る光の割合の棒グラフ。1回70パーセントとすると、2回で49パーセント、4回で24パーセント、6回で11.8パーセント、8回で5.8パーセント、10回で2.8パーセント、12回で1.4パーセントまで減る。10回の棒が強調されている。" style="max-height:none">
+        <text x="720" y="20" font-size="11" font-weight="700" fill="var(--ink)" text-anchor="end">残る光 ＝ 0.7 の反射回数乗</text>
+        <path d="M76 180 H712" fill="none" stroke="var(--rule-2)" stroke-width="1"/>
+        <g fill="var(--si-2)">
+          <rect class="p1rise" x="80" y="40" width="30" height="140"/>
+          <rect class="p1rise" x="128" y="82" width="30" height="98" style="animation-delay:.08s"/>
+          <rect class="p1rise" x="176" y="111.4" width="30" height="68.6" style="animation-delay:.16s"/>
+          <rect class="p1rise" x="224" y="132" width="30" height="48" style="animation-delay:.24s"/>
+          <rect class="p1rise" x="272" y="146.4" width="30" height="33.6" style="animation-delay:.32s"/>
+          <rect class="p1rise" x="320" y="156.5" width="30" height="23.5" style="animation-delay:.4s"/>
+          <rect class="p1rise" x="368" y="163.5" width="30" height="16.5" style="animation-delay:.48s"/>
+          <rect class="p1rise" x="416" y="168.5" width="30" height="11.5" style="animation-delay:.56s"/>
+          <rect class="p1rise" x="464" y="171.9" width="30" height="8.1" style="animation-delay:.64s"/>
+          <rect class="p1rise" x="512" y="174.4" width="30" height="5.6" style="animation-delay:.72s"/>
+          <rect class="p1rise" x="560" y="176" width="30" height="4" style="animation-delay:.8s"/>
+          <rect class="p1rise" x="608" y="177.2" width="30" height="2.8" style="animation-delay:.88s"/>
+          <rect class="p1rise" x="656" y="178.1" width="30" height="1.9" style="animation-delay:.96s"/>
+        </g>
+        <rect class="p1pulse" x="554" y="150" width="42" height="34" rx="3" fill="none" stroke="var(--amber-2)" stroke-width="1.6"/>
+        <g font-size="10" fill="var(--ink)" text-anchor="middle">
+          <text x="95" y="34">100%</text><text x="191" y="105">49%</text><text x="287" y="140">24%</text>
+          <text x="383" y="157">11.8%</text><text x="479" y="165">5.8%</text><text x="575" y="144" fill="var(--amber)">2.8%</text><text x="671" y="171">1.4%</text>
+        </g>
+        <g font-size="9.5" fill="var(--muted)" text-anchor="middle">
+          <text x="95" y="194">0</text><text x="143" y="194">1</text><text x="191" y="194">2</text><text x="239" y="194">3</text><text x="287" y="194">4</text><text x="335" y="194">5</text><text x="383" y="194">6</text><text x="431" y="194">7</text><text x="479" y="194">8</text><text x="527" y="194">9</text><text x="575" y="194">10</text><text x="623" y="194">11</text><text x="671" y="194">12</text>
+        </g>
+        <text x="383" y="214" font-size="10.5" fill="var(--ink-2)" text-anchor="middle">反射の回数 →</text>
+      </svg>
+    </div>
+    <p class="cap"><span class="cd">露光機の光路には、集光ミラー・照明系の鏡・反射型のマスク・6 枚の投影ミラーがあり、光は 10 回前後反射する（構成は機種で異なる）。10 回なら 0.7¹⁰ = <b>2.8%</b>。集光ミラーは中間集光点より手前にあるので、その先の反射を 9 回とすると、中間集光点の 250 W のうちウェーハに届くのは 250 × 0.7⁹ ≈ <b>10 W</b> の計算です。<span class="key">反射率を 1% 上げる改良が、処理枚数に 10% 以上効く</span>（0.71¹⁰/0.70¹⁰ = 1.15）のは、この累乗のせいです。</span></p>
+  </figure>
+
+  <div class="step-b">
+    <div class="blk">
+      <h4>マスクも鏡、だから影ができる</h4>
+      <p>EUV のマスクは透過型ではなく、同じ多層膜の上に吸収体の図形を載せた<b>反射型</b>です。光を斜め（約 6°）に当てて返すので、厚さ数十 nm の吸収体が<b>影</b>を作り、図形の向きで線幅がずれる（マスク 3D 効果）。ゴミが載っても光を通す膜（ペリクル）で守りたいが、EUV を通す膜は極めて薄く作る必要があり、熱にも耐えねばならない ― マスク検査（15 早見表のレーザーテック）とペリクルが EUV の急所になっている理由です。</p>
+    </div>
+    <div class="blk">
+      <h4>光子が少ないという、もう 1 つの壁</h4>
+      <p>EUV の光子は 1 個が重いぶん、同じ露光量でも<b>数が 14 分の 1</b>。光子の数はポアソン分布でばらつくので（第0部 02）、細い線の縁が乱れたり、つながるはずのない線が橋を作る・抜けるといった<span class="tm">確率的欠陥<i>ストカスティクス。光子や反応の数が少ないために、図形の縁の乱れやブリッジ・抜けが確率的に起きる現象。露光量を上げれば減るが、処理枚数が落ちる。</i></span>が出ます。露光量を上げれば減るが、そのぶん処理枚数が落ちる。<span class="key">光源の出力と鏡の反射率が、そのまま解像の質と生産性を決める</span>のが EUV の構図です。</p>
+    </div>
+  </div>
+
+  <div class="ex">
+    <span class="exh">例題 ― 手で一度解く（14）</span>
+    <p><b>問.</b> 露光量 30 mJ/cm² で、一辺 10 nm の正方形に入る光子は EUV（13.5 nm）と ArF（193 nm）でそれぞれ何個か。光子の数のばらつき（相対値）はいくらか。</p>
+    <p><b>解.</b> EUV の光子 1 個は 91.8 eV = 1.47×10⁻¹⁷ J なので、30 mJ/cm² ÷ 1.47×10⁻¹⁷ J = 2.04×10¹⁵ 個/cm²。(10 nm)² = 10⁻¹² cm² に <b>約 2,040 個</b>、ばらつきは 1/√2040 = <b>2.2%</b>。ArF は 1 個 6.42 eV なので <b>約 29,100 個</b>、0.59%。同じ露光量で EUV は光子が 1/14.3、ばらつきは √14.3 = 3.8 倍 ― <span class="key">波長を縮めるほど、光を「粒」として数える話になる</span>。ばらつきを ArF 並みに抑えるには露光量を 14 倍にする必要があり、それは処理枚数を 1/14 にすることです。</p>
+  </div>
+
+  <div class="note" style="margin-top:18px"><b>この章が単純化していること。</b>多層膜は界面が鋭い理想の膜として計算し、実物の混ざり合い・粗さ・保護膜は入れていない。反射回数と 70% は説明のための値で、機種ごとの光学系の構成は公開資料の範囲でしか分からない。光源の変換効率と出力は公表値 <span class="mono">[R48]</span>。解像の物理そのものは <a href="第7部_光学.html">第7部</a>、光子の数え方は第0部 02 と第5部。</div>
+</section>
+
+<!-- ============================================================ 15: クリーンルームと汚染 -->
+<section id="clean">
+  <div class="sec-h"><span class="sec-n">15</span><h2>クリーンルームと汚染 ― 粒 1 個が、どこに落ちると命取りか</h2></div>
+  <p class="sec-sub">16 の歩留まりの式に入っている欠陥密度 D₀ は、どこから来るのか。多くは工程の途中で落ちる<b>粒</b>と、装置や薬液からの汚れです。ここでは空気の清浄さの物差しと、「同じ粒でも、落ちる場所で運命が違う」ことを数で見ます。</p>
+
+  <div class="step-b">
+    <div class="blk">
+      <h4>清浄度の物差し ― ISO 14644-1</h4>
+      <p>クリーンルームの等級は、空気 1 m³ に含まれる、大きさ D 以上の粒の数の上限で決まります <span class="mono">[R49]</span>。</p>
+      <div class="eqb">クラス N の上限 C = 10ᴺ × (0.1 / D)^2.08　個/m³（D は µm）</div>
+      <p>クラスが 1 つ小さくなるごとに 1/10。同じクラスでも<b>小さい粒ほど多い</b>（D の −2.08 乗）ので、細い配線を守るには小さい粒まで数える必要がある。ふつうの室内の空気はおおむねクラス 8〜9 に当たるとされます。</p>
+    </div>
+    <div class="blk">
+      <h4>部屋ではなく、ウェーハの通り道を清浄にする</h4>
+      <p>工場の床全体を最高のクラスにするのは費用に見合いません。今の工場では、ウェーハを<span class="tm">FOUP<i>Front Opening Unified Pod。300 mm ウェーハ 25 枚を入れて密閉する箱。装置との受け渡し口（EFEM）だけを極めて清浄に保つ「ミニエンバイロメント」の考え方。</i></span>という密閉した箱に入れて天井の搬送（15 早見表の OHT）で運び、装置との受け渡し口だけを極めて清浄に保ちます。汚れは粒だけではなく、空気中の分子（酸・塩基・有機物）、薬液や配管からの金属もあり、07 の洗浄カードの SC-1・SC-2 はそれぞれを落とすための工程です。<span class="key">最大の発塵源は人</span>なので、人をウェーハから遠ざける自動化が清浄度の対策そのものになりました。</p>
+    </div>
+  </div>
+
+  <div class="tw">
+    <table class="p1nt">
+      <thead><tr><th>ISO クラス</th><th>≥ 0.1 µm</th><th>≥ 0.2 µm</th><th>≥ 0.3 µm</th><th>≥ 0.5 µm</th><th>≥ 1 µm</th><th>≥ 5 µm</th></tr></thead>
+      <tbody>
+        <tr><td class="p">クラス 1</td><td class="mono">10</td><td class="mono">2.37</td><td class="mono">1.02</td><td class="mono">0.352</td><td class="mono">0.0832</td><td class="mono">0.00293</td></tr>
+        <tr><td class="p">クラス 3</td><td class="mono">1,000</td><td class="mono">237</td><td class="mono">102</td><td class="mono">35.2</td><td class="mono">8.32</td><td class="mono">0.293</td></tr>
+        <tr><td class="p">クラス 5</td><td class="mono">100,000</td><td class="mono">23,700</td><td class="mono">10,200</td><td class="mono">3,520</td><td class="mono">832</td><td class="mono">29.3</td></tr>
+        <tr><td class="p">クラス 7</td><td class="mono">1.00×10⁷</td><td class="mono">2.37×10⁶</td><td class="mono">1.02×10⁶</td><td class="mono">352,000</td><td class="mono">83,200</td><td class="mono">2,930</td></tr>
+        <tr><td class="p">クラス 9</td><td class="mono">1.00×10⁹</td><td class="mono">2.37×10⁸</td><td class="mono">1.02×10⁸</td><td class="mono">3.52×10⁷</td><td class="mono">8.32×10⁶</td><td class="mono">293,000</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="src" style="max-width:none">上の式から計算した上限（個/m³、3 桁に丸め）。規格の表は同じ式を丸めた値で、1 m³ あたり 1 個に満たないような欄など、分類に使わない欄が注記されている <span class="mono">[R49]</span>。クラス 5 の ≥ 0.5 µm の 3,520 個は、旧米国規格の「クラス 100」（1 立方フィートあたり 100 個）に当たる。</p>
+
+  <figure class="fig">
+    <div class="fig-h"><h3>粒が降る ― 2 本の線にまたがる粒だけが命取り</h3><span class="k">配線の断面・線の幅と間隔 40 nm（模式）</span></div>
+    <div class="stage">
+      <svg viewBox="0 0 760 224" role="img" aria-label="配線の断面に粒が降る模式図。線の間隔より小さい粒は、線の上や溝に落ちても害がない。間隔より大きい粒が2本の線の上にまたがって落ちると、2本をつないで短絡させるキラー欠陥になる。" style="max-height:none">
+        <text x="40" y="22" font-size="11" font-weight="700" fill="var(--ink)">上から粒が落ちてくる</text>
+        <text x="720" y="22" font-size="10.5" fill="var(--muted)" text-anchor="end">x ＝ 粒の直径、s ＝ 線の間隔</text>
+        <rect x="40" y="180" width="680" height="30" fill="var(--d-si)"/>
+        <g fill="var(--d-metal)">
+          <rect x="60" y="140" width="40" height="40"/><rect x="140" y="140" width="40" height="40"/><rect x="220" y="140" width="40" height="40"/>
+          <rect x="300" y="140" width="40" height="40"/><rect x="380" y="140" width="40" height="40"/><rect x="460" y="140" width="40" height="40"/>
+          <rect x="540" y="140" width="40" height="40"/><rect x="620" y="140" width="40" height="40"/><rect x="700" y="140" width="20" height="40"/>
+        </g>
+        <circle class="p1fall" cx="80" cy="130" r="10" fill="var(--d-si-dark)" style="animation-delay:-0.4s"/>
+        <circle class="p1fall" cx="120" cy="172" r="8" fill="var(--d-si-dark)" style="animation-delay:-1.6s"/>
+        <circle class="p1fall p1kill" cx="200" cy="117.6" r="30" fill="var(--amber-2)" style="animation-delay:-2.3s"/>
+        <circle class="p1fall" cx="360" cy="170" r="10" fill="var(--d-si-dark)" style="animation-delay:-3.1s"/>
+        <circle class="p1fall" cx="400" cy="128" r="12" fill="var(--d-si-dark)" style="animation-delay:-0.9s"/>
+        <circle class="p1fall p1kill" cx="520" cy="110.1" r="36" fill="var(--amber-2)" style="animation-delay:-4.0s"/>
+        <circle class="p1fall" cx="600" cy="172" r="8" fill="var(--d-si-dark)" style="animation-delay:-2.7s"/>
+        <circle class="p1fall" cx="640" cy="126" r="14" fill="var(--d-si-dark)" style="animation-delay:-1.2s"/>
+        <path d="M260 196 H300" fill="none" stroke="var(--ink)" stroke-width="1"/>
+        <path d="M260 191 V201 M300 191 V201" fill="none" stroke="var(--ink)" stroke-width="1"/>
+        <text x="280" y="220" font-size="10" fill="var(--ink-2)" text-anchor="middle">s</text>
+      </svg>
+    </div>
+    <div class="lg" style="padding-top:8px">
+      <span><i style="background:var(--amber-2)"></i>キラー（x ＞ s で 2 本の線にまたがり、短絡させる）</span>
+      <span><i style="background:var(--d-si-dark)"></i>無害（線の上か溝に収まる）</span>
+      <span><i style="background:var(--d-metal)"></i>配線</span>
+    </div>
+    <p class="cap"><span class="cd">同じ粒でも、落ちた場所と大きさで運命が違う。平行な 2 本の線（間隔 s、長さ L）を直径 x の粒がつないでしまうのは、粒の中心が幅 x − s の帯に落ちたときだけなので、その<span class="tm">クリティカルエリア<i>その大きさの欠陥が落ちると不良になる場所の面積。平行な 2 本の線（間隔 s・長さ L）の短絡なら L(x − s)。</i></span>は <b>A<sub>c</sub>(x) = L·(x − s)</b>（x ＞ s、線の端を無視） <span class="mono">[R50]</span>。粒の数は大きいほど少ない（1/x³ で減ると置くのが標準のモデル）ので、<span class="key">「線の間隔より少し大きい粒」が一番効く</span>。</span></p>
+  </figure>
+
+  <div class="ex">
+    <span class="exh">例題 ― 手で一度解く（15）</span>
+    <p><b>問.</b> クラス 5 の空気 1 m³ に、0.5 µm 以上の粒は何個まで許されるか。0.1 µm 以上なら？ 次に、間隔 40 nm の 2 本の線が長さ 1 mm 並んでいる所に、直径 100 nm の粒が落ちて短絡を起こす範囲の面積を求めよ。同じような線の組がチップの中に合わせて 100 m ぶんあるとすると、そのチップの 100 nm の粒に対するクリティカルエリアはいくらか。</p>
+    <p><b>解.</b> 10⁵ × (0.1/0.5)^2.08 = 10⁵ × 0.03517 = <b>3,517 個</b>（規格の表では丸めて 3,520）。0.1 µm 以上なら 10⁵ × 1 = <b>100,000 個</b> ― 小さい粒は 28 倍多い。短絡の範囲は 1 mm × (100 − 40) nm = 10⁻¹ cm × 6×10⁻⁶ cm = <b>6×10⁻⁷ cm²</b>。100 m ぶんなら 10⁵ 倍で <b>0.06 cm²</b>（線の組の長さは説明のための仮定）。チップの面積が 1 cm² でも、この大きさの粒に「弱い」のはその 6% だけ ― <span class="key">歩留まりの式の A·D₀ は、本当はチップの面積ではなく、欠陥の大きさごとのクリティカルエリアと欠陥密度の積を足したもの</span>です（16）。</p>
+  </div>
+</section>
+
 <!-- ============================================================ 14 -->
 <section id="yield">
-  <div class="sec-h"><span class="sec-n">14</span><h2>歩留まり ― なぜ大きいチップは高いのか</h2></div>
+  <div class="sec-h"><span class="sec-n">16</span><h2>歩留まり ― なぜ大きいチップは高いのか</h2></div>
   <p class="sec-sub">半導体の経済性は、ほぼこの一点で説明できます。数字を動かして確かめてください。ウェーハ1枚のコストは一定なので、良品が何個取れるかが単価を決めます。</p>
 
   <div class="fig" style="margin-top:22px">
@@ -2372,26 +2618,87 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
     <div class="note w"><b>読み取ってほしいこと。</b>面積を2倍にすると、取れる数は半分以下になるうえ、1個が欠陥を踏む確率も上がるので、良品数は<b>半分よりずっと少なく</b>なります。だから「大きな1個」をやめてチップレットに分割する動きが起きたのです。歩留まりモデルは <span class="mono">Y = ((1−e<sup>−AD₀</sup>)/AD₀)²</span>、取れ数は円板からの縁の損失を考慮した近似式を使っています。</div>
     <div class="note"><b>式の素性。</b>欠陥が完全にランダムに散らばる（ポアソン）と仮定すると <span class="mono">Y = e<sup>−AD₀</sup></span> になります。マーフィーのモデルは「欠陥密度 D₀ 自体がロットや場所でばらつく」ことを平均に織り込んだもので、同じ D₀ ならポアソンより高い歩留まりを予測します。実際の欠陥は装置起因で固まって出る（クラスタする）ことが多く、業界ではクラスタの度合いをパラメータに持つ負の二項分布モデルまで使われます。式は違っても、<b>「面積が指数の肩に乗る」という骨格は共通</b>です。取れ数（縁で欠けるぶんを引いたダイ数）は <span class="mono">DPW ≈ π(d/2)²/S − πd/√(2S)</span>（d＝ウェーハ径、S＝チップ面積）で、300mm・100mm² なら 707 − 67 = <b>640 個</b> ― 上の図の既定値はこの式から出ています。マーフィーのモデルの原典は <span class="mono">[R31]</span>。</div>
   </div>
+
+  <h3 style="margin-top:40px">欠陥は固まって降る ― 同じ数でも歩留まりが違う</h3>
+  <p class="sec-sub" style="margin-top:6px">上の計算器はマーフィーの式でした。式が何通りもあるのは、<b>欠陥がウェーハにどう散らばるか</b>の仮定が違うからです。同じ 70 個の欠陥を、ばらばらに落とす場合と、5 か所に固めて落とす場合で比べます（同じ乱数の種から作る決まった並びなので、何度見ても同じ結果になります）。</p>
+
+  <figure class="fig">
+    <div class="fig-h"><h3>ウェーハに欠陥を 1 個ずつ落とす</h3><span class="k">ダイ 164 個・欠陥 70 個 / 左はばらばら、右は 5 か所に固まる</span></div>
+    <div class="stage">
+      <svg id="svg-rain" viewBox="0 0 760 290" role="img" aria-label="同じ164個のダイを持つ2枚のウェーハに、欠陥を1個ずつ70個まで落としていく動く図。左は欠陥がばらばらに落ち、右は5か所に固まって落ちる。欠陥を踏んだダイは灰色に変わる。固まって落ちる右のほうが、同じ欠陥の数でも不良のダイが少ない。" style="max-height:none">
+        <text x="190" y="16" font-size="11" font-weight="700" fill="var(--ink)" text-anchor="middle">ばらばらに降る（ポアソン）</text>
+        <text x="570" y="16" font-size="11" font-weight="700" fill="var(--ink)" text-anchor="middle">固まって降る（クラスタ）</text>
+        <circle cx="190" cy="150" r="120" fill="var(--surface-2)" stroke="var(--rule-2)" stroke-width="1"/>
+        <circle cx="570" cy="150" r="120" fill="var(--surface-2)" stroke="var(--rule-2)" stroke-width="1"/>
+        <g id="p1w-r"></g>
+        <g id="p1w-c"></g>
+        <path d="M190 30 L181 42 L199 42 Z" fill="var(--ground)"/>
+        <path d="M570 30 L561 42 L579 42 Z" fill="var(--ground)"/>
+      </svg>
+    </div>
+    <div class="p1ctr">
+      <div>ばらばら: 欠陥 <b id="p1y-nr">70</b> 個 → 不良 <b id="p1y-br">53</b> / 164 → 歩留まり <b id="p1y-yr">67.7%</b></div>
+      <div>固まる: 欠陥 <b id="p1y-nc">70</b> 個 → 不良 <b id="p1y-bc">30</b> / 164 → 歩留まり <b id="p1y-yc">81.7%</b></div>
+    </div>
+    <div class="lg" style="padding-top:10px">
+      <span><i style="background:var(--d-film)"></i>良品</span>
+      <span><i style="background:var(--d-si)"></i>欠陥を踏んだダイ</span>
+      <span><i style="background:var(--amber-2)"></i>欠陥</span>
+    </div>
+    <p class="cap"><span class="cd">70 個が全部落ちたところで、ばらばらは 164 個中 53 個が不良（67.7%）、固まると 30 個（81.7%）。ポアソンの式は、ウェーハの面積あたり 70 個 × ダイ 1 個の面積で λ = 0.366、Y = e<sup>−λ</sup> = <b>69.3%</b> を予想し、ばらばらの側はそのまわりに落ちる。固まった欠陥は<b>同じダイに何個も落ちて「無駄撃ち」になる</b>ので、同じ数でも良品が多く残る。<span class="key">実際の欠陥は装置のトラブルや搬送の擦れで固まって出るので、ポアソンの式は歩留まりを悲観的に見積もりがち</span> ― マーフィーや負の二項分布の式が使われる理由です。</span></p>
+  </figure>
+
+  <div class="step-b">
+    <div class="blk">
+      <h4>4 つの式は「散らばり方の仮定」の違い</h4>
+      <div class="eqb">ポアソン Y = e^(−AD₀)　　マーフィー Y = ((1 − e^(−AD₀)) / AD₀)²</div>
+      <div class="eqb">Seeds Y = 1 / (1 + AD₀)　　負の二項 Y = (1 + AD₀/α)^(−α)</div>
+      <p>負の二項分布の式 <span class="mono">[R51]</span> は、欠陥の<b>固まり具合 α</b> を持ちます。α が大きいほどばらばらに近く、α → ∞ でポアソンに一致し、α が小さいほど固まって歩留まりは高く出る。α はラインごとに実測の歩留まりに合わせて決める値で、α = 2 前後がよく使われてきました。</p>
+    </div>
+    <div class="blk">
+      <h4>どの式でも変わらないこと</h4>
+      <p>AD₀ が小さい（0.1 程度）うちは、どの式も 90% 前後でほぼ同じ値になります（下の表の 1 行目）。差が開くのは AD₀ が 1 を超える<b>大きなチップ・若いライン</b>で、そこでは式の選び方で見積もりが 1.5 倍以上変わる。<span class="key">大きなチップの採算を見積もるときほど、欠陥の散らばり方を実測で確かめる必要がある</span>。15 のクリティカルエリアと合わせると、AD₀ は「チップの面積 × 平均の欠陥密度」ではなく、欠陥の大きさごとの A<sub>c</sub>·D を足したものです。</p>
+    </div>
+  </div>
+
+  <div class="tw">
+    <table class="p1nt">
+      <thead><tr><th>A·D₀</th><th>ポアソン</th><th>マーフィー</th><th>Seeds</th><th>負の二項 α＝10</th><th>負の二項 α＝2</th><th>負の二項 α＝0.5</th></tr></thead>
+      <tbody>
+        <tr><td class="p">0.1</td><td class="mono">90.5%</td><td class="mono">90.6%</td><td class="mono">90.9%</td><td class="mono">90.5%</td><td class="mono">90.7%</td><td class="mono">91.3%</td></tr>
+        <tr><td class="p">0.5</td><td class="mono">60.7%</td><td class="mono">61.9%</td><td class="mono">66.7%</td><td class="mono">61.4%</td><td class="mono">64.0%</td><td class="mono">70.7%</td></tr>
+        <tr><td class="p">1</td><td class="mono">36.8%</td><td class="mono">40.0%</td><td class="mono">50.0%</td><td class="mono">38.6%</td><td class="mono">44.4%</td><td class="mono">57.7%</td></tr>
+        <tr><td class="p">2</td><td class="mono">13.5%</td><td class="mono">18.7%</td><td class="mono">33.3%</td><td class="mono">16.2%</td><td class="mono">25.0%</td><td class="mono">44.7%</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="src" style="max-width:none">上の 4 つの式で計算した値。α＝10 はほぼポアソン、α＝0.5 は強く固まる場合。</p>
+
+  <div class="ex">
+    <span class="exh">例題 ― 手で一度解く（16）</span>
+    <p><b>問.</b> 面積 7.5 cm²（750 mm²、AI 向け GPU 級）のチップを D₀ = 0.1 /cm² のラインで作る。ポアソン・マーフィー・負の二項（α＝2）で歩留まりはいくつか。同じ回路を 1.875 cm² のチップレット 4 個に分けると、1 個あたりのポアソンの歩留まりはいくつか。</p>
+    <p><b>解.</b> AD₀ = 0.75。ポアソン e<sup>−0.75</sup> = <b>47.2%</b>、マーフィー ((1 − e<sup>−0.75</sup>)/0.75)² = <b>49.5%</b>、負の二項 (1 + 0.75/2)<sup>−2</sup> = <b>52.9%</b>。式によって 5 ポイント以上違う。4 分割すると 1 個は AD₀ = 0.1875 で e<sup>−0.1875</sup> = <b>82.9%</b>。テストで良品のチップレットだけを選んで組み合わせれば（10 の KGD）、使えるシリコンの割合は 47.2% から 82.9% へ <b>1.76 倍</b>になる ― 12 の先端パッケージでチップレットが主流になった理由の、数の上での中身です（接続の面積と組立の歩留まりのぶんは差し引く必要があります）。</p>
+  </div>
 </section>
 
 <!-- ============================================================ 11 -->
 <section id="table">
-  <div class="sec-h"><span class="sec-n">15</span><h2>工程別シェア早見表</h2></div>
+  <div class="sec-h"><span class="sec-n">17</span><h2>工程別シェア早見表</h2></div>
   <p class="sec-sub"><b>数値の性格について。</b>半導体のシェアは、調査会社・集計年・対象範囲（金額／台数、先端のみ／全世代）で数値が変わります。ここでは各社の公表値と主要調査会社の数字を優先し、確定値のないものは概数で示しました。ページ内のバーで斜線になっているものは、単一の公表値ではなく複数の業界集計からの概算であることを表します。</p>
   <div class="tw">
     <table>
       <thead><tr><th>区分</th><th>工程</th><th colspan="3">主なメーカーと世界シェア</th><th>主要材料・備考</th></tr></thead>
       <tbody>
         <tr><td class="p g1">前</td><td class="p">ウェーハ製造</td><td>信越半導体 <span class="jp">JP</span><span class="n">約30%</span></td><td>SUMCO <span class="jp">JP</span><span class="n">約21%</span></td><td>GlobalWafers<span class="n">約14%</span></td><td>上位5社で約9割。多結晶Si（トクヤマ <span class="jp">JP</span> ほか）、石英るつぼ</td></tr>
-        <tr><td class="p">共通</td><td class="p">マスク製作</td><td>HOYA <span class="jp">JP</span><span class="n">約50%</span></td><td>AGC <span class="jp">JP</span><span class="n">約25%</span></td><td>信越化学 <span class="jp">JP</span><span class="n">約15%</span></td><td>マスクブランクスの数値。EUV用を量産できるのはHOYAとAGCのみ。描画装置はNuFlare <span class="jp">JP</span></td></tr>
+        <tr><td class="p">共通</td><td class="p">マスク製作</td><td>HOYA <span class="jp">JP</span><span class="n">約55%</span></td><td>AGC <span class="jp">JP</span><span class="n">約25%</span></td><td>信越化学 <span class="jp">JP</span><span class="n">約14%</span></td><td>マスクブランクスの数値。EUV用を量産できるのはHOYAとAGCのみ。描画装置はNuFlare <span class="jp">JP</span></td></tr>
         <tr><td class="p g1">前</td><td class="p">成膜 CVD・PVD</td><td>Applied Materials<span class="n">約40%</span></td><td>Lam Research<span class="n">約22%</span></td><td>東京エレクトロン <span class="jp">JP</span><span class="n">約16%</span></td><td>プリカーサ（Air Liquide／Merck／ADEKA <span class="jp">JP</span>）</td></tr>
         <tr><td class="p g1">前</td><td class="p">ALD</td><td>KOKUSAI ELECTRIC <span class="jp">JP</span><span class="n">約70%（バッチ）</span></td><td>ASM International<span class="n">約45%（枚葉）</span></td><td>東京エレクトロン <span class="jp">JP</span><span class="n">—</span></td><td>バッチ式と枚葉式は別市場。高純度前駆体ガス</td></tr>
         <tr><td class="p g1">前</td><td class="p">スパッタ PVD</td><td>Applied Materials<span class="n">約60%</span></td><td>NAURA<span class="n">2番手</span></td><td>アルバック <span class="jp">JP</span><span class="n">—</span></td><td>スパッタターゲット（JX金属 <span class="jp">JP</span>／Honeywell）</td></tr>
-        <tr><td class="p g1">前</td><td class="p">レジスト塗布・現像</td><td>東京エレクトロン <span class="jp">JP</span><span class="n">約90%</span></td><td>SCREEN <span class="jp">JP</span><span class="n">約6%</span></td><td>SEMES<span class="n">約3%</span></td><td>レジストは JSR 約25%・TOK 約22%・信越化学 約15%・住友化学 約12%・富士フイルム 約10%（すべて <span class="jp">JP</span>）</td></tr>
+        <tr><td class="p g1">前</td><td class="p">レジスト塗布・現像</td><td>東京エレクトロン <span class="jp">JP</span><span class="n">約90%</span></td><td>SCREEN <span class="jp">JP</span><span class="n">約6%</span></td><td>SEMES<span class="n">約3%</span></td><td>レジストは JSR 約26%・TOK 約22%・信越化学 約15%・住友化学 約12%・富士フイルム 約10%（すべて <span class="jp">JP</span>）</td></tr>
         <tr><td class="p g1">前</td><td class="p">露光</td><td>ASML<span class="n">83〜90%</span></td><td>キヤノン <span class="jp">JP</span><span class="n">約8%</span></td><td>ニコン <span class="jp">JP</span><span class="n">約4%</span></td><td>金額ベース。EUVはASMLが100%。台数ベースだとキヤノンが3割前後。ペリクル（三井化学 <span class="jp">JP</span>）</td></tr>
-        <tr><td class="p g1">前</td><td class="p">エッチング</td><td>Lam Research<span class="n">約39%</span></td><td>東京エレクトロン <span class="jp">JP</span><span class="n">約25%</span></td><td>Applied Materials<span class="n">約18%</span></td><td>NAURA・AMEC（中国）が約9%まで伸長。特殊ガス（日本酸素HD <span class="jp">JP</span>／関東電化 <span class="jp">JP</span>）</td></tr>
+        <tr><td class="p g1">前</td><td class="p">エッチング</td><td>Lam Research<span class="n">約39%</span></td><td>東京エレクトロン <span class="jp">JP</span><span class="n">約26%</span></td><td>Applied Materials<span class="n">約18%</span></td><td>NAURA・AMEC（中国）が約9%まで伸長。特殊ガス（日本酸素HD <span class="jp">JP</span>／関東電化 <span class="jp">JP</span>）</td></tr>
         <tr><td class="p g1">前</td><td class="p">イオン注入</td><td>Applied Materials<span class="n">約45%</span></td><td>Axcelis<span class="n">約25%</span></td><td>住友重機械イオンテクノロジー <span class="jp">JP</span><span class="n">約12%</span></td><td>3社で70%超。ドーパントガス（AsH₃・PH₃・BF₃）</td></tr>
-        <tr><td class="p g1">前</td><td class="p">CMP</td><td>Applied Materials<span class="n">約60%</span></td><td>荏原製作所 <span class="jp">JP</span><span class="n">約30%</span></td><td>KCTech<span class="n">約8%</span></td><td>スラリーは富士フイルム 31% <span class="jp">JP</span>、研磨パッドはDuPont 50%超</td></tr>
+        <tr><td class="p g1">前</td><td class="p">CMP</td><td>Applied Materials<span class="n">約60%</span></td><td>荏原製作所 <span class="jp">JP</span><span class="n">約32%</span></td><td>KCTech<span class="n">約8%</span></td><td>スラリーは富士フイルム 31% <span class="jp">JP</span>、研磨パッドはDuPont 50%超</td></tr>
         <tr><td class="p g1">前</td><td class="p">洗浄</td><td>SCREEN <span class="jp">JP</span><span class="n">約45%</span></td><td>東京エレクトロン <span class="jp">JP</span><span class="n">約22%</span></td><td>SEMES<span class="n">約10%</span></td><td>高純度薬液（関東化学 <span class="jp">JP</span>／ステラケミファ <span class="jp">JP</span>）</td></tr>
         <tr><td class="p g1">前</td><td class="p">検査・計測</td><td>KLA<span class="n">約55%</span></td><td>Applied Materials<span class="n">約14%</span></td><td>日立ハイテク <span class="jp">JP</span><span class="n">約11%</span></td><td>測長SEMは日立ハイテク <span class="jp">JP</span> が首位。マスク欠陥検査はレーザーテック <span class="jp">JP</span> 約50%（EUV用は実質100%）</td></tr>
         <tr><td class="p g1">前</td><td class="p">ウェーハテスト</td><td>東京エレクトロン <span class="jp">JP</span><span class="n">約48%</span></td><td>東京精密 <span class="jp">JP</span><span class="n">約30%</span></td><td>SEMES<span class="n">約9%</span></td><td>プローバの数値。プローブカード（MJC <span class="jp">JP</span>／FormFactor）</td></tr>
@@ -2414,8 +2721,38 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
 </section>
 
 <!-- ============================================================ 12 -->
+<section id="check">
+  <div class="sec-h"><span class="sec-n">18</span><h2>理解の確認 ― 16問で「なぜその条件か」を言えるようにする</h2></div>
+  <p class="sec-sub">答えはどれも本文の式と数字から導けます。まず自分の言葉で答えてから、開いて確かめてください。かっこの中は、根拠のある節です。</p>
+  <style>
+  .qz{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;margin-top:6px;max-width:var(--read)}
+  .qz details{border:1px solid var(--rule);border-radius:6px;background:var(--surface);padding:10px 14px;box-shadow:var(--shadow-s)}
+  .qz summary{cursor:pointer;font-size:14px;line-height:1.75;color:var(--ink)}
+  .qz summary b{font-family:"IBM Plex Mono",monospace;color:var(--amber);margin-right:6px}
+  .qz details p{font-size:13.5px;color:var(--ink-2);line-height:1.8;margin-top:8px}
+  </style>
+  <div class="qz">
+    <details><summary><b>Q1</b>「前工程／後工程」と「FEOL／BEOL」は同じ区切りか。</summary><p>違う。前工程はウェーハ処理、後工程は組立の区切りです。FEOL／BEOL はどちらも前工程の中の区分で、FEOL がトランジスタの形成、BEOL が多層配線の形成です。（01）</p></details>
+    <details><summary><b>Q2</b>「2nm ノード」のチップに、2 nm の構造物はあるか。世代は何で比べるべきか。</summary><p>ない。20nm 世代以降のノード名はマーケティング名称で、実際のゲート長は十数 nm、配線ピッチは 20nm 台です。比べるなら、同じ面積に入るトランジスタの数（密度）で比べます。（02）</p></details>
+    <details><summary><b>Q3</b>NA を 0.33 から 0.55 に上げる High-NA EUV で、解像度と焦点深度はそれぞれ何倍になるか。それが CMP にどう効くか。</summary><p>R は 0.33/0.55 = 0.6 倍、DOF は (0.33/0.55)² = 0.36 倍です。ピントの余裕が削られるので、下地の平坦度（CMP）とレジストの薄さの要求が厳しくなります。（08 ①）</p></details>
+    <details><summary><b>Q4</b>ArF 液浸（193 nm・NA 1.35）で、1 回の露光の理論下限 k₁ = 0.25 のとき、最小のハーフピッチはいくらか。それより細い層はどう作るか。</summary><p>0.25 × 193/1.35 = 35.7 nm です。それより細い層は、2〜4 回に分けて描くマルチパターニングで作るか、EUV を使います（k₁ 0.30 で 12.3 nm）。（08 ①）</p></details>
+    <details><summary><b>Q5</b>1000℃・1 時間で、ウェット酸化は 388 nm、ドライ酸化は 47.5 nm 育つ。ウェットが速い理由と、それでもゲート酸化膜にドライを使う理由は。</summary><p>水は酸化膜に酸素より数百倍溶ける（C* 3×10¹⁹ 対 5.2×10¹⁶ cm⁻³）ので、拡散の係数 B が約 30 倍になるからです。ドライの膜は緻密で界面がきれいなので、薄く質の要るゲートにはドライ、厚い分離膜にはウェットを使います。（08 ②）</p></details>
+    <details><summary><b>Q6</b>P を 80 keV・10¹³ cm⁻² で 10¹⁶ cm⁻³ の p 基板に打つ。ピーク濃度と接合の深さはいくらか。接合は Rp（98 nm）と比べてどうか。</summary><p>ピーク濃度は 1.2×10¹⁸ cm⁻³、接合は約 203 nm で、Rp の 2 倍以上深くなります。接合の深さは Rp ではなく、分布の裾で決まります。（08 ③）</p></details>
+    <details><summary><b>Q7</b>B を 1000℃ で 30 分熱する場合と、1050℃ で 1 秒熱する場合で、拡散長 2√(Dt) はそれぞれいくらか。何が効いているか。</summary><p>105 nm と 4.5 nm で、約 1/23 です。D は温度に対して指数で効き（50℃ で 3.3 倍）、広がりは時間の √ でしか効きません。だから浅い接合には「熱いが短い」アニールを使います。（08 ④）</p></details>
+    <details><summary><b>Q8</b>CMP で段差が自然に消えるのはなぜか。その裏返しで起きる不良と、設計側の対策は。</summary><p>Preston の式で、削れる速さは局所の圧力に比例します。パッドは凸部に強く当たるので、凸部が先に削れます。裏返しに、柔らかい銅が広く露出するとディッシング、配線が密集した所ではエロージョンが起きます。対策は、配線の粗密をならすダミーパターンです。（08 ⑤）</p></details>
+    <details><summary><b>Q9</b>GPC 0.1 nm/サイクル・1 サイクル 4 秒の ALD で、2 nm の膜と 20 nm の膜にかかる時間はそれぞれいくらか。ここから分かる使い分けは。</summary><p>80 秒と約 13 分です。薄く精密な膜だけを ALD で「数え」、厚い膜は CVD で速く積みます。ただし深い穴の底まで均一に覆えるのは、自己停止する ALD だけです。（08 ⑥）</p></details>
+    <details><summary><b>Q10</b>リン添加の CZ インゴットで、上端が 10 Ω·cm のとき、90% 固まった位置の抵抗率はおよそいくらか。ホウ素ならどうか。</summary><p>リン（k 0.35）では濃度が 0.1^(−0.65) = 4.5 倍になり、約 2.2 Ω·cm です。ホウ素（k 0.8）なら 1.6 倍で済むので、長さ方向に濃度がそろいやすくなります。（04）</p></details>
+    <details><summary><b>Q11</b>厚さ 300 µm の PIN フォトダイオードを全部空乏させる電圧は、10 kΩ·cm（FZ）と 10 Ω·cm（ふつうの CZ）でどれくらい違うか。</summary><p>約 32 V と約 32,000 V です。厚い検出器が作れるかどうかは結晶の純度で決まるので、X 線や粒子の検出器には FZ の高抵抗シリコンを使います。（04）</p></details>
+    <details><summary><b>Q12</b>反射率 70% の鏡で 10 回反射すると、光はどれだけ残るか。反射率を 1 ポイント上げると、処理枚数はどう変わるか。</summary><p>0.7¹⁰ = 2.8% しか残りません。0.71¹⁰/0.70¹⁰ = 1.15 なので、処理枚数は約 15% 増えます。反射が累乗で効くので、鏡の小さな改良が大きく効きます。（14）</p></details>
+    <details><summary><b>Q13</b>露光量 30 mJ/cm² で、一辺 10 nm の正方形に入る光子は EUV と ArF でそれぞれ何個か。そこから起きる問題は何か。</summary><p>EUV は約 2,040 個（ばらつき 2.2%）、ArF は約 29,100 個（0.59%）です。EUV は光子が少なくポアソンのばらつきが大きいので、縁の乱れや、線の橋・抜けといった確率的欠陥が出ます。露光量を上げれば減りますが、そのぶん処理枚数が落ちます。（14）</p></details>
+    <details><summary><b>Q14</b>ISO クラス 5 の空気 1 m³ に、0.5 µm 以上の粒は何個まで許されるか。間隔 40 nm の配線にとって、一番危ないのはどんな粒か。</summary><p>10⁵ × (0.1/0.5)^2.08 で約 3,520 個です。短絡を起こすのは 2 本の線にまたがる x ＞ s の粒だけで、そのクリティカルエリアは L(x − s) です。粒は大きいほど少ないので、線の間隔より少し大きい粒が一番効きます。（15）</p></details>
+    <details><summary><b>Q15</b>面積 7.5 cm² のチップを D₀ 0.1 /cm² のラインで作ると、ポアソンの歩留まりはいくつか。4 個のチップレットに分けると、1 個あたりいくつになるか。</summary><p>e^(−0.75) = 47.2% と e^(−0.1875) = 82.9% です。良品のチップレットだけを選んで組めば、使えるシリコンの割合は約 1.76 倍になります（接続と組立の歩留まりのぶんは差し引く）。（16）</p></details>
+    <details><summary><b>Q16</b>同じ 70 個の欠陥でも、固まって落ちると歩留まりが高く出るのはなぜか。このことから、歩留まりの式の選び方について何が言えるか。</summary><p>固まった欠陥は同じダイに何個も落ちて「無駄撃ち」になるからです（ばらばらで 67.7%、固まると 81.7%）。ポアソンの式は悲観的になりがちで、AD₀ が 1 を超える大きなチップほど、式の選び方で見積もりが 1.5 倍以上変わります。だから欠陥の散らばり方を実測で確かめます。（16）</p></details>
+  </div>
+</section>
+
 <section id="glossary">
-  <div class="sec-h"><span class="sec-n">16</span><h2>用語集</h2></div>
+  <div class="sec-h"><span class="sec-n">19</span><h2>用語集</h2></div>
   <p class="sec-sub">本文中で注釈を付けた語をまとめました。読み返すときの索引としてお使いください。</p>
   <div class="gl">
     <div><b>前工程 <small>Front-end</small></b><p>ウェーハに回路を作り込む工程群。成膜からウェーハテストまで。期間・コストの大半を占める。</p></div>
@@ -2486,12 +2823,22 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
     <div><b>リフトオフ</b><p>レジストの型の上に金属をつけ、レジストごと不要部を剥がして電極を作る方法。化合物プロセスで多用。</p></div>
     <div><b>選択酸化（VCSEL）</b><p>AlAs に近い層を横から酸化して絶縁体にし、電流の通り道を絞る工程。</p></div>
     <div><b>DTI</b><p>画素の間に深い溝を掘って絶縁物を埋める分離構造。光と電子の漏れ（混色）を防ぐ。</p></div>
+    <div><b>EUV <small>極端紫外線</small></b><p>波長 13.5 nm（91.8 eV）の光。空気にもガラスにも吸われるので、真空の中を多層膜の鏡だけで運ぶ。</p></div>
+    <div><b>LPP <small>Laser-Produced Plasma</small></b><p>スズの液滴に CO₂ レーザーを当ててプラズマにし、13.5 nm の光を出させる EUV の光源。</p></div>
+    <div><b>Mo/Si 多層膜ミラー</b><p>周期約 7 nm で Mo と Si を約 40 周期積んだ鏡。各界面の弱い反射を位相をそろえて足し、13.5 nm で約 7 割を返す。</p></div>
+    <div><b>確率的欠陥 <small>stochastics</small></b><p>光子や反応の数が少ないために、図形の縁の乱れやブリッジ・抜けが確率的に出る現象。</p></div>
+    <div><b>ISO 14644-1</b><p>クリーンルームの清浄度の規格。クラス N の上限は 10ᴺ × (0.1/D)^2.08 個/m³（D は µm）。</p></div>
+    <div><b>FOUP / ミニエンバイロメント</b><p>ウェーハを密閉した箱で運び、装置との受け渡し口だけを極めて清浄に保つ方式。</p></div>
+    <div><b>キラー欠陥</b><p>落ちると回路を壊す（短絡・断線させる）欠陥。同じ粒でも、落ちる場所と大きさで決まる。</p></div>
+    <div><b>クリティカルエリア</b><p>その大きさの欠陥が落ちると不良になる場所の面積。平行な 2 本の線（間隔 s・長さ L）の短絡なら L(x − s)。</p></div>
+    <div><b>負の二項分布モデル</b><p>欠陥の固まり具合 α を持つ歩留まりの式 Y = (1 + AD₀/α)^(−α)。α → ∞ でポアソンに一致する。</p></div>
+    <div><b>段差被覆 <small>step coverage</small></b><p>溝の底や壁に付く膜の厚さと、平らな面に付く膜の厚さの比。ALD はほぼ 100%。</p></div>
   </div>
 </section>
 
 <!-- ============================================================ 13 -->
 <section id="refs">
-  <div class="sec-h"><span class="sec-n">17</span><h2>出典</h2></div>
+  <div class="sec-h"><span class="sec-n">20</span><h2>出典</h2></div>
   <p class="sec-sub">2026年9月時点で参照できた一次発表・調査会社リリース・業界集計です。市場データは発表時点を併記しました。</p>
   <ol class="refs">
     <li><span class="rn">R1</span><span>吉田SKT「半導体製造装置のシェアと最新の市場動向」<a href="https://www.y-skt.co.jp/magazine/knowledge/semiconductor_equipment_market/">y-skt.co.jp</a></span></li>
@@ -2539,6 +2886,12 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
     <li><span class="rn">R43</span><span>Y. Cheng, C. Hu『MOSFET Modeling &amp; BSIM3 User's Guide』Kluwer (1999)（コンパクトモデル BSIM の解説）</span></li>
     <li><span class="rn">R44</span><span>K. E. Petersen「Silicon as a Mechanical Material」Proc. IEEE 70, 420 (1982)（MEMS の古典的な総説。異方性エッチングと (111) 面）</span></li>
     <li><span class="rn">R45</span><span>F. Laermer, A. Schilp（Robert Bosch GmbH）米国特許 5,501,893 (1996)（ボッシュ法の深掘りドライエッチング）</span></li>
+    <li><span class="rn">R46</span><span>B. L. Henke, E. M. Gullikson, J. C. Davis「X-Ray Interactions: Photoabsorption, Scattering, Transmission, and Reflection at E = 50–30,000 eV, Z = 1–92」At. Data Nucl. Data Tables 54, 181 (1993)（CXRO の光学定数。13.5 nm の Mo・Si の屈折率と Si の吸収端）</span></li>
+    <li><span class="rn">R47</span><span>E. Louis, A. E. Yakshin, T. Tsarfati, F. Bijkerk「Nanometer Interface and Materials Control for Multilayer EUV-Optical Applications」Prog. Surf. Sci. 86, 255 (2011)（Mo/Si 多層膜の実際の反射率 約 70% と界面の混ざり合い）</span></li>
+    <li><span class="rn">R48</span><span>I. Fomenkov ほか「Light Sources for High-Volume Manufacturing EUV Lithography: Technology, Performance, and Power Scaling」Adv. Opt. Technol. 6, 173 (2017)（スズの LPP 光源・前パルス・変換効率・250 W 級の出力）</span></li>
+    <li><span class="rn">R49</span><span>ISO 14644-1:2015「Cleanrooms and Associated Controlled Environments — Part 1: Classification of Air Cleanliness by Particle Concentration」（清浄度クラスの式 C = 10ᴺ(0.1/D)^2.08）</span></li>
+    <li><span class="rn">R50</span><span>C. H. Stapper「Modeling of Integrated Circuit Defect Sensitivities」IBM J. Res. Dev. 27, 549 (1983)（クリティカルエリアと欠陥の大きさの分布）</span></li>
+    <li><span class="rn">R51</span><span>C. H. Stapper, F. M. Armstrong, K. Saji「Integrated Circuit Yield Statistics」Proc. IEEE 71, 453 (1983)（ポアソン・Seeds・負の二項分布の歩留まりモデルの総説）</span></li>
   </ol>
   <p class="foot">この資料は公開情報をもとに、半導体製造プロセスの全体像を初学者が体系的につかむことを目的に整理したものです。市場シェアは調査会社・集計年・対象範囲によって数値が異なるため、投資判断や事業判断に用いる際は必ず一次資料をあたってください。数値は2026年9月時点で参照できたものを採用しています。</p>
   <p class="foot" style="margin-top:14px;padding-top:14px"><a href="index.html">学びの地図へ戻る</a> · この資料が「どう作るか」を説明する側で、<a href="ProcessLab/index.html">ProcessLab</a> が自分で工程を並べて断面を育て、何ができたかを計算で確かめる側です。各工程の末尾の「手を動かす」の箱から、対応する課題へ飛べます。</p>
@@ -2735,6 +3088,84 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
     update();
   })();
 
+  /* ---------- ALD と CVD の溝の埋まり方（膜厚 ＝ 0.1 nm × サイクル、図の 1 目盛り ＝ 1 nm） ---------- */
+  (function(){
+    var c = document.getElementById('p1ald-c'), lab = document.getElementById('p1ald-n');
+    var tl = document.getElementById('p1cvd-tl'), tr = document.getElementById('p1cvd-tr');
+    var wl = document.getElementById('p1cvd-wl'), wr = document.getElementById('p1cvd-wr'), bt = document.getElementById('p1cvd-b');
+    if(!c || !lab || !tl || !tr || !wl || !wr || !bt) return;
+    var NMAX = 140, SC = 0.35, n = NMAX, timer = null;   /* SC: CVD の底の厚み ÷ 口の厚み（模式のための仮定） */
+    function draw(){
+      var t = n * 0.1, tb = t * SC;
+      c.setAttribute('stroke-width', (2 * t).toFixed(2));        /* 半分は Si の下に隠れるので、見える厚みは t */
+      tl.setAttribute('y', (60 - t).toFixed(2)); tl.setAttribute('height', t.toFixed(2));
+      tr.setAttribute('y', (60 - t).toFixed(2)); tr.setAttribute('height', t.toFixed(2));
+      wl.setAttribute('points', '538,60 ' + (538 + t).toFixed(2) + ',60 ' + (538 + tb).toFixed(2) + ',220 538,220');
+      wr.setAttribute('points', '582,60 ' + (582 - t).toFixed(2) + ',60 ' + (582 - tb).toFixed(2) + ',220 582,220');
+      bt.setAttribute('y', (220 - tb).toFixed(2)); bt.setAttribute('height', tb.toFixed(2));
+      lab.textContent = n + ' サイクル ・ ' + t.toFixed(1) + ' nm';
+    }
+    function tick(){
+      if(n < NMAX){ n++; draw(); return; }
+      clearInterval(timer); timer = null;
+      setTimeout(function(){ n = 0; draw(); timer = setInterval(tick, 60); }, 2200);
+    }
+    draw();
+    if(reduce) return;
+    function start(){ if(!timer){ n = 0; draw(); timer = setInterval(tick, 60); } }
+    if('IntersectionObserver' in window){
+      var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ io.disconnect(); start(); } }); }, {threshold:0.4});
+      io.observe(c.ownerSVGElement || c);
+    } else start();
+  })();
+
+  /* ---------- 欠陥を 1 個ずつ落とす（ばらばら／固まる）。乱数は種 42 の決まった並び ---------- */
+  function p1mk(seed){var a=seed>>>0;return function(){a=(a+0x6D2B79F5)>>>0;var t=a;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296;};}
+  function p1wafer(cx,cy,R,s){var d=[],n=Math.ceil(R/s)+1,i,j;for(j=-n;j<n;j++)for(i=-n;i<n;i++){var x=cx+i*s,y=cy+j*s,ok=true,c=[[x,y],[x+s,y],[x,y+s],[x+s,y+s]];for(var k=0;k<4;k++){if(Math.hypot(c[k][0]-cx,c[k][1]-cy)>R-2)ok=false;}if(ok)d.push({x:x,y:y,bad:false});}return d;}
+  function p1defects(cx,cy,R,N,clustered,seed){var r=p1mk(seed),out=[],cs=[],k;for(k=0;k<5;k++){var rr=0.75*R*Math.sqrt(r()),th=2*Math.PI*r();cs.push([cx+rr*Math.cos(th),cy+rr*Math.sin(th)]);}
+  for(var i=0;i<N;i++){var x,y,g=0;do{if(clustered){var c=cs[i%5],u1=Math.max(r(),1e-9),u2=r(),m=Math.sqrt(-2*Math.log(u1));x=c[0]+11*m*Math.cos(2*Math.PI*u2);y=c[1]+11*m*Math.sin(2*Math.PI*u2);}else{var rr2=R*Math.sqrt(r()),th2=2*Math.PI*r();x=cx+rr2*Math.cos(th2);y=cy+rr2*Math.sin(th2);}g++;}while(Math.hypot(x-cx,y-cy)>R-3&&g<50);out.push([x,y]);}return out;}
+  (function(){
+    var gR = document.getElementById('p1w-r'), gC = document.getElementById('p1w-c');
+    if(!gR || !gC) return;
+    var NS = 'http://www.w3.org/2000/svg', S = 15, R = 120, N = 70, SEED = 42;
+    function el(tag, at){ var e = document.createElementNS(NS, tag); for(var k in at) e.setAttribute(k, at[k]); return e; }
+    function setup(g, cx, cl){
+      while(g.firstChild) g.removeChild(g.firstChild);
+      var W = { dies: p1wafer(cx, 150, R, S), df: p1defects(cx, 150, R, N, cl, SEED), g: g, bad: 0, n: 0 };
+      W.dies.forEach(function(d){
+        d.el = el('rect', { x: (d.x + 0.8).toFixed(1), y: (d.y + 0.8).toFixed(1), width: (S - 1.6).toFixed(1), height: (S - 1.6).toFixed(1), rx: 1.2, fill: 'var(--d-film)' });
+        g.appendChild(d.el);
+      });
+      return W;
+    }
+    function drop(W){
+      var p = W.df[W.n++];
+      W.dies.forEach(function(d){
+        if(!d.bad && p[0] >= d.x && p[0] < d.x + S && p[1] >= d.y && p[1] < d.y + S){ d.bad = true; W.bad++; d.el.setAttribute('fill', 'var(--d-si)'); }
+      });
+      W.g.appendChild(el('circle', { cx: p[0].toFixed(1), cy: p[1].toFixed(1), r: 2.3, fill: 'var(--amber-2)' }));
+    }
+    function show(W, a, b, c){
+      document.getElementById(a).textContent = W.n;
+      document.getElementById(b).textContent = W.bad;
+      document.getElementById(c).textContent = (100 * (1 - W.bad / W.dies.length)).toFixed(1) + '%';
+    }
+    var A, B, timer = null;
+    function reset(){ A = setup(gR, 190, false); B = setup(gC, 570, true); show(A, 'p1y-nr', 'p1y-br', 'p1y-yr'); show(B, 'p1y-nc', 'p1y-bc', 'p1y-yc'); }
+    function step(){
+      if(A.n < N){ drop(A); drop(B); show(A, 'p1y-nr', 'p1y-br', 'p1y-yr'); show(B, 'p1y-nc', 'p1y-bc', 'p1y-yc'); return; }
+      clearInterval(timer); timer = null;
+      setTimeout(function(){ reset(); timer = setInterval(step, 110); }, 2800);
+    }
+    reset();
+    if(reduce){ while(A.n < N){ drop(A); drop(B); } show(A, 'p1y-nr', 'p1y-br', 'p1y-yr'); show(B, 'p1y-nc', 'p1y-bc', 'p1y-yc'); return; }
+    function start(){ if(!timer) timer = setInterval(step, 110); }
+    if('IntersectionObserver' in window){
+      var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ io.disconnect(); start(); } }); }, {threshold:0.3});
+      io.observe(document.getElementById('svg-rain'));
+    } else start();
+  })();
+
   /* ---------- 用語注釈をキーボード操作可能にする ---------- */
   (function(){
     var tms = document.querySelectorAll('.tm');
@@ -2766,5 +3197,8 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
 })();
 </script>
 
+<script>/* 用語の吹き出しを、出るときに画面の中へ寄せる（右端・左端の用語で見切れないように） */
+(function(){function fit(t){var i=t&&t.querySelector(":scope>i");if(!i)return;i.style.marginLeft="0px";var r=i.getBoundingClientRect(),vw=document.documentElement.clientWidth,dx=0;if(r.right>vw-8)dx=vw-8-r.right;if(r.left+dx<8)dx=8-r.left;i.style.marginLeft=dx+"px";}
+document.addEventListener("mouseover",function(e){fit(e.target.closest&&e.target.closest(".tm"));});document.addEventListener("focusin",function(e){fit(e.target.closest&&e.target.closest(".tm"));});})();</script>
 </body>
 </html>

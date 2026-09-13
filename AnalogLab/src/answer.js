@@ -56,6 +56,18 @@
     buck: {
       note: 'L = 10 µH。ΔI = 8.7 × 0.275 / (10 µH × 1 MHz) = 0.239 A（第6部 10 の例題と同じ）。',
       design: function () { var d = A.defaults(); d.luh = 10; return d; }
+    },
+    mirror: {
+      note: 'カスコード（1）・出力側の W/L 50。Vov 0.141 V で gm·ro 141、誤差 0.035%、出力に要る電圧 0.283 V。',
+      design: function () { var d = A.defaults(); d.mcasc = 1; d.wl = 50; return d; }
+    },
+    bgr: {
+      note: 'n 16・m 8.37。(k/q)·ln 16 = 239 µV/K × 8.37 = 2.00 mV/K で傾きが消え、Vref 1.250 V。',
+      design: function () { var d = A.defaults(); d.bgn = 16; d.bgm = 8.37; return d; }
+    },
+    tiacf: {
+      note: 'Rf 1000 kΩ・Cf 178 fF（最大平坦）。ζ 0.706、山なし、帯域 1.25 MHz。',
+      design: function () { var d = A.defaults(); d.rfk = 1000; d.tcffF = 178; return d; }
     }
   };
 

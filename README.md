@@ -33,8 +33,8 @@
   第3部_論理回路.html              第3部 参考書 ― スイッチ → NAND → 組合せ → 記憶 → ALU → CPU とメモリ階層・メモリの物理
   第4部_イメージセンサ.html         第4部 参考書 ― 光子 → 電子 → 電圧 → 数値 → 像
   第5部_光検出デバイス.html          第5部 参考書 ― 数える一族: PMT・APD・MPPC・SNSPD から EMMI・光る半導体、放射線の半導体検出器・紫外とテラヘルツまで（10章）
-  第6部_アナログ回路.html           第6部 参考書 ― 坂に住む設計: gmとroから差動対・帰還・雑音・バンドギャップ、AD 変換・電源・実装と EMC・カメラの出口まで（12章）
-  第7部_光学.html                 第7部 参考書 ― 検出器の相手側: 照度の会計・結像・回折・ガウス・ファイバ・膜、偏光・干渉・分光器・損失と分散・顕微鏡とイメージングの手法（13章）
+  第6部_アナログ回路.html           第6部 参考書 ― 坂に住む設計: gmとroから差動対・帰還・雑音・バンドギャップ、AD 変換・電源・実装と EMC・カメラの出口・SAR と ΔΣ・ジッタと PLL・チャージアンプ・フォトダイオードの TIA まで（16章）
+  第7部_光学.html                 第7部 参考書 ― 検出器の相手側: 照度の会計・結像・回折・ガウス・ファイバ・膜、偏光・干渉・分光器・損失と分散・顕微鏡とイメージングの手法・収差・MTF・多層膜・光学材料と窓・測る光学系（18章）
   第8部_信頼性と品質.html           第8部 参考書 ― 壊れ方を数える: FIT・アレニウス・ワイブル・θとTj・TEC・Cpk・誤差、管理図・不確かさ・故障解析・規格と安全・データ解析（13章）
   第9部_光源とレーザー.html          第9部 参考書 ― 光をつくる側: 熱放射・放電・LED・レーザーの原理とレート方程式・縦モード・DFB/VCSEL・パルス・非線形（11章）
   第10部_設計演習.html              第10部 総合演習 ― 1台を設計する: 微弱光カメラ・LiDAR・分光器を光子から安全と信頼性まで数字でつなぐ（10章）
@@ -45,7 +45,7 @@
   NandLab\                       第3部 ラボ ― 原始部品 ＝ NAND（6章 31問。第6章だけ NOR）
   PixelLab\                      第4部 ラボ ― 原始部品 ＝ 光子と電子を数えること（4章 16問。第4章はローリング／グローバルシャッタ・画素ピッチの限界・TDI）
   PhotonLab\                     第5部 ラボ ― 原始部品 ＝ 光子とη（4章 15問。R・NEP・D*・最適なM・MPPC・背景光・計数・走行×RC・TCSPC・InGaAs APD・しきい値とクロストーク・シンチの分解能）
-  AnalogLab\                     第6部 ラボ ― 原始部品 ＝ 二乗則のMOS 1個（4章 13問。Vov・gm・利得・GBW・TIA・kTC・SC・2段OTA・ADC・DC-DC）
+  AnalogLab\                     第6部 ラボ ― 原始部品 ＝ 二乗則のMOS 1個（5章 16問。Vov・gm・利得・GBW・TIA・kTC・SC・2段OTA・ADC・DC-DC・カレントミラー・バンドギャップ・TIA の帰還容量）
   OptoLab\                       第7部 ラボ ― 原始部品 ＝ 光線とその会計（4章 15問。カメラ方程式・回折・ガウス・ファイバ・λ/4・エテンデュ・cos⁴・モード結合・ブルースター角・格子・回線）
   QALab\                         第8部 ラボ ― 原始部品 ＝ 故障率と分布（5章 17問。MTTF・加速3種＋HAST・B10・Tj・TEC・Cpk・誤差・GR&R・管理図・不確かさ・Norris-Landzberg・ndc・OC 曲線）
   LaserLab\                      第9部 ラボ ― 原始部品 ＝ 共振器の会計と熱の光（4章 12問。黒体・LED・しきい値・スロープ効率・T₀・縦モード・DFB・モード同期・尖頭値・緩和振動・SHG・ファイバ結合）
@@ -89,7 +89,7 @@ node CharLab\tests\all.js         281 件
 node NandLab\tests\all.js         725 件
 node PixelLab\tests\all.js        372 件
 node PhotonLab\tests\all.js       333 件
-node AnalogLab\tests\all.js       260 件
+node AnalogLab\tests\all.js       334 件
 node OptoLab\tests\all.js         301 件
 node QALab\tests\all.js           358 件
 node LaserLab\tests\all.js        272 件
@@ -104,4 +104,4 @@ node DesignLab\tests\all.js       547 件
 
 - ~~NandLab「電圧で見る」のしきい値 0.7V は決め打ち~~ → **SemiLab 第5章「NAND の中身へ」の採点を通すと、その nMOS の Vth が NandLab「電圧で見る」に渡る**ようになった（localStorage 経由・出どころを画面に明記）。渡るのは Vth だけ ― この素朴なモデルでは n と p の強さの比しか効かず比は 1 固定なので、Cox は坂の形を変えない。電源 3.3V は決め打ちのまま
 - ~~NandLab に「原始部品を NOR にする」モードを足すか検討~~ → **第6章「NOR だけで組む」として追加**（NOT・OR・AND・NAND・XNOR・SR ラッチの6問。素子は混ぜない ― 第6章は NOR だけ、ほかの章は NAND だけで採点）
-- 各ラボの「ここから先」（README）― BJT・降伏・多層の反射防止膜（SemiLab。pMOS とゲートの材料、単層の反射防止膜は課題化済み）、側壁と形状・TED（ProcessLab）、光学（PixelLab。HDR 合成は「長短合成で 100 dB」として課題化済み）、メモリ（NandLab。RAM16 を「実装部品」として追加済み ― 課題の採点では使えない）、ゼロ打ち消し抵抗・スルーレート（AnalogLab）、調芯公差＝軸ずれ/角度ずれのモード結合（OptoLab）、Norris-Landzberg・GR&R の分散分析と ndc（QALab）、温度を振った I-V・1/C² プロファイル・SemiLab→CharLab の素子受け渡し（CharLab。C-V/I-V の測って当てるは実装済み）。
+- 各ラボの「ここから先」（README）― BJT・降伏・多層の反射防止膜（SemiLab。pMOS とゲートの材料、単層の反射防止膜は課題化済み）、側壁と形状・TED（ProcessLab）、光学（PixelLab。HDR 合成は「長短合成で 100 dB」として課題化済み）、メモリ（NandLab。RAM16 を「実装部品」として追加済み ― 課題の採点では使えない）、ゼロ打ち消し抵抗・スルーレート（AnalogLab）、調芯公差＝軸ずれ/角度ずれのモード結合（OptoLab）、GR&R の分散分析（QALab。Norris-Landzberg・ndc・OC 曲線は課題化済み）、SemiLab→CharLab の素子受け渡し（CharLab。温度を振った Eg・1/C² の濃度分布・2 成分の I-V は課題化済み）。
