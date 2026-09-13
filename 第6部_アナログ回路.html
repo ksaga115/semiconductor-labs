@@ -612,7 +612,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
         <path d="M80 176 C 240 150, 380 90, 480 62 C 560 42, 640 38, 690 37" stroke="var(--si)" stroke-width="2.2" fill="none" class="draw" style="--len:700"/>
         <path d="M70 34 H700" stroke="var(--warn)" stroke-width="1.5" stroke-dasharray="6 4"/>
         <text x="690" y="28" font-size="10" fill="var(--warn)" text-anchor="end">壁 = g<tspan font-size="7" dy="2">m</tspan><tspan dy="-2">r</tspan><tspan font-size="7" dy="2">o</tspan><tspan dy="-2">（素の利得 = 2/λV</tspan><tspan font-size="7" dy="2">ov</tspan><tspan dy="-2">）</tspan></text>
-        <text x="200" y="120" font-size="9.5" fill="var(--ink-3)">はじめは g<tspan font-size="7" dy="2">m</tspan><tspan dy="-2">R</tspan><tspan font-size="7" dy="2">D</tspan><tspan dy="-2"> で素直に伸びる</tspan></text>
+        <text x="220" y="166" font-size="9.5" fill="var(--ink-3)">はじめは g<tspan font-size="7" dy="2">m</tspan><tspan dy="-2">R</tspan><tspan font-size="7" dy="2">D</tspan><tspan dy="-2"> で素直に伸びる</tspan></text>
         <text x="500" y="100" font-size="9.5" fill="var(--ink-3)">r<tspan font-size="7" dy="2">o</tspan><tspan dy="-2"> の分流が効いて寝る</tspan></text>
       </svg>
     </div>
@@ -651,7 +651,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   <figure class="full">
     <div class="fig-head"><span class="fig-title">MIRROR — 電圧1本で電流を配る</span></div>
     <div class="fig-body scroll-x">
-      <svg viewBox="0 0 760 240" role="img" aria-label="カレントミラーの回路図。左はダイオード接続のMOSFETに基準電流Irefが流れ、そのゲート電圧が右の2つのMOSFETに配られ、W/L比1倍と2倍の電流がコピーされる。" style="min-width:700px;width:100%;display:block">
+      <svg viewBox="0 0 760 256" role="img" aria-label="カレントミラーの回路図。左はダイオード接続のMOSFETに基準電流Irefが流れ、そのゲート電圧が右の2つのMOSFETに配られ、W/L比1倍と2倍の電流がコピーされる。" style="min-width:700px;width:100%;display:block">
         <g stroke="var(--ink-2)" stroke-width="1.5" fill="none">
           <path d="M150 30 V70"/>
           <circle cx="150" cy="84" r="12" stroke-width="1.4"/>
@@ -682,9 +682,9 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <path d="M420 130 V50" class="flow"/><path d="M620 130 V50" class="flow"/>
         </g>
         <g font-size="10" fill="var(--ink-2)" text-anchor="middle">
-          <text x="150" y="240">基準（ダイオード接続）</text>
-          <text x="420" y="240">(W/L)×1 → I<tspan font-size="7" dy="2">ref</tspan></text>
-          <text x="620" y="240">(W/L)×2 → 2I<tspan font-size="7" dy="2">ref</tspan></text>
+          <text x="150" y="244">基準（ダイオード接続）</text>
+          <text x="420" y="244">(W/L)×1 → I<tspan font-size="7" dy="2">ref</tspan></text>
+          <text x="620" y="244">(W/L)×2 → 2I<tspan font-size="7" dy="2">ref</tspan></text>
         </g>
         <text x="440" y="44" font-size="9.5" fill="var(--ink-3)">コピー先の回路へ</text>
       </svg>
@@ -838,9 +838,9 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
         <text x="462" y="18" font-size="9.5" fill="var(--warn)" text-anchor="middle">利得が1になる周波数</text>
         <path d="M80 140 C 200 146, 300 168, 460 178 C 560 184, 640 196, 690 202" stroke="var(--volt)" stroke-width="2" fill="none" class="draw" style="--len:660;animation-delay:.4s"/>
         <path d="M70 206 H700" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="4 4"/>
-        <text x="694" y="202" font-size="9" fill="var(--ink-3)" text-anchor="end">180&deg;（正帰還の線）</text>
+        <text x="694" y="222" font-size="9" fill="var(--ink-3)" text-anchor="end">180&deg;（正帰還の線）</text>
         <path d="M462 178 V206" stroke="var(--warn)" stroke-width="3"/>
-        <text x="480" y="196" font-size="10" fill="var(--warn)">位相余裕（60&deg; 前後を狙う）</text>
+        <text x="454" y="196" font-size="10" fill="var(--warn)" text-anchor="end">位相余裕（60&deg; 前後を狙う）</text>
         <text x="180" y="126" font-size="9" fill="var(--ink-3)">支配極から −20dB/dec で降りてくる</text>
       </svg>
     </div>
@@ -1074,7 +1074,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
         <path d="M90 152 L690 108" stroke="var(--si)" stroke-width="2" class="draw" style="--len:620;animation-delay:.4s"/>
         <text x="200" y="168" font-size="10" fill="var(--si)">m·V<tspan font-size="7" dy="2">T</tspan>ln n（PTAT: +2mV/℃ に合わせる）</text>
         <path d="M90 46 C 300 42, 500 42, 690 46" stroke="var(--warn)" stroke-width="2.4" class="draw" style="--len:620;animation-delay:.8s"/>
-        <text x="560" y="36" font-size="10.5" fill="var(--warn)">和 ≒ 1.2 V（ほぼ水平 ― 2次の曲がりだけ残る）</text>
+        <text x="740" y="36" font-size="10.5" fill="var(--warn)" text-anchor="end">和 ≒ 1.2 V（ほぼ水平 ― 2次の曲がりだけ残る）</text>
       </svg>
     </div>
     <figcaption>1次の傾きは完全に消せるが、<span class="key">V<sub>BE</sub> の曲率（2次）はわずかに残り</span>、お椀を伏せた形の数mVがカタログの温度特性になる ― これを削る「曲率補正」からが職人の世界です。</figcaption>

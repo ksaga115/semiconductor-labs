@@ -24,8 +24,8 @@
  *   s1,s2  独立な誤差 [%]             合成は2乗和の平方根
  *   rhu,rhs  使用/試験の相対湿度 [%]    Peck: AF = (RHs/RHu)^n · exp(Ea_h/k(1/Tu−1/Ts))
  *   thu,ths  湿度試験の使用/試験温度 [℃]
- *   npeck    湿度のべき n（Peck の古典値 ≈ 3）
- *   eah      湿度側の Ea [eV]（Peck の古典値 ≈ 0.79）
+ *   npeck    湿度のべき n（Peck 1986 の原典値 2.7。慣例で 3 に丸めることが多い）
+ *   eah      湿度側の Ea [eV]（Peck 1986 の原典値 0.79）
  *   dtu,dts  使用/試験の温度サイクル振幅 ΔT [K]
  *   ncm      Coffin-Manson のべき（はんだ ≈ 2）
  *   cyd      使用でのサイクル数 [回/日]

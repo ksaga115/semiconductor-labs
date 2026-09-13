@@ -38,7 +38,7 @@
       design: function () { var d = O.defaults(); d.nm = 1064; d.winmm = 4; return d; }
     },
     ar: {
-      note: 'n = 1.97（= √3.9）。残留反射はほぼゼロ。31% がひと塗りで消える。',
+      note: 'n = 1.97（= √3.9）。残留反射はほぼゼロ。35% がひと塗りで消える。',
       design: function () { var d = O.defaults(); d.ncoat = 1.97; return d; }
     },
     etd: {

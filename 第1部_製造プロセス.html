@@ -359,6 +359,14 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
       <div class="hs"><b>7,956 億ドル</b><span>2025年 世界半導体市場（WSTS実績）</span></div>
       <div class="hs"><b>1,350 億ドル</b><span>2025年 世界半導体製造装置市場（SEMI）</span></div>
     </div>
+    <div class="guide">
+      <div class="guide-h"><span>読み方（役割別）</span><span>全部で 60〜110 分</span></div>
+      <div class="guide-b">
+        <div><b>営業・企画なら</b><span>01 なぜ1000工程 → 03 産業地図 → 05 各工程の「誰が握っているか」 → 12 早見表。業界ニュースの登場人物と、そのシェアの読み方が入ります。</span><em>20 〜 30 分</em></div>
+        <div><b>設計・開発なら</b><span>04 リソ・サイクル → 06 工程を式で読む → 07 トランジスタ構造 → 11 歩留まり。「なぜその寸法・温度・時間なのか」が式で分かります。</span><em>40 〜 60 分</em></div>
+        <div><b>研究・製造なら</b><span>05 の全カード → 06 の例題を自分で解く → 08〜10 後工程と先端パッケージ。ProcessLab を並走させると数字が手に入ります。</span><em>60 〜 110 分</em></div>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -374,6 +382,7 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
     <li class="g">前工程 / Front-end</li>
     <li><a href="#litho">リソグラフィ・サイクル</a></li>
     <li><a href="#fe">前工程の各工程</a></li>
+    <li><a href="#phys">工程を式で読む</a></li>
     <li><a href="#tr">トランジスタ構造の進化</a></li>
     <li class="g">後工程 / Back-end</li>
     <li><a href="#beflow">後工程フロー</a></li>
@@ -473,7 +482,7 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
       <ol class="sl"><li class="hd">ファウンドリ（製造受託）</li>
         <li><span class="co">TSMC<small>台湾</small></span><span class="bar"><span style="--v:70.4"></span></span><span class="vl">70.4%</span></li>
         <li><span class="co">Samsung Foundry<small>韓国</small></span><span class="bar"><span style="--v:7.1"></span></span><span class="vl">7.1%</span></li>
-        <li><span class="co">SMIC<small>中国</small></span><span class="bar"><span style="--v:5.4"></span></span><span class="vl">約5%</span></li>
+        <li class="est"><span class="co">SMIC<small>中国・3位（シェアは概算）</small></span><span class="bar"><span style="--v:5.4"></span></span><span class="vl">約5%</span></li>
       </ol>
       <ol class="sl be"><li class="hd">OSAT（組立・検査の受託）</li>
         <li><span class="co">ASE Technology<small>台湾・OSAT</small></span><span class="bar"><span style="--v:44"></span></span><span class="vl">約45%</span></li>
@@ -858,7 +867,7 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
         <!-- 合成された反射 -->
         <line x1="500" y1="96" x2="668" y2="30" stroke="var(--d-light)" stroke-width="4.5" marker-end="url(#euvar)"/>
         <text x="772" y="26" text-anchor="end" font-size="11" fill="var(--si)"><tspan font-weight="700">位相が揃って</tspan>足し合わさる</text>
-        <text x="772" y="42" text-anchor="end" font-size="10.5" fill="var(--muted)">（ブラッグ反射: 2d ≈ λ）</text>
+        <text x="772" y="58" text-anchor="end" font-size="10.5" fill="var(--muted)">（ブラッグ反射: 2d ≈ λ）</text>
         <text x="500" y="205" text-anchor="middle" font-size="10.5" fill="var(--muted)">1つの界面の反射は弱くても、数十層ぶんが同じ位相で重なると鏡になる ― それでも反射率は7割止まり</text>
       </svg>
     </div>
@@ -1134,9 +1143,334 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
   </div>
 </section>
 
-<!-- ============================================================ 6 -->
+<!-- ============================================================ 6: 工程を式で読む -->
+<style>
+.eqb{font-family:"IBM Plex Mono",monospace;font-size:14px;background:var(--surface-2);border-radius:6px;padding:9px 13px;margin:10px 0;color:var(--ink);overflow-x:auto;white-space:nowrap}
+.ex{margin-top:14px;border:1px solid var(--rule);border-left:3px solid var(--amber-2);border-radius:6px;background:var(--surface);padding:11px 14px;font-size:13.5px;line-height:1.8}
+.ex .exh{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.14em;color:var(--amber);display:block;margin-bottom:4px}
+.ex b{color:var(--ink)}
+.phys-h{display:flex;align-items:baseline;gap:10px;margin:44px 0 10px;flex-wrap:wrap}
+.phys-h .pn{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--amber);border:1px solid color-mix(in srgb,var(--amber) 32%,transparent);border-radius:2px;padding:1px 6px}
+.phys-h h3{margin:0}
+.ftab{width:100%;border-collapse:collapse;font-size:13px}
+.ftab th,.ftab td{border-bottom:1px solid var(--rule);padding:7px 8px;text-align:left;vertical-align:top}
+.ftab th{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.1em;color:var(--muted);font-weight:600}
+.ftab td.m{font-family:"IBM Plex Mono",monospace;white-space:nowrap}
+.guide{margin-top:26px;border:1px solid var(--rule);border-radius:8px;background:var(--surface);overflow:hidden;max-width:980px}
+.guide-h{display:flex;justify-content:space-between;gap:12px;padding:9px 15px;border-bottom:1px solid var(--rule);background:var(--surface-2);font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.08em;color:var(--muted)}
+.guide-b{display:grid;grid-template-columns:minmax(0,1fr)}
+@media(min-width:760px){.guide-b{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.guide-b>div{padding:12px 15px;border-bottom:1px solid var(--rule)}
+@media(min-width:760px){.guide-b>div{border-bottom:0;border-right:1px solid var(--rule)}.guide-b>div:last-child{border-right:0}}
+.guide-b b{display:block;font-size:13px;margin-bottom:3px}
+.guide-b span{font-size:12.5px;color:var(--ink-2);line-height:1.65;display:block}
+.guide-b em{font-style:normal;font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--muted);display:block;margin-top:5px}
+@keyframes p1draw{0%{stroke-dashoffset:var(--len,600)}55%{stroke-dashoffset:0}100%{stroke-dashoffset:0}}
+.p1draw{stroke-dasharray:var(--len,600);animation:p1draw 4s linear infinite}
+@keyframes p1rise{from{transform:scaleY(.02)}to{transform:scaleY(1)}}
+.p1rise{transform-origin:bottom;transform-box:fill-box;animation:p1rise .9s ease-out both}
+@keyframes p1flow{to{stroke-dashoffset:-60}}
+.p1flow{stroke-dasharray:7 5;animation:p1flow 2.4s linear infinite}
+@media (prefers-reduced-motion: reduce){.p1draw,.p1rise,.p1flow{animation:none}}
+</style>
+<section id="phys">
+  <div class="sec-h"><span class="sec-n">06</span><h2>工程を式で読む ― 6本の式で「なぜその条件か」が分かる</h2></div>
+  <p class="sec-sub">05では各工程を「なんのために／なにをして／誰が握っているか」で見ました。ここでは同じ工程を、<b>数を決めている式</b>で読み直します。式は6本だけで、どれも教科書の標準式、そして <a href="ProcessLab/index.html">ProcessLab</a> が実際に計算している式です。この章の数値はすべて ProcessLab の実装そのもので計算した値なので、ラボの画面と一致します。</p>
+
+  <div class="prose">
+    <p>読む順番には意味があります。<b>①露光</b>が「どこに」を決め、<b>②酸化・⑥成膜</b>が「何を・どれだけの厚みで」置き、<b>③注入</b>が「どの深さに・どれだけ」不純物を入れ、<b>④熱</b>がそれを広げ、<b>⑤CMP</b>が次の層のために平らに戻す ― 04 のサイクルを一周する順です。式を知ると、レシピに並んだ「1000℃・30分」「80 keV・10¹³」といった数字が、なぜその値なのかが読めるようになります。</p>
+  </div>
+
+  <div class="tw" style="margin-top:18px;overflow-x:auto">
+    <table class="ftab">
+      <thead><tr><th>工程</th><th>支配している式</th><th>その式が決めること</th><th>ProcessLab</th></tr></thead>
+      <tbody>
+        <tr><td>① 露光</td><td class="m">R = k₁·λ/NA ／ DOF ≈ λ/NA²</td><td>描ける最小の寸法と、ピントの許される厚み</td><td>―（解像の物理は <a href="第7部_光学.html#s4">第7部04</a>）</td></tr>
+        <tr><td>② 熱酸化</td><td class="m">x² + A·x = B·(t + τ)</td><td>温度と時間で膜厚が決まる。薄いうちは時間に比例、厚くなると√t</td><td><a href="ProcessLab/index.html?quest=dryox">dryox</a> / <a href="ProcessLab/index.html?quest=wetox">wetox</a></td></tr>
+        <tr><td>③ イオン注入</td><td class="m">C(z) = Q/(√(2π)ΔRp)·exp(−(z−Rp)²/2ΔRp²)</td><td>加速エネルギーで深さ（Rp）、ドーズで量（Q）</td><td><a href="ProcessLab/index.html?quest=peak">peak</a> / <a href="ProcessLab/index.html?quest=guard">guard</a></td></tr>
+        <tr><td>④ 熱拡散</td><td class="m">拡散長 ≈ 2√(D·t)、D = D₀·exp(−Eₐ/kT)</td><td>熱処理でどこまで広がるか。温度が指数で効く</td><td><a href="ProcessLab/index.html?quest=xj">xj</a> / <a href="ProcessLab/index.html?quest=shallow">shallow</a></td></tr>
+        <tr><td>⑤ CMP</td><td class="m">除去速度 = Kₚ·P·v（Preston）</td><td>押し付ける圧力と相対速度に比例して削れる</td><td>―</td></tr>
+        <tr><td>⑥ ALD</td><td class="m">膜厚 = 1サイクルの成長量 × サイクル数</td><td>厚みを「数える」。自己停止反応なので深い穴の底まで均一</td><td>―</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ① 露光 -->
+  <div class="phys-h"><span class="pn">①</span><h3>露光 ― 解像度と焦点深度は同じ NA を取り合う</h3></div>
+  <div class="step-b">
+    <div class="blk">
+      <h4>式</h4>
+      <div class="eqb">R = k₁ × λ / NA　　　DOF ≈ k₂ × λ / NA²</div>
+      <p>レンズが結べる最小寸法 R は、光の波長 λ に比例し、レンズが光を集める角度（開口数 NA）に反比例します（レイリーの式<span class="mono">[R25][R30]</span>）。k₁ はプロセスの腕前を表す係数で、照明の工夫・位相シフトマスク・光学近接効果補正（OPC）で下げてきましたが、<b>1回の露光では k₁ = 0.25 が理論下限</b>です（2本の回折光だけで縞を作るときの限界）。</p>
+    </div>
+    <div class="blk">
+      <h4>見落としやすい代償</h4>
+      <p>NA を上げると R は 1/NA で細かくなりますが、ピントが合う厚み（焦点深度 DOF）は <b>1/NA² で薄くなります</b>。High-NA EUV（NA 0.33→0.55）は解像度を 0.6 倍にする代わりに、DOF を (0.33/0.55)² = <b>0.36 倍</b>に削る。だから高 NA ほど、ウェーハの平坦度（⑤ CMP）とレジストの薄さに厳しくなります ― 露光と CMP は、この式を介してつながっています。</p>
+    </div>
+  </div>
+
+  <figure class="fig">
+    <div class="fig-h"><h3>世代ごとの解像度と焦点深度</h3><span class="k">k₁ = 0.30 で計算 / 単位 nm</span></div>
+    <div class="stage">
+      <svg viewBox="0 0 760 250" role="img" aria-label="露光の世代ごとの解像度Rと焦点深度DOFの棒グラフ。KrFからHigh-NA EUVへ進むにつれてRは80nmから7.4nmへ小さくなり、DOFは液浸とHigh-NAで大きく薄くなる。" style="max-height:none">
+        <path d="M60 200 H720" stroke="var(--rule-2)" stroke-width="1"/>
+        <rect x="64" y="14" width="12" height="10" fill="var(--si-2)"/><text x="82" y="23" font-size="11" fill="var(--ink-2)">解像度 R = 0.30·λ/NA</text>
+        <rect x="250" y="14" width="12" height="10" fill="var(--amber-2)"/><text x="268" y="23" font-size="11" fill="var(--ink-2)">焦点深度 DOF ≈ λ/NA²</text>
+        <text x="720" y="23" font-size="10" fill="var(--muted)" text-anchor="end">棒の縮尺は R と DOF で別</text>
+        <g fill="var(--si-2)">
+          <rect class="p1rise" x="84" y="50" width="32" height="150"/>
+          <rect class="p1rise" x="214" y="83.2" width="32" height="116.8" style="animation-delay:.15s"/>
+          <rect class="p1rise" x="344" y="119.6" width="32" height="80.4" style="animation-delay:.3s"/>
+          <rect class="p1rise" x="474" y="176.9" width="32" height="23.1" style="animation-delay:.45s"/>
+          <rect class="p1rise" x="604" y="186.2" width="32" height="13.8" style="animation-delay:.6s"/>
+        </g>
+        <g fill="var(--amber-2)">
+          <rect class="p1rise" x="124" y="50" width="32" height="150"/>
+          <rect class="p1rise" x="254" y="83.5" width="32" height="116.5" style="animation-delay:.15s"/>
+          <rect class="p1rise" x="384" y="144.6" width="32" height="55.4" style="animation-delay:.3s"/>
+          <rect class="p1rise" x="514" y="135.2" width="32" height="64.8" style="animation-delay:.45s"/>
+          <rect class="p1rise" x="644" y="176.7" width="32" height="23.3" style="animation-delay:.6s"/>
+        </g>
+        <g font-size="10.5" fill="var(--ink)" text-anchor="middle">
+          <text x="100" y="44">80</text><text x="140" y="44">287</text>
+          <text x="230" y="77">62</text><text x="270" y="78">223</text>
+          <text x="360" y="114">43</text><text x="400" y="139">106</text>
+          <text x="490" y="171">12</text><text x="530" y="129">124</text>
+          <text x="620" y="180">7.4</text><text x="660" y="171">45</text>
+        </g>
+        <g font-size="10.5" fill="var(--ink-2)" text-anchor="middle">
+          <text x="120" y="218">KrF 248nm</text><text x="120" y="233" fill="var(--muted)">NA 0.93</text>
+          <text x="250" y="218">ArF 193nm</text><text x="250" y="233" fill="var(--muted)">NA 0.93</text>
+          <text x="380" y="218">ArF液浸 193nm</text><text x="380" y="233" fill="var(--muted)">NA 1.35</text>
+          <text x="510" y="218">EUV 13.5nm</text><text x="510" y="233" fill="var(--muted)">NA 0.33</text>
+          <text x="640" y="218">High-NA EUV</text><text x="640" y="233" fill="var(--muted)">NA 0.55</text>
+        </g>
+      </svg>
+    </div>
+    <p class="cap"><span class="cd">R は世代ごとに一段ずつ細かくなる一方、DOF は液浸（NA&gt;1）と High-NA で大きく削られる。<b>EUV（NA 0.33）の DOF が ArF 液浸より深い</b>のは、波長が14分の1になったぶん NA を小さく保てたから ― EUV は解像度だけでなく「ピントの余裕」も買い戻した技術です。k₁ を 0.30 に固定した比較で、実際の量産 k₁ は世代・層で異なります。</span></p>
+  </figure>
+
+  <div class="ex">
+    <span class="exh">例題 ― 手で一度解く</span>
+    <p><b>問.</b> ArF 液浸（λ=193nm、NA=1.35）で、1回露光の理論下限 k₁=0.25 のとき描ける最小ハーフピッチは？ EUV（13.5nm、NA 0.33）で k₁=0.30 ならどうか。</p>
+    <p><b>解.</b> ArF液浸: 0.25×193/1.35 = <b>35.7 nm</b>。EUV: 0.30×13.5/0.33 = <b>12.3 nm</b>。つまり ArF 液浸は理論下限でも 36nm を切れず、それより細い層は2〜4回に分けて描く（マルチパターニング、05 露光の注）しかない。EUV なら1回で 12nm 級に届く ― <b>EUV の経済的価値は「工程数の削減」</b>だ、という 05 の記述の数値的な裏付けです。</p>
+  </div>
+
+  <!-- ② 熱酸化 -->
+  <div class="phys-h"><span class="pn">②</span><h3>熱酸化 ― 薄いうちは速く、厚くなると √t に落ちる</h3></div>
+  <div class="step-b">
+    <div class="blk">
+      <h4>式（Deal-Grove モデル <span class="mono">[R26]</span>）</h4>
+      <div class="eqb">x² + A·x = B·(t + τ)</div>
+      <p>酸素（または水）は<b>できた酸化膜を拡散で通り抜けて</b>シリコン界面まで行き、そこで反応して膜を足します。膜が薄いうちは界面の反応が律速で x ≈ (B/A)·t ― <b>時間に比例（直線則）</b>。厚くなると膜を抜ける拡散が律速になり x ≈ √(B·t) ― <b>時間の平方根（放物線則）</b>。B/A を「反応の速さ」、B を「拡散の速さ」と読めば、式の意味はそれだけです。</p>
+    </div>
+    <div class="blk">
+      <h4>なぜウェットは速いのか</h4>
+      <p>B は酸化剤の溶けやすさ（酸化膜中の平衡濃度 C*）に比例します。水蒸気は SiO₂ に<b>酸素より数百倍多く溶ける</b>（C* ≈ 3×10¹⁹ 対 5.2×10¹⁶ cm⁻³ <span class="mono">[R26]</span>）ので、B も大きくなる。1000℃ で B はウェット 0.315 µm²/h 対 ドライ 0.0104 µm²/h ― 約30倍。代わりにドライの膜は緻密で界面がきれいなので、<b>薄く質の要るゲート酸化膜はドライ、厚い分離酸化膜はウェット</b>と使い分けます。どちらも、できた酸化膜の <b>0.44 倍の厚みのシリコンを食う</b>（密度比から出る値）ことを忘れずに。</p>
+    </div>
+  </div>
+
+  <figure class="fig">
+    <div class="fig-h"><h3>1000℃ での酸化膜厚と時間（両対数）</h3><span class="k">ProcessLab の Deal-Grove 実装で計算</span></div>
+    <div class="stage">
+      <svg viewBox="0 0 760 250" role="img" aria-label="1000度の熱酸化の膜厚対時間の両対数グラフ。ウェット酸化はドライより約8倍厚く育つ。傾き1（反応律速）と傾き1/2（拡散律速）の目安線がある。" style="max-height:none">
+        <g stroke="var(--rule)" stroke-width="1">
+          <path d="M80 30 V200 M390 30 V200 M700 30 V200"/>
+          <path d="M80 200 H700 M80 132 H700 M80 64 H700"/>
+        </g>
+        <g font-size="10" fill="var(--muted)">
+          <text x="80" y="216" text-anchor="middle">6分</text><text x="390" y="216" text-anchor="middle">1時間</text><text x="700" y="216" text-anchor="middle">10時間</text>
+          <text x="74" y="203" text-anchor="end">10nm</text><text x="74" y="135" text-anchor="end">100nm</text><text x="74" y="67" text-anchor="end">1µm</text>
+        </g>
+        <text x="390" y="238" font-size="10.5" fill="var(--ink-2)" text-anchor="middle">酸化時間（対数）→</text>
+        <polyline class="p1draw" style="--len:560" points="203.4,122.1 296.7,106.4 390,91.9 483.3,78.6 576.6,66.1 669.9,54.3" fill="none" stroke="var(--si-2)" stroke-width="2.4"/>
+        <polyline class="p1draw" style="--len:560;animation-delay:.4s" points="148.8,174.6 203.4,170.2 296.7,162.7 390,154 483.3,143.2 576.6,130.6 669.9,116.7" fill="none" stroke="var(--amber-2)" stroke-width="2.4"/>
+        <circle cx="390" cy="91.9" r="4" fill="var(--si-2)"/><circle cx="390" cy="154" r="4" fill="var(--amber-2)"/>
+        <text x="382" y="84" font-size="10.5" fill="var(--si)" text-anchor="end">388 nm</text>
+        <text x="382" y="146" font-size="10.5" fill="var(--amber)" text-anchor="end">47.5 nm</text>
+        <text x="660" y="40" font-size="11" fill="var(--si)" text-anchor="end">ウェット（水蒸気）</text>
+        <text x="660" y="106" font-size="11" fill="var(--amber)" text-anchor="end">ドライ（酸素）</text>
+        <path d="M430 190 L585 156" stroke="var(--muted)" stroke-width="1.2" stroke-dasharray="5 4"/>
+        <path d="M430 190 L585 173" stroke="var(--muted)" stroke-width="1.2" stroke-dasharray="2 3"/>
+        <text x="592" y="159" font-size="9.5" fill="var(--muted)">傾き 1（反応律速）</text>
+        <text x="592" y="177" font-size="9.5" fill="var(--muted)">傾き 1/2（拡散律速）</text>
+      </svg>
+    </div>
+    <p class="cap"><span class="cd">両対数では、直線則は傾き1、放物線則は傾き1/2 の直線になる。ウェットは数時間で傾きが 1/2 に近づき（拡散律速へ移行）、1時間で <b>ドライの約8倍（388 対 47.5 nm）</b>。ドライ酸化の最初の約 25nm は実際には Deal-Grove の予測より速く育ち、原典の模型では説明できない <span class="mono">[R26][R32]</span>。教科書は「最初から 25nm あったことにする（x_i）」で済ませるが、それでは数 nm の膜が作れないため、ProcessLab は Massoud らの考え方に倣って薄いうちだけ速くなる項を掛け、1000℃・1時間で教科書の x_i 補正と同じ 47.5nm になるよう合わせている（ProcessLab/src/oxide.js に明記）。</span></p>
+  </figure>
+
+  <div class="ex">
+    <span class="exh">例題 ― 手で一度解く</span>
+    <p><b>問.</b> 1000℃ のウェット酸化で、B = 0.315 µm²/h、B/A = 0.745 µm/h（ProcessLab の値）。1時間で何 nm 育つか。初期膜はゼロとする。</p>
+    <p><b>解.</b> A = B/(B/A) = 0.315/0.745 = 0.423 µm。x² + 0.423x − 0.315 = 0 を解くと x = (−0.423 + √(0.423² + 4×0.315))/2 = (−0.423 + 1.199)/2 = <b>0.388 µm = 388 nm</b>。直線則だけなら 0.745 µm、放物線則だけなら √0.315 = 0.561 µm ― 実際の答えは<b>両方の手前</b>に落ちる。律速が2つ直列につながっているとき、遅いほうに引きずられる、という Deal-Grove の骨格がこの数字に出ています。</p>
+  </div>
+
+  <!-- ③ イオン注入 -->
+  <div class="phys-h"><span class="pn">③</span><h3>イオン注入 ― 深さはエネルギーと質量、量はドーズ</h3></div>
+  <div class="step-b">
+    <div class="blk">
+      <h4>式</h4>
+      <div class="eqb">C(z) = Q / (√(2π)·ΔRp) · exp(−(z − Rp)² / 2ΔRp²)</div>
+      <p>加速したイオンはシリコン原子とぶつかりながら止まり、止まる深さは平均 Rp（投影飛程）のまわりにばらつく ― 1次近似では<b>ガウス分布</b>です。Q は面積あたりに打ち込んだ個数（ドーズ, cm⁻²）。Rp と ΔRp はイオン種とエネルギーで決まる表の値で、ProcessLab は Gibbons の表 <span class="mono">[R27]</span> を丸めて使っています。</p>
+    </div>
+    <div class="blk">
+      <h4>表の読み方</h4>
+      <p>同じ 80 keV でも、<b>重い As は 50 nm、P は 98 nm、軽い B は 250 nm</b> ― 質量で5倍も深さが違います。だから浅い接合には重い As、深いウェルには軽い B と高エネルギーを使う。ピーク濃度 Q/(√(2π)ΔRp) は、ドーズを分布の幅で割ったもの ― 同じ個数を狭く入れれば濃くなる。実物の分布には、結晶の隙間を抜けて深い裾を引く<b>チャネリング</b>と、注入損傷が拡散を一時的に速める<b>TED</b> が乗ります（ProcessLab ではモデル外、README に明記）。</p>
+    </div>
+  </div>
+
+  <figure class="fig">
+    <div class="fig-h"><h3>同じ 80 keV で打った3種のイオン</h3><span class="k">Gibbons の表 / 形だけ比べるため各ピークで規格化</span></div>
+    <div class="stage">
+      <svg viewBox="0 0 760 230" role="img" aria-label="同じ80keVで打ったヒ素・リン・ホウ素の深さ分布。ヒ素は50nm、リンは98nm、ホウ素は250nmにピークがあり、軽いイオンほど深く広く分布する。" style="max-height:none">
+        <g stroke="var(--rule)" stroke-width="1"><path d="M80 190 H700"/><path d="M286.7 190 V36 M493.3 190 V36" stroke-dasharray="3 4"/></g>
+        <g font-size="10" fill="var(--muted)" text-anchor="middle">
+          <text x="80" y="205">0</text><text x="286.7" y="205">100</text><text x="493.3" y="205">200</text><text x="700" y="205">300 nm</text>
+        </g>
+        <text x="390" y="222" font-size="10.5" fill="var(--ink-2)" text-anchor="middle">シリコン表面からの深さ →</text>
+        <polyline class="p1draw" style="--len:500" points="80,188 95.5,183.4 113.1,169.7 130.6,141.3 148.2,99 165.8,57.6 183.3,40 200.9,57.6 218.5,99 236,141.3 253.6,169.7 271.2,183.4 288.7,188.3" fill="none" stroke="var(--d-metal)" stroke-width="2.2"/>
+        <polyline class="p1draw" style="--len:700;animation-delay:.3s" points="80,187.6 106.9,183.4 142,169.7 177.1,141.3 212.3,99 247.4,57.6 282.5,40 317.7,57.6 352.8,99 387.9,141.3 423.1,169.7 458.2,183.4 493.3,188.3" fill="none" stroke="var(--si-2)" stroke-width="2.2"/>
+        <polyline class="p1draw" style="--len:800;animation-delay:.6s" points="193.7,188.3 260.8,183.4 328,169.7 395.2,141.3 462.3,99 529.5,57.6 596.7,40 663.8,57.6 700,78.4" fill="none" stroke="var(--amber-2)" stroke-width="2.2"/>
+        <g font-size="10.5" text-anchor="middle">
+          <text x="183.3" y="32" fill="var(--d-metal)">As（75u）50nm</text>
+          <text x="300" y="32" fill="var(--si)">P（31u）98nm</text>
+          <text x="596.7" y="32" fill="var(--amber)">B（11u）250nm</text>
+        </g>
+        <path d="M212.3 99 H352.8" stroke="var(--si)" stroke-width="1.2"/>
+        <text x="282.5" y="92" font-size="9.5" fill="var(--si)" text-anchor="middle">±ΔRp（34nm）</text>
+      </svg>
+    </div>
+    <p class="cap"><span class="cd">軽いイオンほど深く、しかも広く散る。重さ（原子量 u）と深さの関係は単純な比例ではなく阻止能の物理で決まるため、実務では必ず表（またはシミュレータ）を引きます。</span></p>
+  </figure>
+
+  <div class="ex">
+    <span class="exh">例題 ― 手で一度解く</span>
+    <p><b>問.</b> P を 80 keV（Rp = 98 nm、ΔRp = 34 nm）、ドーズ 1×10¹³ cm⁻² で打った。ピーク濃度は？ 基板が 1×10¹⁶ cm⁻³ の p 型なら、接合（打った P の濃度が基板と等しくなる深さ）はどこか。</p>
+    <p><b>解.</b> ピーク = 10¹³ / (2.507 × 34×10⁻⁷ cm) = <b>1.2×10¹⁸ cm⁻³</b>。接合は C(z) = 10¹⁶ となる深さ: exp(−(z−Rp)²/2ΔRp²) = 10¹⁶/1.17×10¹⁸ = 8.5×10⁻³ → (z−Rp) = ΔRp·√(2 ln 117) = 34 × 3.09 = 105 nm → z ≈ <b>203 nm</b>。ピークの2倍以上深い ― <b>接合の深さは Rp ではなく「裾がどこまで届くか」で決まる</b>。この後の熱処理（④）で裾はさらに伸びます。</p>
+  </div>
+
+  <!-- ④ 拡散 -->
+  <div class="phys-h"><span class="pn">④</span><h3>熱拡散 ― 広がりは √(時間)、速さは温度の指数</h3></div>
+  <div class="step-b">
+    <div class="blk">
+      <h4>式（フィックの法則）</h4>
+      <div class="eqb">拡散長 ≈ 2√(D·t)　　D = D₀ · exp(−Eₐ / kT)</div>
+      <p>不純物は濃い所から薄い所へ、ランダムな跳躍の積み重ねで広がります。広がりの目安は<b>時間の平方根</b> ― 時間を4倍にしても2倍しか広がらない。一方で拡散係数 D は温度の<b>指数</b>で効きます（Eₐ は B で 3.46 eV、ProcessLab が使う Plummer らの真性拡散係数 <span class="mono">[R25]</span>）。</p>
+    </div>
+    <div class="blk">
+      <h4>「熱くするが短時間」の数値的な意味</h4>
+      <p>注入後のアニールは、結晶を直し不純物を格子位置に入れる（活性化する）ために高温が要る。でも拡散はさせたくない。D が温度の指数で、広がりが √t であることを使うと、<b>温度を少し上げて時間を桁で縮める</b>のが得だと分かります ― 05 のスパイクアニール・レーザーアニールの理屈です。</p>
+    </div>
+  </div>
+
+  <figure class="fig">
+    <div class="fig-h"><h3>ホウ素の拡散長 2√(Dt) ― 熱処理の条件ごと</h3><span class="k">ProcessLab の D₀・Eₐ で計算 / 横軸は対数</span></div>
+    <div class="stage">
+      <svg viewBox="0 0 760 200" role="img" aria-label="ホウ素の拡散長の横棒グラフ（対数軸）。1050度1秒のスパイクアニールは4.5nm、900度30分は27nm、1000度30分は105nm、1100度1時間は468nm。" style="max-height:none">
+        <g stroke="var(--rule)" stroke-width="1"><path d="M200 36 V176 M360 36 V176 M520 36 V176 M680 36 V176"/></g>
+        <g font-size="10" fill="var(--muted)" text-anchor="middle">
+          <text x="200" y="192">1nm</text><text x="360" y="192">10nm</text><text x="520" y="192">100nm</text><text x="680" y="192">1µm</text>
+        </g>
+        <g font-size="11" fill="var(--ink-2)" text-anchor="end">
+          <text x="190" y="54">スパイク 1050℃・1秒</text>
+          <text x="190" y="90">炉 900℃・30分</text>
+          <text x="190" y="126">炉 1000℃・30分</text>
+          <text x="190" y="162">炉 1100℃・1時間</text>
+        </g>
+        <g>
+          <rect x="200" y="42" width="104" height="18" fill="var(--si-2)"/>
+          <rect x="200" y="78" width="230" height="18" fill="var(--amber-2)" opacity=".75"/>
+          <rect x="200" y="114" width="323" height="18" fill="var(--amber-2)" opacity=".85"/>
+          <rect x="200" y="150" width="427" height="18" fill="var(--amber-2)"/>
+        </g>
+        <g font-size="10.5" fill="var(--ink)">
+          <text x="310" y="55">4.5 nm</text>
+          <text x="436" y="91">27 nm</text>
+          <text x="529" y="127">105 nm</text>
+          <text x="633" y="163">468 nm</text>
+        </g>
+      </svg>
+    </div>
+    <p class="cap"><span class="cd">同じ「1000℃前後」でも、30分の炉と1秒のスパイクでは広がりが <b>20倍以上</b>違う。先端の浅い接合（深さ 10nm 級）は、1秒以下の熱処理でなければ作れない ― レーザー・フラッシュランプのミリ秒アニールまで進んだ理由です。</span></p>
+  </figure>
+
+  <div class="ex">
+    <span class="exh">例題 ― 手で一度解く</span>
+    <p><b>問.</b> B の拡散係数を D = 0.76 × exp(−3.46 eV / kT) cm²/s とする。1000℃（kT = 0.1097 eV）で 30分熱すると拡散長 2√(Dt) はいくらか。1050℃で1秒ならどうか。</p>
+    <p><b>解.</b> 1000℃: D = 0.76 × e<sup>−31.54</sup> = 1.53×10⁻¹⁴ cm²/s。2√(1.53×10⁻¹⁴ × 1800) = 1.05×10⁻⁵ cm = <b>105 nm</b>。1050℃（kT = 0.1140 eV）: D = 5.03×10⁻¹⁴、2√(5.03×10⁻¹⁴ × 1) = <b>4.5 nm</b>。温度は 50℃ しか上げていないが D は3.3倍、時間を1800分の1にしたので、広がりは √(3.3/1800) ≈ 1/23。<b>時間は √ でしか効かないが、温度は指数で効く</b> ― 両方を同時に使うのがアニール設計です。</p>
+  </div>
+
+  <!-- ⑤ CMP -->
+  <div class="phys-h"><span class="pn">⑤</span><h3>CMP ― 押す力と速さに比例して削れる、だから凸から先に消える</h3></div>
+  <div class="step-b">
+    <div class="blk">
+      <h4>式（Preston の式 <span class="mono">[R28]</span>）</h4>
+      <div class="eqb">除去速度 RR = Kₚ × P × v</div>
+      <p>1927年にガラス研磨で見つかった経験則が、今も CMP の出発点です。P はウェーハを押し付ける圧力、v はパッドとの相対速度、Kₚ はスラリーと材料で決まる係数。<b>圧力を2倍にすれば削れる速さも2倍</b>。</p>
+    </div>
+    <div class="blk">
+      <h4>なぜ平らになるのか ― 局所の圧力</h4>
+      <p>パッドは凸部に強く当たり、凹部にはあまり当たらない。つまり<b>凸部ほど局所の P が大きく、Preston の式どおり速く削れる</b> ― 段差が自然に消えていく原理です。裏返しに、柔らかい銅が広い面積で露出すると凹みすぎ（ディッシング）、配線が密集した所ではまとめて削れすぎ（エロージョン）が起きる。そこで設計側は配線の粗密をならすための<b>ダミーパターン</b>を敷きます ― 製造の都合が設計ルールに入り込む典型例です。</p>
+    </div>
+  </div>
+
+  <!-- ⑥ ALD -->
+  <div class="phys-h"><span class="pn">⑥</span><h3>ALD ― 膜厚を「数える」成膜</h3></div>
+  <div class="step-b">
+    <div class="blk">
+      <h4>式</h4>
+      <div class="eqb">膜厚 = GPC（1サイクルあたりの成長量）× サイクル数</div>
+      <p>2種類の原料を<b>交互に</b>流し、そのたびに表面の吸着サイトが埋まったところで反応が止まる（自己停止）。だから1サイクルで積もる量は一定で、代表的な Al₂O₃ で約 0.1 nm/サイクル <span class="mono">[R29]</span>。厚みは流量や時間ではなく<b>サイクル数で決まる</b>ので、原子1層単位で制御できます。</p>
+    </div>
+    <div class="blk">
+      <h4>なぜ深い穴の底まで均一なのか</h4>
+      <p>自己停止反応は「来た分だけ積もる」のではなく「表面が埋まったら止まる」ので、原料を十分待てば、<b>ガスが届きにくい深い穴の底も入口と同じ厚み</b>になります（コンフォーマル）。3D NAND のメモリホール、DRAM のキャパシタ、GAA のシート間の隙間 ― 05 と 07 の立体構造は、どれも ALD 抜きには作れません。代償は遅さで、1サイクル数秒×数十サイクル。成膜装置の中で ALD の比率が急上昇したのは、この遅さを払ってでも「数える」精度が要るようになったからです。</p>
+    </div>
+  </div>
+
+  <figure class="fig">
+    <div class="fig-h"><h3>ALD の1サイクル</h3><span class="k">自己停止する2つの半反応</span></div>
+    <div class="stage">
+      <svg viewBox="0 0 760 120" role="img" aria-label="ALDの1サイクル。原料Aを流して表面に1層だけ吸着、パージ、原料Bを流して反応させ膜1層、パージ。これを繰り返す。" style="max-height:none">
+        <g fill="var(--surface)" stroke="var(--rule-2)">
+          <rect x="30" y="26" width="160" height="46" rx="6"/><rect x="215" y="26" width="160" height="46" rx="6"/>
+          <rect x="400" y="26" width="160" height="46" rx="6"/><rect x="585" y="26" width="160" height="46" rx="6"/>
+        </g>
+        <g font-size="11.5" font-weight="700" text-anchor="middle">
+          <text x="110" y="46" fill="var(--si)">① 原料A を流す</text><text x="295" y="46" fill="var(--muted)">② パージ</text>
+          <text x="480" y="46" fill="var(--amber)">③ 原料B を流す</text><text x="665" y="46" fill="var(--muted)">④ パージ</text>
+        </g>
+        <g font-size="10" fill="var(--ink-2)" text-anchor="middle">
+          <text x="110" y="63">表面に1層だけ吸着して止まる</text><text x="295" y="63">余った原料を流し去る</text>
+          <text x="480" y="63">吸着層と反応して膜1層</text><text x="665" y="63">副生成物を流し去る</text>
+        </g>
+        <g stroke="var(--ink-2)" stroke-width="1.4" fill="none">
+          <path d="M190 49 H213"/><path d="M375 49 H398"/><path d="M560 49 H583"/>
+          <path class="p1flow" d="M665 72 V96 H110 V74"/>
+        </g>
+        <text x="387" y="113" font-size="10" fill="var(--muted)" text-anchor="middle">1周で約 0.1 nm ― 繰り返した回数で厚みが決まる</text>
+      </svg>
+    </div>
+  </figure>
+
+  <div class="ex">
+    <span class="exh">例題 ― 手で一度解く</span>
+    <p><b>問.</b> GPC 0.1 nm/サイクル、1サイクル 4 秒の ALD で、ゲート絶縁膜 2 nm を積むには？ 同じ装置で 20 nm の膜を積むと？</p>
+    <p><b>解.</b> 2 nm ÷ 0.1 = 20 サイクル × 4 s = <b>80 秒</b>。20 nm なら 200 サイクル = <b>約13分</b>。ALD が「薄い膜にだけ使われる」理由がこの算数 ― 厚い膜は CVD で速く積み、薄く精密な膜だけを ALD で数える、という分業になります。</p>
+  </div>
+
+  <div class="note w" style="margin-top:26px"><b>この章が単純化していること。</b>①の k₁ は固定値で比較しており、実際の量産 k₁ は層ごとに違う。②の係数は Deal & Grove の原典値に ProcessLab の薄膜補正を重ねたもの、③はチャネリングと注入損傷を無視したガウス近似、④は低濃度の真性拡散（高濃度では電界効果や点欠陥で速くなる）、⑤⑥は比例則までで、スラリー化学や原料の反応機構には踏み込みません。<b>「桁と方向」を当てるための式</b>として使い、実工程の条件はプロセスシミュレータと実測で決めます。</div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — ProcessLab 第1〜3章</span>
+    <p>この章の②③④の式を、断面の上で自分で踏む。例題の 47.5nm・388nm・Rp 98nm・拡散長 105nm は、どれもラボの画面にそのまま出る数字です。</p>
+    <div class="qs"><a href="ProcessLab/index.html?quest=dryox">ゲート酸化膜を育てる</a><a href="ProcessLab/index.html?quest=wetox">厚い酸化膜を急いで</a><a href="ProcessLab/index.html?quest=peak">深さを狙う</a><a href="ProcessLab/index.html?quest=xj">接合の深さを合わせる</a><a href="ProcessLab/index.html?quest=shallow">浅く、でも低抵抗に</a></div>
+  </div>
+</section>
+
+<!-- ============================================================ 7 -->
 <section id="tr">
-  <div class="sec-h"><span class="sec-n">06</span><h2>トランジスタ構造の進化</h2></div>
+  <div class="sec-h"><span class="sec-n">07</span><h2>トランジスタ構造の進化</h2></div>
   <p class="sec-sub">微細化が進むと、ゲートが薄い膜1枚では電流を止めきれなくなります。この20年の構造変化は、すべて「ゲートがチャネルを何面から掴めるか」という一点の改良です。</p>
 
   <figure class="fig">
@@ -1220,7 +1554,7 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
 
 <!-- ============================================================ 7 -->
 <section id="beflow">
-  <div class="sec-h"><span class="sec-n">07</span><h2>後工程 ― ウェーハを「部品」にする</h2></div>
+  <div class="sec-h"><span class="sec-n">08</span><h2>後工程 ― ウェーハを「部品」にする</h2></div>
   <p class="sec-sub">後工程の目的は3つに集約されます。①切り分ける、②電気をチップの外へ引き出す、③壊れないよう守る。かつては地味な仕上げ工程でしたが、微細化が鈍った今は<b>性能を伸ばす主戦場</b>になりました。</p>
 
   <figure class="fig">
@@ -1358,7 +1692,7 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
 
 <!-- ============================================================ 8 -->
 <section id="be">
-  <div class="sec-h"><span class="sec-n">08</span><h2>後工程 ― 各工程の詳細</h2></div>
+  <div class="sec-h"><span class="sec-n">09</span><h2>後工程 ― 各工程の詳細</h2></div>
   <p class="sec-sub">前工程は「作り込む」ため装置も材料も欧米・日本の寡占ですが、後工程は労働集約性が高く、台湾・中国・東南アジアの受託企業（OSAT）が担う構図です。ただし先端パッケージだけは例外で、ファウンドリが自ら握りにきています。</p>
 
   <div class="steps">
@@ -1565,7 +1899,7 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
 
 <!-- ============================================================ 9 -->
 <section id="adv">
-  <div class="sec-h"><span class="sec-n">09</span><h2>先端パッケージ ― 後工程が主役になった理由</h2></div>
+  <div class="sec-h"><span class="sec-n">10</span><h2>先端パッケージ ― 後工程が主役になった理由</h2></div>
   <p class="sec-sub">微細化の効きが鈍り、AI向けチップは1個のダイに収まらなくなりました。そこで「小さくする」代わりに「複数のチップを極限まで近づけて束ねる」方向へ舵が切られています。</p>
 
   <div class="prose">
@@ -1653,7 +1987,7 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
 
 <!-- ============================================================ 10 -->
 <section id="yield">
-  <div class="sec-h"><span class="sec-n">10</span><h2>歩留まり ― なぜ大きいチップは高いのか</h2></div>
+  <div class="sec-h"><span class="sec-n">11</span><h2>歩留まり ― なぜ大きいチップは高いのか</h2></div>
   <p class="sec-sub">半導体の経済性は、ほぼこの一点で説明できます。数字を動かして確かめてください。ウェーハ1枚のコストは一定なので、良品が何個取れるかが単価を決めます。</p>
 
   <div class="fig" style="margin-top:22px">
@@ -1697,13 +2031,13 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
 
   <div class="prose">
     <div class="note w"><b>読み取ってほしいこと。</b>面積を2倍にすると、取れる数は半分以下になるうえ、1個が欠陥を踏む確率も上がるので、良品数は<b>半分よりずっと少なく</b>なります。だから「大きな1個」をやめてチップレットに分割する動きが起きたのです。歩留まりモデルは <span class="mono">Y = ((1−e<sup>−AD₀</sup>)/AD₀)²</span>、取れ数は円板からの縁の損失を考慮した近似式を使っています。</div>
-    <div class="note"><b>式の素性。</b>欠陥が完全にランダムに散らばる（ポアソン）と仮定すると <span class="mono">Y = e<sup>−AD₀</sup></span> になります。マーフィーのモデルは「欠陥密度 D₀ 自体がロットや場所でばらつく」ことを平均に織り込んだもので、同じ D₀ ならポアソンより高い歩留まりを予測します。実際の欠陥は装置起因で固まって出る（クラスタする）ことが多く、業界ではクラスタの度合いをパラメータに持つ負の二項分布モデルまで使われます。式は違っても、<b>「面積が指数の肩に乗る」という骨格は共通</b>です。</div>
+    <div class="note"><b>式の素性。</b>欠陥が完全にランダムに散らばる（ポアソン）と仮定すると <span class="mono">Y = e<sup>−AD₀</sup></span> になります。マーフィーのモデルは「欠陥密度 D₀ 自体がロットや場所でばらつく」ことを平均に織り込んだもので、同じ D₀ ならポアソンより高い歩留まりを予測します。実際の欠陥は装置起因で固まって出る（クラスタする）ことが多く、業界ではクラスタの度合いをパラメータに持つ負の二項分布モデルまで使われます。式は違っても、<b>「面積が指数の肩に乗る」という骨格は共通</b>です。取れ数（縁で欠けるぶんを引いたダイ数）は <span class="mono">DPW ≈ π(d/2)²/S − πd/√(2S)</span>（d＝ウェーハ径、S＝チップ面積）で、300mm・100mm² なら 707 − 67 = <b>640 個</b> ― 上の図の既定値はこの式から出ています。マーフィーのモデルの原典は <span class="mono">[R31]</span>。</div>
   </div>
 </section>
 
 <!-- ============================================================ 11 -->
 <section id="table">
-  <div class="sec-h"><span class="sec-n">11</span><h2>工程別シェア早見表</h2></div>
+  <div class="sec-h"><span class="sec-n">12</span><h2>工程別シェア早見表</h2></div>
   <p class="sec-sub"><b>数値の性格について。</b>半導体のシェアは、調査会社・集計年・対象範囲（金額／台数、先端のみ／全世代）で数値が変わります。ここでは各社の公表値と主要調査会社の数字を優先し、確定値のないものは概数で示しました。ページ内のバーで斜線になっているものは、単一の公表値ではなく複数の業界集計からの概算であることを表します。</p>
   <div class="tw">
     <table>
@@ -1742,7 +2076,7 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
 
 <!-- ============================================================ 12 -->
 <section id="glossary">
-  <div class="sec-h"><span class="sec-n">12</span><h2>用語集</h2></div>
+  <div class="sec-h"><span class="sec-n">13</span><h2>用語集</h2></div>
   <p class="sec-sub">本文中で注釈を付けた語をまとめました。読み返すときの索引としてお使いください。</p>
   <div class="gl">
     <div><b>前工程 <small>Front-end</small></b><p>ウェーハに回路を作り込む工程群。成膜からウェーハテストまで。期間・コストの大半を占める。</p></div>
@@ -1792,7 +2126,7 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
 
 <!-- ============================================================ 13 -->
 <section id="refs">
-  <div class="sec-h"><span class="sec-n">13</span><h2>出典</h2></div>
+  <div class="sec-h"><span class="sec-n">14</span><h2>出典</h2></div>
   <p class="sec-sub">2026年9月時点で参照できた一次発表・調査会社リリース・業界集計です。市場データは発表時点を併記しました。</p>
   <ol class="refs">
     <li><span class="rn">R1</span><span>吉田SKT「半導体製造装置のシェアと最新の市場動向」<a href="https://www.y-skt.co.jp/magazine/knowledge/semiconductor_equipment_market/">y-skt.co.jp</a></span></li>
@@ -1819,6 +2153,14 @@ input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;b
     <li><span class="rn">R22</span><span>WSTS 2026年春季予測（2026-06-02発表）／JETRO ビジネス短信「世界半導体市場は2026年に1.5兆ドル超え」<span class="rd">2025年実績 7,956億ドル（+26.2%）</span><a href="https://www.jetro.go.jp/biznews/2026/06/d681cb7828ae6c7a.html">jetro.go.jp</a></span></li>
     <li><span class="rn">R23</span><span>SEMI「世界半導体製造装置販売額は2025年に15%増の1,350億ドルへ到達」<span class="rd">2026-04-08</span><a href="https://www.semi.org/jp/news-resources/press/20260408">semi.org</a></span></li>
     <li><span class="rn">R24</span><span>ASML「EUV lithography systems」（EUV光学系・Mo/Si多層膜ミラー・光源の技術解説）<a href="https://www.asml.com/en/products/euv-lithography-systems">asml.com</a></span></li>
+    <li><span class="rn">R25</span><span>J. D. Plummer, M. D. Deal, P. B. Griffin『Silicon VLSI Technology: Fundamentals, Practice and Modeling』Prentice Hall, 2000（リソグラフィ・熱酸化・拡散・イオン注入・成膜・エッチングの標準教科書。06 章の式と拡散係数の出典）</span></li>
+    <li><span class="rn">R26</span><span>B. E. Deal, A. S. Grove「General Relationship for the Thermal Oxidation of Silicon」J. Appl. Phys. 36, 3770 (1965)（Deal-Grove モデルの原典。酸化剤の溶解度 C* の値もここ）</span></li>
+    <li><span class="rn">R27</span><span>J. F. Gibbons, W. S. Johnson, S. W. Mylroie『Projected Range Statistics: Semiconductors and Related Materials』2nd ed., Dowden, Hutchinson &amp; Ross, 1975（イオン注入の Rp・ΔRp の表）</span></li>
+    <li><span class="rn">R28</span><span>F. W. Preston「The Theory and Design of Plate Glass Polishing Machines」J. Soc. Glass Technol. 11, 214 (1927)（CMP の Preston の式の原典）</span></li>
+    <li><span class="rn">R29</span><span>S. M. George「Atomic Layer Deposition: An Overview」Chem. Rev. 110, 111–131 (2010)（ALD の自己停止反応と Al₂O₃ の成長量 約0.1 nm/サイクル）</span></li>
+    <li><span class="rn">R30</span><span>C. A. Mack『Fundamental Principles of Optical Lithography』Wiley, 2007（解像度・焦点深度・k₁ の物理）</span></li>
+    <li><span class="rn">R31</span><span>B. T. Murphy「Cost-Size Optima of Monolithic Integrated Circuits」Proc. IEEE 52, 1537 (1964)（マーフィーの歩留まりモデルの原典）</span></li>
+    <li><span class="rn">R32</span><span>H. Z. Massoud, J. D. Plummer, E. A. Irene「Thermal Oxidation of Silicon in Dry Oxygen: Growth-Rate Enhancement in the Thin Regime」J. Electrochem. Soc. 132, 2685 (1985)（ドライ酸化の薄膜領域の補正。ProcessLab が採用）</span></li>
   </ol>
   <p class="foot">この資料は公開情報をもとに、半導体製造プロセスの全体像を初学者が体系的につかむことを目的に整理したものです。市場シェアは調査会社・集計年・対象範囲によって数値が異なるため、投資判断や事業判断に用いる際は必ず一次資料をあたってください。数値は2026年9月時点で参照できたものを採用しています。</p>
   <p class="foot" style="margin-top:14px;padding-top:14px"><a href="index.html">学びの地図へ戻る</a> · この資料が「どう作るか」を説明する側で、<a href="ProcessLab/index.html">ProcessLab</a> が自分で工程を並べて断面を育て、何ができたかを計算で確かめる側です。各工程の末尾の「手を動かす」の箱から、対応する課題へ飛べます。</p>

@@ -308,7 +308,7 @@ table.tt td.x{color:var(--ink-3)}
       <figure>
         <div class="fig-head"><span class="fig-title">NAND — 4石の中で何が起きているか</span><span class="fig-title">A・B を切り替える</span></div>
         <div class="fig-body">
-          <svg id="svgNand" viewBox="0 0 420 300" role="img" aria-label="CMOS NAND の回路図。上に pMOS 2個が並列、下に nMOS 2個が直列。入力に応じて通じているスイッチが光る。"></svg>
+          <svg id="svgNand" viewBox="0 0 440 300" role="img" aria-label="CMOS NAND の回路図。上に pMOS 2個が並列、下に nMOS 2個が直列。入力に応じて通じているスイッチが光る。"></svg>
           <div class="btns"><span class="lab">入力</span><button class="btn" id="bNA" aria-pressed="false">A = 0</button><button class="btn" id="bNB" aria-pressed="false">B = 0</button><button class="btn" id="bNX">X を入れる</button><span id="tNand" style="font-size:12.5px;color:var(--ink-2);margin-left:6px"></span></div>
         </div>
         <figcaption id="cNand">上の p は「0 で通じる」、下の n は「1 で通じる」。黄色が通じているスイッチ。線の色はその節点の電位（緑 1／青 0／灰 X）。NandLab で NAND をダブルクリックすると、盤面の値でこれが動く。</figcaption>
@@ -449,7 +449,7 @@ table.tt td.x{color:var(--ink-3)}
         <g font-family="var(--mono)" font-size="11" fill="var(--ink-3)">
           <text x="150" y="40">B S →</text>
           <text x="185" y="56" text-anchor="middle">00</text><text x="255" y="56" text-anchor="middle">01</text><text x="325" y="56" text-anchor="middle">11</text><text x="395" y="56" text-anchor="middle">10</text>
-          <text x="140" y="90" text-anchor="end">A=0</text><text x="140" y="136" text-anchor="end">A=1</text>
+          <text x="134" y="90" text-anchor="end">A=0</text><text x="134" y="136" text-anchor="end">A=1</text>
           <text x="430" y="40">（グレイ順: 隣は1ビット差、右端と左端も隣）</text>
         </g>
         <g stroke="var(--line)" fill="var(--surface)">
@@ -670,7 +670,7 @@ table.tt td.x{color:var(--ink-3)}
               <path d="M276,62 C300,80 320,100 334,118" marker-end="url(#msar)"/>
             </g>
             <defs><marker id="msar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink-3)"/></marker></defs>
-            <text x="260" y="132" text-anchor="middle" font-family="var(--sans)" font-size="11" fill="var(--ink-2)">どちらへ落ちるかも、いつ落ちるかも決まらない</text>
+            <text x="260" y="176" text-anchor="middle" font-family="var(--sans)" font-size="10.5" fill="var(--ink-2)">どちらへ落ちるかも、いつ落ちるかも決まらない</text>
             <text x="30" y="200" font-family="var(--mono)" font-size="10" fill="var(--ink-3)">出力電圧 →</text>
             <text x="490" y="200" text-anchor="end" font-family="var(--sans)" font-size="10.5" fill="var(--ink-3)">縦軸は回路の「落ち着きにくさ」の概念図</text>
           </svg>
@@ -829,7 +829,7 @@ table.tt td.x{color:var(--ink-3)}
       <figure>
         <div class="fig-head"><span class="fig-title">NAND STRING — 名前の由来は、この直列</span></div>
         <div class="fig-body scroll-x">
-          <svg viewBox="0 0 560 210" role="img" aria-label="NAND型フラッシュのストリング構造。ビット線と接地のあいだに、選択ゲートに挟まれたセルが直列に並ぶ。" style="min-width:470px">
+          <svg viewBox="0 0 710 210" role="img" aria-label="NAND型フラッシュのストリング構造。ビット線と接地のあいだに、選択ゲートに挟まれたセルが直列に並ぶ。" style="min-width:560px">
             <text x="60" y="36" font-family="var(--mono)" font-size="11" fill="var(--ink-2)">ビット線</text>
             <line x1="120" y1="32" x2="150" y2="32" stroke="var(--ink-2)" stroke-width="2.5"/>
             <line x1="150" y1="32" x2="150" y2="60" stroke="var(--ink-2)" stroke-width="2.5"/>
@@ -1123,15 +1123,15 @@ function draw(){
   /* carries */
   var cy=sub?158:130;
   el(svg,'text',{x:20,y:cy+4,'font-family':MONO,'font-size':11.5,fill:C('ink-2')},'桁上がり →');
-  for(var i=0;i<=4;i++){var cx=i===4?X(3)-dx:X(i);var cxx=i===4?X(3)-dx+dx/2- dx/2:X(i)-dx/2; var px=X(i)-dx/2; if(i===4)px=X(3)-dx/2-0;
-    var xx=X(i)-dx/2; if(i===4)xx=X(3)-dx/2;
+  for(var i=0;i<=4;i++){
+    var xx=i<4?X(i)+dx/2:X(3)-dx/2; /* cs[i] は i 桁目へ右隣から入る桁上がり、cs[4] は最上位から出ていく桁上がり */
     el(svg,'text',{x:xx,y:cy+4,'text-anchor':'middle','font-family':MONO,'font-size':12,'font-weight':700,fill:cs[i]?C('photon-2'):C('ink-3')},cs[i]);
   }
   el(svg,'text',{x:X(0)+dx/2+8,y:cy+4,'font-family':MONO,'font-size':10,fill:C('ink-3')},'← C_in '+(sub?'= 1（2の補数の +1）':'= 0'));
   el(svg,'line',{x1:x0-dx,y1:cy+16,x2:X(0)+24,y2:cy+16,stroke:C('line')});
   var sy=cy+44;row(sy,sub?'D = A − B':'S = A + B',S,null,false,null);
-  el(svg,'text',{x:X(3)-dx,y:sy+5,'text-anchor':'middle','font-family':MONO,'font-size':13,'font-weight':700,fill:cs[4]?C('photon-2'):C('ink-3')},cs[4]);
-  el(svg,'text',{x:X(3)-dx,y:sy-22,'text-anchor':'middle','font-family':MONO,'font-size':9.5,fill:C('ink-3')},sub?'借りなし?':'桁上げ');
+  el(svg,'text',{x:X(3)-50,y:sy+5,'text-anchor':'middle','font-family':MONO,'font-size':13,'font-weight':700,fill:cs[4]?C('photon-2'):C('ink-3')},cs[4]);
+  el(svg,'text',{x:X(3)-50,y:sy-22,'text-anchor':'middle','font-family':MONO,'font-size':9.5,fill:C('ink-3')},sub?'借りなし?':'桁上げ');
   var a=num(A),b=num(B),r=num(S);
   var msg=sub?(a+' − '+b+' = '+(a-b)+'。回路の答えは '+r+'（'+S.slice().reverse().join('')+'）'+(cs[4]?'、上の桁上がり 1 ＝ A ≥ B で借りなし。':'、上の桁上がり 0 ＝ 借りが出た。16 を足すと '+(r-16)+' ― 2の補数で読めば正しい。')):(a+' + '+b+' = '+(a+b)+'。回路の答えは '+r+(cs[4]?' ＋ 桁上がり 1（＝16）':'')+'（'+(cs[4]?'1':'')+S.slice().reverse().join('')+'）');
   $('tAdd').textContent=msg;
