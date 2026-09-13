@@ -304,6 +304,16 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   display:block;margin-bottom:6px}
 .caveat p{font-size:13.5px;color:var(--ink-2);line-height:1.72}
 .caveat p + p{margin-top:10px}
+.ex{margin-top:20px;border:1px solid var(--line);border-left:2px solid var(--photon);border-radius:2px;background:var(--surface);padding:12px 16px;max-width:46em}
+.ex .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;color:var(--photon-2);display:block;margin-bottom:6px}
+.ex p{font-size:14px;line-height:1.8}
+.ex p + p{margin-top:8px}
+.chk{margin-top:18px;max-width:52em}
+.chk details{border-top:1px solid var(--line-2);padding:11px 0}
+.chk details:last-child{border-bottom:1px solid var(--line-2)}
+.chk summary{cursor:pointer;font-weight:700;font-size:14.5px}
+.chk summary .qn{font-family:var(--mono);font-size:10.5px;color:var(--photon-2);margin-right:8px;font-weight:600}
+.chk details p{margin-top:8px;color:var(--ink-2);font-size:14px;line-height:1.75}
 /* 参考書からラボへ渡す箱。読んだことを、隣のラボ（SemiLab / PixelLab）で自分の手で確かめる */
 .lab-go{margin-top:22px;border:1px solid var(--line);border-left:2px solid var(--digital);
   border-radius:2px;background:var(--surface);padding:12px 16px;max-width:46em}
@@ -411,6 +421,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li><a href="#s7"><span class="n">07</span><span>雑音</span></a></li>
     <li><a href="#s8"><span class="n">08</span><span>基準を作る</span></a></li>
     <li class="dom"><span>付録</span></li>
+    <li><a href="#scheck"><span class="n">—</span><span>理解の確認</span></a></li>
     <li><a href="#s9"><span class="n">—</span><span>用語表</span></a></li>
     <li><a href="#sref"><span class="n">—</span><span>出典</span></a></li>
   </ol>
@@ -431,6 +442,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li><a href="#s7"><span class="n">07</span><span>雑音</span></a></li>
     <li><a href="#s8"><span class="n">08</span><span>基準</span></a></li>
     <li class="dom"><span>付録</span></li>
+    <li><a href="#scheck"><span class="n">—</span><span>理解の確認</span></a></li>
     <li><a href="#s9"><span class="n">—</span><span>用語表</span></a></li>
     <li><a href="#sref"><span class="n">—</span><span>出典</span></a></li>
   </ol>
@@ -539,6 +551,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     </div>
   </div>
 
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（01 gm と ro）</span>
+    <p><b>問.</b> µC<sub>ox</sub> = 200 µA/V²（AnalogLab の仮想プロセス）、W/L = 20、I<sub>D</sub> = 100 µA、λ = 0.1 V⁻¹。V<sub>ov</sub>・g<sub>m</sub>・g<sub>m</sub>/I<sub>D</sub>・r<sub>o</sub>・素の利得は？ V<sub>ov</sub> をちょうど 0.20 V に置くには W/L をいくつにするか。</p>
+    <p><b>解.</b> V<sub>ov</sub> = √(2 × 100 µA / (200 µA/V² × 20)) = √0.05 = <b>0.224 V</b>。g<sub>m</sub> = 2I<sub>D</sub>/V<sub>ov</sub> = <b>0.894 mS</b>、効率 g<sub>m</sub>/I<sub>D</sub> = <b>8.9 S/A</b>。r<sub>o</sub> = 1/(λI<sub>D</sub>) = <b>100 kΩ</b>、素の利得 g<sub>m</sub>r<sub>o</sub> = <b>89</b>。V<sub>ov</sub> = 0.20 V には W/L = 2I<sub>D</sub>/(µC<sub>ox</sub>V<sub>ov</sub>²) = <b>25</b>、そのとき g<sub>m</sub>r<sub>o</sub> = 2/(λV<sub>ov</sub>) = <b>100</b>。<span class="key">W/L を 25% 太らせただけで、同じ電流のまま効率も利得の天井も上がる</span> ― 代わりにゲート容量が 25% 増えて f<sub>T</sub> が下がる、というのが同じ軸の反対側です。</p>
+  </div>
+
   <div class="lab-go">
     <span class="tag">手を動かす — AnalogLab 第1章</span>
     <p>Vov を狙って置き、電力で gm を買う。この章の「九九」を自分の数字で覚える。</p>
@@ -635,6 +653,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p>現代のアナログ設計は「W/L を決める」より先に「<strong>g<sub>m</sub>/I<sub>D</sub> をどこに置くか</strong>」を決めます。二乗則では g<sub>m</sub>/I<sub>D</sub> = 2/V<sub>ov</sub> ― V<sub>ov</sub>=0.2V で 10 S/A、0.1V で 20 S/A。<span class="key">高効率側（V<sub>ov</sub> 小）は低電力・高利得・低雑音に有利で、素子が太り遅くなる。低効率側（V<sub>ov</sub> 大）は速くて小さいが電流を食う</span>。この1軸の上のどこに座るかが、回路の性格をほぼ決めます。実プロセスでは弱反転（g<sub>m</sub>/I<sub>D</sub> が nV<sub>T</sub> 分の1、25〜30 S/A で飽和する領域 ― <a href="第2部_デバイスの基礎.html#s5">第2部の S 値</a>の裏面）まで使うので、シミュレータの g<sub>m</sub>/I<sub>D</sub> カーブが設計表になります。<a href="AnalogLab/index.html?quest=eff">AnalogLab「電力で gm を買う」</a>で一度この算数を踏んでください。</p>
   </div>
 
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（02 一段で増やす）</span>
+    <p><b>問.</b> 01 の石（g<sub>m</sub> = 0.894 mS、r<sub>o</sub> = 100 kΩ）に R<sub>D</sub> = 12 kΩ を載せ、電源 1.8 V・負荷 1 pF。利得・出力の直流電位・下の余裕・出力の極・GBW は？</p>
+    <p><b>解.</b> R<sub>out</sub> = 12 k ∥ 100 k = 10.7 kΩ で |A<sub>v</sub>| = 0.894 mS × 10.7 kΩ = <b>9.6</b>（r<sub>o</sub> が 11% 横取りしている）。直流の出力は 1.8 − 0.1 mA × 12 kΩ = <b>0.6 V</b>、飽和に留まれる下の余裕は 0.6 − 0.224 = <b>0.38 V</b>。極は 1/(2π × 10.7 kΩ × 1 pF) = <b>14.9 MHz</b>、利得×帯域 = 9.6 × 14.9 = 143 MHz ≈ g<sub>m</sub>/(2πC<sub>L</sub>) = <b>142 MHz</b>。<span class="key">R<sub>D</sub> を倍にすると利得はほぼ倍、帯域はほぼ半分、そして出力の直流電位は電源の下に潜る</span> ― 利得・帯域・スイングは同じ予算の取り合いです。</p>
+  </div>
+
   <div class="lab-go">
     <span class="tag">手を動かす — AnalogLab 第2章</span>
     <p>10倍の利得・素の利得100・GBWの√則 ― 一段の3枚の壁を全部触る。</p>
@@ -708,6 +732,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <span class="tag">くわしく — カスコードの直感：蛇口の上に衝立を立てる</span>
     <p>CS の上に CG を積むのがカスコードです。出力側から見ると、下の MOS のドレイン電圧を上の MOS が<span class="key">ほぼ一定に守ってくれる</span>ので、&lambda; の漏れ道が見えなくなる ― 出力抵抗はおよそ <strong>g<sub>m</sub>r<sub>o</sub> 倍</strong>に跳ね上がります（r<sub>out</sub> ≒ g<sub>m2</sub>r<sub>o2</sub>&middot;r<sub>o1</sub>）。素の利得が数十しかない微細プロセスで利得を稼ぐ第一手で、ミラーに使えば電流源の品質も同じ倍率で上がります。<strong>請求書はヘッドルーム</strong>: 積んだぶん V<sub>ov</sub> が縦に並び、低電圧の電源では居場所がなくなる ― 電源電圧が下がり続けた20年で、カスコードから多段（06）へ潮流が動いた理由です。</p>
   </div>
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（03 カレントミラー）</span>
+    <p><b>問.</b> 基準 50 µA を W/L 比 1:2 のミラーで写す。出力側のドレインが基準側より 0.5 V 高いと、λ = 0.1 V⁻¹ でコピーは何%狂うか。出力側をカスコードにするとどうなるか（g<sub>m</sub>r<sub>o</sub> ≈ 89）。</p>
+    <p><b>解.</b> 理想のコピーは 50 × 2 = <b>100 µA</b>。二乗則に (1 + λV<sub>DS</sub>) が掛かるので、V<sub>DS</sub> が 0.5 V 違えば 1 + 0.1 × 0.5 = 1.05 ― <b>5% 多く</b>流れる。カスコードにすると出力抵抗が g<sub>m</sub>r<sub>o</sub> 倍の 89 × 100 kΩ ≈ 8.9 MΩ になり、0.5 V の差で動く電流は 0.5 V / 8.9 MΩ = 56 nA ＝ <b>0.06%</b>。<span class="key">V<sub>ov</sub> 1個ぶんのヘッドルームを払って、誤差を 1/89 に</span>。精度の残りは石どうしのミスマッチ（ペルグロム則）で、こちらは面積とレイアウトで払います。</p>
+  </div>
 </section>
 
 <!-- ================= 04 ================= -->
@@ -770,6 +799,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <h3>捨てる力の値段 — CMRR とミスマッチ</h3>
       <p>「同相を捨てる力」を数字にしたのが <strong>CMRR</strong>（同相除去比: 差動利得 ÷ 同相利得）。理想では∞ですが、現実には2つの理由で有限です: ①テール電流源の出力抵抗が有限（同相の揺れがテールを揺らす）、②<strong>左右の石のミスマッチ</strong>（同相の揺れが偽の「差」に化ける）。だから差動対のレイアウトも03のミラーと同じ作法 ― 面積を張り、共通重心 ― で描かれ、<span class="key">オフセット電圧（入力換算のずれ、mV級）</span>としてカタログに現れます。オフセットを消したい計測の現場が07のチョッパに繋がります。</p>
     </div>
+  </div>
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（04 差動対）</span>
+    <p><b>問.</b> 電源 1.8 V、負荷抵抗に落とせる電圧を 1.2 V までとする。差動対の差動利得 g<sub>m</sub>R<sub>D</sub> を 20 にしたい。V<sub>ov</sub> をいくつに置く必要があるか。そのとき全量が片側へ寄る入力差はいくらか。</p>
+    <p><b>解.</b> g<sub>m</sub>R<sub>D</sub> = 2I<sub>D</sub>R<sub>D</sub>/V<sub>ov</sub> で、I<sub>D</sub>R<sub>D</sub> ≤ 1.2 V なので、V<sub>ov</sub> = 0.2 V なら利得は最大 <b>12</b> ― 20 には届かない。20 にするには V<sub>ov</sub> = 2 × 1.2 / 20 = <b>0.12 V</b>。そのとき全量が片側へ寄る入力差は √2 × 0.12 = <b>0.17 V</b>（V<sub>ov</sub> = 0.2 V なら 0.28 V）。<span class="key">利得を上げる代わりに、受け持てる入力の範囲が狭くなる</span> ― 電流を増やしても R<sub>D</sub> の電圧予算で同じ所に戻るので、効くのは V<sub>ov</sub> だけです（AnalogLab「差動対で 20 倍」）。</p>
   </div>
 </section>
 
@@ -846,6 +880,14 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     </div>
     <figcaption>安定性の判定はこの1点だけ見ればよい: <span class="key">利得が1に落ちる周波数で、遅れが 180&deg; までどれだけ残っているか</span>。06 の補償は、この図の形を「支配極1本＋余裕」へ整形する作業です（<a href="AnalogLab/index.html?quest=ota2">AnalogLab「2段OTA」</a>の PM がこの余白）。</figcaption>
   </figure>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（05 帰還）</span>
+    <p><b>問1.</b> 開ループ利得 A = 1,000、帰還率 β = 0.1。閉ループ利得は？ 温度で A が半分の 500 に落ちたら？</p>
+    <p><b>解.</b> A/(1 + Aβ) = 1,000/101 = <b>9.90</b>、A = 500 では 500/51 = <b>9.80</b>。<span class="key">A が 50% 動いても、閉ループは 1% しか動かない</span> ― ばらつきはループゲイン Aβ（ここでは 100）で割られて効く。代わりに利得は 1,000 → 10 と 100 倍ぶん使い潰している。これが「利得を使って安定を買う」の値段です。</p>
+    <p><b>問2.</b> TIA の R<sub>f</sub> = 20 kΩ、PD の容量 2 pF。素の帯域 1/(2πR<sub>f</sub>C<sub>pd</sub>) と R<sub>f</sub> の熱雑音電流は？ チャージアンプで 1,000 e⁻ を C<sub>f</sub> = 10 fF に載せたら何 mV か。</p>
+    <p><b>解.</b> 1/(2π × 20 kΩ × 2 pF) = <b>3.98 MHz</b>、√(4kT/R<sub>f</sub>) = <b>0.91 pA/√Hz</b>（R<sub>f</sub> を 4 倍にすると雑音は半分、帯域は 1/4）。電荷は 1,000 × 1.602×10⁻¹⁹ / 10 fF = <b>16 mV</b>、C<sub>f</sub> 自身の kT/C は √(kTC<sub>f</sub>)/q = <b>40 e⁻</b>。</p>
+  </div>
 
   <div class="lab-go">
     <span class="tag">手を動かす — AnalogLab 第3章</span>
@@ -967,6 +1009,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p>2段の間に小さな容量 C<sub>c</sub> を渡すだけで、初段から見るとそれは<span class="key">利得倍（ミラー効果）に膨らんだ大容量</span>に見えます。初段の極が大きく下がって支配的になり、同じ C<sub>c</sub> が二段目では負荷を「軽く」見せて第2極を押し上げる ― 1個の容量で2つの極が左右に割れる（<strong>極分離</strong>）。オンチップでは大きな容量が作れないので、ミラー効果で「増幅して」使うわけです。おまけに右半面ゼロという厄介者も付いてきて、直列抵抗で殺すのが定番 ― この辺りからがラザビー後半の本番です。</p>
   </div>
 
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（06 OTA）</span>
+    <p><b>問.</b> 初段 g<sub>m1</sub> = 0.894 mS、二段目 g<sub>m2</sub> = 2.68 mS（g<sub>m1</sub> の3倍）、負荷 C<sub>L</sub> = 1 pF。C<sub>c</sub> = 0.5・1・2・3 pF のそれぞれで GBW と位相余裕は？（PM = 90° − atan(GBW/f<sub>p2</sub>) − atan(GBW/f<sub>z</sub>)、f<sub>p2</sub> = g<sub>m2</sub>/2πC<sub>L</sub>、右半面ゼロ f<sub>z</sub> = g<sub>m2</sub>/2πC<sub>c</sub>）</p>
+    <p><b>解.</b> f<sub>p2</sub> = <b>427 MHz</b>（C<sub>c</sub> によらない）。C<sub>c</sub> = 0.5 pF: GBW 285 MHz・PM <b>38°</b>。1 pF: 142 MHz・<b>53°</b>。2 pF: 71 MHz・<b>62°</b>。3 pF: 47 MHz・<b>65°</b>。<span class="key">60° を越えるのは C<sub>c</sub> ≈ 2 pF から</span>で、それ以上増やしても PM は数度しか伸びず、GBW とスルーレート（I<sub>SS</sub>/C<sub>c</sub>: 200 µA / 2 pF = 100 V/µs）だけが落ちていく。もし g<sub>m2</sub> = g<sub>m1</sub> のままだと、C<sub>c</sub> = 1 pF で PM は <b>0°</b>（発振）― 課題が「まず g<sub>m2</sub> を上げてから C<sub>c</sub> の窓を探す」順になっている理由です。</p>
+  </div>
+
   <div class="lab-go">
     <span class="tag">手を動かす — AnalogLab 第2章</span>
     <p>gm₂ を gm₁ の3倍にしてから、Cc の窓（速すぎず・遅すぎず）を探す。この章の2枚の図を自分の手で再現する課題。</p>
@@ -1031,6 +1079,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p>SC のもうひとつの顔が<strong>「抵抗を時間で作る」</strong>: 1クロックで q=CV を運ぶと平均電流は fCV ― つまり<span class="key">等価抵抗 1/(fC)</span>。シリコンで作りにくい M&Omega; 級の高抵抗が、小さな C と遅いクロックで作れて、しかも比精度は容量比で決まる。CMOS のフィルタと ADC がスイッチだらけなのはこのためです（<a href="AnalogLab/index.html?quest=sc">AnalogLab「抵抗を時間で作る」</a>で kT/C との両側窓ごと踏めます）。</p>
   </div>
 
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（07 雑音）</span>
+    <p><b>問.</b> 01 の石（g<sub>m</sub> = 0.894 mS）の入力換算熱雑音は？ 2 nV/√Hz にするには g<sub>m</sub> がいくつ要るか。W/L = 20 のまま電流で買う場合と、V<sub>ov</sub> = 0.2 V を保って W/L を太らせる場合の電流と電力（1.8 V）は？</p>
+    <p><b>解.</b> √(4kTγ/g<sub>m</sub>) = √(4 × 1.381×10⁻²³ × 300 × (2/3) / 0.894 mS) = <b>3.5 nV/√Hz</b>。2 nV/√Hz には g<sub>m</sub> = 4kTγ/(2 nV)² = <b>2.76 mS</b>（3.1 倍）。W/L = 20 のままなら g<sub>m</sub> ∝ √I<sub>D</sub> なので I<sub>D</sub> = <b>0.95 mA</b>（1.71 mW）、ただし V<sub>ov</sub> は 0.69 V まで上がって定位置を外れる。V<sub>ov</sub> = 0.2 V を保てば I<sub>D</sub> = g<sub>m</sub>V<sub>ov</sub>/2 = <b>0.28 mA</b>（0.50 mW）、W/L = 69。<span class="key">同じ雑音を 1/3.4 の電力で ― 太らせて g<sub>m</sub>/I<sub>D</sub> を上げるのが低雑音設計の定石</span>（代償は面積とゲート容量）。</p>
+  </div>
+
   <div class="lab-go">
     <span class="tag">手を動かす — AnalogLab 第3章</span>
     <p>2nV/√Hz を電力で買い、SC の等価抵抗を kT/C の窓の中で作る。床との交渉の2大定番。</p>
@@ -1080,10 +1134,35 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <figcaption>1次の傾きは完全に消せるが、<span class="key">V<sub>BE</sub> の曲率（2次）はわずかに残り</span>、お椀を伏せた形の数mVがカタログの温度特性になる ― これを削る「曲率補正」からが職人の世界です。</figcaption>
   </figure>
 
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（08 バンドギャップ）</span>
+    <p><b>問.</b> 面積比 n = 8 のダイオード対で PTAT を作る。V<sub>BE</sub> の温度係数 −2 mV/K を打ち消す倍率 m は？ 室温の V<sub>BE</sub> を 0.65 V とすると V<sub>ref</sub> はいくらか。</p>
+    <p><b>解.</b> ΔV<sub>BE</sub> = V<sub>T</sub> ln n の温度係数は (k/q) ln 8 = 86.2 µV/K × 2.08 = <b>179 µV/K</b>。+2 mV/K にするには m = 2,000/179 = <b>11.2</b>。V<sub>ref</sub> = 0.65 + 11.2 × 0.02585 × 2.08 = 0.65 + 0.60 = <b>1.25 V</b>。<span class="key">答えが材料の E<sub>g</sub>（0 K へ外挿して約 1.2 V）の近くに落ちるのは、V<sub>BE</sub> の温度係数そのものが E<sub>g</sub> から来ているから</span>で、m は抵抗比、n は面積比 ― どれもチップの中で比として正確に作れる量です。</p>
+  </div>
+
   <div class="caveat">
     <span class="tag">この部が単純化していること</span>
     <p><strong>トランジスタは終始、長チャネルの二乗則（level 1）です。</strong>弱反転・速度飽和・ボディ効果・ミスマッチ（ペルグロム則は<a href="第4部_イメージセンサ.html#sd">第4部付録D</a>）は式に入れていません。V<sub>ov</sub> 0.1V 以下や微細プロセスでは、係数も式の形も動きます。</p>
     <p><strong>周波数特性は「極＝1/(2πRC)」の直感まで。</strong>ボーデ線図の定量・ゼロの一般論・フォールデッドカスコードなど pMOS を含む実トポロジ、バンドギャップの曲率補正はラザビーの本編に譲ります。この部は「読めるようになる」までの地図です。</p>
+  </div>
+</section>
+
+<!-- ================= 理解の確認 ================= -->
+<section class="stage" id="scheck">
+  <div class="stage-head"><span class="stage-num">—</span>
+    <h2>理解の確認 ― 10問で4枚のカードを並べ直す</h2></div>
+  <p class="lede">答えを開く前に、どの章の式を使うかを先に言ってみてください。後ろの問いほど前の章を組み合わせます。</p>
+  <div class="chk">
+    <details><summary><span class="qn">Q1 · 01</span>同じ電流で g<sub>m</sub> を上げる手は？ 代償は？</summary><p>W/L を太らせて V<sub>ov</sub> を下げる（g<sub>m</sub> = 2I<sub>D</sub>/V<sub>ov</sub>）。代償は面積とゲート容量（f<sub>T</sub> が下がる）、下げすぎると弱反転に入って二乗則の外。</p></details>
+    <details><summary><span class="qn">Q2 · 02</span>R<sub>D</sub> をいくら上げても利得が頭打ちになるのはなぜか。天井を上げる手は？</summary><p>r<sub>o</sub> が並列に入るから。天井は素の利得 g<sub>m</sub>r<sub>o</sub> = 2/(λV<sub>ov</sub>) で、W/L も I<sub>D</sub> も消える ― 効くのは V<sub>ov</sub> を下げることと L を伸ばして λ を下げることだけ（あるいはカスコード）。</p></details>
+    <details><summary><span class="qn">Q3 · 02</span>CS・SF・CG を、信号の入る端子と出る端子で言い分けよ。</summary><p>CS: ゲート入力・ドレイン出力（反転で増やす）。SF: ゲート入力・ソース出力（利得 1 弱で運ぶ）。CG: ソース入力・ドレイン出力（電流を低い入力抵抗で受ける）。</p></details>
+    <details><summary><span class="qn">Q4 · 03</span>カスコードは何を何倍にするか。何で払うか。</summary><p>出力抵抗をおよそ g<sub>m</sub>r<sub>o</sub> 倍にする（利得の天井・電流源の精度が上がる）。払うのは V<sub>ov</sub> 1個ぶんのヘッドルーム。</p></details>
+    <details><summary><span class="qn">Q5 · 04</span>差動にすると利得は増えるか。何を買っているのか。</summary><p>増えない（片側の CS と同じ g<sub>m</sub>R<sub>D</sub>）。買っているのは同相を捨てる力（電源・基板・温度の共通分が消える）。値段は電流2本ぶんとテールのヘッドルーム、限界は CMRR とミスマッチ。</p></details>
+    <details><summary><span class="qn">Q6 · 05</span>閉ループ利得が 1/β になるのはどういう条件か。そのとき A のばらつきはどうなるか。</summary><p>ループゲイン Aβ ≫ 1 のとき。A の変動は 1 + Aβ で割られて閉ループに現れる（A = 1,000・β = 0.1 なら 50% の変動が 1%）。</p></details>
+    <details><summary><span class="qn">Q7 · 05</span>帰還アンプが発振するのはどういうときか。何を見れば判定できるか。</summary><p>ループを一周した信号が 180° 遅れ、そのときまだ利得が 1 以上あると正帰還になる。判定は「利得が 1 になる周波数で、180° までどれだけ残っているか」（位相余裕、実務 60° 前後）。</p></details>
+    <details><summary><span class="qn">Q8 · 06</span>ミラー補償の C<sub>c</sub> を大きくすると、PM・GBW・スルーレートはどちらへ動くか。</summary><p>PM は上がる（ただし頭打ち）、GBW = g<sub>m1</sub>/2πC<sub>c</sub> とスルーレート I<sub>SS</sub>/C<sub>c</sub> は下がる。窓の中で一番小さい C<sub>c</sub> を選ぶのが速さの面では得。</p></details>
+    <details><summary><span class="qn">Q9 · 07</span>多段アンプの雑音の床が初段で決まるのはなぜか。1/f が問題になるのはどんな信号か。</summary><p>入力換算すると後段の雑音は前段の利得で割られるから。1/f はコーナー周波数（MOS で kHz〜MHz）より遅い信号で効く ― 太らせる・pMOS・チョッパや CDS で高域へ引っ越す。</p></details>
+    <details><summary><span class="qn">Q10 · 08</span>バンドギャップ基準の出力が約 1.2 V になるのはなぜか。</summary><p>V<sub>BE</sub>（CTAT、約 −2 mV/K）に PTAT（V<sub>T</sub> ln n）を m 倍して足し、1次の温度係数を打ち消すと、残る値がシリコンのバンドギャップを 0 K へ外挿した電圧（約 1.2 V）になるから。</p></details>
   </div>
 </section>
 
@@ -1128,16 +1207,32 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <table>
         <thead><tr><th>書名</th><th>著者</th><th>この部のどこ</th></tr></thead>
         <tbody>
-          <tr><td>Design of Analog CMOS<br>Integrated Circuits</td><td>Behzad Razavi<br>McGraw-Hill（邦訳『アナログCMOS集積回路の設計』基礎・応用・演習編、丸善出版）</td>
+          <tr><td>Design of Analog CMOS<br>Integrated Circuits</td><td>Behzad Razavi<br>McGraw-Hill, 2nd ed. (2017)（邦訳『アナログCMOS集積回路の設計』基礎・応用・演習編、丸善出版）</td>
             <td><strong>この部の基準書。</strong>01〜08 の全部がこの本の前半の要約です。二乗則の式・一段増幅・差動対・ミラー・帰還・補償・雑音・バンドギャップまで、導出付きで載っています。</td></tr>
-          <tr><td>Analysis and Design of<br>Analog Integrated Circuits</td><td>Gray, Hurst, Lewis, Meyer<br>Wiley</td>
+          <tr><td>Analysis and Design of<br>Analog Integrated Circuits</td><td>Gray, Hurst, Lewis, Meyer<br>Wiley, 5th ed. (2009)</td>
             <td>もう一冊の定番。バイポーラを含む素子物理からの導出が厚く、帰還と安定性（05）の形式的な扱いはこちらが本家です。</td></tr>
-          <tr><td>Analog Integrated<br>Circuit Design</td><td>Tony Chan Carusone,<br>David Johns, Kenneth Martin<br>Wiley</td>
+          <tr><td>Analog Integrated<br>Circuit Design</td><td>Tony Chan Carusone,<br>David Johns, Kenneth Martin<br>Wiley, 2nd ed. (2012)</td>
             <td>スイッチト・キャパシタと ADC/DAC へ進むならこれ。07 の「くわしく」で触れた kT/C の世界の教科書です。</td></tr>
         </tbody>
       </table>
     </div>
-    <figcaption><strong>書誌情報は、著者・出版社にとどめてあります。</strong>版が多い本ばかりなので、参照するときは手元の版の章立てで探してください。</figcaption>
+    <figcaption>版と年は記載時点の最新版です。章番号は版で動くので、参照するときは手元の版の目次で探してください。</figcaption>
+  </figure>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">PAPERS — 式の出どころ</span></div>
+    <div class="scroll-x">
+      <table>
+        <thead><tr><th>何の話か</th><th>誰の、どの論文か</th><th>この部のどこ</th></tr></thead>
+        <tbody>
+          <tr><td>抵抗の熱雑音</td><td>J. B. Johnson, Phys. Rev. 32, 97 (1928)<br>H. Nyquist, Phys. Rev. 32, 110 (1928)</td><td>07。4kTR の実測（Johnson）と、熱力学からの導出（Nyquist）。MOS の 4kTγ/g<sub>m</sub> と kT/C の出発点。</td></tr>
+          <tr><td>負帰還増幅器</td><td>H. S. Black<br>Bell Syst. Tech. J. 13, 1 (1934)</td><td>05。利得を犠牲にしてばらつきと歪みを減らす、という取引の原典。</td></tr>
+          <tr><td>帰還の安定判別</td><td>H. Nyquist<br>Bell Syst. Tech. J. 11, 126 (1932)</td><td>05。ループを一周した応答で発振を判定する基準（ナイキスト線図）。位相余裕の考え方の土台。</td></tr>
+          <tr><td>バンドギャップ基準</td><td>R. J. Widlar, IEEE J. Solid-State Circuits 6, 2 (1971)<br>A. P. Brokaw, IEEE J. Solid-State Circuits 9, 388 (1974)</td><td>08。V<sub>BE</sub> と ΔV<sub>BE</sub> を足して温度係数を消す回路の原典と、その定番の形。</td></tr>
+          <tr><td>ミスマッチの面積則</td><td>M. J. M. Pelgrom ほか<br>IEEE J. Solid-State Circuits 24, 1433 (1989)</td><td>03・04。ミラーと差動対の精度が面積の平方根で決まる根拠。</td></tr>
+        </tbody>
+      </table>
+    </div>
   </figure>
 
   <div class="foot">
