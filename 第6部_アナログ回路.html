@@ -1133,7 +1133,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
         <text x="200" y="92" font-size="10" fill="var(--volt)">V<tspan font-size="7" dy="2">BE</tspan>（CTAT: −2mV/℃）</text>
         <path d="M90 152 L690 108" stroke="var(--si)" stroke-width="2" class="draw" style="--len:620;animation-delay:.4s"/>
         <text x="200" y="168" font-size="10" fill="var(--si)">m·V<tspan font-size="7" dy="2">T</tspan>ln n（PTAT: +2mV/℃ に合わせる）</text>
-        <path d="M90 46 C 300 42, 500 42, 690 46" stroke="var(--warn)" stroke-width="2.4" class="draw" style="--len:620;animation-delay:.8s"/>
+        <path d="M90 46 C 300 42, 500 42, 690 46" stroke="var(--warn)" stroke-width="2.4" class="draw" style="--len:620;animation-delay:.8s" fill="none"/>
         <text x="740" y="36" font-size="10.5" fill="var(--warn)" text-anchor="end">和 ≒ 1.2 V（ほぼ水平 ― 2次の曲がりだけ残る）</text>
       </svg>
     </div>
@@ -1176,7 +1176,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <div class="fig-head"><span class="fig-title">ADC MAP — 方式ごとの守備範囲（目安）</span><span class="fig-title">横 ＝ 標本化の速さ（対数）、縦 ＝ ビット数</span></div>
     <div class="fig-body scroll-x">
       <svg viewBox="0 0 760 250" role="img" aria-label="ADCの方式の地図。横軸は標本化周波数（1kS/sから10GS/s、対数）、縦軸はビット数（4から24）。ΔΣ型は高分解能・低速、逐次比較型は中分解能で広い速度域、パイプライン型は中分解能・高速、フラッシュ型は低分解能・最高速の領域を占める。" style="min-width:700px;width:100%;display:block">
-        <g stroke="var(--line)" stroke-width="1"><path d="M90 30 V210 H690"/><path d="M90 174 H690 M90 138 H690 M90 102 H690 M90 66 H690" stroke-dasharray="2 4"/></g>
+        <g stroke="var(--line)" stroke-width="1"><path d="M90 30 V210 H690" fill="none"/><path d="M90 174 H690 M90 138 H690 M90 102 H690 M90 66 H690" stroke-dasharray="2 4"/></g>
         <rect x="90" y="30" width="343" height="72" fill="var(--volt)" opacity="0.14" stroke="var(--volt)"/>
         <rect x="90" y="66" width="429" height="90" fill="var(--electron)" opacity="0.12" stroke="var(--electron)"/>
         <rect x="433" y="102" width="171" height="54" fill="var(--photon)" opacity="0.18" stroke="var(--photon)"/>
@@ -1261,7 +1261,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <text x="176" y="76" fill="var(--warn)">節点</text>
         </g>
         <text x="200" y="176" font-size="10" fill="var(--ink-3)" text-anchor="middle">オンでコイルに電流を貯め、オフでダイオードを通して吐き出す</text>
-        <g stroke="var(--line)" stroke-width="1"><path d="M450 30 V100 H730"/><path d="M450 120 V200 H730"/></g>
+        <g stroke="var(--line)" stroke-width="1"><path d="M450 30 V100 H730" fill="none"/><path d="M450 120 V200 H730" fill="none"/></g>
         <path d="M450 44 H490 V96 H560 V44 H600 V96 H660" stroke="var(--warn)" stroke-width="2" fill="none"/>
         <path d="M450 180 L490 140 L560 180 L600 140 L660 174.3" stroke="var(--electron)" stroke-width="2" fill="none"/>
         <path d="M450 160 H660" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="4 3"/>
