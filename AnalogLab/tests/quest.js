@@ -76,6 +76,23 @@ T('落ちるべきもの', () => {
   ok('ota2: 電流で殴ると電力で落ちる', !Q.grade('ota2', { design: o3 }).ok);
   const o4 = Object.assign({}, A.get('ota2').design(), { clpf: 0.3 });
   ok('ota2: CL を勝手に軽くするのは反則', !Q.grade('ota2', { design: o4 }).ok);
+
+  /* ADC: 容量の両側と、ビット数・満量程を変える反則 */
+  const a1 = Object.assign({}, A.get('adc').design(), { cadcpf: 0.5 });
+  ok('adc: 0.5 pF は kT/C 91 µV で落ちる', !Q.grade('adc', { design: a1 }).ok);
+  const a2 = Object.assign({}, A.get('adc').design(), { cadcpf: 3 });
+  ok('adc: 3 pF は駆動の上限破りで落ちる', !Q.grade('adc', { design: a2 }).ok);
+  const a3 = Object.assign({}, A.get('adc').design(), { nbit: 10, cadcpf: 0.2 });
+  ok('adc: ビット数を下げて逃げるのは反則', !Q.grade('adc', { design: a3 }).ok);
+  ok('adc: 窓の端 0.84 pF は通る', Q.grade('adc', { design: Object.assign({}, A.get('adc').design(), { cadcpf: 0.84 }) }).ok);
+
+  /* DC-DC: コイルの両側と、周波数を変える反則 */
+  const b1 = Object.assign({}, A.get('buck').design(), { luh: 4.7 });
+  ok('buck: 4.7 µH は ΔI 0.51 A で落ちる', !Q.grade('buck', { design: b1 }).ok);
+  const b2 = Object.assign({}, A.get('buck').design(), { luh: 33 });
+  ok('buck: 33 µH は大きさの上限破りで落ちる', !Q.grade('buck', { design: b2 }).ok);
+  const b3 = Object.assign({}, A.get('buck').design(), { fswmhz: 3, luh: 4.7 });
+  ok('buck: 周波数を上げて逃げるのは反則', !Q.grade('buck', { design: b3 }).ok);
 });
 
 report();

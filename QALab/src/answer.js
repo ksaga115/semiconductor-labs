@@ -52,6 +52,14 @@
     grr: {
       note: '繰り返し σ = 0.007。σ合成 = √(0.007²+0.006²) = 0.0092 → %GR&R = 9.2 %。',
       design: function () { var d = M.defaults(); d.srpt = 0.007; return d; }
+    },
+    spc: {
+      note: 'n = 5・k = 3。空振り 0.27%（370 群に 1 回）、1σ のずれは平均 4.5 群で見つかる。',
+      design: function () { var d = M.defaults(); d.ngrp = 5; d.klim = 3; return d; }
+    },
+    gum: {
+      note: '校正を U 1.0% に・10 回平均。u_c = √(0.5² + 0.289² + 0.158² + 0.115²) = 0.61% → U = 1.22%。',
+      design: function () { var d = M.defaults(); d.ucal = 1; d.nrep = 10; return d; }
     }
   };
 

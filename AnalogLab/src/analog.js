@@ -23,6 +23,8 @@
  *   idua2  第2段の電流 [µA]            2段OTA。gm2 も同じ二乗則から
  *   wl2    第2段の W/L
  *   ccpf   ミラー補償 Cc [pF]          GBW = gm1/2πCc、第2極 gm2/2πCL、右半面ゼロ gm2/2πCc
+ *   nbit   ADC のビット数・fsv 満量程 [V]・cadcpf 標本化の容量 [pF]   LSB/√12 と √(kT/C)、SN 比と ENOB
+ *   vin, vout  降圧 DC-DC の入力・出力 [V]・fswmhz スイッチの周波数 [MHz]・luh コイル [µH]  ΔI = (Vin−Vout)D/(Lf)
  *
  * 仮想プロセス: µCox = 200 µA/V²（0.18µm 級 nMOS の代表値）、γ = 2/3（長チャネルの熱雑音係数）。
  * 【モデルの外】ボディ効果・1/f 雑音・速度飽和・ミラー効果・ループの安定性は入れていない。
@@ -41,7 +43,9 @@
       vdd: 1.8, lam: 0.1, wl: 20, idua: 100,
       rdk: 12, clpf: 1, rfk: 20, cpdpf: 2, cffF: 10, qe: 1000,
       fsmhz: 1, cscpf: 1,
-      idua2: 100, wl2: 20, ccpf: 1
+      idua2: 100, wl2: 20, ccpf: 1,
+      nbit: 12, fsv: 1, cadcpf: 0.2,
+      vin: 12, vout: 3.3, fswmhz: 1, luh: 2
     };
   }
 
@@ -104,7 +108,23 @@
     var pm = 90 - Math.atan(gbw2 / fp2) * 180 / Math.PI - Math.atan(gbw2 / fz) * 180 / Math.PI;
     var ptot = d.vdd * (Id + Id2);
 
+    /* AD 変換: 1 LSB = 満量程/2^N、量子化の雑音 LSB/√12、標本化の容量の kT/C。
+       満量程の正弦波（実効値 FS/2√2）に対する SN 比と実効ビット数（第6部 09） */
+    var nb = d.nbit || 12, fs = d.fsv || 1, Cad = (d.cadcpf || 0) * 1e-12;
+    var lsb = fs / Math.pow(2, nb), vqadc = lsb / Math.sqrt(12);
+    var vktcadc = Cad > 0 ? Math.sqrt(KB * TK / Cad) : Infinity;
+    var vnadc = Math.sqrt(vqadc * vqadc + vktcadc * vktcadc);
+    var snradc = 20 * Math.log10((fs / (2 * Math.SQRT2)) / vnadc);
+    var enob = (snradc - 1.76) / 6.02;
+
+    /* 降圧 DC-DC（理想・連続モード）: D = Vout/Vin、コイル電流の三角波 ΔI = (Vin−Vout)·D/(L·f)（第6部 10） */
+    var duty = (d.vin > 0) ? d.vout / d.vin : 0;
+    var Lb = (d.luh || 0) * 1e-6, fsw = (d.fswmhz || 0) * 1e6;
+    var dIbuck = (Lb > 0 && fsw > 0) ? (d.vin - d.vout) * duty / (Lb * fsw) : Infinity;
+
     return {
+      lsb: lsb, vqadc: vqadc, vktcadc: vktcadc, vnadc: vnadc, snradc: snradc, enob: enob,
+      duty: duty, dIbuck: dIbuck,
       Id: Id, Vov: Vov, gm: gm, gmid: gmid, ro: ro,
       rout: rout, avr: avr, voutdc: voutdc, headLo: headLo, headHi: headHi,
       avint: avint, adm: adm,

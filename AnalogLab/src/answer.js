@@ -48,6 +48,14 @@
     ota2: {
       note: '第2段 500µA・W/L36（gm2 2.7mS = gm1 の3倍）・Cc 3pF。GBW 47MHz・PM 65°・1.08mW。',
       design: function () { var d = A.defaults(); d.idua2 = 500; d.wl2 = 36; d.ccpf = 3; return d; }
+    },
+    adc: {
+      note: 'C = 1 pF。√(kT/C) = 64 µV ≤ 70.5 µV。合わせた雑音 95 µV で SN 比 71.4 dB・ENOB 11.6。',
+      design: function () { var d = A.defaults(); d.cadcpf = 1; return d; }
+    },
+    buck: {
+      note: 'L = 10 µH。ΔI = 8.7 × 0.275 / (10 µH × 1 MHz) = 0.239 A（第6部 10 の例題と同じ）。',
+      design: function () { var d = A.defaults(); d.luh = 10; return d; }
     }
   };
 

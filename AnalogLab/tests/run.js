@@ -101,4 +101,19 @@ T('2段OTA ― ミラー補償と位相余裕', () => {
   near('gm2=gm1・Cc=CL なら PM = 0°', sym.pm, 0, 0.01);
 });
 
+T('AD 変換と DC-DC ― 第6部 09・10 の数字', () => {
+  const a = evalWith({ nbit: 12, fsv: 1, cadcpf: 1e6 }).ev;
+  near('12 ビット・1 V の LSB = 244 µV', a.lsb, 1 / 4096, 1e-12);
+  within('量子化の雑音 LSB/√12 = 70.5 µV', a.vqadc * 1e6, 70.5, 1.001);
+  within('容量が十分大きければ SN 比は 6.02N+1.76 = 74.0 dB', a.snradc, 74.0, 1.001);
+  within('そのとき ENOB は 12', a.enob, 12, 1.001);
+  const c = evalWith({ nbit: 12, fsv: 1, cadcpf: 0.833 }).ev;
+  within('0.83 pF で kT/C が量子化と並ぶ', c.vktcadc / c.vqadc, 1, 1.002);
+  const c16 = evalWith({ nbit: 16, fsv: 1, cadcpf: 213 }).ev;
+  within('16 ビットでは 213 pF で並ぶ', c16.vktcadc / c16.vqadc, 1, 1.003);
+  const b = evalWith({ vin: 12, vout: 3.3, fswmhz: 1, luh: 10 }).ev;
+  near('D = 0.275', b.duty, 0.275, 1e-12);
+  within('ΔI = 0.239 A（第6部 10 の例題）', b.dIbuck, 0.239, 1.002);
+});
+
 report();

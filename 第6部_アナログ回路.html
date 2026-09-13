@@ -1219,6 +1219,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p><b>問.</b> 12 ビット ADC の理想の SQNR は？ 実測の SINAD が 68 dB なら ENOB は？ この ADC が 100 MS/s・10 mW で動くとき、変換 1 段あたりのエネルギー（ワルデンの性能指数 P/(2<sup>ENOB</sup>·f<sub>s</sub>)）は？</p>
     <p><b>解.</b> 6.02 × 12 + 1.76 = <b>74.0 dB</b>。ENOB = (68 − 1.76)/6.02 = <b>11.0 ビット</b> ― 1 ビットぶんが回路の雑音と歪みに食われている。性能指数は 10 mW / (2¹¹ × 10⁸ /s) = <b>49 fJ/段</b>。<span class="key">ビット数と速さの違う ADC を 1 つの数で比べる</span>ための物差しで、世代とともに下がり続けてきました（Walden 1999 の整理が出発点）。</p>
   </div>
+  <div class="lab-go">
+    <span class="tag">手を動かす — AnalogLab 第4章</span>
+    <p>12 ビット・1 V で、kT/C を量子化の雑音より小さく、しかも駆動できる容量に収める。窓は 0.83〜2 pF。</p>
+    <div class="qs"><a href="AnalogLab/index.html?quest=adc">標本化の容量を選ぶ</a></div>
+  </div>
 </section>
 
 <!-- ================= 10 ================= -->
@@ -1296,6 +1301,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p><b>解.</b> D = 3.3/12 = <b>0.275</b>、ΔI = (12 − 3.3) × 0.275 / (10 µH × 1 MHz) = <b>0.24 A</b>。LDO の熱は (3.3 − 1.8) V × 0.1 A = <b>0.15 W</b>（効率 55%）。大きな電圧差を LDO で落とすと、熱と電池の持ちで損をする。</p>
     <p><b>問2.</b> 5 段のコッククロフト・ウォルトン回路に振幅 100 V・50 kHz を入れ、各段 10 nF。無負荷の出力と、100 µA 取ったときの電圧降下は？（降下 ≈ I/(fC)·(2n³/3 + n²/2 − n/6)）</p>
     <p><b>解.</b> 無負荷 2 × 5 × 100 = <b>1,000 V</b>。降下 = 10⁻⁴/(5×10⁴ × 10⁻⁸) × (83.3 + 12.5 − 0.83) = 0.2 × 95 = <b>約 19 V</b>。段数を増やすと電圧は稼げるが、降下は n³ で効く ― 段数・周波数・容量の設計です。</p>
+  </div>
+  <div class="lab-go">
+    <span class="tag">手を動かす — AnalogLab 第4章</span>
+    <p>12 V → 3.3 V・1 MHz の降圧 DC-DC で、ΔI ≤ 0.3 A と 22 µH 以下の両方を満たすコイルを選ぶ。</p>
+    <div class="qs"><a href="AnalogLab/index.html?quest=buck">降圧 DC-DC のコイルを選ぶ</a></div>
   </div>
 </section>
 

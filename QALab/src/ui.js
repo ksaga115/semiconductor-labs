@@ -47,7 +47,15 @@
     ['ncm', 'Coffin-Manson の n', '（はんだ ≈ 2）', 1, 6],
     ['cyd', '使用のサイクル', '回/日', 0.1, 100],
     ['srpt', '測定の繰り返し σ', '', 0.0001, 0.5],
-    ['srpd', '測定の再現性 σ', '（人・日・器差）', 0.0001, 0.5]
+    ['srpd', '測定の再現性 σ', '（人・日・器差）', 0.0001, 0.5],
+    ['klim', '管理限界の幅 k', 'σ', 1, 5],
+    ['ngrp', '群の大きさ n', '個', 1, 25, true],
+    ['shsig', '見つけたい平均のずれ', 'σ', 0.1, 5],
+    ['ucal', '校正の拡張不確かさ U', '%（k = 2）', 0.1, 10],
+    ['resd', '表示の分解能（半幅）', '%', 0, 5],
+    ['srep', '1 回の読みの繰り返し', '%', 0, 5],
+    ['nrep', '平均の回数', '回', 1, 1000, true],
+    ['tco', '温度の影響（半幅）', '%', 0, 5]
   ];
 
   function num(t) {
@@ -221,7 +229,9 @@
       ['Cpk', ev.cpk.toFixed(3)],
       ['予想不良率', (ev.ppm < 1 ? ev.ppm.toExponential(2) : ev.ppm.toFixed(1)) + ' ppm'],
       ['合成誤差 √(A²+B²)', ev.stot.toFixed(3) + ' %'],
-      ['%GR&R（公差比）', (ev.pgrr * 100).toFixed(1) + ' %', ev.pgrr > 0.3]
+      ['%GR&R（公差比）', (ev.pgrr * 100).toFixed(1) + ' %', ev.pgrr > 0.3],
+      ['管理図 ARL₀ / ARL₁', ev.arl0.toFixed(0) + ' 群 / ' + ev.arl1.toFixed(1) + ' 群（空振り / 見逃し）', ev.arl0 < 100],
+      ['不確かさ u_c / U（k=2）', ev.ucg.toFixed(3) + ' % / ' + ev.Ug.toFixed(3) + ' %']
     ];
     document.getElementById('derived').innerHTML = '<div class="dv">' + rows.map(function (r) {
       return '<span class="k">' + esc(r[0]) + '</span><span class="v' + (r[2] ? ' warn' : '') + '">' + esc(r[1]) + '</span>';

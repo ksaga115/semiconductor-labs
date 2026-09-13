@@ -1183,6 +1183,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p><b>問2.</b> ガラス（n = 1.5）とシリコン（n = 3.9）のブルースター角は？ ガラスに 45° で当てたときの s・p の反射率と、無偏光の反射率は？</p>
     <p><b>解.</b> arctan 1.5 = <b>56.3°</b>、arctan 3.9 = <b>75.6°</b>。45° では R<sub>s</sub> = <b>9.2%</b>、R<sub>p</sub> = <b>0.85%</b>、無偏光はその平均で <b>5.0%</b> ― 垂直入射の 4% より少し多い。<span class="key">斜めの面で反射率を測るなら、光源の偏光を決めてから</span>、というのが実務の結論です。</p>
   </div>
+  <div class="lab-go">
+    <span class="tag">手を動かす — OptoLab 第4章</span>
+    <p>ガラスに斜めに当てて、p 偏光の反射を 0.1% 以下に。窓は約 53〜59°。</p>
+    <div class="qs"><a href="OptoLab/index.html?quest=brew">ブルースター角で p を通す</a></div>
+  </div>
 </section>
 
 <!-- ================= 10 ================= -->
@@ -1347,6 +1352,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p><b>問2.</b> 600 本/mm・f = 100 mm・β = 10° の分光器で、画素 14 µm・スリット 25 µm のとき、1 画素とスリットの像は何 nm にあたるか。ラマンのずれ 1,000 cm⁻¹ は、532 nm 励起で何 nm に出るか。</p>
     <p><b>解.</b> 逆線分散 1,667 nm × cos 10° / 100 mm = 16.4 nm/mm。画素 <b>0.23 nm</b>、スリット <b>0.41 nm</b>。10⁷/532 = 18,797 cm⁻¹ から 1,000 を引いて 17,797 cm⁻¹、つまり <b>561.9 nm</b> ― 励起から 30 nm 離れた場所に、何桁も弱い線が立つ。</p>
   </div>
+  <div class="lab-go">
+    <span class="tag">手を動かす — OptoLab 第4章</span>
+    <p>400〜1000 nm を 512 画素に収めつつ、分解能 2.5 nm 以下。格子の本数の窓は 400〜426 本/mm。</p>
+    <div class="qs"><a href="OptoLab/index.html?quest=grat">格子の本数を選ぶ</a></div>
+  </div>
 </section>
 
 <!-- ================= 12 ================= -->
@@ -1423,6 +1433,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   <div class="caveat">
     <span class="tag">09〜12 が単純化していること</span>
     <p><strong>偏光は理想の偏光子と平面波、干渉は 2 光束と理想の鏡、分光器は平面格子の 1 次元の近似です。</strong>実際の波長板の波長依存、格子の効率の偏光依存、分光器の収差は扱っていません。ファイバの損失曲線は代表的な近似式による模式で、特定の製品の値ではありません。光通信の規格（ITU-T G.652 など）とデータシートの値を優先してください。</p>
+  </div>
+  <div class="lab-go">
+    <span class="tag">手を動かす — OptoLab 第4章</span>
+    <p>80 km・10 Gb/s。電力は送信で取り返せるが、分散は光源の波長の幅でしか減らせない。</p>
+    <div class="qs"><a href="OptoLab/index.html?quest=link">80 km を 10 Gb/s で送る</a></div>
   </div>
 </section>
 

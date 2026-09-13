@@ -15,7 +15,8 @@
   var CH = [
     { id: 1, name: '第1章　バイアスを置く', lead: 'W/L と電流で Vov と gm が決まる。アナログ設計の九九。' },
     { id: 2, name: '第2章　一段で増やす', lead: '利得・帯域・スイングは同じ場所を取り合う。ラザビーの最初の山。' },
-    { id: 3, name: '第3章　受光の後段', lead: 'TIA・チャージアンプ・差動対・低雑音。第5部の検出器がここに繋がる。' }
+    { id: 3, name: '第3章　受光の後段', lead: 'TIA・チャージアンプ・差動対・低雑音。第5部の検出器がここに繋がる。' },
+    { id: 4, name: '第4章　変換と電源', lead: 'AD 変換の kT/C と、降圧 DC-DC のコイル。第6部 09・10。' }
   ];
 
   var LIST = [
@@ -231,6 +232,50 @@
             row('等価抵抗 1/(fC)', f(ev.reqsc / 1e6, 2) + ' MΩ', '10.00 以上', ev.reqsc >= 1e7),
             row('kT/C 雑音', f(ev.vktcsc * 1e6, 1) + ' µV', '100.0 以下', ev.vktcsc <= 1e-4),
             row('クロック / 容量', f(d.fsmhz, 2) + ' MHz / ' + f(d.cscpf, 2) + ' pF', '0.1〜10 MHz・2 pF 以下', lim)
+          ]
+        };
+      }
+    },
+
+    /* ===== 第4章 ===== */
+    {
+      id: 'adc', ch: 4, kind: 'design',
+      name: '標本化の容量を選ぶ ― kT/C と量子化',
+      desc: '**12 ビット・満量程 1 V** のまま、標本化の容量で kT/C の雑音を **量子化の雑音（LSB/√12）以下**にし、しかも容量を **2 pF 以下**（それを駆動する電力の上限）に収める。',
+      why: '電圧を容量に取り込むたびに √(kT/C) の雑音が焼き付く（第6部 07・09）。量子化の雑音 LSB/√12 より大きいと、せっかくのビット数が雑音に埋もれる。'
+         + 'だが容量を大きくすると、それを速く充電するための電流（電力）が増える ― <b>窓は両側から閉じる</b>。'
+         + '16 ビットでは同じ条件で 213 pF 要り、高分解能の ADC が ΔΣ 型を選ぶ理由になる。',
+      hint: 'LSB = 244 µV、LSB/√12 = 70.5 µV。√(kT/C) ≤ 70.5 µV → C ≥ 0.83 pF。',
+      check: function (ev, d) {
+        var lock = near(d.nbit, 12) && near(d.fsv, 1);
+        var okN = ev.vktcadc <= ev.vqadc, okC = d.cadcpf <= 2;
+        return {
+          ok: lock && okN && okC,
+          rows: [
+            row('kT/C の雑音', f(ev.vktcadc * 1e6, 1) + ' µV', '量子化 ' + f(ev.vqadc * 1e6, 1) + ' µV 以下', okN),
+            row('容量', f(d.cadcpf, 2) + ' pF', '2.00 以下', okC),
+            row('SN 比 / 実効ビット数', f(ev.snradc, 1) + ' dB / ' + f(ev.enob, 2) + ' ビット', '', true),
+            row('条件固定', lock ? '守っている（12 ビット・1 V）' : '課題の条件に戻す', '', lock)
+          ]
+        };
+      }
+    },
+    {
+      id: 'buck', ch: 4, kind: 'design',
+      name: '降圧 DC-DC のコイルを選ぶ',
+      desc: '**12 V → 3.3 V・1 MHz** のまま、コイルでコイル電流の三角波 ΔI を **0.3 A 以下**にし、しかもコイルを **22 µH 以下**（大きさの上限）に収める。',
+      why: '降圧 DC-DC はスイッチで刻んだ電圧の平均 D·V<sub>in</sub> を取り出す（第6部 10）。コイル電流は三角波で揺れ、その振幅 ΔI = (V<sub>in</sub>−V<sub>out</sub>)·D/(L·f) が出力のリップルと部品の発熱を決める。'
+         + 'L を大きくすれば静かになるが、コイルは大きく重く高くなる ― ここでも窓。周波数を上げれば小さなコイルで済むのが、SiC・GaN（第2部）の効く場所です。',
+      hint: 'D = 0.275、ΔI = 2.39/L[µH] A ≤ 0.3 → L ≥ 8.0 µH。窓は 8〜22 µH。',
+      check: function (ev, d) {
+        var lock = near(d.vin, 12) && near(d.vout, 3.3) && near(d.fswmhz, 1);
+        var okI = ev.dIbuck <= 0.3, okL = d.luh <= 22;
+        return {
+          ok: lock && okI && okL,
+          rows: [
+            row('コイル電流の三角波 ΔI', f(ev.dIbuck, 3) + ' A（D = ' + f(ev.duty, 3) + '）', '0.300 以下', okI),
+            row('コイル', f(d.luh, 1) + ' µH', '22.0 以下', okL),
+            row('条件固定', lock ? '守っている（12→3.3 V・1 MHz）' : '課題の条件に戻す', '', lock)
           ]
         };
       }

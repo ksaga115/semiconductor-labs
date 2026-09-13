@@ -25,6 +25,15 @@
  *   srcna  面光源の放射 NA             ランベルト光源の投影立体角 π·sin²θ = π·NA²
  *   hmm    像高（光軸からの距離）[mm]    cos⁴則: 周辺照度 = 中心 × cos⁴θ、tanθ = h/f
  *   mfdum  SM ファイバのモードフィールド径 [µm]  結合効率 η = (2w₁w₂/(w₁²+w₂²))²（軸ずれ・角度ずれなし）
+ *   incdeg 入射角 [°]                 斜め入射のフレネル反射 R_s・R_p（空気 → nsub）。p は tanθ_B = n でゼロ
+ *   glmm   格子の本数 [本/mm]          分光器（1 次・cosβ ≈ 1）: 逆線分散 dλ/dx = d/f、範囲の長さ = Δλ/(dλ/dx)
+ *   fsp    分光器の焦点距離 [mm]
+ *   slitum スリットの幅 [µm]           分解能の目安 = dλ/dx × max(スリット, 2 画素)
+ *   pxum   画素の幅 [µm]
+ *   lamlo, lamhi  測る範囲 [nm]
+ *   linkkm ファイバの長さ [km]         受信 = 送信 − 損失 × 長さ − 接続
+ *   dbkm   損失 [dB/km]・extdb 接続などの損失 [dB]・pdbm 送信 [dBm]
+ *   dlnm   光源の波長の幅 [nm]・dps 波長分散 D [ps/(nm·km)]・gbps 速さ [Gb/s]  広がり = D·L·Δλ
  *
  * 【約束】数値はすべてこの式から導出できる。乱数は使わない。
  * 【モデルの外】収差・ケラレ・偏光・多層膜・軸ずれ／角度ずれのある結合は入れていない
@@ -48,7 +57,10 @@
       coreu: 10, naf: 0.14,
       bin: 1000, blk: 10,
       srcum: 100, srcna: 0.9,
-      hmm: 5, mfdum: 6.2
+      hmm: 5, mfdum: 6.2,
+      incdeg: 0,
+      glmm: 1200, fsp: 50, slitum: 50, pxum: 25, lamlo: 400, lamhi: 1000,
+      linkkm: 10, dbkm: 0.2, extdb: 1, pdbm: 0, dlnm: 1, dps: 17, gbps: 10
     };
   }
 
@@ -107,6 +119,24 @@
     var etaMode = (w0um > 0 && w2m > 0)
       ? Math.pow(2 * w0um * w2m / (w0um * w0um + w2m * w2m), 2) : 0;
 
+    /* 斜め入射のフレネル反射（空気 → 基板 nsub）。s と p を別々に。p は tanθ_B = n でゼロ */
+    var ti = (d.incdeg || 0) * Math.PI / 180;
+    var st = Math.sin(ti) / d.nsub, ct = Math.sqrt(Math.max(0, 1 - st * st)), ci = Math.cos(ti);
+    var rs = (ci - d.nsub * ct) / (ci + d.nsub * ct), rp = (d.nsub * ci - ct) / (d.nsub * ci + ct);
+    var Rs = rs * rs, Rp = rp * rp;
+    var brewDeg = Math.atan(d.nsub) * 180 / Math.PI;
+
+    /* 格子の分光器（1 次・cosβ ≈ 1 の近似）: 逆線分散 dλ/dx = d/(m·f)、範囲の長さ、分解能の目安 */
+    var gdnm = 1e6 / (d.glmm || 1);                        /* 溝の周期 [nm] */
+    var rld = gdnm / (d.fsp || 1);                         /* nm/mm */
+    var spanMm = ((d.lamhi || 0) - (d.lamlo || 0)) / rld;   /* センサの上の長さ */
+    var bpNm = rld * Math.max(d.slitum || 0, 2 * (d.pxum || 0)) / 1000; /* スリットの像か 2 画素の大きい方 */
+
+    /* ファイバの回線: 受信の電力 = 送信 − 損失 × 長さ − 接続の損失、波長分散の広がり = D·L·Δλ */
+    var rxdbm = d.pdbm - d.dbkm * d.linkkm - d.extdb;
+    var spreadPs = d.dps * d.linkkm * d.dlnm;
+    var bitPs = 1000 / d.gbps;
+
     return {
       Ew: Ew, L: L, Eimg: Eimg, EimgW: EimgW, phiUm: phiUm, Einv: Einv,
       bmm: bmm, mag: mag, airyUm: airyUm, resUm: resUm,
@@ -115,7 +145,10 @@
       fibOk: fibOk, snrGain: snrGain,
       gsrc: gsrc, gfib: gfib, etaMax: etaMax,
       thetaDeg: theta * 180 / Math.PI, cos4: cos4,
-      etaMode: etaMode
+      etaMode: etaMode,
+      Rs: Rs, Rp: Rp, brewDeg: brewDeg,
+      rld: rld, spanMm: spanMm, bpNm: bpNm,
+      rxdbm: rxdbm, spreadPs: spreadPs, bitPs: bitPs
     };
   }
 

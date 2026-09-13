@@ -32,6 +32,11 @@
  *   srpt     測定系の繰り返し σ（同じ人が同じ物を測り直したときのばらつき）
  *   srpd     測定系の再現性 σ（人・日・器差のばらつき）
  *            %GR&R = 6·√(srpt²+srpd²) / (2·tol) ― 公差に対する測定系の取り分
+ *   klim     管理限界の幅 kσ（ふつう 3）   空振り p0 = 2(1−Φ(k))、ARL0 = 1/p0
+ *   ngrp     群の大きさ n                 見逃し: ずれ δσ は群の平均では δ√n に見える
+ *   shsig    見つけたい平均のずれ δ [σ]    p1 = Φ(−k+δ√n) + Φ(−k−δ√n)、ARL1 = 1/p1
+ *   ucal     校正証明書の拡張不確かさ [%]（k = 2）  GUM: u_c = √((U/2)² + (a/√3)² + (s/√n)² + (b/√3)²)
+ *   resd     表示の分解能の半幅 [%]・srep 繰り返しの標準偏差 [%]・nrep 平均の回数・tco 温度の影響の半幅 [%]
  *
  * 【約束】数値はすべてこの式から導出できる。乱数は使わない。
  * 【モデルの外】ワイブルの当てはめ（プロット）・TECの電流最適化・
@@ -54,7 +59,9 @@
       s1: 0.3, s2: 0.6,
       rhu: 60, rhs: 60, thu: 40, ths: 60, npeck: 3, eah: 0.79,
       dtu: 30, dts: 60, ncm: 2, cyd: 1,
-      srpt: 0.02, srpd: 0.006
+      srpt: 0.02, srpd: 0.006,
+      klim: 3, ngrp: 1, shsig: 1,
+      ucal: 2, resd: 0.5, srep: 0.5, nrep: 1, tco: 0.2
     };
   }
 
@@ -119,6 +126,18 @@
     var sgrr = Math.sqrt((d.srpt || 0) * (d.srpt || 0) + (d.srpd || 0) * (d.srpd || 0));
     var pgrr = d.tol > 0 ? 6 * sgrr / (2 * d.tol) : Infinity;
 
+    /* 管理図（X̄ 図・正規・独立）: 空振りの確率 p0 と、平均が δσ ずれたときに 1 群で見つかる確率 p1。
+       ARL（平均の連の長さ）はその逆数。群の平均の σ は σ/√n なので、ずれは δ√n に見える */
+    var k = d.klim || 3, dn = (d.shsig || 0) * Math.sqrt(d.ngrp || 1);
+    var p0 = 2 * (1 - phi(k));
+    var p1 = phi(-k + dn) + phi(-k - dn);
+    var arl0 = 1 / p0, arl1 = 1 / p1;
+
+    /* 測定の不確かさ（GUM）: 校正（U を k=2 で割る）・分解能（半幅の矩形 a/√3）・
+       繰り返し（平均の s/√n、タイプ A）・温度（半幅の矩形）を二乗和で合成。拡張は k = 2 */
+    var ucg = Math.sqrt(Math.pow((d.ucal || 0) / 2, 2) + Math.pow((d.resd || 0) / Math.sqrt(3), 2)
+      + Math.pow((d.srep || 0) / Math.sqrt(d.nrep || 1), 2) + Math.pow((d.tco || 0) / Math.sqrt(3), 2));
+
     return {
       lamFit: lamFit, mttfH: mttfH, mttfY: mttfY,
       af: af, testH: testH, b10H: b10H,
@@ -127,7 +146,9 @@
       cpk: cpk, ppm: ppm, stot: stot,
       afh: afh, testHh: testHh,
       afcm: afcm, cycUse: cycUse, testCyc: testCyc,
-      sgrr: sgrr, pgrr: pgrr
+      sgrr: sgrr, pgrr: pgrr,
+      p0: p0, p1: p1, arl0: arl0, arl1: arl1,
+      ucg: ucg, Ug: 2 * ucg
     };
   }
 

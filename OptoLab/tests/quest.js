@@ -82,6 +82,35 @@ T('落ちるべきもの', () => {
   ok('mode: w=8mm（87%）は落ちる', !Q.grade('mode', { design: md2 }).ok);
   const md3 = Object.assign({}, A.get('mode').design(), { mfdum: 8 });
   ok('mode: MFD を都合よく変えるのは反則', !Q.grade('mode', { design: md3 }).ok);
+
+  /* ブルースター角: 窓（約 53〜59°）の両側で落ちる、基板を変えたままでは落ちる */
+  const b1 = Object.assign({}, A.get('brew').design(), { incdeg: 45 });
+  ok('brew: 45°（p 0.85%）は落ちる', !Q.grade('brew', { design: b1 }).ok);
+  const b2 = Object.assign({}, A.get('brew').design(), { incdeg: 65 });
+  ok('brew: 65° は反対側で落ちる', !Q.grade('brew', { design: b2 }).ok);
+  const b3 = Object.assign({}, A.get('brew').design(), { nsub: 3.9, incdeg: 75.6 });
+  ok('brew: シリコンのままでは反則', !Q.grade('brew', { design: b3 }).ok);
+  ok('brew: 窓の端 53.5° は通る', Q.grade('brew', { design: Object.assign({}, A.get('brew').design(), { incdeg: 53.5 }) }).ok);
+
+  /* 格子: 細かすぎると範囲で、粗すぎると分解能で、スリットが広いと分解能で落ちる */
+  const g1 = Object.assign({}, A.get('grat').design(), { glmm: 600 });
+  ok('grat: 600 本/mm は範囲がはみ出して落ちる', !Q.grade('grat', { design: g1 }).ok);
+  const g2 = Object.assign({}, A.get('grat').design(), { glmm: 300 });
+  ok('grat: 300 本/mm は分解能で落ちる', !Q.grade('grat', { design: g2 }).ok);
+  const g3 = Object.assign({}, A.get('grat').design(), { slitum: 100 });
+  ok('grat: スリット 100 µm は分解能で落ちる', !Q.grade('grat', { design: g3 }).ok);
+  const g4 = Object.assign({}, A.get('grat').design(), { fsp: 100, glmm: 600 });
+  ok('grat: 焦点距離を変えるのは反則', !Q.grade('grat', { design: g4 }).ok);
+
+  /* 回線: 電力の両側（足りない・上限破り）と、波長の幅と、長さを変える反則 */
+  const k1 = Object.assign({}, A.get('link').design(), { pdbm: -5 });
+  ok('link: 送信 −5 dBm は受信 −22 で落ちる', !Q.grade('link', { design: k1 }).ok);
+  const k2 = Object.assign({}, A.get('link').design(), { pdbm: 10 });
+  ok('link: 送信 +10 dBm は上限破りで落ちる', !Q.grade('link', { design: k2 }).ok);
+  const k3 = Object.assign({}, A.get('link').design(), { dlnm: 0.1 });
+  ok('link: 波長の幅 0.1 nm は分散 136 ps で落ちる', !Q.grade('link', { design: k3 }).ok);
+  const k4 = Object.assign({}, A.get('link').design(), { linkkm: 40 });
+  ok('link: 長さを縮めるのは反則', !Q.grade('link', { design: k4 }).ok);
 });
 
 report();

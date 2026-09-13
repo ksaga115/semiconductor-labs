@@ -108,4 +108,17 @@ T('Cpk と ppm ― 正規分布の検算', () => {
   near('√(0.3²+0.4²)=0.5', evalWith({ s1: 0.3, s2: 0.4 }).ev.stot, 0.5, 1e-9);
 });
 
+T('管理図と不確かさ ― 第8部 09・10 の数字', () => {
+  const a = evalWith({ klim: 3, ngrp: 1, shsig: 1 }).ev;
+  within('3σ の空振りは 370 群に 1 回', a.arl0, 370.4, 1.01);
+  within('1 個ずつでは 1σ のずれに 44 点', a.arl1, 43.9, 1.01);
+  const b = evalWith({ klim: 3, ngrp: 5, shsig: 1 }).ev;
+  within('n = 5 なら 4.5 群（第8部 09 の例題）', b.arl1, 4.5, 1.01);
+  const g = evalWith({ ucal: 2, resd: 0.5, srep: 0.5, nrep: 10, tco: 0.2 }).ev;
+  within('光パワーメータの予算 u_c = 1.06%（第8部 10）', g.ucg, 1.06, 1.005);
+  within('U = 2.1%（k = 2）', g.Ug, 2.12, 1.005);
+  const g2 = evalWith({ ucal: 2, resd: 0.5, srep: 0.5, nrep: 1000, tco: 0.2 }).ev;
+  ok('校正 2% では平均を増やしても U は 2.08% を切れない', g2.Ug > 2.08);
+});
+
 report();

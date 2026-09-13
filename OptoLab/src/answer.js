@@ -52,6 +52,18 @@
     mode: {
       note: 'w = 5.5 mm。w₀ = 3.08 µm ≈ MFD/2 = 3.1 µm で η ≈ 100%。',
       design: function () { var d = O.defaults(); d.nm = 1064; d.winmm = 5.5; return d; }
+    },
+    brew: {
+      note: '基板 1.5・入射角 56.3°（arctan 1.5）。p の反射はほぼゼロ、s は 14.8% ― 反射光は s 偏光になる。',
+      design: function () { var d = O.defaults(); d.nsub = 1.5; d.incdeg = 56.3; return d; }
+    },
+    grat: {
+      note: '410 本/mm・スリット 25 µm。逆線分散 48.8 nm/mm、範囲 12.3 mm、分解能 2.44 nm（2 画素で決まる）。',
+      design: function () { var d = O.defaults(); d.glmm = 410; d.slitum = 25; return d; }
+    },
+    link: {
+      note: '80 km・送信 0 dBm・波長の幅 0.02 nm（DFB）。受信 −17 dBm、広がり 27 ps ≤ 50 ps。',
+      design: function () { var d = O.defaults(); d.linkkm = 80; d.pdbm = 0; d.dlnm = 0.02; return d; }
     }
   };
 

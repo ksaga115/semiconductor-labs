@@ -88,6 +88,28 @@ T('落ちるべきもの', () => {
   ok('grr: 再現性を都合よく消すのは反則', !Q.grade('grr', { design: g2 }).ok);
   const g3 = Object.assign({}, A.get('grr').design(), { tol: 1 });
   ok('grr: 公差を広げてごまかすのは反則', !Q.grade('grr', { design: g3 }).ok);
+
+  /* 管理図: 限界の両側（狭いと空振り・広いと見逃し）と、群を大きくする反則 */
+  const s1 = Object.assign({}, A.get('spc').design(), { klim: 2.5 });
+  ok('spc: k = 2.5 は空振り（ARL₀ 81）で落ちる', !Q.grade('spc', { design: s1 }).ok);
+  const s2 = Object.assign({}, A.get('spc').design(), { klim: 3.5 });
+  ok('spc: k = 3.5 は見逃し（ARL₁ 約 10）で落ちる', !Q.grade('spc', { design: s2 }).ok);
+  const s3 = Object.assign({}, A.get('spc').design(), { ngrp: 20, klim: 3.5 });
+  ok('spc: 群を大きくして逃げるのは反則', !Q.grade('spc', { design: s3 }).ok);
+  ok('spc: 窓の端 k = 3.15 は通る', Q.grade('spc', { design: Object.assign({}, A.get('spc').design(), { klim: 3.15 }) }).ok);
+
+  /* 不確かさ: 支配項を放っておくと落ち、平均が足りないと落ち、校正の上限破りと固定破りは反則 */
+  const u1 = Object.assign({}, A.get('gum').design(), { ucal: 2, nrep: 100 });
+  ok('gum: 校正 2% のまま 100 回平均しても落ちる（支配項）', !Q.grade('gum', { design: u1 }).ok);
+  const u2 = Object.assign({}, A.get('gum').design(), { nrep: 1 });
+  ok('gum: 最良の校正でも 1 回では落ちる', !Q.grade('gum', { design: u2 }).ok);
+  const u3 = Object.assign({}, A.get('gum').design(), { nrep: 3 });
+  ok('gum: 3 回（U 1.31%）は落ちる', !Q.grade('gum', { design: u3 }).ok);
+  ok('gum: 4 回（U 1.28%）は通る', Q.grade('gum', { design: Object.assign({}, A.get('gum').design(), { nrep: 4 }) }).ok);
+  const u4 = Object.assign({}, A.get('gum').design(), { ucal: 0.5 });
+  ok('gum: 買えない校正は上限破りで落ちる', !Q.grade('gum', { design: u4 }).ok);
+  const u5 = Object.assign({}, A.get('gum').design(), { resd: 0.05 });
+  ok('gum: 分解能を都合よく変えるのは反則', !Q.grade('gum', { design: u5 }).ok);
 });
 
 report();

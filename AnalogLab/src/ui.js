@@ -29,7 +29,14 @@
     ['cscpf', 'SC の容量', 'pF', 0.05, 50],
     ['idua2', '第2段の電流', 'µA', 1, 2000],
     ['wl2', '第2段の W/L', '', 1, 2000],
-    ['ccpf', 'ミラー補償 Cc', 'pF', 0.1, 50]
+    ['ccpf', 'ミラー補償 Cc', 'pF', 0.1, 50],
+    ['nbit', 'ADC のビット数', 'bit', 4, 24, true],
+    ['fsv', 'ADC の満量程', 'V', 0.1, 5],
+    ['cadcpf', '標本化の容量', 'pF', 0.01, 1000],
+    ['vin', 'DC-DC の入力', 'V', 1, 60],
+    ['vout', 'DC-DC の出力', 'V', 0.5, 60],
+    ['fswmhz', 'スイッチの周波数', 'MHz', 0.01, 10],
+    ['luh', 'コイル', 'µH', 0.1, 1000]
   ];
 
   function num(t) {
@@ -197,7 +204,9 @@
       ['TIA: 帯域 / Rf 雑音', (ev.btia / 1e6).toFixed(2) + ' MHz / ' + (ev.irf * 1e12).toFixed(2) + ' pA/√Hz'],
       ['チャージアンプ: Q/Cf', (ev.vq * 1000).toFixed(1) + ' mV（kTC ' + ev.ktc.toFixed(1) + ' e−）'],
       ['SC: 等価抵抗 1/(fC)', (ev.reqsc / 1e6).toFixed(2) + ' MΩ（√(kT/C) ' + (ev.vktcsc * 1e6).toFixed(1) + ' µV）'],
-      ['2段OTA: GBW / PM', (ev.gbw2 / 1e6).toFixed(1) + ' MHz / ' + ev.pm.toFixed(1) + '°（全体 ' + (ev.ptot * 1000).toFixed(2) + ' mW）', ev.pm < 45]
+      ['2段OTA: GBW / PM', (ev.gbw2 / 1e6).toFixed(1) + ' MHz / ' + ev.pm.toFixed(1) + '°（全体 ' + (ev.ptot * 1000).toFixed(2) + ' mW）', ev.pm < 45],
+      ['ADC: 量子化 / kT/C', (ev.vqadc * 1e6).toFixed(1) + ' / ' + (ev.vktcadc * 1e6).toFixed(1) + ' µV（ENOB ' + ev.enob.toFixed(2) + '）', ev.vktcadc > ev.vqadc],
+      ['DC-DC: D / ΔI', ev.duty.toFixed(3) + ' / ' + ev.dIbuck.toFixed(3) + ' A']
     ];
     document.getElementById('derived').innerHTML = '<div class="dv">' + rows.map(function (r) {
       return '<span class="k">' + esc(r[0]) + '</span><span class="v' + (r[2] ? ' warn' : '') + '">' + esc(r[1]) + '</span>';

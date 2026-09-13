@@ -102,6 +102,38 @@ T('モード結合 ― 重なり積分', () => {
   ok('w=4mm は入場（fibOk）するがモードは 91%', w4.fibOk && w4.etaMode > 0.90 && w4.etaMode < 0.92);
 });
 
+T('斜めの反射 ― s と p', () => {
+  const n0 = evalWith({ nsub: 1.5, incdeg: 0 }).ev;
+  near('垂直入射では s = p = 4%', n0.Rs, 0.04, 1e-12);
+  near('垂直入射では s = p', n0.Rp, n0.Rs, 1e-12);
+  const a45 = evalWith({ nsub: 1.5, incdeg: 45 }).ev;
+  near('45° の s は 9.2%（第7部 09）', a45.Rs, 0.0920, 0.0002);
+  near('45° の p は 0.85%', a45.Rp, 0.00847, 0.00002);
+  const b = evalWith({ nsub: 1.5, incdeg: Math.atan(1.5) * 180 / Math.PI }).ev;
+  ok('ブルースター角で p はゼロ', b.Rp < 1e-20);
+  near('ブルースター角 = arctan n（56.3°）', b.brewDeg, 56.31, 0.01);
+  near('シリコンのブルースター角 75.6°', evalWith({ nsub: 3.9 }).ev.brewDeg, 75.62, 0.01);
+  near('ブルースター角の s は 14.8%', b.Rs, 0.1479, 0.0002);
+});
+
+T('格子の分光器 ― 逆線分散と範囲', () => {
+  const g = evalWith({ glmm: 400, fsp: 50, pxum: 25, slitum: 25, lamlo: 400, lamhi: 1000 }).ev;
+  near('400 本/mm・f50 で 50 nm/mm（第10部 08）', g.rld, 50, 1e-9);
+  near('600 nm は 12 mm（cosβ≈1）', g.spanMm, 12, 1e-9);
+  near('分解能は 2 画素で 2.5 nm', g.bpNm, 2.5, 1e-9);
+  const wide = evalWith({ glmm: 400, fsp: 50, pxum: 25, slitum: 100 }).ev;
+  near('スリットが 2 画素より広ければスリットで決まる', wide.bpNm, 5, 1e-9);
+  const fine = evalWith({ glmm: 1200, fsp: 50, lamlo: 400, lamhi: 1000 }).ev;
+  ok('1200 本/mm では範囲がセンサからはみ出す', fine.spanMm > 12.8);
+});
+
+T('ファイバの回線 ― dB の足し算と分散の掛け算', () => {
+  const l = evalWith({ linkkm: 80, dbkm: 0.2, extdb: 1, pdbm: 0, dlnm: 0.1, dps: 17, gbps: 10 }).ev;
+  near('80 km で受信 −17 dBm', l.rxdbm, -17, 1e-12);
+  near('幅 0.1 nm で 136 ps（第7部 12）', l.spreadPs, 136, 1e-9);
+  near('10 Gb/s の 1 ビットは 100 ps', l.bitPs, 100, 1e-12);
+});
+
 T('cos⁴則 ― 隅は4回割引', () => {
   /* 軸上は減光なし */
   near('像高 0 で 100%', evalWith({ hmm: 0, fmm: 50 }).ev.cos4, 1, 1e-12);

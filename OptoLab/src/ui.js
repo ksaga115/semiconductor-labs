@@ -37,7 +37,21 @@
     ['srcum', '面光源の径', 'µm（LED など）', 1, 10000],
     ['srcna', '面光源の NA', '（ランベルトなら〜1）', 0.05, 1],
     ['hmm', '像高', 'mm（光軸からの距離）', 0, 30],
-    ['mfdum', 'SM のモードフィールド径', 'µm', 2, 30]
+    ['mfdum', 'SM のモードフィールド径', 'µm', 2, 30],
+    ['incdeg', '入射角', '°（斜め入射の反射）', 0, 89],
+    ['glmm', '格子の本数', '本/mm', 50, 3600],
+    ['fsp', '分光器の焦点距離', 'mm', 10, 1000],
+    ['slitum', 'スリットの幅', 'µm', 5, 500],
+    ['pxum', '画素の幅', 'µm', 1, 100],
+    ['lamlo', '測る範囲の短い端', 'nm', 100, 3000],
+    ['lamhi', '測る範囲の長い端', 'nm', 100, 3000],
+    ['linkkm', 'ファイバの長さ', 'km', 0.01, 1000],
+    ['dbkm', 'ファイバの損失', 'dB/km', 0.1, 5],
+    ['extdb', '接続などの損失', 'dB', 0, 20],
+    ['pdbm', '送信の電力', 'dBm', -30, 20],
+    ['dlnm', '光源の波長の幅', 'nm', 0.001, 50],
+    ['dps', '波長分散 D', 'ps/(nm·km)', -100, 100],
+    ['gbps', '速さ', 'Gb/s', 0.1, 100]
   ];
 
   function num(t) {
@@ -217,7 +231,10 @@
       ['ロックインの改善', ev.snrGain.toFixed(1) + ' 倍'],
       ['エテンデュ結合の上限', (ev.etaMax * 100).toFixed(ev.etaMax < 0.01 ? 3 : 1) + ' %（面光源→ファイバ）', ev.etaMax < 0.01],
       ['cos⁴ の周辺減光', (ev.cos4 * 100).toFixed(1) + ' %（像高 ' + S.design.hmm + ' mm・θ ' + ev.thetaDeg.toFixed(1) + '°）', ev.cos4 < 0.5],
-      ['SM モード結合', (ev.etaMode * 100).toFixed(1) + ' %（w₁ ' + ev.w0um.toFixed(2) + ' / w₂ ' + (S.design.mfdum / 2).toFixed(2) + ' µm）', ev.etaMode < 0.5]
+      ['SM モード結合', (ev.etaMode * 100).toFixed(1) + ' %（w₁ ' + ev.w0um.toFixed(2) + ' / w₂ ' + (S.design.mfdum / 2).toFixed(2) + ' µm）', ev.etaMode < 0.5],
+      ['斜めの反射 s / p', (ev.Rs * 100).toFixed(2) + ' % / ' + (ev.Rp * 100).toFixed(3) + ' %（ブルースター角 ' + ev.brewDeg.toFixed(1) + '°）'],
+      ['分光器 範囲 / 分解能', ev.spanMm.toFixed(2) + ' mm / ' + ev.bpNm.toFixed(2) + ' nm（' + ev.rld.toFixed(1) + ' nm/mm）', ev.spanMm > 12.8],
+      ['回線 受信 / 分散', ev.rxdbm.toFixed(1) + ' dBm / ' + ev.spreadPs.toFixed(1) + ' ps（1 ビット ' + ev.bitPs.toFixed(0) + ' ps）', ev.spreadPs > ev.bitPs / 2]
     ];
     document.getElementById('derived').innerHTML = '<div class="dv">' + rows.map(function (r) {
       return '<span class="k">' + esc(r[0]) + '</span><span class="v' + (r[2] ? ' warn' : '') + '">' + esc(r[1]) + '</span>';
