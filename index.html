@@ -785,7 +785,7 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
         <p class="desc">第0〜9部の道具を 1 台の装置として最後までつなぐ。蛍光顕微鏡の微弱光カメラ（光の予算・sCMOS と EM-CCD の交差点・ADC とデータと冷却）、200 m の LiDAR（逆二乗・背景光で SPAD が埋まる失敗とその直し方・距離の精度・目の安全）、400〜1,000 nm の分光器（格子の本数・スリット・次数の重なり・波長の校正・吸光度の不確かさ）。全部の数字を計算で追う。</p>
       </div>
       <div class="pair">
-        <div><span class="kind read">参考書</span><a href="第10部_設計演習.html">1 台を設計する ― カメラ・LiDAR・分光器</a><small>Requirement → Budget → Dominant term → Decision → Check · 10章</small></div>
+        <div><span class="kind read">参考書</span><a href="第10部_設計演習.html">1 台を設計する ― カメラ・LiDAR・分光器</a><small>Requirement → Budget → Dominant term → Decision → Check · 12章</small></div>
         <div><span class="kind lab">ラボ</span><a href="DesignLab/index.html">DesignLab</a><small>微弱光カメラ・LiDAR・分光器の予算表 · 3章 12問 · <a href="DesignLab/README.md">README</a></small></div>
       </div>
     </div>
@@ -798,8 +798,10 @@ pre{margin:10px 0 0;font-family:var(--mono);font-size:12.5px;background:var(--su
       <div class="do"><span class="lbl">DesignLab 第2章</span><a class="q" href="DesignLab/index.html?quest=range">300 m で 1 パルス 30 個</a><a class="q" href="DesignLab/index.html?quest=sun">昼の背景で SPAD を飽和させない</a><a class="q" href="DesignLab/index.html?quest=dead">不感時間を選ぶ</a><a class="q" href="DesignLab/index.html?quest=prec">200 m で 2 cm を 0.1 ms で</a><span class="lbl">関連</span><a class="q" href="PhotonLab/index.html?quest=pile">TCSPC の繰り返しを選ぶ</a><a class="q" href="OptoLab/index.html?quest=inv">逆二乗で照らす</a></div>
     </div>
     <div class="chap">
-      <div><span class="cn">08-10</span><div class="ct"><a href="第10部_設計演習.html#s8">分光器 / 振り返り</a></div><div class="cd">400 本/mm・α 15°・f 50 mm で 12.1 mm に 400〜1,000 nm。1 画素 1.25 nm、分解能 2.5 nm。スリットと f 数で約 5%。次数の重なり、Hg・Ar の校正、δA = 1.4×10⁻⁴。</div></div>
+      <div><span class="cn">08-09</span><div class="ct"><a href="第10部_設計演習.html#s8">分光器</a></div><div class="cd">400 本/mm・α 15°・f 50 mm で 12.1 mm に 400〜1,000 nm。1 画素 1.25 nm、分解能 2.5 nm。スリットと f 数で約 5%。次数の重なり、Hg・Ar の校正、δA = 1.4×10⁻⁴。</div></div>
       <div class="do"><span class="lbl">DesignLab 第3章</span><a class="q" href="DesignLab/index.html?quest=grat">格子の本数で範囲と分解能を両立</a><a class="q" href="DesignLab/index.html?quest=slit">スリットで明るさを稼ぐ</a><a class="q" href="DesignLab/index.html?quest=absorb">吸光度の雑音を 1×10⁻⁴ に</a><a class="q" href="DesignLab/index.html?quest=calib">波長の目盛りまで含めた不確かさ</a></div>
+      <div><span class="cn">10-12</span><div class="ct"><a href="第10部_設計演習.html#s11">PET の検出器 / 蛍光寿命 / 振り返り</a></div><div class="cd">LYSO と MPPC で光電子 1,380 個・分解能 10.3%・飽和 4.6%、エネルギーの窓で散乱を落とし、TOF 200 ps で 3.0 cm。TCSPC はパイルアップ µ/2 と前のパルスからの持ち越し、1 画素 25 ms。3 つ＋2 つの装置の決め手を並べる。</div></div>
+      <div class="do"><span class="lbl">関連の課題</span><a class="q" href="PhotonLab/index.html?quest=scint">PET の分解能と飽和の窓</a><a class="q" href="PhotonLab/index.html?quest=pile">TCSPC の繰り返し</a><a class="q" href="PhotonLab/index.html?quest=count">数えて待つ</a></div>
     </div>
   </article>
 

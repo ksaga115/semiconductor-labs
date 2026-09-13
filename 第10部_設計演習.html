@@ -375,6 +375,37 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
 @keyframes p5orbit { from{transform:translateX(0)} to{transform:translateX(640px)} }
 .fly{animation:p5orbit 2.6s linear infinite}
 .fig-note{font-size:12px;color:var(--ink-3);margin-top:6px}
+/* ===== 第5部 11〜13 章の追加: 段ごとに現れる電子・走査線・数えた光子の点滅（reduced-motion では止めて全部見せる） ===== */
+@keyframes p5c0{0%{opacity:0}4%{opacity:1}90%{opacity:1}100%{opacity:0}}
+@keyframes p5c1{0%,18%{opacity:0}24%{opacity:1}90%{opacity:1}100%{opacity:0}}
+@keyframes p5c2{0%,36%{opacity:0}42%{opacity:1}90%{opacity:1}100%{opacity:0}}
+@keyframes p5c3{0%,54%{opacity:0}60%{opacity:1}90%{opacity:1}100%{opacity:0}}
+@keyframes p5c4{0%,70%{opacity:0}76%{opacity:1}90%{opacity:1}100%{opacity:0}}
+.casc .c0{animation:p5c0 6s linear infinite}.casc .c1{animation:p5c1 6s linear infinite}.casc .c2{animation:p5c2 6s linear infinite}
+.casc .c3{animation:p5c3 6s linear infinite}.casc .c4{animation:p5c4 6s linear infinite}
+@keyframes p5scan{from{transform:translateX(0)}to{transform:translateX(660px)}}
+.scan{animation:p5scan 6.6s linear infinite}
+@keyframes p5fl{0%{opacity:1}14%{opacity:.3}100%{opacity:.3}}
+.fl{animation:p5fl 6.6s linear infinite}
+@media (prefers-reduced-motion:reduce){.casc g,.fl{animation:none!important;opacity:1!important}.scan{animation:none!important;display:none}}
+</style>
+<style>
+/* ===== 第10部 追加分: 動く図。動くのは棒・点・線だけ。reduced-motion と監査では止まり、最後の形（全部の棒・線）を見せる ===== */
+@keyframes p10grow{0%{transform:scaleY(.02)}45%{transform:scaleY(1)}100%{transform:scaleY(1)}}
+.p10bar{transform-origin:bottom;transform-box:fill-box;animation:p10grow 6s ease-out infinite}
+@keyframes p10growx{0%{transform:scaleX(.02)}40%{transform:scaleX(1)}100%{transform:scaleX(1)}}
+.p10barx{transform-origin:left;transform-box:fill-box;animation:p10growx 5s ease-out infinite}
+@keyframes p10gl{0%{transform:translateX(0);opacity:1}45%{transform:translateX(-180px);opacity:1}47%,100%{transform:translateX(-180px);opacity:0}}
+@keyframes p10gr{0%{transform:translateX(0);opacity:1}95%{transform:translateX(380px);opacity:1}97%,100%{transform:translateX(380px);opacity:0}}
+.p10gl{animation:p10gl 3.2s linear infinite}.p10gr{animation:p10gr 3.2s linear infinite}
+@keyframes p10hitL{0%,44%{opacity:0}46%{opacity:.9}70%,100%{opacity:0}}
+@keyframes p10hitR{0%,94%{opacity:0}96%{opacity:.9}99%,100%{opacity:0}}
+.p10hitL{opacity:0;animation:p10hitL 3.2s linear infinite}.p10hitR{opacity:0;animation:p10hitR 3.2s linear infinite}
+@keyframes p10draw{0%{stroke-dashoffset:var(--len,800)}50%{stroke-dashoffset:0}100%{stroke-dashoffset:0}}
+.p10draw{stroke-dasharray:var(--len,800);animation:p10draw 6s linear infinite}
+/* 00 の地図と 12 の振り返りは列が 6 本 ― 細い列に日本語が縦に積まれないよう、狭い画面では横に送る */
+#s0 td,#s10 td{min-width:9em}
+@media (prefers-reduced-motion:reduce){.p10bar,.p10barx,.p10gl,.p10gr,.p10draw{animation:none!important}.p10hitL,.p10hitR{animation:none!important;opacity:0!important}}
 </style>
 <header class="wrap hero">
   <div class="hero-grid">
@@ -382,7 +413,7 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
       <a class="back" href="index.html">&larr; Labs / 半導体 ― 第10部 1台を設計する（総合演習）</a><br>
       <span class="eyebrow">Requirement &rarr; Budget &rarr; Dominant term &rarr; Decision &rarr; Check</span>
       <h1>1 台を<span class="lit">設計</span>する<br>― カメラ・LiDAR・分光器</h1>
-      <p class="sub">第0〜9部で道具は全部そろいました。この部では、それを<strong>1 台の装置として最後までつなぐ</strong>練習をします。題材は 3 つ ― 蛍光顕微鏡の<strong>微弱光カメラ</strong>、距離を測る <strong>LiDAR</strong>、小型の<strong>分光器</strong>。どれも、光子の数から出発して、雑音・部品の選定・読み出し・冷却・安全・信頼性まで、全部の数字を手で追います。数字はすべてこの部の中で計算した値で、仮定は仮定と明記しました。</p>
+      <p class="sub">第0〜9部で道具は全部そろいました。この部では、それを<strong>1 台の装置として最後までつなぐ</strong>練習をします。題材は 5 つ ― 蛍光顕微鏡の<strong>微弱光カメラ</strong>、距離を測る <strong>LiDAR</strong>、小型の<strong>分光器</strong>、そして PET の<strong>放射線の検出器モジュール</strong>と、<strong>蛍光寿命の測定</strong>。どれも、光子の数から出発して、雑音・部品の選定・読み出し・冷却・安全・信頼性まで、全部の数字を手で追います。数字はすべてこの部の中で計算した値で、仮定は仮定と明記しました。</p>
       <div class="depth-row">
         <div class="depth" role="group" aria-label="説明の深さ">
           <button id="dSimple" aria-pressed="true">かんたん</button>
@@ -430,8 +461,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li class="dom"><span>題材 C: 分光器</span></li>
     <li><a href="#s8"><span class="n">08</span><span>光学の設計</span></a></li>
     <li><a href="#s9"><span class="n">09</span><span>検出・校正・不確かさ</span></a></li>
+    <li class="dom"><span>題材 D: PET の検出器</span></li>
+    <li><a href="#s11"><span class="n">10</span><span>511 keV を数える</span></a></li>
+    <li class="dom"><span>題材 E: 蛍光寿命</span></li>
+    <li><a href="#s12"><span class="n">11</span><span>TCSPC で ns を測る</span></a></li>
     <li class="dom"><span>まとめ</span></li>
-    <li><a href="#s10"><span class="n">10</span><span>振り返り</span></a></li>
+    <li><a href="#s10"><span class="n">12</span><span>振り返り</span></a></li>
     <li class="dom"><span>付録</span></li>
     <li><a href="#scheck"><span class="n">—</span><span>理解の確認</span></a></li>
     <li><a href="#sgl"><span class="n">—</span><span>用語表</span></a></li>
@@ -458,8 +493,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <li class="dom"><span>C 分光器</span></li>
     <li><a href="#s8"><span class="n">08</span><span>光学の設計</span></a></li>
     <li><a href="#s9"><span class="n">09</span><span>検出と校正</span></a></li>
+    <li class="dom"><span>D PET</span></li>
+    <li><a href="#s11"><span class="n">10</span><span>511 keV</span></a></li>
+    <li class="dom"><span>E 蛍光寿命</span></li>
+    <li><a href="#s12"><span class="n">11</span><span>TCSPC</span></a></li>
     <li class="dom"><span>まとめ</span></li>
-    <li><a href="#s10"><span class="n">10</span><span>振り返り</span></a></li>
+    <li><a href="#s10"><span class="n">12</span><span>振り返り</span></a></li>
     <li class="dom"><span>付録</span></li>
     <li><a href="#scheck"><span class="n">—</span><span>理解の確認</span></a></li>
     <li><a href="#sgl"><span class="n">—</span><span>用語表</span></a></li>
@@ -473,19 +512,19 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
 <section class="stage" id="s0">
   <div class="stage-head"><span class="stage-num">00</span>
     <h2>この部の地図 ― 3 つの装置が、どの部の道具を使うか</h2></div>
-  <p class="lede">3 つの題材は、わざと性格の違うものを選びました。カメラは<b>光が少ないうえに、画素がたくさんある</b>。LiDAR は<b>時間を測り、背景光と戦い、目の安全の制約がある</b>。分光器は<b>光を波長に分けるので、1 画素あたりの光がさらに減り、校正が命</b>。同じ「光子を数える」でも、効いてくる部が違います。</p>
+  <p class="lede">題材は、わざと性格の違うものを選びました。カメラは<b>光が少ないうえに、画素がたくさんある</b>。LiDAR は<b>時間を測り、背景光と戦い、目の安全の制約がある</b>。分光器は<b>光を波長に分けるので、1 画素あたりの光がさらに減り、校正が命</b>。PET の検出器は<b>光子 1 個のエネルギーと時刻を同時に測り</b>、蛍光寿命は<b>ns の減衰を光子の到着時刻で測る</b>。同じ「光子を数える」でも、効いてくる部が違います。</p>
   <figure class="full">
     <div class="scroll-x">
       <table>
-        <thead><tr><th>設計の段階</th><th>A 微弱光カメラ</th><th>B LiDAR</th><th>C 分光器</th></tr></thead>
+        <thead><tr><th>設計の段階</th><th>A 微弱光カメラ</th><th>B LiDAR</th><th>C 分光器</th><th>D PET の検出器</th><th>E 蛍光寿命</th></tr></thead>
         <tbody>
-          <tr><td>光源</td><td>蛍光分子（第9部 03 の発光）</td><td>パルスの VCSEL（第9部 07・09）</td><td>ハロゲン・重水素、校正用の輝線ランプ（第9部 01・02）</td></tr>
-          <tr><td>光を集める</td><td>対物レンズの NA（第7部 04）</td><td>逆二乗とランバート反射（第7部 02・03）</td><td>スリット・ファイバの NA とエテンデュ（第7部 06）</td></tr>
-          <tr><td>光を分ける・選ぶ</td><td>蛍光フィルタ（第7部 07・10）</td><td>狭帯域フィルタ（第7部 10）</td><td>回折格子（第7部 11）</td></tr>
-          <tr><td>検出器</td><td>sCMOS か EM-CCD（第4部・第5部 04）</td><td>SPAD（第4部 SPAD・第5部 03）</td><td>シリコンのラインセンサ（第5部 07）</td></tr>
-          <tr><td>読み出し</td><td>ADC とデータ量（第6部 09・11）</td><td>TDC とヒストグラム（第5部 06）</td><td>ADC と平均（第6部 09）</td></tr>
-          <tr><td>雑音の会計</td><td>読み出し・ショット・増倍の F²（第0部 02・第5部 03）</td><td>背景光・不感時間（第0部 02）</td><td>ショット・迷光（第7部 11）</td></tr>
-          <tr><td>熱・信頼性・安全</td><td>TEC と放熱（第8部 04・05）</td><td>目の安全のクラス（第8部 12）</td><td>校正と不確かさ（第8部 10）</td></tr>
+          <tr><td>光源</td><td>蛍光分子（励起光で光る。第7部 13 の蛍光顕微鏡）</td><td>パルスの VCSEL（第9部 07・09）</td><td>ハロゲン・重水素、校正用の輝線ランプ（第9部 01・02）</td><td>陽電子の消滅（反対向きの 511 keV の光子 2 つ）</td><td>パルスのレーザー（第9部 09）</td></tr>
+          <tr><td>光を集める</td><td>対物レンズの NA（第7部 04）</td><td>逆二乗とランバート反射（第7部 02・03）</td><td>スリット・ファイバの NA とエテンデュ（第7部 06）</td><td>結晶の中の光を MPPC へ（集光）</td><td>対物レンズ（第7部 13）</td></tr>
+          <tr><td>光を分ける・選ぶ</td><td>蛍光フィルタ（第7部 07・10）</td><td>狭帯域フィルタ（第7部 10）</td><td>回折格子（第7部 11）</td><td>エネルギーの窓で散乱を落とす</td><td>蛍光フィルタ（第7部 16）</td></tr>
+          <tr><td>検出器</td><td>sCMOS か EM-CCD（第4部・第5部 04）</td><td>SPAD（第4部 SPAD・第5部 03）</td><td>シリコンのラインセンサ（第5部 07）</td><td>LYSO の結晶 ＋ MPPC（第5部 03・09）</td><td>PMT・SPAD（第5部 02・03）</td></tr>
+          <tr><td>読み出し</td><td>ADC とデータ量（第6部 09・11）</td><td>TDC とヒストグラム（第5部 06）</td><td>ADC と平均（第6部 09）</td><td>同時計数と到着時刻（TOF）</td><td>TCSPC（第5部 06）</td></tr>
+          <tr><td>雑音の会計</td><td>読み出し・ショット・増倍の F²（第0部 02・第5部 03）</td><td>背景光・不感時間（第0部 02）</td><td>ショット・迷光（第7部 11）</td><td>光電子の統計・固有の分解能・偶発同時計数</td><td>光子数の 1/√N・パイルアップ（第5部 12）</td></tr>
+          <tr><td>熱・信頼性・安全</td><td>TEC と放熱（第8部 04・05）</td><td>目の安全のクラス（第8部 12）</td><td>校正と不確かさ（第8部 10）</td><td>MPPC の利得の温度（第5部 03）</td><td>レーザーの安全（第8部 12）</td></tr>
         </tbody>
       </table>
     </div>
@@ -534,13 +573,13 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     </div>
     <div class="body-col">
       <h3>その 245 電子は、何画素に広がるか</h3>
-      <p>点像の広がりは回折で決まる（第7部 04）。半値全幅はおよそ 0.51λ/NA = <b>0.20 µm</b>、レイリーの分解能は 0.61λ/NA = 0.24 µm。センサの画素が 6.5 µm で、倍率 100 倍なら、試料の上で <b>65 nm</b> の画素。分解能 0.24 µm を正しく標本化するには、その半分の 0.12 µm より細かい画素が要る（第0部 03 のナイキスト）ので、65 nm は条件を満たしています。輝点は約 <b>3×3 = 9 画素</b>に広がると仮定します。</p>
+      <p>点像の広がりは回折で決まる（第7部 04）。半値全幅はおよそ 0.51λ/NA = <b>0.20 µm</b>（λ = 550 nm）、レイリーの分解能は 0.61λ/NA = 0.24 µm。センサの画素が 6.5 µm で、倍率 100 倍なら、試料の上で <b>65 nm</b> の画素。分解能 0.24 µm を正しく標本化するには、その半分の 0.12 µm より細かい画素が要る（第0部 03 のナイキスト）ので、65 nm は条件を満たしています。輝点は約 <b>3×3 = 9 画素</b>に広がると仮定します。</p>
       <p><span class="key">細かく標本化するほど、同じ信号がたくさんの画素に分かれて、画素ごとの読み出し雑音が増える</span> ― 解像と SN 比の取り合いが、ここにもあります。</p>
     </div>
   </div>
 
   <figure class="full">
-    <div class="fig-head"><span class="fig-title">BUDGET — 分子の光子から、センサの電子まで</span><span class="fig-title">棒の長さは対数（1 目盛り ＝ 10 倍）</span></div>
+    <div class="fig-head"><span class="fig-title">BUDGET — 分子の光子から、センサの電子まで</span><span class="fig-title">棒の長さは対数（1 目盛り ＝ 10 倍）・段の順に伸びる</span></div>
     <div class="fig-body scroll-x">
       <svg viewBox="0 0 760 214" role="img" aria-label="光の予算の棒グラフ（対数）。分子が出す光子 毎秒2×10⁵個、対物レンズに入るのは30.7%で6.1×10⁴個、光学系を抜けるのは半分で3.1×10⁴個、量子効率80%で2.45×10⁴電子、10ミリ秒の露光で245電子。" style="min-width:700px;width:100%;display:block">
         <g font-size="10.5" fill="var(--ink-2)" text-anchor="end">
@@ -550,11 +589,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <text x="240" y="130">電子になる（×QE 0.8）</text>
           <text x="240" y="160">10 ms の露光で</text>
         </g>
-        <rect x="250" y="28" width="387.1" height="16" fill="var(--photon)" opacity="0.8"/>
-        <rect x="250" y="58" width="340.9" height="16" fill="var(--photon)" opacity="0.65"/>
-        <rect x="250" y="88" width="313.8" height="16" fill="var(--photon)" opacity="0.5"/>
-        <rect x="250" y="118" width="305" height="16" fill="var(--electron)" opacity="0.65"/>
-        <rect x="250" y="148" width="125" height="16" fill="var(--electron)" opacity="0.9"/>
+        <rect class="p10barx" style="animation-delay:0s" x="250" y="28" width="387.1" height="16" fill="var(--photon)" opacity="0.8"/>
+        <rect class="p10barx" style="animation-delay:0.35s" x="250" y="58" width="340.9" height="16" fill="var(--photon)" opacity="0.65"/>
+        <rect class="p10barx" style="animation-delay:0.7s" x="250" y="88" width="313.8" height="16" fill="var(--photon)" opacity="0.5"/>
+        <rect class="p10barx" style="animation-delay:1.05s" x="250" y="118" width="305" height="16" fill="var(--electron)" opacity="0.65"/>
+        <rect class="p10barx" style="animation-delay:1.4s" x="250" y="148" width="125" height="16" fill="var(--electron)" opacity="0.9"/>
         <g font-family="var(--mono)" font-size="10" fill="var(--ink-2)">
           <text x="643" y="40">2.0×10⁵ /s</text><text x="597" y="70">6.1×10⁴ /s</text><text x="570" y="100">3.1×10⁴ /s</text><text x="561" y="130">2.45×10⁴ e⁻/s</text><text x="381" y="160">245 e⁻</text>
         </g>
@@ -572,6 +611,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <span class="tag">例題 ― 手で一度解く（02 光の予算）</span>
     <p><b>問.</b> 対物レンズを NA 1.4 の油浸から NA 0.95 の乾燥系（空気 n = 1）に替えると、集める割合はいくつになり、10 ms の信号は何電子になるか。</p>
     <p><b>解.</b> θ = arcsin 0.95 = 71.8°、(1 − cos 71.8°)/2 = <b>34.4%</b>。数字の上では油浸（30.7%）より多いが、これは等方的に光る点を空気中に置いたときの値です。実際の試料はカバーガラスと水の中にあり、空気の対物レンズには屈折率の段差で全反射する光（臨界角の外）が入らないので、<b>拾える光はずっと少なくなる</b>。<span class="key">NA の公式だけで比べると間違える</span> ― 光がどの媒質から出るかまで含めて考えるのが、第7部 06・07 の「場所と角度」の教訓です（この部では油浸の 245 電子を使います）。</p>
+  </div>
+  <div class="lab-go">
+    <span class="tag">手を動かす — DesignLab 第1章</span>
+    <p>露光を 5 ms に縮めても SN 比 10 を保つには、どの段の 2 倍を買うか ― 透過と量子効率の上限の中で探す。</p>
+    <div class="qs"><a href="DesignLab/index.html?quest=fast">5 ms で SN 比 10</a></div>
   </div>
 </section>
 
@@ -632,7 +676,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   <div class="ex">
     <span class="tag">例題 ― 手で一度解く（03 雑音と選定）</span>
     <p><b>問.</b> 背景が無く、輝点の信号が 2.45 電子（10 倍暗い色素で、さらに 10 倍短い 1 ms の露光）のとき、sCMOS と EM-CCD の SN 比は？ どちらを選ぶか。</p>
-    <p><b>解.</b> sCMOS: 2.45/√(2.45 + 23) = <b>0.49</b>。EM-CCD: 2.45/√(2 × 2.45) = <b>1.11</b>。EM-CCD が 2 倍以上良い ― 交差点（23 電子）より暗いから。ただし SN 比 1 では輝点はほとんど見えないので、要求（SN 比 10）を満たすには、どちらを選んでも露光か明るさを約 80 倍にする必要がある。<span class="key">部品の選定は、要求を満たせる範囲の中でしか意味がない</span>。</p>
+    <p><b>解.</b> sCMOS: 2.45/√(2.45 + 23) = <b>0.49</b>。EM-CCD: 2.45/√(2 × 2.45) = <b>1.11</b>。EM-CCD が 2 倍以上良い ― 交差点（23 電子）より暗いから。ただし SN 比 1 では輝点はほとんど見えない。要求（SN 比 10）を満たすには、EM-CCD なら S = 200 e⁻（約 82 倍）、sCMOS なら S ≈ 119 e⁻（約 49 倍）まで露光か明るさを上げる必要があり、そこまで明るくすると交差点を越えるので、今度は sCMOS のほうが少ない倍率で済む。<span class="key">部品の選定は、要求を満たせる範囲の中でしか意味がない</span>。</p>
+  </div>
+  <div class="lab-go">
+    <span class="tag">手を動かす — DesignLab 第1章</span>
+    <p>10 倍暗い色素・背景 0 で、sCMOS か EM-CCD かを選び、15 ms 以内に SN 比 2 を出す ― 交差点の向こう側を自分の手で確かめる。</p>
+    <div class="qs"><a href="DesignLab/index.html?quest=dark">暗い輝点は EM-CCD</a></div>
   </div>
 </section>
 
@@ -661,6 +710,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <span class="tag">例題 ― 手で一度解く（04 読み出し・データ・冷却）</span>
     <p><b>問.</b> 同じカメラで、画素を 2×2 まとめて読む（ビニング）と、1 輝点の SN 比とデータ量はどうなるか。読み出し雑音は 4 画素を足した後に 1 回だけ乗る（CCD の電荷の足し合わせ）場合と、4 画素をそれぞれ読んでから足す（CMOS のデジタルの足し合わせ）場合で比べよ。</p>
     <p><b>解.</b> 輝点の 9 画素は約 2.25 個（端数は切り上げて 3 個）のまとめた画素になる。電荷の足し合わせなら読み出し雑音は 3 × 1.6² = 7.7 で、SNR = 245/√(245 + 45 + 7.7) = <b>14.2</b>（わずかに良くなる）。デジタルの足し合わせでは読み出し雑音は元の 9 画素ぶん（23）と変わらず SNR 13.9 のまま。データ量はどちらも <b>1/4</b>（1.7 Gb/s）。<span class="key">CMOS のビニングは主にデータを減らす手段で、雑音の得は CCD ほど大きくない</span>。この明るさでは支配項がショット雑音なので、どちらでも SN 比はほとんど変わりません。</p>
+  </div>
+  <div class="lab-go">
+    <span class="tag">手を動かす — DesignLab 第1章</span>
+    <p>1 LSB を読み出し雑音の半分以下にしたまま 180 枚/秒を CXP-12 の 1 本に収める。10 秒の露光で暗電流を床の下に沈める、冷却の温度差の窓を探す。</p>
+    <div class="qs"><a href="DesignLab/index.html?quest=data">180 枚/秒を 1 本の線で</a><a href="DesignLab/index.html?quest=tec">10 秒の露光で暗電流を床の下へ</a></div>
   </div>
 </section>
 
@@ -715,6 +769,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p><b>問.</b> 同じ装置で、反射率 80% の白い物体なら 200 m で何個戻るか。反射率 10% の物体を 29.6 個のまま 300 m で測るには、パルスのエネルギーを何倍にする必要があるか。</p>
     <p><b>解.</b> 反射率に比例するので 29.6 × 8 = <b>237 個</b>。300 m では (300/200)² = 2.25 倍遠い損なので、エネルギーは <b>2.25 倍</b>（225 nJ）。ただしパルスのエネルギーと平均の出力は目の安全のクラスで上限が決まる（07）ので、<span class="key">距離を延ばす方法は「強く出す」より「大きく受ける・背景を減らす」</span>が先になります。</p>
   </div>
+  <div class="lab-go">
+    <span class="tag">手を動かす — DesignLab 第2章</span>
+    <p>300 m で 1 パルス 30 個を、強く出さずに受光口の大きさで稼ぐ。</p>
+    <div class="qs"><a href="DesignLab/index.html?quest=range">300 m で 1 パルス 30 個</a></div>
+  </div>
 </section>
 
 <!-- ================= 06 ================= -->
@@ -738,11 +797,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   </div>
 
   <figure class="full">
-    <div class="fig-head"><span class="fig-title">HISTOGRAM — 100 回のパルスを積むと、反射の山が床から立つ</span><span class="fig-title">改善後の設計・200 m・縦軸は対数</span></div>
+    <div class="fig-head"><span class="fig-title">HISTOGRAM — 100 回のパルスを積むと、反射の山が床から立つ</span><span class="fig-title">改善後の設計・200 m・縦軸は対数・積もる様子が動く</span></div>
     <div class="fig-body scroll-x">
       <svg viewBox="0 0 760 220" role="img" aria-label="到着時刻のヒストグラム。横軸は1ナノ秒のビン、縦軸はカウントの対数。背景光による床は1ビンあたり約2.7カウントで平らに散らばり、200メートルの反射の位置に約2960カウントの山が立っている。" style="min-width:700px;width:100%;display:block">
         <g stroke="var(--line)" stroke-width="1" fill="none"><path d="M80 40 V190 H700"/></g>
-        <rect x="81" y="158.5" width="8" height="31.5" fill="var(--ink-3)" opacity="0.8"/><rect x="91" y="162.9" width="8" height="27.1" fill="var(--ink-3)" opacity="0.8"/><rect x="101" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect x="111" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect x="121" y="168.5" width="8" height="21.5" fill="var(--ink-3)" opacity="0.8"/><rect x="131" y="168.5" width="8" height="21.5" fill="var(--ink-3)" opacity="0.8"/><rect x="141" y="162.9" width="8" height="27.1" fill="var(--ink-3)" opacity="0.8"/><rect x="151" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect x="161" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect x="171" y="162.9" width="8" height="27.1" fill="var(--ink-3)" opacity="0.8"/><rect x="181" y="155.0" width="8" height="35.0" fill="var(--ink-3)" opacity="0.8"/><rect x="191" y="190.0" width="8" height="0.0" fill="var(--ink-3)" opacity="0.8"/><rect x="201" y="168.5" width="8" height="21.5" fill="var(--ink-3)" opacity="0.8"/><rect x="211" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect x="221" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect x="231" y="190.0" width="8" height="0.0" fill="var(--ink-3)" opacity="0.8"/><rect x="241" y="190.0" width="8" height="0.0" fill="var(--ink-3)" opacity="0.8"/><rect x="251" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect x="261" y="168.5" width="8" height="21.5" fill="var(--ink-3)" opacity="0.8"/><rect x="271" y="168.5" width="8" height="21.5" fill="var(--ink-3)" opacity="0.8"/><rect x="281" y="162.9" width="8" height="27.1" fill="var(--ink-3)" opacity="0.8"/><rect x="291" y="168.5" width="8" height="21.5" fill="var(--ink-3)" opacity="0.8"/><rect x="301" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect x="311" y="158.5" width="8" height="31.5" fill="var(--ink-3)" opacity="0.8"/><rect x="321" y="162.9" width="8" height="27.1" fill="var(--ink-3)" opacity="0.8"/><rect x="331" y="162.9" width="8" height="27.1" fill="var(--ink-3)" opacity="0.8"/><rect x="341" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect x="351" y="162.9" width="8" height="27.1" fill="var(--ink-3)" opacity="0.8"/><rect x="361" y="168.5" width="8" height="21.5" fill="var(--ink-3)" opacity="0.8"/><rect x="371" y="152.0" width="8" height="38.0" fill="var(--ink-3)" opacity="0.8"/><rect x="391" y="168.5" width="8" height="21.5" fill="var(--ink-3)" opacity="0.8"/><rect x="401" y="158.5" width="8" height="31.5" fill="var(--ink-3)" opacity="0.8"/><rect x="411" y="168.5" width="8" height="21.5" fill="var(--ink-3)" opacity="0.8"/><rect x="421" y="139.9" width="8" height="50.1" fill="var(--photon)" opacity="0.8"/><rect x="431" y="118.9" width="8" height="71.1" fill="var(--photon)" opacity="0.8"/><rect x="441" y="100.4" width="8" height="89.6" fill="var(--photon)" opacity="0.8"/><rect x="451" y="85.7" width="8" height="104.3" fill="var(--photon)" opacity="0.8"/><rect x="461" y="75.0" width="8" height="115.0" fill="var(--photon)" opacity="0.8"/><rect x="471" y="68.6" width="8" height="121.4" fill="var(--photon)" opacity="0.8"/><rect x="481" y="66.4" width="8" height="123.6" fill="var(--photon)" opacity="0.8"/><rect x="491" y="68.6" width="8" height="121.4" fill="var(--photon)" opacity="0.8"/><rect x="501" y="75.0" width="8" height="115.0" fill="var(--photon)" opacity="0.8"/><rect x="511" y="85.7" width="8" height="104.3" fill="var(--photon)" opacity="0.8"/><rect x="521" y="100.4" width="8" height="89.6" fill="var(--photon)" opacity="0.8"/><rect x="531" y="118.9" width="8" height="71.1" fill="var(--photon)" opacity="0.8"/><rect x="541" y="139.9" width="8" height="50.1" fill="var(--photon)" opacity="0.8"/><rect x="551" y="168.5" width="8" height="21.5" fill="var(--ink-3)" opacity="0.8"/><rect x="561" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect x="571" y="155.0" width="8" height="35.0" fill="var(--ink-3)" opacity="0.8"/><rect x="581" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect x="591" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect x="601" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect x="611" y="190.0" width="8" height="0.0" fill="var(--ink-3)" opacity="0.8"/><rect x="621" y="168.5" width="8" height="21.5" fill="var(--ink-3)" opacity="0.8"/><rect x="631" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect x="641" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect x="651" y="162.9" width="8" height="27.1" fill="var(--ink-3)" opacity="0.8"/><rect x="661" y="162.9" width="8" height="27.1" fill="var(--ink-3)" opacity="0.8"/><rect x="671" y="162.9" width="8" height="27.1" fill="var(--ink-3)" opacity="0.8"/><rect x="681" y="168.5" width="8" height="21.5" fill="var(--ink-3)" opacity="0.8"/><rect x="691" y="190.0" width="8" height="0.0" fill="var(--ink-3)" opacity="0.8"/>
+        <rect class="p10bar" x="81" y="158.5" width="8" height="31.5" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="91" y="162.9" width="8" height="27.1" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="101" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="111" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="121" y="168.5" width="8" height="21.5" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="131" y="168.5" width="8" height="21.5" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="141" y="162.9" width="8" height="27.1" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="151" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="161" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="171" y="162.9" width="8" height="27.1" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="181" y="155.0" width="8" height="35.0" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="191" y="190.0" width="8" height="0.0" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="201" y="168.5" width="8" height="21.5" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="211" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="221" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="231" y="190.0" width="8" height="0.0" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="241" y="190.0" width="8" height="0.0" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="251" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="261" y="168.5" width="8" height="21.5" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="271" y="168.5" width="8" height="21.5" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="281" y="162.9" width="8" height="27.1" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="291" y="168.5" width="8" height="21.5" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="301" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="311" y="158.5" width="8" height="31.5" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="321" y="162.9" width="8" height="27.1" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="331" y="162.9" width="8" height="27.1" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="341" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="351" y="162.9" width="8" height="27.1" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="361" y="168.5" width="8" height="21.5" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="371" y="152.0" width="8" height="38.0" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="391" y="168.5" width="8" height="21.5" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="401" y="158.5" width="8" height="31.5" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="411" y="168.5" width="8" height="21.5" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="421" y="139.9" width="8" height="50.1" fill="var(--photon)" opacity="0.8"/><rect class="p10bar" x="431" y="118.9" width="8" height="71.1" fill="var(--photon)" opacity="0.8"/><rect class="p10bar" x="441" y="100.4" width="8" height="89.6" fill="var(--photon)" opacity="0.8"/><rect class="p10bar" x="451" y="85.7" width="8" height="104.3" fill="var(--photon)" opacity="0.8"/><rect class="p10bar" x="461" y="75.0" width="8" height="115.0" fill="var(--photon)" opacity="0.8"/><rect class="p10bar" x="471" y="68.6" width="8" height="121.4" fill="var(--photon)" opacity="0.8"/><rect class="p10bar" x="481" y="66.4" width="8" height="123.6" fill="var(--photon)" opacity="0.8"/><rect class="p10bar" x="491" y="68.6" width="8" height="121.4" fill="var(--photon)" opacity="0.8"/><rect class="p10bar" x="501" y="75.0" width="8" height="115.0" fill="var(--photon)" opacity="0.8"/><rect class="p10bar" x="511" y="85.7" width="8" height="104.3" fill="var(--photon)" opacity="0.8"/><rect class="p10bar" x="521" y="100.4" width="8" height="89.6" fill="var(--photon)" opacity="0.8"/><rect class="p10bar" x="531" y="118.9" width="8" height="71.1" fill="var(--photon)" opacity="0.8"/><rect class="p10bar" x="541" y="139.9" width="8" height="50.1" fill="var(--photon)" opacity="0.8"/><rect class="p10bar" x="551" y="168.5" width="8" height="21.5" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="561" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="571" y="155.0" width="8" height="35.0" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="581" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="591" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="601" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="611" y="190.0" width="8" height="0.0" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="621" y="168.5" width="8" height="21.5" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="631" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="641" y="176.5" width="8" height="13.5" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="651" y="162.9" width="8" height="27.1" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="661" y="162.9" width="8" height="27.1" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="671" y="162.9" width="8" height="27.1" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="681" y="168.5" width="8" height="21.5" fill="var(--ink-3)" opacity="0.8"/><rect class="p10bar" x="691" y="190.0" width="8" height="0.0" fill="var(--ink-3)" opacity="0.8"/>
         <g font-size="10">
           <text x="90" y="140" fill="var(--ink-2)">背景の床（1 ns あたり約 2.7 カウント）</text>
           <text x="420" y="54" fill="var(--photon-2)">反射の山（合計 2,960 カウント、σ ≈ 2.1 ns）</text>
@@ -765,6 +824,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <span class="tag">例題 ― 手で一度解く（06 背景光と飽和）</span>
     <p><b>問.</b> 改善後の設計（背景 2.7×10⁷ /s）で、不感時間を 10 ns から 40 ns に延ばした SPAD を使うと r·τ<sub>d</sub> はいくつか。夜（背景を 1/1000 と仮定）なら？</p>
     <p><b>解.</b> 2.7×10⁷ × 40×10⁻⁹ = <b>1.08</b> ― 再び飽和の領域に入る。夜なら 2.7×10⁴ /s × 40 ns = <b>0.001</b> で問題にならない。<span class="key">同じ装置が昼に失格で夜に合格する</span> ― LiDAR の性能表に「照度 何 lx の下で」と条件が書かれる理由です。</p>
+  </div>
+  <div class="lab-go">
+    <span class="tag">手を動かす — DesignLab 第2章</span>
+    <p>フィルタの幅と瞬時視野で r·τ<sub>d</sub> を 0.3 以下にする。改善後の背景のまま、アフターパルスとの兼ね合いで不感時間の窓を探す。</p>
+    <div class="qs"><a href="DesignLab/index.html?quest=sun">昼の背景で SPAD を飽和させない</a><a href="DesignLab/index.html?quest=dead">不感時間を選ぶ</a></div>
   </div>
 </section>
 
@@ -799,7 +863,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   <div class="ex">
     <span class="tag">例題 ― 手で一度解く（07 精度と速さ）</span>
     <p><b>問.</b> 要求を「200 m で精度 2 cm」にすると、何個の光子を集めればよいか。1 パルス 29.6 個なら何パルスで、100 kHz で何 ms かかるか。</p>
-    <p><b>解.</b> 32 cm/√N ≤ 2 cm から N ≥ (32/2)² = <b>256 個</b>。256/29.6 = 8.7 なので <b>9 パルス</b>、0.09 ms。暗い物体でも精度の要求は満たせるが、実際には背景光と、物体の傾き（パルスが時間的に広がる）で理想より悪くなるので、余裕を 2〜3 倍見込むのがふつうです。</p>
+    <p><b>解.</b> 32 cm/√N ≤ 2 cm から N ≥ (32/2)² = <b>256 個</b>。256/29.6 = 8.6 なので <b>9 パルス</b>、0.09 ms。暗い物体でも精度の要求は満たせるが、実際には背景光と、物体の傾き（パルスが時間的に広がる）で理想より悪くなるので、余裕を 2〜3 倍見込むのがふつうです。</p>
+  </div>
+  <div class="lab-go">
+    <span class="tag">手を動かす — DesignLab 第2章</span>
+    <p>9 パルスを 100 kHz で積んで 2 cm を 0.1 ms で ― 精度・速さ・あいまいさのない距離の三すくみ。</p>
+    <div class="qs"><a href="DesignLab/index.html?quest=prec">200 m で 2 cm を 0.1 ms で</a></div>
   </div>
 </section>
 
@@ -853,7 +922,12 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
   <div class="ex">
     <span class="tag">例題 ― 手で一度解く（08 光学の設計）</span>
     <p><b>問.</b> 同じセンサで 400〜700 nm だけを 1 nm 以下の分解能で測りたい。格子の本数とスリットの幅はどうするか（f = 50 mm のまま）。</p>
-    <p><b>解.</b> 300 nm を 12.8 mm に収めるには 300/12.8 ≈ 23 nm/mm で、d ≈ 23 × 50 ≈ 1,170 nm、約 <b>850 本/mm</b>（入手しやすい 900 本/mm なら約 22 nm/mm で、300 nm の範囲は約 13.5 mm とセンサより少し長くなるので、範囲を少し狭めるか角度で調整する）。1 画素は 22 × 0.025 ≈ 0.55 nm、スリット 25 µm で分解能は約 1.1 nm ― 1 nm 以下には、スリットを 20 µm 程度に絞るか、焦点距離を延ばす。<span class="key">範囲を半分にすると、同じセンサで分解能は約 2 倍</span>になる、という取り合いです。</p>
+    <p><b>解.</b> 300 nm を 12.8 mm に収めるには 300/12.8 ≈ 23 nm/mm で、d ≈ 23 × 50 ≈ 1,170 nm、約 <b>850 本/mm</b>（入手しやすい 900 本/mm なら中心の 550 nm で約 21.6 nm/mm。ただし格子方程式で位置を計算すると 400〜700 nm の全長は約 14.0 mm で、センサ（12.8 mm）より長い ― 範囲を 400〜675 nm に狭めるか、角度で調整する）。1 画素は 21.6 × 0.025 ≈ 0.54 nm、分解能の目安は 2 画素ぶんの約 1.08 nm。スリットを 2 画素（50 µm）より細くしても 2 画素で標本化する限界は変わらないので、1 nm 以下には、焦点距離を約 54 mm 以上に延ばす（範囲はさらに 400〜655 nm に縮む）か、画素の細かいセンサにする（14 µm の画素なら約 0.60 nm）。<span class="key">範囲を半分にすると、同じセンサで分解能は約 2 倍</span>になる、という取り合いです。</p>
+  </div>
+  <div class="lab-go">
+    <span class="tag">手を動かす — DesignLab 第3章</span>
+    <p>格子の本数で範囲と分解能を両立させる。スリットを 2 画素まで広げて、分解能を落とさずに明るさを稼ぐ。</p>
+    <div class="qs"><a href="DesignLab/index.html?quest=grat">格子の本数で範囲と分解能を両立</a><a href="DesignLab/index.html?quest=slit">スリットで明るさを稼ぐ</a></div>
   </div>
 </section>
 
@@ -890,24 +964,158 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <p><b>問.</b> 吸収のスペクトルの傾きが 0.01 AU/nm の場所で、波長の校正のずれが 0.1 nm あった。吸光度はどれだけずれるか。100 回平均のショット雑音（1.4×10⁻⁴）と比べよ。</p>
     <p><b>解.</b> 0.01 × 0.1 = <b>0.001 AU</b> ― ショット雑音の約 7 倍で、支配項になる。平均を 1 万回に増やしても（1.4×10⁻⁵）全体はほとんど良くならない。<span class="key">分光の精度は、光子を集めるより先に、波長の目盛りで決まることが多い</span> ― 校正の残差を 0.01 nm 級に詰めるか、吸収の山の頂上で測るのが先です。</p>
   </div>
+  <div class="lab-go">
+    <span class="tag">手を動かす — DesignLab 第3章</span>
+    <p>平均の回数で吸光度の雑音を 1×10⁻⁴ に。測る場所の吸収の傾きまで含めて、不確かさを 2×10⁻⁴ に収める。</p>
+    <div class="qs"><a href="DesignLab/index.html?quest=absorb">吸光度の雑音を 1×10⁻⁴ に</a><a href="DesignLab/index.html?quest=calib">波長の目盛りまで含めた不確かさ</a></div>
+  </div>
+</section>
+
+<!-- ================= 10（題材 D） ================= -->
+<section class="stage" id="s11">
+  <div class="stage-head"><span class="stage-num">10</span>
+    <h2>題材 D PET の検出器モジュール ― 511 keV の光子を、エネルギーと時刻で数える</h2></div>
+  <p class="lede">要求: <b>陽電子の消滅で反対向きに出る 2 つの 511 keV の光子を、LYSO の結晶と MPPC で受け、エネルギーの分解能（FWHM）11% 以下で散乱した光子を落とし、同時計数で 1 本の線を決める</b>。道具は第5部 09（放射線を数える）・第5部 03（MPPC）・第5部 12（数えられる速さ）です。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>光の予算 ― 1 個の光子が、何個の光電子になるか</h3>
+      <p>511 keV の光子が結晶で全部のエネルギーを落とすと、LYSO の光量を <b>30 光子/keV</b> と仮定して 15,330 個の光が出ます。結晶の端の MPPC に届くのが 30%（集光、仮定）で 4,599 個、検出効率 0.3（仮定）で <b>1,380 光電子</b>。カメラの 02 と同じ掛け算で、いちばん大きく減るのは集光と検出効率の段です。</p>
+      <h3>エネルギーの分解能 ― 統計と、結晶自身の揺らぎ</h3>
+      <p>光電子の数の統計による分解能は 2.355√(F/N)。MPPC のクロストークを 5% と仮定して F = 1.05 とすると <b>6.5%</b>。結晶の発光そのもののばらつき（固有の分解能、8% と仮定）と二乗和で <b>10.3%</b>（FWHM）― 要求の 11% を満たします。<span class="key">支配項は結晶の固有の分解能に近く、光電子をいくら増やしても 8% より良くはならない</span>（第8部 07 の二乗和）。</p>
+      <p>MPPC は 1 個のセルが 1 回しか鳴らないので、セル 14,400 個に 1,380 個の光電子が来ると、同じセルに 2 個入る分を数え落として、出力は約 4.6% 少なく出ます（N<sub>出力</sub> = N<sub>セル</sub>(1 − e<sup>−N/N<sub>セル</sub></sup>)、クロストークを入れないとき）。エネルギーの目盛りは、この曲がりを校正で直します。</p>
+    </div>
+    <div class="body-col">
+      <h3>散乱した光子を落とす ― エネルギーの窓</h3>
+      <p>体の中でコンプトン散乱して角度 θ 曲がった光子のエネルギーは、511 keV の光子なら E′ = 511/(2 − cos θ) keV。60° で 341 keV、30° で 451 keV。窓の下限を 425 keV にすると <b>37° より大きく曲がった光子</b>は落とせるが、それより小さい角度の散乱は本物と区別できない。分解能 10.3%（σ 22.4 keV）なら、本物の 511 keV は 425〜650 keV の窓にほぼ全部（99.99%）入ります。<span class="key">分解能が良いほど窓を狭められ、散乱をより多く落とせる</span>。</p>
+      <h3>止める・同時に数える・時刻で位置を決める</h3>
+      <p>LYSO の 511 keV の減衰長を約 1.2 cm（代表値）とすると、20 mm の結晶で止まる確率は 1 − e<sup>−20/12</sup> = 81%、両側とも止まるのは 66%。同時計数の窓 W = 4 ns のとき、無関係な 2 つの光子が偶然そろう率は R = W·S₁·S₂ で、両側の単独の計数が 1×10⁵ /s なら <b>40 /s</b>。両側の到着時刻の差 Δt から線の上の位置が c·Δt/2 で決まり（TOF）、時刻の分解能 200 ps（FWHM）で <b>3.0 cm</b>、500 ps で 7.5 cm。LYSO の発光の減衰を約 40 ns（代表値）として 5 倍の 200 ns を積分すると、1 つのチャネルに 1×10⁶ /s 来れば 18% のパルスに次のパルスが重なる（1 − e<sup>−rT</sup>、第5部 12）。2×10⁵ /s なら 3.9%。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">COINCIDENCE — 2 つの 511 keV が反対向きに走る</span><span class="fig-title">動く図・同じ速さで、近い側に先に着く</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 236" role="img" aria-label="PET の同時計数の図。消滅の点から 2 つの 511 keV の光子が反対向きに同じ速さで走り、消滅の点に近い左の結晶に先に着く。到着の差 Δt から線の上の位置が決まる。" style="min-width:700px;width:100%;display:block">
+        <text x="380" y="30" font-size="11" fill="var(--ink-2)" text-anchor="middle">陽電子の消滅 → 511 keV の光子が 2 つ反対向きに → 両側が同時に鳴れば 1 本の線（LOR）</text>
+        <rect x="56" y="66" width="44" height="88" fill="var(--surface-3)" stroke="var(--ink-3)" stroke-width="1"/>
+        <rect x="660" y="66" width="44" height="88" fill="var(--surface-3)" stroke="var(--ink-3)" stroke-width="1"/>
+        <rect class="p10hitL" x="56" y="66" width="44" height="88" fill="var(--photon)"/>
+        <rect class="p10hitR" x="660" y="66" width="44" height="88" fill="var(--photon)"/>
+        <path d="M100 110 H660" stroke="var(--line)" stroke-width="1" stroke-dasharray="4 4" fill="none"/>
+        <circle cx="280" cy="110" r="6" fill="var(--warn)"/>
+        <circle class="p10gl" cx="280" cy="110" r="4" fill="var(--photon)"/>
+        <circle class="p10gr" cx="280" cy="110" r="4" fill="var(--photon)"/>
+        <g font-size="10.5" fill="var(--ink-2)" text-anchor="middle">
+          <text x="280" y="92">消滅の点</text>
+          <text x="190" y="136">← 511 keV</text>
+          <text x="470" y="136">511 keV →</text>
+          <text x="78" y="174">LYSO 20 mm</text>
+          <text x="682" y="174">LYSO 20 mm</text>
+        </g>
+        <path d="M100 190 H280 M100 185 V195 M280 185 V195 M280 190 H660 M660 185 V195" stroke="var(--ink-3)" stroke-width="1" fill="none"/>
+        <g font-size="10.5" fill="var(--ink-2)" text-anchor="middle"><text x="190" y="210">x₁</text><text x="470" y="210">x₂</text></g>
+        <text x="380" y="230" font-size="10.5" fill="var(--ink-3)" text-anchor="middle">到着の差 Δt = (x₂ − x₁)/c → 線の上の位置は c·Δt/2 の精度で決まる（200 ps FWHM で 3.0 cm）</text>
+      </svg>
+    </div>
+    <figcaption>2 つの点は同じ速さ（光速）で走り、消滅の点が左に寄っているぶん左の結晶に先に着きます。その差 Δt が線の上の位置を教える ― 200 ps の時刻の分解能で 3 cm。同時計数の窓（4 ns ＝ 光が 1.2 m 進む時間）の中に両側が鳴ったものだけを、1 本の線として数えます。</figcaption>
+  </figure>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — 仮定を変えると、結論はどう動くか</span>
+    <p>① <b>集光</b>を 0.3 → 0.45 に上げると光電子は 2,070 個、統計の項は 5.3%、合わせて 9.6% ― 固有の 8% に近づくだけで、それを超えては良くならない。② <b>深さの情報（DOI）</b>: 厚い結晶に斜めに入った光子は、止まった深さによって位置がぼける（視差）。結晶を深さ方向に分ける・両端から読むなどで補う。③ <b>MPPC の利得は温度で変わる</b>（第5部 03）ので、エネルギーの目盛りを温度で補正する。④ 固有の分解能は、結晶の発光がエネルギーに厳密には比例しないこと（非比例性）などから来る。結論を左右する順は、固有の分解能 ＞ 集光 ＞ 検出効率。</p>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（10 PET の検出器）</span>
+    <p><b>問.</b> 本物の 511 keV を 99% 残す窓の下限は、分解能 10.3% と 15% のそれぞれでいくつか。落とせる散乱は何度より大きいものか。</p>
+    <p><b>解.</b> 片側 99% は 511 − 2.33σ。10.3%（σ 22.4 keV）なら下限 <b>459 keV</b>、E′ = 511/(2 − cos θ) を解いて <b>27.5°</b> より大きく曲がった光子を落とせる。15%（σ 32.5 keV）なら下限 <b>435 keV</b>、落とせるのは <b>34.3°</b> より大きいものだけ。<span class="key">分解能が悪いと窓を広げざるをえず、散乱を多く拾う</span> ― 画像のコントラストが下がる理由です。</p>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — PhotonLab 第4章</span>
+    <p>集光と検出効率で光電子の数を選び、511 keV の分解能 10.5% 以下と MPPC の飽和 5% 以下を両立させる。</p>
+    <div class="qs"><a href="PhotonLab/index.html?quest=scint">PET の分解能と飽和の窓</a></div>
+  </div>
+</section>
+
+<!-- ================= 11（題材 E） ================= -->
+<section class="stage" id="s12">
+  <div class="stage-head"><span class="stage-num">11</span>
+    <h2>題材 E 蛍光寿命の測定 ― TCSPC で、ns の減衰を光子で測る</h2></div>
+  <p class="lede">要求: <b>寿命 2.5 ns（仮定）の蛍光を、1% の精度で、256 × 256 画素の画像として測る</b>（FLIM）。道具は第5部 06（TCSPC と FLIM）・第5部 12（数えられる速さ）・第9部 09（パルスのレーザー）です。蛍光の寿命は、明るさと違って色素の濃さや励起の強さに左右されにくいので、細胞の中の環境（pH・イオン・分子どうしの距離）を測る物差しになります。</p>
+
+  <div class="two">
+    <div class="body-col">
+      <h3>繰り返し ― 前のパルスの蛍光が消えてから次を打つ</h3>
+      <p>周期 T のあいだに来る光子のうち、前のパルスから持ち越した分と今のパルスの分の比は e<sup>−T/τ</sup>/(1 − e<sup>−T/τ</sup>)（前の全部のパルスの残りの和）。80 MHz（12.5 ns ＝ 5τ）で 0.68%、40 MHz（25 ns ＝ 10τ）で 0.0045%。<span class="key">繰り返しは速さではなく、寿命で決める</span> ― 寿命の長い試料ほど下げる（例題）。</p>
+      <h3>パイルアップ ― 1 パルスで 0.01 個まで</h3>
+      <p>TCSPC の電子回路は 1 周期に最初の 1 個しか記録しないので、2 個以上来たパルスでは早く来た光子に偏り、寿命が短く見える。1 パルスで検出される平均を µ とすると、検出のうち 2 個以上だった割合は約 µ/2（ポアソン）: µ = 0.01 で 0.50%、0.05 で 2.5%、0.1 で 4.9%。40 MHz で µ = 0.01 なら計数は <b>398 kcps</b> ― 数える率は繰り返しの約 1% までが目安です（第5部 12）。</p>
+    </div>
+    <div class="body-col">
+      <h3>何個の光子で 1% か</h3>
+      <p>背景がなく、装置の応答（IRF）が寿命より十分細い理想では、寿命の相対的なばらつきは σ<sub>τ</sub>/τ ≈ 1/√N（F 値 ≈ 1）。1% には <b>10⁴ 個</b>。398 kcps で 1 画素に 25 ms、256² 画素で 1,647 秒 ≈ <b>27 分</b>。暗計数 100 cps は信号の 2.5×10⁻⁴ 倍で、無視できます。</p>
+      <h3>装置の応答（IRF）</h3>
+      <p>検出器の時間の揺らぎ（第5部 02・03）とレーザーのパルスの幅を合わせた応答が、寿命の 1/10 より細ければ、単純な指数の当てはめで足ります。寿命が IRF に近いときは、IRF を測って畳み込みで当てはめる ― <span class="key">寿命の短い試料ほど、速い検出器の値打ちが上がる</span>。</p>
+    </div>
+  </div>
+
+  <figure class="full">
+    <div class="fig-head"><span class="fig-title">DECAY — 1 個ずつ積むと、指数の減衰が現れる</span><span class="fig-title">動く図・棒の高さは exp(−t/τ) のビンの中心の値</span></div>
+    <div class="fig-body scroll-x">
+      <svg viewBox="0 0 760 244" role="img" aria-label="TCSPC のヒストグラム。レーザーのパルスから蛍光の光子が来るまでの時間を 0.5 ナノ秒のビンに積むと、寿命 2.5 ナノ秒の指数の減衰の形が現れる。t = τ で 1/e。次のパルスは 25 ナノ秒後で、減衰はそれまでに消えている。" style="min-width:700px;width:100%;display:block">
+        <g stroke="var(--line)" stroke-width="1" fill="none"><path d="M80 40 V190 H700"/></g>
+        <rect class="p10bar" x="81.0" y="63.3" width="10.4" height="126.7" fill="var(--photon)" opacity="0.75"/><rect class="p10bar" x="93.4" y="86.3" width="10.4" height="103.7" fill="var(--photon)" opacity="0.75"/><rect class="p10bar" x="105.8" y="105.1" width="10.4" height="84.9" fill="var(--photon)" opacity="0.75"/><rect class="p10bar" x="118.2" y="120.5" width="10.4" height="69.5" fill="var(--photon)" opacity="0.75"/><rect class="p10bar" x="130.6" y="133.1" width="10.4" height="56.9" fill="var(--photon)" opacity="0.75"/><rect class="p10bar" x="143.0" y="143.4" width="10.4" height="46.6" fill="var(--photon)" opacity="0.75"/><rect class="p10bar" x="155.4" y="151.8" width="10.4" height="38.2" fill="var(--photon)" opacity="0.75"/><rect class="p10bar" x="167.8" y="158.8" width="10.4" height="31.2" fill="var(--photon)" opacity="0.75"/><rect class="p10bar" x="180.2" y="164.4" width="10.4" height="25.6" fill="var(--photon)" opacity="0.75"/><rect class="p10bar" x="192.6" y="169.1" width="10.4" height="20.9" fill="var(--photon)" opacity="0.75"/><rect class="p10bar" x="205.0" y="172.9" width="10.4" height="17.1" fill="var(--photon)" opacity="0.75"/><rect class="p10bar" x="217.4" y="176.0" width="10.4" height="14.0" fill="var(--photon)" opacity="0.75"/><rect class="p10bar" x="229.8" y="178.5" width="10.4" height="11.5" fill="var(--photon)" opacity="0.75"/><rect class="p10bar" x="242.2" y="180.6" width="10.4" height="9.4" fill="var(--photon)" opacity="0.75"/><rect class="p10bar" x="254.6" y="182.3" width="10.4" height="7.7" fill="var(--photon)" opacity="0.75"/><rect class="p10bar" x="267.0" y="183.7" width="10.4" height="6.3" fill="var(--photon)" opacity="0.75"/><rect class="p10bar" x="279.4" y="184.8" width="10.4" height="5.2" fill="var(--photon)" opacity="0.75"/><rect class="p10bar" x="291.8" y="185.8" width="10.4" height="4.2" fill="var(--photon)" opacity="0.75"/><rect class="p10bar" x="304.2" y="186.5" width="10.4" height="3.5" fill="var(--photon)" opacity="0.75"/><rect class="p10bar" x="316.6" y="187.2" width="10.4" height="2.8" fill="var(--photon)" opacity="0.75"/><rect class="p10bar" x="329.0" y="187.7" width="10.4" height="2.3" fill="var(--photon)" opacity="0.75"/><rect class="p10bar" x="341.4" y="188.1" width="10.4" height="1.9" fill="var(--photon)" opacity="0.75"/><rect class="p10bar" x="353.8" y="188.4" width="10.4" height="1.6" fill="var(--photon)" opacity="0.75"/><rect class="p10bar" x="366.2" y="188.7" width="10.4" height="1.3" fill="var(--photon)" opacity="0.75"/><rect class="p10bar" x="378.6" y="189.0" width="10.4" height="1.0" fill="var(--photon)" opacity="0.75"/><rect class="p10bar" x="391.0" y="189.1" width="10.4" height="0.9" fill="var(--photon)" opacity="0.75"/><rect class="p10bar" x="403.4" y="189.3" width="10.4" height="0.7" fill="var(--photon)" opacity="0.75"/><rect class="p10bar" x="415.8" y="189.4" width="10.4" height="0.6" fill="var(--photon)" opacity="0.75"/>
+        <path class="p10draw" style="--len:820" d="M86.2 63.3 L92.3 75.1 L98.4 85.9 L104.4 95.6 L110.5 104.4 L116.6 112.4 L122.7 119.6 L128.7 126.2 L134.8 132.2 L140.9 137.6 L147.0 142.5 L153.0 146.9 L159.1 150.9 L165.2 154.6 L171.3 157.9 L177.3 160.9 L183.4 163.6 L189.5 166.1 L195.6 168.3 L201.6 170.3 L207.7 172.2 L213.8 173.8 L219.9 175.3 L225.9 176.7 L232.0 177.9 L238.1 179.1 L244.2 180.1 L250.3 181.0 L256.3 181.9 L262.4 182.6 L268.5 183.3 L274.6 183.9 L280.6 184.5 L286.7 185.0 L292.8 185.5 L298.9 185.9 L304.9 186.3 L311.0 186.6 L317.1 186.9 L323.2 187.2 L329.2 187.5 L335.3 187.7 L341.4 187.9 L347.5 188.1 L353.5 188.3 L359.6 188.5 L365.7 188.6 L371.8 188.7 L377.8 188.9 L383.9 189.0 L390.0 189.1 L396.1 189.1 L402.2 189.2 L408.2 189.3 L414.3 189.4 L420.4 189.4 L426.5 189.5 L432.5 189.5 L438.6 189.6 L444.7 189.6 L450.8 189.6 L456.8 189.7 L462.9 189.7 L469.0 189.7 L475.1 189.8 L481.1 189.8 L487.2 189.8 L493.3 189.8 L499.4 189.8 L505.4 189.9 L511.5 189.9 L517.6 189.9 L523.7 189.9 L529.7 189.9 L535.8 189.9 L541.9 189.9 L548.0 189.9 L554.1 189.9 L560.1 189.9 L566.2 189.9 L572.3 190.0 L578.4 190.0 L584.4 190.0 L590.5 190.0 L596.6 190.0 L602.7 190.0 L608.7 190.0 L614.8 190.0 L620.9 190.0 L627.0 190.0 L633.0 190.0 L639.1 190.0 L645.2 190.0 L651.3 190.0 L657.3 190.0 L663.4 190.0 L669.5 190.0 L675.6 190.0 L681.6 190.0 L687.7 190.0 L693.8 190.0" stroke="var(--warn)" stroke-width="1.6" fill="none"/>
+        <path d="M142.0 190 V132" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+        <path d="M80 194 L75 203 H85 Z" fill="var(--digital)"/><path d="M700 194 L695 203 H705 Z" fill="var(--digital)"/>
+        <g font-size="10.5" fill="var(--ink-2)">
+          <text x="80" y="28">パルスごとに、最初に来た光子の到着時刻を 1 個ずつ積む（TCSPC）</text>
+          <text x="150" y="124">t = τ で 1/e</text>
+          <text x="300" y="80">寿命 τ = 2.5 ns（仮定）の指数の減衰。1 パルスで検出するのは 0.01 個まで</text>
+          <text x="300" y="98">次のパルスまで 25 ns ＝ 10τ（40 MHz）― 持ち越しは 0.0045 %</text>
+        </g>
+        <g font-family="var(--mono)" font-size="9.5" fill="var(--ink-3)"><text x="80.0" y="216" text-anchor="middle">0</text><text x="204.0" y="216" text-anchor="middle">5</text><text x="328.0" y="216" text-anchor="middle">10</text><text x="452.0" y="216" text-anchor="middle">15</text><text x="576.0" y="216" text-anchor="middle">20</text><text x="700.0" y="216" text-anchor="middle">25</text></g>
+        <text x="390" y="236" font-size="10" fill="var(--ink-3)" text-anchor="middle">到着時刻（ns）― 三角 ＝ レーザーのパルス（25 ns ごと）　縦軸はカウント（相対）</text>
+      </svg>
+    </div>
+    <figcaption>棒は 0.5 ns のビン。1 個ずつ積むと形はどの時点でも同じ指数で、数が増えるほどばらつき（1/√N）が小さくなる ― 図は期待値の形です。点線の t = τ で高さは 1/e。次のパルス（右の三角）までの 25 ns ＝ 10τ のあいだに減衰は消えていて、持ち越しは 0.0045%。</figcaption>
+  </figure>
+
+  <div class="deep deep-note">
+    <span class="tag">くわしく — 仮定を変えると、結論はどう動くか</span>
+    <p>① <b>2 成分の減衰</b>（2 つの寿命が混ざる）を分けるには、同じ精度にずっと多くの光子が要る（F 値が大きくなる、Köllner &amp; Wolfrum 1992）。② <b>パイルアップを式で補正</b>すれば µ を上げられるが、補正は µ が小さい近似の上に立つ。③ 速くするには、検出器と TDC を並べて多チャネルにする（1 本あたりの率は 1% のまま、全体の率を増やす）。④ <b>背景</b>（励起光の漏れ・自家蛍光）は寿命を違って見せる ― フィルタ（第7部 16 の多層膜）で落とす。</p>
+  </div>
+
+  <div class="ex">
+    <span class="tag">例題 ― 手で一度解く（11 蛍光寿命）</span>
+    <p><b>問.</b> 寿命 10 ns の試料を 80 MHz のまま測るとどうなるか。繰り返しをどこまで下げればよいか。</p>
+    <p><b>解.</b> T/τ = 12.5/10 = 1.25 で、持ち越しの比は e<sup>−1.25</sup>/(1 − e<sup>−1.25</sup>) = <b>40.2%</b> ― 前のパルスの減衰が大きく重なり、単純な指数では当てはまらない。周期を 10τ = 100 ns にすれば（10 MHz）持ち越しは <b>0.0045%</b>。そのとき µ = 0.01 の計数は 10 MHz の 1% で約 100 kcps に下がるので、同じ画像に 4 倍の時間がかかる。</p>
+  </div>
+
+  <div class="lab-go">
+    <span class="tag">手を動かす — PhotonLab 第3章</span>
+    <p>TCSPC の繰り返しを寿命から選び、パイルアップの目安の中で数えて待つ。</p>
+    <div class="qs"><a href="PhotonLab/index.html?quest=pile">TCSPC の繰り返し</a><a href="PhotonLab/index.html?quest=count">数えて待つ</a></div>
+  </div>
 </section>
 
 <!-- ================= 10 ================= -->
 <section class="stage" id="s10">
-  <div class="stage-head"><span class="stage-num">10</span>
-    <h2>振り返り ― 3 つの装置で、何が決め手だったか</h2></div>
-  <p class="lede">3 つの題材の予算表で、それぞれ何が支配項になり、何が設計を決めたかを並べます。<span class="key">決め手は装置ごとに違うが、見つけ方はいつも同じ</span> ― 予算表を書き、最大の項に印を付け、仮定を変えて確かめる。</p>
+  <div class="stage-head"><span class="stage-num">12</span>
+    <h2>振り返り ― 5 つの装置で、何が決め手だったか</h2></div>
+  <p class="lede">5 つの題材の予算表で、それぞれ何が支配項になり、何が設計を決めたかを並べます。<span class="key">決め手は装置ごとに違うが、見つけ方はいつも同じ</span> ― 予算表を書き、最大の項に印を付け、仮定を変えて確かめる。</p>
   <figure class="full">
     <div class="scroll-x">
       <table>
-        <thead><tr><th></th><th>A 微弱光カメラ</th><th>B LiDAR</th><th>C 分光器</th></tr></thead>
+        <thead><tr><th></th><th>A 微弱光カメラ</th><th>B LiDAR</th><th>C 分光器</th><th>D PET の検出器</th><th>E 蛍光寿命</th></tr></thead>
         <tbody>
-          <tr><td>光の予算で一番大きく減る段</td><td>集める角度（×0.31）と露光の時間</td><td>距離の 2 乗（200 m で 3.9×10⁻¹⁰）</td><td>スリットと f 数の関所（合わせて約 5%）</td></tr>
-          <tr><td>雑音の支配項</td><td>信号のショット雑音（明るいとき）／読み出し雑音（暗いとき）</td><td>背景光（昼）</td><td>波長のずれ × 吸収の傾き（坂の上）</td></tr>
-          <tr><td>設計を決めた量</td><td>交差点 S + B = 9σ<sub>r</sub>²</td><td>r·τ<sub>d</sub>（飽和）と 1/√N（精度）</td><td>逆線分散と、次数の重なり</td></tr>
-          <tr><td>最初に実測で確かめる仮定</td><td>背景光と分子の明るさ</td><td>太陽光の強さと物体の反射率</td><td>迷光と温度による目盛りのずれ</td></tr>
-          <tr><td>規格・安全</td><td>EMVA 1288 で性能を表す</td><td>IEC 60825-1 のクラス</td><td>校正のトレーサビリティ（ISO/IEC 17025）</td></tr>
-          <tr><td>主に使った部</td><td>第4部・第5部 04・第6部 09・第7部 04・第8部 05</td><td>第4部 SPAD・第5部 06・第7部 02・第8部 12・第9部</td><td>第2部 04・第7部 06・11・第8部 10・第9部 02</td></tr>
+          <tr><td>光の予算で一番大きく減る段</td><td>集める角度（×0.31）と露光の時間</td><td>距離の 2 乗（200 m で 3.9×10⁻¹⁰）</td><td>スリットと f 数の関所（合わせて約 5%）</td><td>集光と検出効率（0.3 × 0.3）</td><td>1 パルスの検出を 0.01 個に抑える段</td></tr>
+          <tr><td>雑音の支配項</td><td>信号のショット雑音（明るいとき）／読み出し雑音（暗いとき）</td><td>背景光（昼）</td><td>波長のずれ × 吸収の傾き（坂の上）</td><td>結晶の固有の分解能（8%）と光電子の統計</td><td>光子の数の統計 1/√N</td></tr>
+          <tr><td>設計を決めた量</td><td>交差点 S + B = 9σ<sub>r</sub>²</td><td>r·τ<sub>d</sub>（飽和）と 1/√N（精度）</td><td>逆線分散と、次数の重なり</td><td>エネルギーの窓（425 keV で 37°）と TOF（200 ps で 3 cm）</td><td>周期 ≥ 5〜10τ と µ ≤ 0.01</td></tr>
+          <tr><td>最初に実測で確かめる仮定</td><td>背景光と分子の明るさ</td><td>太陽光の強さと物体の反射率</td><td>迷光と温度による目盛りのずれ</td><td>結晶の光量と集光</td><td>寿命の範囲と IRF</td></tr>
+          <tr><td>規格・安全</td><td>EMVA 1288 で性能を表す</td><td>IEC 60825-1 のクラス</td><td>校正のトレーサビリティ（ISO/IEC 17025）</td><td>NEMA NU 2 で性能を表す</td><td>レーザーの安全（IEC 60825-1）</td></tr>
+          <tr><td>主に使った部</td><td>第4部・第5部 04・第6部 09・第7部 04・第8部 05</td><td>第4部 SPAD・第5部 06・第7部 02・第8部 12・第9部</td><td>第2部 04・第7部 06・11・第8部 10・第9部 02</td><td>第5部 03・09・12・第8部 07</td><td>第5部 06・12・第7部 16・第9部 09</td></tr>
         </tbody>
       </table>
     </div>
@@ -915,14 +1123,14 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
 
   <div class="caveat">
     <span class="tag">この部が単純化していること</span>
-    <p><strong>光の予算は、一様・等方・理想の光学系の一次の見積もりです。</strong>蛍光分子の向き（双極子の放射）と界面での屈折、LiDAR のビームと物体の大きさの関係・物体の傾き・大気の減衰、分光器の収差とスリットの像の形は扱っていません。雑音は独立なショット雑音の二乗和で、1/f 雑音やセンサの画素ごとのばらつき（FPN・PRNU、第4部）の補正は理想的に行えたとしています。目の安全は規格の手順での計算が必須で、この部の数字で判断してはいけません。</p>
+    <p><strong>光の予算は、一様・等方・理想の光学系の一次の見積もりです。</strong>蛍光分子の向き（双極子の放射）と界面での屈折、LiDAR のビームと物体の大きさの関係・物体の傾き・大気の減衰、分光器の収差とスリットの像の形は扱っていません。雑音は独立なショット雑音の二乗和で、1/f 雑音やセンサの画素ごとのばらつき（FPN・PRNU、第4部）の補正は理想的に行えたとしています。目の安全は規格の手順での計算が必須で、この部の数字で判断してはいけません。PET の検出器では結晶の中の光の集まり方・結晶の間の散乱（1 個の光子が 2 つの結晶に分かれて落ちる）・体の中での減衰を、蛍光寿命では IRF の形・背景・多成分の減衰を、一次の見積もりの外に置いています。</p>
   </div>
 </section>
 
 <!-- ================= 理解の確認 ================= -->
 <section class="stage" id="scheck">
   <div class="stage-head"><span class="stage-num">—</span>
-    <h2>理解の確認 ― 12問で設計の判断を言えるようにする</h2></div>
+    <h2>理解の確認 ― 16問で設計の判断を言えるようにする</h2></div>
   <p class="lede">どの問いも「答えの数字」より「どの項が効くか」を先に言えることを目指しています。</p>
   <div class="chk">
     <details><summary><span class="qn">Q1 · 01</span>予算表で、光の予算と雑音の予算は何が違うか。</summary><p>光の予算は各段の割合の<b>掛け算</b>（対数で足し算）、雑音の予算は独立な成分の<b>二乗和</b>。前者はどの段の 2 倍も同じ 2 倍、後者は最大の項がほぼ全部を決める。</p></details>
@@ -937,6 +1145,10 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
     <details><summary><span class="qn">Q10 · 08</span>分光器の分解能を決めているのは格子か、スリットと画素か。</summary><p>この設計では格子の R = 4,000 に対し要求は 280 なので、スリットの像（1.25 nm）と画素（2 画素で 2.5 nm）が決めている。</p></details>
     <details><summary><span class="qn">Q11 · 08</span>400〜1,000 nm を 1 台で測るとき、センサのどの場所にフィルタが要るか。</summary><p>800〜1,000 nm の場所。そこには 2 次の 400〜500 nm も来るので、500 nm 以下を切る膜をその部分にだけ置く。</p></details>
     <details><summary><span class="qn">Q12 · 09</span>吸収の傾き 0.01 AU/nm の場所で波長が 0.1 nm ずれたら、吸光度はどれだけずれるか。対策は？</summary><p>0.001 AU で、100 回平均のショット雑音（1.4×10⁻⁴）の約 7 倍。校正の残差を詰めるか、吸収の山の頂上で測る。光子を集めても良くならない。</p></details>
+    <details><summary><span class="qn">Q13 · 10</span>PET の検出器で光電子が 1,380 個のとき、エネルギーの分解能はいくつか。何が支配項か。</summary><p>統計の項 2.355√(1.05/1,380) = 6.5% と固有の 8% の二乗和で 10.3%。固有の分解能が支配項に近く、集光を上げても 8% より良くならない。</p></details>
+    <details><summary><span class="qn">Q14 · 10</span>エネルギーの窓の下限を 425 keV にすると、どの散乱を落とせるか。</summary><p>E′ = 511/(2 − cos θ) から、37° より大きく曲がった光子（60° なら 341 keV）。それより小さい角度の散乱は区別できない。</p></details>
+    <details><summary><span class="qn">Q15 · 11</span>寿命 2.5 ns の蛍光を 80 MHz と 40 MHz で測ると、前のパルスから持ち越す割合はいくつか。</summary><p>5τ で 0.68%、10τ で 0.0045%。寿命の長い試料ほど繰り返しを下げる（10 ns を 80 MHz で測ると 40%）。</p></details>
+    <details><summary><span class="qn">Q16 · 11</span>TCSPC で 1% の寿命の精度を得るには何個の光子が要り、パイルアップを 0.5% に抑えると 1 画素に何 ms かかるか。</summary><p>理想では 1/√N から 10⁴ 個。40 MHz・µ = 0.01 で 398 kcps なので 25 ms。256² 画素で約 27 分。</p></details>
   </div>
 </section>
 
@@ -965,6 +1177,13 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>次数カットフィルタ</td><td>2 次の回折光が重なる場所にだけ置く、短い波長を切るフィルタ</td><td class="num">800〜1,000 nm の場所</td></tr>
           <tr><td>波長の校正</td><td>既知の輝線で画素と波長の対応を多項式で当てはめること</td><td class="num">Hg・Ar の線</td></tr>
           <tr><td>吸光度の上限（迷光）</td><td>迷光の割合 s があると、吸光度は −log₁₀s 付近で頭打ちになる</td><td class="num">10⁻³ で約 3</td></tr>
+          <tr><td>同時計数 / 偶発同時計数</td><td>窓 W の中で両側が鳴ったときだけ数えること。無関係な光子が偶然そろう率は W·S₁·S₂</td><td class="num">4 ns・10⁵ /s で 40 /s</td></tr>
+          <tr><td>TOF-PET</td><td>両側の到着時刻の差 Δt から、線の上の位置を c·Δt/2 で決める方式</td><td class="num">200 ps で 3.0 cm</td></tr>
+          <tr><td>エネルギーの窓（PET）</td><td>散乱で曲がってエネルギーを失った光子を落とす範囲。E′ = 511/(2 − cos θ) keV</td><td class="num">425 keV で 37° 以上</td></tr>
+          <tr><td>固有の分解能（シンチレータ）</td><td>光電子の統計とは別の、結晶自身の発光のばらつきによる分解能。光電子を増やしても消えない</td><td class="num">この部では 8%（仮定）</td></tr>
+          <tr><td>パイルアップの目安（TCSPC）</td><td>1 パルスの検出を約 0.01 個に抑え、2 個以上来たパルスでの偏りを約 µ/2 にとどめる</td><td class="num">40 MHz で約 400 kcps</td></tr>
+          <tr><td>寿命の精度</td><td>背景なし・IRF が細い理想では σ<sub>τ</sub>/τ ≈ 1/√N</td><td class="num">1% に 10⁴ 個</td></tr>
+          <tr><td>繰り返しと寿命</td><td>次のパルスまでに減衰が消えるよう、周期を寿命の 5〜10 倍にとる</td><td class="num">2.5 ns なら 80〜40 MHz 以下</td></tr>
         </tbody>
       </table>
     </div>
@@ -989,6 +1208,11 @@ tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:10px;
           <tr><td>レーザーの安全</td><td>IEC 60825-1</td><td>07。クラス 1 の判定（AEL・複数パルスの規則）は規格の手順で。</td></tr>
           <tr><td>原子の輝線の波長</td><td>NIST Atomic Spectra Database</td><td>09。水銀・アルゴンの校正用の線の波長。</td></tr>
           <tr><td>シリコンの吸収係数</td><td>M. A. Green<br>Sol. Energy Mater. Sol. Cells 92, 1305 (2008)</td><td>09。400 nm・1,000 nm の吸収の深さ。</td></tr>
+          <tr><td>PET の物理と装置</td><td>S. R. Cherry, J. A. Sorenson &amp; M. E. Phelps<br>『Physics in Nuclear Medicine』4th ed., Elsevier (2012)</td><td>10。同時計数・偶発同時計数・エネルギーの窓・TOF。</td></tr>
+          <tr><td>放射線の計測</td><td>G. F. Knoll『Radiation Detection and Measurement』4th ed., Wiley (2010)</td><td>10。シンチレータの光量と分解能、パイルアップ。</td></tr>
+          <tr><td>PET の性能の測り方</td><td>NEMA NU 2（PET の性能試験の規格）</td><td>10。骨格のみ ― 最新の原文と社内の担当で確認。</td></tr>
+          <tr><td>TCSPC</td><td>W. Becker『Advanced Time-Correlated Single Photon Counting Techniques』Springer (2005)</td><td>11。パイルアップ・繰り返し・装置の応答。</td></tr>
+          <tr><td>寿命の精度と光子の数</td><td>M. Köllner &amp; J. Wolfrum<br>Chem. Phys. Lett. 200, 199 (1992)</td><td>11。光子の数と寿命の精度（F 値）。</td></tr>
         </tbody>
       </table>
     </div>
